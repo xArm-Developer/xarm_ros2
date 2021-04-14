@@ -1,8 +1,8 @@
 <launch>
-  <arg name="robot_ip" description="User must properly specify robot ip address"/>
-	<arg name="report_type" default="normal" />
-	<arg name="hw_ns" default="xarm" />
-  <arg name="dof" default="7" />
+  <arg name="robot_ip" description="IP address by which the robot can be reached."/>
+	<arg name="report_type" default="normal" description="tcp report type, default is normal, normal/rich/dev optional" />
+	<arg name="dof" default="7" description="Degree of freedom of manipulator, defalut is 7" />
+  <arg name="hw_ns" default="xarm" description="The namespace of xarm_driver, default is xarm" />
 
   <node name="xarm_driver" pkg="xarm_api" exec="xarm_driver_node" namespace="$(var hw_ns)" output="screen">
     <!-- <param from="$(find-pkg-share xarm_api)/config/xarm$(var dof)_params.yaml"/> -->

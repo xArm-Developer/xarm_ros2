@@ -8,7 +8,6 @@
  
 #include <signal.h>
 #include <chrono>
-#include <thread>
 #include <rclcpp/rclcpp.hpp>
 #include <xarm_ros_client.h>
 
@@ -39,11 +38,11 @@ int main(int argc, char **argv)
     std::vector<float> jnt_v = { 1, 0, 0, 0, 0, 0, 0 };
     ret = client.veloMoveJoint(jnt_v);
     RCLCPP_INFO(rclcpp::get_logger("test_xarm_velo_move"), "velo_move_joint: %d", ret);
-    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+    rclcpp::sleep_for(std::chrono::seconds(2));
     jnt_v[0] = -1;
     ret = client.veloMoveJoint(jnt_v);
     RCLCPP_INFO(rclcpp::get_logger("test_xarm_velo_move"), "velo_move_joint: %d", ret);
-    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+    rclcpp::sleep_for(std::chrono::seconds(2));
     // stop
     jnt_v[0] = 0;
     ret = client.veloMoveJoint(jnt_v);
@@ -54,11 +53,11 @@ int main(int argc, char **argv)
     client.setState(0);
     ret = client.veloMoveLine(line_v);
     RCLCPP_INFO(rclcpp::get_logger("test_xarm_velo_move"), "velo_move_line: %d", ret);
-    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+    rclcpp::sleep_for(std::chrono::seconds(2));
     line_v[0] = -100;
     ret = client.veloMoveLine(line_v);
     RCLCPP_INFO(rclcpp::get_logger("test_xarm_velo_move"), "velo_move_line: %d", ret);
-    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+    rclcpp::sleep_for(std::chrono::seconds(2));
     // stop
     line_v[0] = 0;
     ret = client.veloMoveLine(line_v);
