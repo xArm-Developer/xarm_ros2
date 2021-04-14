@@ -31,8 +31,8 @@
     $ source install/setup.bash
     # 通过xarm6_driver.launch启动
     $ ros2 launch xarm_api xarm6_driver.launch robot_ip:=192.168.1.117
-    # 通过xarm_driver_launch.py启动
-    # $ ros2 launch xarm_api xarm_driver_launch.py robot_ip:=192.168.1.117 dof:=6
+    # 通过xarm6_driver.launch.py启动
+    # $ ros2 launch xarm_api xarm6_driver.launch robot_ip:=192.168.1.117 dof:=6
     ```
 - #### 测试 xarm_ros_client
     ```bash
