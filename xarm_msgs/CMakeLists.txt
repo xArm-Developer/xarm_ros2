@@ -1,0 +1,69 @@
+cmake_minimum_required(VERSION 3.5)
+project(xarm_msgs)
+
+# Default to C99
+if(NOT CMAKE_C_STANDARD)
+  set(CMAKE_C_STANDARD 99)
+endif()
+
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
+
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
+
+# find dependencies
+find_package(ament_cmake REQUIRED)
+# uncomment the following section in order to fill in
+# further dependencies manually.
+# find_package(<dependency> REQUIRED)
+
+if(BUILD_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  # the following line skips the linter which checks for copyrights
+  # uncomment the line when a copyright and license is not present in all source files
+  #set(ament_cmake_copyright_FOUND TRUE)
+  # the following line skips cpplint (only works in a git repo)
+  # uncomment the line when this package is not in a git repo
+  #set(ament_cmake_cpplint_FOUND TRUE)
+  ament_lint_auto_find_test_dependencies()
+endif()
+
+find_package(rosidl_default_generators REQUIRED)
+set(msg_files
+  "msg/RobotMsg.msg"
+  "msg/IOState.msg"
+  "msg/CIOState.msg"
+)
+set(srv_files
+  "srv/Move.srv"
+  "srv/SetAxis.srv"
+  "srv/SetInt16.srv"
+  "srv/TCPOffset.srv"
+  "srv/SetDigitalIO.srv"
+  "srv/GetDigitalIO.srv"
+  "srv/GetAnalogIO.srv"
+  "srv/ClearErr.srv"
+  "srv/GetErr.srv"
+  "srv/GripperConfig.srv"
+  "srv/GripperMove.srv"
+  "srv/GripperState.srv"
+  "srv/SetLoad.srv"
+  "srv/SetToolModbus.srv"
+  "srv/ConfigToolModbus.srv"
+  "srv/GetControllerDigitalIO.srv"
+  "srv/SetControllerAnalogIO.srv"
+  "srv/MoveAxisAngle.srv"
+  "srv/MoveVelo.srv"
+  "srv/SetFloat32.srv"
+)
+
+rosidl_generate_interfaces(${PROJECT_NAME}
+  ${msg_files}
+  ${srv_files}
+)
+
+ament_package()

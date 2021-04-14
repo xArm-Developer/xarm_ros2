@@ -1,0 +1,25 @@
+# request: command specification for velocity executions.
+# Units:
+#	joint space/angles: radian/s
+#	Cartesian space: mm/s, radian/s.
+
+# velocities: the velocity list of the joints/tcp
+#   For velo_move_joint service: [joint1_velocity, ..., joint7_velocity]
+#   For velo_move_line service: [x_velocity, y_velocity, z_velocity, rx_velocity, ry_velocity, rz_velocity (axis-angle)]
+float32[] velocities
+
+# jnt_sync: this is special for velo_move_joint service, meaning whether all joints accelerate and decelerate synchronously, 1 for yes, 0 for no.
+int16 jnt_sync
+
+# coord: this is special for velo_move_line service, meaning whether motion is in tool coordinate(1) or not(0)
+int16 coord
+
+---
+
+# response: 
+#	ret is 0 for successful execution and others for errors or warnings occured
+#	message is a string returned by function, indicating execution status.
+
+int16 ret
+
+string message

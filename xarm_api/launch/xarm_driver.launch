@@ -1,0 +1,14 @@
+<launch>
+  <arg name="robot_ip" description="User must properly specify robot ip address"/>
+	<arg name="report_type" default="normal" />
+	<arg name="hw_ns" default="xarm" />
+  <arg name="dof" default="7" />
+
+  <node name="xarm_driver" pkg="xarm_api" exec="xarm_driver_node" namespace="$(var hw_ns)" output="screen">
+    <!-- <param from="$(find-pkg-share xarm_api)/config/xarm$(var dof)_params.yaml"/> -->
+    <param from="$(find-pkg-share xarm_api)/config/xarm_params.yaml"/>
+    <param name="xarm_robot_ip" value="$(var robot_ip)"/>
+    <param name="xarm_report_type" value="$(var report_type)"/>
+    <param name="DOF" value="$(var dof)"/>
+  </node>
+</launch>
