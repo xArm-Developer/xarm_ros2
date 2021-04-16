@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="xarm_device">
+  <xacro:macro name="xarm_device" params="prefix:='' namespace:='xarm' limited:='false' effort_control:='false' 
+    velocity_control:='false' add_gripper:='false' add_vacuum_gripper:='false' dof:=7"> 
+    
+    <xacro:if value="${dof == 5}">
+      <xacro:include filename="$(find xarm_description)/urdf/xarm5/xarm5_robot_macro.xacro" />
+      <xacro:xarm5_robot prefix="${prefix}" namespace="${namespace}" limited="${limited}" effort_control="${effort_control}" velocity_control="${velocity_control}" />
+    </xacro:if>
+    <xacro:if value="${dof == 6}">
+      <xacro:include filename="$(find xarm_description)/urdf/xarm6/xarm6_robot_macro.xacro" />
+      <xacro:xarm6_robot prefix="${prefix}" namespace="${namespace}" limited="${limited}" effort_control="${effort_control}" velocity_control="${velocity_control}" />
+    </xacro:if>
+    <xacro:unless value="${dof == 5 or dof == 6}">
+      <xacro:include filename="$(find xarm_description)/urdf/xarm7/xarm7_robot_macro.xacro" />
+      <xacro:xarm7_robot prefix="${prefix}" namespace="${namespace}" limited="${limited}" effort_control="${effort_control}" velocity_control="${velocity_control}" />
+    </xacro:unless>
+    
+    <xacro:if value="${add_gripper}">
+      <xacro:include filename="$(find xarm_description)/urdf/gripper/xarm_gripper_model.xacro" />
+      <xacro:load_gripper attach_to="${prefix}link_eef" effort_control="${effort_control}" velocity_control="${velocity_control}" />
+    </xacro:if>
+
+    <xacro:if value="${add_vacuum_gripper}">
+      <xacro:include filename="$(find xarm_description)/urdf/vacuum_gripper/xarm_vacuum_gripper.urdf.xacro" />
+      <xacro:xarm_vacuum_gripper_urdf attach_to="${prefix}link_eef" effort_control="${effort_control}" velocity_control="${velocity_control}" />
+    </xacro:if>
+  </xacro:macro>
+</robot>
