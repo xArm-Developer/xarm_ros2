@@ -40,7 +40,7 @@ def generate_launch_description():
     )
     declared_arguments.append(
         DeclareLaunchArgument(
-            'hw_ns',
+            'ns',
             default_value='xarm',
             description='The namespace of xarm_driver, default is xarm.',
         )
@@ -50,13 +50,13 @@ def generate_launch_description():
     robot_ip = LaunchConfiguration('robot_ip')
     report_type = LaunchConfiguration('report_type', default='normal')
     dof = LaunchConfiguration('dof', default=7)
-    hw_ns = LaunchConfiguration('hw_ns', default='xarm')
+    ns = LaunchConfiguration('ns', default='xarm')
     
     xarm_params = PathJoinSubstitution([FindPackageShare('xarm_api'), 'config', 'xarm_params.yaml'])
     # xarm_params = os.path.join(get_package_share_directory('xarm_api'), 'config', 'xarm_params.yaml')
     
     xarm_driver_node = Node(
-        namespace=hw_ns,
+        namespace=ns,
         package='xarm_api',
         name='xarm_driver',
         executable='xarm_driver_node',
