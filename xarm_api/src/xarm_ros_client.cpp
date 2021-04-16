@@ -9,7 +9,9 @@
 #include "xarm_ros_client.h"
 
 #define SERVICE_CALL_FAILED 999
-
+#define ROS_INFO(...) RCLCPP_INFO(rclcpp::get_logger("xarm_ros_client"), __VA_ARGS__)
+#define ROS_WARN(...) RCLCPP_WARN(rclcpp::get_logger("xarm_ros_client"), __VA_ARGS__)
+#define ROS_ERROR(...) RCLCPP_ERROR(rclcpp::get_logger("xarm_ros_client"), __VA_ARGS__)
 
 namespace xarm_api{
 
@@ -60,13 +62,13 @@ void XArmROSClient::init(rclcpp::Node::SharedPtr& node)
     set_max_jacc_client_ = node->create_client<xarm_msgs::srv::SetFloat32>("set_max_acc_joint");
     set_max_lacc_client_ = node->create_client<xarm_msgs::srv::SetFloat32>("set_max_acc_line");
 
-    while (!motion_ctrl_client_->wait_for_service(std::chrono::seconds(2))) {
-        if (!rclcpp::ok()) {
-            ROS_ERROR("Interrupted while waiting for the service. Exiting.");
-            exit(1);
-        }
-        ROS_INFO("service not available, waiting again...");
-    }
+    // while (!motion_ctrl_client_->wait_for_service(std::chrono::seconds(2))) {
+    //     if (!rclcpp::ok()) {
+    //         ROS_ERROR("Interrupted while waiting for the service. Exiting.");
+    //         exit(1);
+    //     }
+    //     ROS_INFO("service not available, waiting again...");
+    // }
 
     set_axis_req_ = std::make_shared<xarm_msgs::srv::SetAxis::Request>();
     set_int16_req_ = std::make_shared<xarm_msgs::srv::SetInt16::Request>();
@@ -88,6 +90,17 @@ void XArmROSClient::init(rclcpp::Node::SharedPtr& node)
 template<typename ServiceT, typename SharedRequest = typename ServiceT::Request::SharedPtr>
 int XArmROSClient::_call_request(std::shared_ptr<ServiceT> client, SharedRequest req)
 {
+    bool is_try_again = false;
+    while (!client->wait_for_service(std::chrono::seconds(1))) {
+        if (!rclcpp::ok()) {
+            ROS_ERROR("Interrupted while waiting for the service. Exiting.");
+            exit(1);
+        }
+        if (!is_try_again) {
+            is_try_again = true;
+            ROS_WARN("service %s not available, waiting ...", client->get_service_name());
+        }
+    }
     auto result_future = client->async_send_request(req);
     if (rclcpp::spin_until_future_complete(node_, result_future) != rclcpp::FutureReturnCode::SUCCESS)
     {

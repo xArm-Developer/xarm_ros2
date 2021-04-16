@@ -13,10 +13,6 @@
 #include "xarm_msgs.h"
 #include "visibility_control.h"
 
-#define ROS_INFO(...) RCLCPP_INFO(rclcpp::get_logger("xarm_ros_client"), __VA_ARGS__)
-#define ROS_WARN(...) RCLCPP_WARN(rclcpp::get_logger("xarm_ros_client"), __VA_ARGS__)
-#define ROS_ERROR(...) RCLCPP_ERROR(rclcpp::get_logger("xarm_ros_client"), __VA_ARGS__)
-
 namespace xarm_api
 {
 

@@ -94,6 +94,11 @@ ament_export_libraries(xarm_ros_client)
 ament_export_include_directories(include)
 
 install(
+  DIRECTORY include/
+  DESTINATION include
+)
+
+install(
   TARGETS xarm_ros_client
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib

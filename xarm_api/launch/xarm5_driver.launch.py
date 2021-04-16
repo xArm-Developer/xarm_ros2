@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# Software License Agreement (BSD License)
+#
+# Copyright (c) 2021, UFACTORY, Inc.
+# All rights reserved.
+#
+# Author: Vinman <vinman.wen@ufactory.cc> <vinman.cub@gmail.com>
+
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
