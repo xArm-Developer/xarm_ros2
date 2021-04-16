@@ -21,6 +21,7 @@ def generate_launch_description():
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     dof = LaunchConfiguration('dof', default=7)
+    controller_params = LaunchConfiguration('controller_params', default=PathJoinSubstitution([FindPackageShare('xarm_controller'), 'config', 'xarm7_controllers.yaml']))
 
     robot_description_content = Command(
         [
@@ -76,7 +77,6 @@ def generate_launch_description():
     )
     
     # ros2 control node
-    controller_params = PathJoinSubstitution([FindPackageShare('xarm_controller'), 'config', 'xarm6_controllers.yaml'])
     xarm_control_node = Node(
         package="controller_manager",
         executable="ros2_control_node",

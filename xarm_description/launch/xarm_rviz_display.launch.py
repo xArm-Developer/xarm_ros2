@@ -23,9 +23,9 @@ def generate_launch_description():
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     dof = LaunchConfiguration('dof', default=7)
     
-    # xarm device load launch
-    xarm_load_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/xarm_device_load.launch.py']),
+    # xarm device launch
+    xarm_device_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/xarm_device.launch.py']),
         launch_arguments={
             'prefix': prefix,
             'ns': ns,
@@ -38,14 +38,9 @@ def generate_launch_description():
         }.items(),
     )
 
-    # rviz node
-    rviz2_params = PathJoinSubstitution([FindPackageShare('xarm_description'), 'rviz', 'display.rviz'])
-    rviz2_node = Node(
-        package="rviz2",
-        executable="rviz2",
-        name='rviz2',
-        output='screen',
-        arguments=['-d', rviz2_params],
+    # rviz2 display launch
+    rviz2_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/rviz_display.launch.py']),
     )
     
-    return LaunchDescription([xarm_load_launch, rviz2_node])
+    return LaunchDescription([xarm_device_launch, rviz2_launch])

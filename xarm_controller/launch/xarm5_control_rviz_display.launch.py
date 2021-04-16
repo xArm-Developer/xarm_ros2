@@ -9,7 +9,8 @@
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, ThisLaunchFileDir
+from launch.substitutions import LaunchConfiguration, ThisLaunchFileDir, PathJoinSubstitution
+from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
     prefix = LaunchConfiguration('prefix', default='')
@@ -20,8 +21,10 @@ def generate_launch_description():
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     
+    # xarm control launch
+    controller_params = PathJoinSubstitution([FindPackageShare('xarm_controller'), 'config', 'xarm5_controllers.yaml'])
     xarm_control_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/xarm_control_rviz_display.launch.py']),
+        PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/xarm_control.launch.py']),
         launch_arguments={
             'prefix': prefix,
             'ns': ns,
@@ -31,7 +34,13 @@ def generate_launch_description():
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': '5',
+            'controller_params': controller_params,
         }.items(),
     )
 
-    return LaunchDescription([xarm_control_launch])
+    # rviz2 display launch
+    rviz2_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_description'), 'launch', 'rviz_display.launch.py'])),
+    )
+
+    return LaunchDescription([xarm_control_launch, rviz2_launch])
