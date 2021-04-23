@@ -42,7 +42,7 @@ def generate_launch_description():
     ns = LaunchConfiguration('ns', default='xarm')
 
     xarm_driver_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/xarm_driver.launch.py']),
+        PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/_xarm_driver.launch.py']),
         launch_arguments={
             'robot_ip': robot_ip,
             'report_type': report_type,

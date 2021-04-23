@@ -8,7 +8,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/joint_state.hpp>
-#include "xarm_msgs.h"
+#include "xarm_api/xarm_msgs.h"
 
 
 void exit_sig_handler(int signum)

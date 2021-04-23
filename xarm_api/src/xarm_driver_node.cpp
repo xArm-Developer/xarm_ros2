@@ -6,7 +6,7 @@
            Vinman <vinman.cub@gmail.com>
  ============================================================================*/
 #include <signal.h>
-#include "xarm_driver.h"
+#include "xarm_api/xarm_driver.h"
 
 
 void exit_sig_handler(int signum)

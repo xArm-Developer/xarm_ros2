@@ -6,7 +6,7 @@
            Vinman <vinman.cub@gmail.com>
  ============================================================================*/
 
-#include "xarm_ros_client.h"
+#include "xarm_api/xarm_ros_client.h"
 
 #define SERVICE_CALL_FAILED 999
 #define ROS_INFO(...) RCLCPP_INFO(rclcpp::get_logger("xarm_ros_client"), __VA_ARGS__)
@@ -108,7 +108,7 @@ int XArmROSClient::_call_request(std::shared_ptr<ServiceT> client, SharedRequest
         return SERVICE_CALL_FAILED;
     }
     auto res = result_future.get();
-    ROS_INFO("call service %s, ret=%d, message=%s", client->get_service_name(), res->ret, res->message.c_str());
+    // ROS_INFO("call service %s, ret=%d, message=%s", client->get_service_name(), res->ret, res->message.c_str());
     return res->ret;
 }
 
@@ -122,7 +122,7 @@ int XArmROSClient::_call_request(std::shared_ptr<ServiceT> client, SharedRequest
         return SERVICE_CALL_FAILED;
     }
     res = result_future.get();
-    ROS_INFO("%s", res->message.c_str());
+    // ROS_INFO("%s", res->message.c_str());
     return res->ret;
 }
 

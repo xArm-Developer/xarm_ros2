@@ -19,7 +19,7 @@
 #include "hardware_interface/types/hardware_interface_status_values.hpp"
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include "hardware_interface/visibility_control.h"
-#include "xarm_ros_client.h"
+#include "xarm_api/xarm_ros_client.h"
 
 
 namespace xarm_control
@@ -57,13 +57,18 @@ namespace xarm_control
         hardware_interface::status status_;
     
     private:
-        int curr_state;
-		int curr_mode;
-		int curr_err;
+        int curr_state_;
+		int curr_mode_;
+		int curr_err_;
+        bool initial_write_;
+        std::vector<float> position_cmds_float_;
         std::vector<double> position_cmds_;
+        std::vector<double> velocity_cmds_;
         std::vector<double> position_states_;
+        std::vector<double> velocity_states_;
 
-        std::shared_ptr<rclcpp::Node> node_;
+        std::shared_ptr<rclcpp::Node> state_node_;
+        std::shared_ptr<rclcpp::Node> client_node_;
         xarm_api::XArmROSClient xarm_client_;
 
         rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr joint_state_sub_;

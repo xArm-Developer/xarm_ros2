@@ -23,7 +23,7 @@ def generate_launch_description():
     
     # xarm rviz launch
     xarm_rviz_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/xarm_rviz_display.launch.py']),
+        PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/_xarm_rviz_display.launch.py']),
         launch_arguments={
             'gui': gui,
             'prefix': prefix,

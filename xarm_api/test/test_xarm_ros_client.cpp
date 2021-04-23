@@ -8,7 +8,7 @@
  
 #include <signal.h>
 #include <rclcpp/rclcpp.hpp>
-#include <xarm_ros_client.h>
+#include <xarm_api/xarm_ros_client.h>
 
 
 void exit_sig_handler(int signum)

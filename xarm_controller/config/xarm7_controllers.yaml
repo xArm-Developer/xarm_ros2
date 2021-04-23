@@ -5,10 +5,10 @@ controller_manager:
     joint_state_controller:
       type: joint_state_controller/JointStateController
 
-    position_trajectory_controller:
+    xarm7_traj_controller:
       type: joint_trajectory_controller/JointTrajectoryController
 
-position_trajectory_controller:
+xarm7_traj_controller:
   ros__parameters:
     joints:
       - joint1

@@ -60,15 +60,24 @@
     ```
 
 ### 6.3 测试包(xarm_controller)
-- #### 6.3.1 运行 xarm_driver_node
+- #### 6.3.1 启动xarm_control并在rviz显示对应机械臂位置
     ```bash
     $ cd ~/dev_ws/
     $ source install/setup.bash
-    $ ros2 launch xarm_api xarm6_driver.launch.py robot_ip:=192.168.1.117
+    $ ros2 launch xarm_controller xarm6_control_rviz_display.launch.py robot_ip:=192.168.1.117
     ```
-- #### 6.3.2 启动xarm_control并在rviz显示
+
+### 6.4 测试包(xarm_moveit_config)
+- #### 6.4.1 启动moveit并在rviz显示, 控制虚拟机械臂
     ```bash
     $ cd ~/dev_ws/
     $ source install/setup.bash
-    $ ros2 launch xarm_controller xarm6_control_rviz_display.launch.py
+    $ ros2 launch xarm_moveit_config xarm6_moveit_fake.launch.py
+    ```
+
+- #### 6.4.2 启动moveit并在rviz显示, 控制真实机械臂
+    ```bash
+    $ cd ~/dev_ws/
+    $ source install/setup.bash
+    $ ros2 launch xarm_moveit_config xarm6_moveit_realmove.launch.py
     ```

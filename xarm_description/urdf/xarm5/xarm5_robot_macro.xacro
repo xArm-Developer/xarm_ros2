@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="xarm5" >
   <xacro:macro name="xarm5_robot" params="prefix:='' namespace:='xarm' limited:='false' effort_control:='false' 
-    velocity_control:='false' attach_to:='world' xyz:='0 0 0' rpy:='0 0 0' load_gazebo_plugin:='true' ">
+    velocity_control:='false' attach_to:='world' xyz:='0 0 0' rpy:='0 0 0' load_gazebo_plugin:='true' 
+    use_fake_hardware:='false' fake_sensor_commands:='false' ">
 
     <!-- include xarm5 relative macros: -->
     <xacro:include filename="$(find xarm_description)/urdf/xarm5/xarm5.ros2_control.xacro" />
@@ -29,6 +30,7 @@
     <xacro:if value="${limited}">
       <xacro:xarm5_ros2_control prefix="${prefix}"
         velocity_control="${velocity_control}"
+        use_fake_hardware="${use_fake_hardware}" fake_sensor_commands="${fake_sensor_commands}"
         joint1_lower_limit="${-pi*0.99}" joint1_upper_limit="${pi*0.99}"
         joint2_lower_limit="${-2.059}" joint2_upper_limit="${2.0944}"
         joint3_lower_limit="${-pi*0.99}" joint3_upper_limit="${0.19198}"
@@ -42,7 +44,8 @@
         joint5_lower_limit="${-pi*0.99}" joint5_upper_limit="${pi*0.99}"/>
     </xacro:if>
     <xacro:unless value="${limited}">
-      <xacro:xarm5_ros2_control prefix="${prefix}" velocity_control="${velocity_control}"/>
+      <xacro:xarm5_ros2_control prefix="${prefix}" velocity_control="${velocity_control}"
+        use_fake_hardware="${use_fake_hardware}" fake_sensor_commands="${fake_sensor_commands}" />
       <xacro:xarm5_urdf prefix="${prefix}"/>
     </xacro:unless>
 

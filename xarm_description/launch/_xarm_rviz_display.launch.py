@@ -10,6 +10,7 @@ from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, ThisLaunchFileDir, PathJoinSubstitution
+from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
@@ -20,11 +21,11 @@ def generate_launch_description():
     velocity_control = LaunchConfiguration('velocity_control', default=False)
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
+    dof = LaunchConfiguration('dof', default=7)
     
-    # xarm control launch
-    controller_params = PathJoinSubstitution([FindPackageShare('xarm_controller'), 'config', 'xarm6_controllers.yaml'])
-    xarm_control_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/xarm_control.launch.py']),
+    # xarm robot joint launch
+    xarm_robot_joint_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/_xarm_robot_joint.launch.py']),
         launch_arguments={
             'prefix': prefix,
             'ns': ns,
@@ -33,9 +34,13 @@ def generate_launch_description():
             'velocity_control': velocity_control,
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
-            'dof': '6',
-            'controller_params': controller_params,
+            'dof': dof,
         }.items(),
     )
 
-    return LaunchDescription([xarm_control_launch])
+    # rviz2 display launch
+    rviz2_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/_rviz_display.launch.py']),
+    )
+    
+    return LaunchDescription([xarm_robot_joint_launch, rviz2_launch])
