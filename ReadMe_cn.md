@@ -1,27 +1,27 @@
 # xarm_ros2测试说明（暂定调试使用）
 
 ## 获取源码包
-    ```bash
-    $ cd ~/dev_ws/src
-    $ git clone git@192.168.1.19:vinman/xarm_ros2.git --recursive
-    ```
+```bash
+$ cd ~/dev_ws/src
+$ git clone git@192.168.1.19:vinman/xarm_ros2.git --recursive
+```
 
 ## 升级源码包
-    ```bash
-    $ cd ~/dev_ws/src/xarm_ros2
-    $ git pull
-    $ git submodule sync
-    $ git submodule update --remote
-    ```
+```bash
+$ cd ~/dev_ws/src/xarm_ros2
+$ git pull
+$ git submodule sync
+$ git submodule update --remote
+```
 
-## 编译
-    ```bash
-    $ cd ~/dev_ws/
-    # 编译所有包
-    $ colcon build
-    # 编译单个包
-    # $ colcon build --packages-select xarm_api
-    ```
+## 编译 
+```bash
+$ cd ~/dev_ws/
+# 编译所有包
+$ colcon build
+# 编译单个包
+# $ colcon build --packages-select xarm_api
+```
 
 ## 6. 测试 (xarm6为例)
 ### 6.1 测试包(xarm_api)
@@ -31,12 +31,14 @@
     $ source install/setup.bash
     $ ros2 launch xarm_api xarm6_driver.launch.py robot_ip:=192.168.1.117
     ```
+
 - #### 6.1.2 测试 xarm_ros_client
     ```bash
     $ cd ~/dev_ws/
     $ source install/setup.bash
     $ ros2 run xarm_api test_xarm_ros_client
     ```
+
 - #### 6.1.3 测试 xarm_velo_move 
     ```bash
     $ cd ~/dev_ws/
@@ -79,5 +81,5 @@
     ```bash
     $ cd ~/dev_ws/
     $ source install/setup.bash
-    $ ros2 launch xarm_moveit_config xarm6_moveit_realmove.launch.py
+    $ ros2 launch xarm_moveit_config xarm6_moveit_realmove.launch.py robot_ip:=192.168.1.117
     ```
