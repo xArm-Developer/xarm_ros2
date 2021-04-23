@@ -1,0 +1,12 @@
+controller_names:
+  - fake_xarm7_traj_controller
+
+fake_xarm7_traj_controller:
+  joints:
+    - joint1
+    - joint2
+    - joint3
+    - joint4
+    - joint5
+    - joint6
+    - joint7
