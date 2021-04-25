@@ -2,7 +2,7 @@
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="xarm7" >
   <xacro:macro name="xarm7_robot" params="prefix:='' namespace:='xarm' limited:='false' effort_control:='false' 
     velocity_control:='false' attach_to:='world' xyz:='0 0 0' rpy:='0 0 0' load_gazebo_plugin:='true' 
-    use_fake_hardware:='false' fake_sensor_commands:='false' ">  
+    ros2_control_plugin:='xarm_control/XArmHW' ">  
 
     <!-- xarm7 -->
     <xacro:include filename="$(find xarm_description)/urdf/xarm7/xarm7.ros2_control.xacro" />
@@ -30,7 +30,7 @@
     <xacro:if value="${limited}">
       <xacro:xarm7_ros2_control prefix="${prefix}"
         velocity_control="${velocity_control}"
-        use_fake_hardware="${use_fake_hardware}" fake_sensor_commands="${fake_sensor_commands}"
+        ros2_control_plugin="${ros2_control_plugin}"
         joint1_lower_limit="${-pi*0.99}" joint1_upper_limit="${pi*0.99}"
         joint2_lower_limit="${-2.18}" joint2_upper_limit="${2.18}"
         joint3_lower_limit="${-pi*0.99}" joint3_upper_limit="${pi*0.99}"
@@ -49,7 +49,7 @@
     </xacro:if>
     <xacro:unless value="${limited}">
       <xacro:xarm7_ros2_control prefix="${prefix}" velocity_control="${velocity_control}" 
-        use_fake_hardware="${use_fake_hardware}" fake_sensor_commands="${fake_sensor_commands}" />
+        ros2_control_plugin="${ros2_control_plugin}"/>
       <xacro:xarm7_urdf prefix="${prefix}"/>
     </xacro:unless>
 

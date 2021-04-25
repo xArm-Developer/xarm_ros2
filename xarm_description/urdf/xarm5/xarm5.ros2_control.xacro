@@ -2,21 +2,15 @@
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
   <xacro:macro name="xarm5_ros2_control" params="prefix
     velocity_control:='false'
-    use_fake_hardware:='false' fake_sensor_commands:='false'
+    ros2_control_plugin:='xarm_control/XArmHW'
     joint1_lower_limit:=${-2.0*pi}  joint1_upper_limit:=${2.0*pi}
     joint2_lower_limit:=${-2.059}  joint2_upper_limit:=${2.0944}
     joint3_lower_limit:=${-3.927}  joint3_upper_limit:=${0.19198}
     joint4_lower_limit:=${-1.69297}  joint4_upper_limit:=${pi}
     joint5_lower_limit:=${-2.0*pi}  joint5_upper_limit:=${2.0*pi}">
-    <ros2_control name="${'XArmFakeSystem' if use_fake_hardware else 'XArmHW'}" type="system">
+    <ros2_control name="XArmSystem" type="system">
       <hardware>
-        <xacro:if value="${use_fake_hardware}">
-          <plugin>fake_components/GenericSystem</plugin>
-          <param name="fake_sensor_commands">${fake_sensor_commands}</param>
-        </xacro:if>
-        <xacro:unless value="${use_fake_hardware}">
-          <plugin>xarm_control/XArmHW</plugin>
-        </xacro:unless>
+        <plugin>${ros2_control_plugin}</plugin>
       </hardware>
       <joint name="${prefix}joint1">
         <command_interface name="position">

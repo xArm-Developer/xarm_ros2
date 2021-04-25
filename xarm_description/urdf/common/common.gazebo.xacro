@@ -4,12 +4,10 @@
   <xacro:macro name="gazebo_ros_control_plugin" params="namespace">
 
     <gazebo>
-      <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
         <robotNamespace>/${namespace}</robotNamespace>
-        <!-- <controlPeriod>0.0001</controlPeriod> -->
-        <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
-		    <legacyModeNS>true</legacyModeNS>
-        <!-- <preserveWorldVelocity>true</preserveWorldVelocity> -->
+        <robotSimType>gazebo_ros2_control/GazeboSystem</robotSimType>
+        <legacyModeNS>true</legacyModeNS>
       </plugin>
     </gazebo>
 

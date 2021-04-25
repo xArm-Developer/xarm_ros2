@@ -26,8 +26,7 @@ def generate_launch_description():
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     dof = LaunchConfiguration('dof', default=7)
-    use_fake_hardware = LaunchConfiguration('use_fake_hardware', default=False)
-    fake_sensor_commands = LaunchConfiguration('fake_sensor_commands', default=False)
+    ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='xarm_control/XArmHW')
     joint_states_remapping = LaunchConfiguration('joint_states_remapping', default=PathJoinSubstitution(['/', ns, 'joint_states']))
     controller_params = LaunchConfiguration('controller_params', default=PathJoinSubstitution([FindPackageShare('xarm_controller'), 'config', 'xarm7_controllers.yaml']))
 
@@ -54,8 +53,7 @@ def generate_launch_description():
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': dof,
-            'use_fake_hardware': use_fake_hardware,
-            'fake_sensor_commands': fake_sensor_commands,
+            'ros2_control_plugin': ros2_control_plugin,
             'joint_states_remapping': joint_states_remapping,
         }.items(),
     )
@@ -72,8 +70,7 @@ def generate_launch_description():
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': dof,
-            'use_fake_hardware': use_fake_hardware,
-            'fake_sensor_commands': fake_sensor_commands,
+            'ros2_control_plugin': ros2_control_plugin,
             'controller_params': controller_params,
         }.items(),
     )

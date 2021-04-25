@@ -19,8 +19,7 @@ def get_xarm_robot_description(
     add_gripper,
     add_vacuum_gripper,
     dof,
-    use_fake_hardware,
-    fake_sensor_commands):
+    ros2_control_plugin):
     
     # robot_description
     robot_description_content = Command(
@@ -53,12 +52,9 @@ def get_xarm_robot_description(
             "dof:=",
             dof,
             " ",
-            "use_fake_hardware:=",
-            use_fake_hardware,
+            "ros2_control_plugin:=",
+            ros2_control_plugin,
             " ",
-            "fake_sensor_commands:=",
-            fake_sensor_commands,
-            " "
         ]
     )
     return {"robot_description": robot_description_content}

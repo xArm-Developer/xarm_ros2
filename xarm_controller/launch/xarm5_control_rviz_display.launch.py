@@ -23,8 +23,7 @@ def generate_launch_description():
     velocity_control = LaunchConfiguration('velocity_control', default=False)
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
-    use_fake_hardware = LaunchConfiguration('use_fake_hardware', default=False)
-    fake_sensor_commands = LaunchConfiguration('fake_sensor_commands', default=False)
+    ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='xarm_control/XArmHW')
     
     # xarm control launch
     controller_params = PathJoinSubstitution([FindPackageShare('xarm_controller'), 'config', 'xarm5_controllers.yaml'])
@@ -41,8 +40,7 @@ def generate_launch_description():
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': '5',
-            'use_fake_hardware': use_fake_hardware,
-            'fake_sensor_commands': fake_sensor_commands,
+            'ros2_control_plugin': ros2_control_plugin,
             'controller_params': controller_params,
         }.items(),
     )

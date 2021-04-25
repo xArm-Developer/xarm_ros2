@@ -30,8 +30,7 @@ def generate_launch_description():
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     dof = LaunchConfiguration('dof', default=7)
-    use_fake_hardware = LaunchConfiguration('use_fake_hardware', default=False)
-    fake_sensor_commands = LaunchConfiguration('fake_sensor_commands', default=False)
+    ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='xarm_control/XArmHW')
     controller_params = LaunchConfiguration('controller_params', default=PathJoinSubstitution([FindPackageShare('xarm_controller'), 'config', 'xarm7_controllers.yaml']))
 
     # robot_description
@@ -39,7 +38,7 @@ def generate_launch_description():
         prefix, ns, limited, 
         effort_control, velocity_control, 
         add_gripper, add_vacuum_gripper, 
-        dof, use_fake_hardware, fake_sensor_commands
+        dof, ros2_control_plugin
     )
     
     # ros2 control node

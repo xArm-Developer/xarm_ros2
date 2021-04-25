@@ -51,7 +51,7 @@ def get_xarm_moveit_common_launch_entities(
     prefix, ns, limited, 
     effort_control, velocity_control, 
     add_gripper, add_vacuum_gripper, dof,
-    use_fake_hardware, fake_sensor_commands,
+    ros2_control_plugin,
     xarm_type='xarm7',
     controllers_name='fake_controllers',
     moveit_controller_manager_key='moveit_fake_controller_manager', 
@@ -62,7 +62,7 @@ def get_xarm_moveit_common_launch_entities(
         prefix, ns, limited, 
         effort_control, velocity_control, 
         add_gripper, add_vacuum_gripper, 
-        dof, use_fake_hardware, fake_sensor_commands
+        dof, ros2_control_plugin
     )
 
     moveit_config_package_name = 'xarm_moveit_config'
@@ -168,8 +168,7 @@ def get_xarm_moveit_fake_launch_description(
     add_gripper, add_vacuum_gripper, 
     dof='7', xarm_type='xarm7'):
 
-    use_fake_hardware = 'true'
-    fake_sensor_commands = 'false'
+    ros2_control_plugin = 'fake_components/GenericSystem'
     controllers_name = 'fake_controllers'
     moveit_controller_manager_key = 'moveit_fake_controller_manager'
     moveit_controller_manager_value = 'moveit_fake_controller_manager/MoveItFakeControllerManager'
@@ -186,15 +185,14 @@ def get_xarm_moveit_fake_launch_description(
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': dof,
-            'use_fake_hardware': use_fake_hardware,
-            'fake_sensor_commands': fake_sensor_commands,
+            'ros2_control_plugin': ros2_control_plugin,
             'joint_states_remapping': '/joint_states',
         }.items(),
     )
 
     entities = get_xarm_moveit_common_launch_entities(
         prefix, ns, limited, effort_control, velocity_control, add_gripper, add_vacuum_gripper, dof,
-        use_fake_hardware, fake_sensor_commands,
+        ros2_control_plugin,
         xarm_type=xarm_type,
         controllers_name=controllers_name,
         moveit_controller_manager_key=moveit_controller_manager_key, 
@@ -222,8 +220,7 @@ def get_xarm_moveit_realmove_launch_description(
     add_gripper, add_vacuum_gripper, 
     dof='7', xarm_type='xarm7'):
 
-    use_fake_hardware = 'false'
-    fake_sensor_commands = 'false'
+    ros2_control_plugin = 'xarm_control/XArmHW'
     controllers_name = 'controllers'
     moveit_controller_manager_key = 'moveit_simple_controller_manager'
     moveit_controller_manager_value = 'moveit_simple_controller_manager/MoveItSimpleControllerManager'
@@ -251,15 +248,14 @@ def get_xarm_moveit_realmove_launch_description(
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': dof,
-            'use_fake_hardware': use_fake_hardware,
-            'fake_sensor_commands': fake_sensor_commands,
+            'ros2_control_plugin': ros2_control_plugin,
             'joint_states_remapping': '/joint_states',
         }.items(),
     )
 
     entities = get_xarm_moveit_common_launch_entities(
         prefix, ns, limited, effort_control, velocity_control, add_gripper, add_vacuum_gripper, dof,
-        use_fake_hardware, fake_sensor_commands,
+        ros2_control_plugin,
         xarm_type=xarm_type,
         controllers_name=controllers_name,
         moveit_controller_manager_key=moveit_controller_manager_key, 
@@ -300,8 +296,7 @@ def get_xarm_moveit_realmove_launch_description(
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': dof,
-            'use_fake_hardware': use_fake_hardware,
-            'fake_sensor_commands': fake_sensor_commands,
+            'ros2_control_plugin': ros2_control_plugin,
             'controller_params': controller_params,
         }.items(),
     )

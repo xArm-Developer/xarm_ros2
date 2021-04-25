@@ -52,31 +52,35 @@ namespace xarm_control
         velocity_cmds_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
         position_cmds_float_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
 
-        // for (const hardware_interface::ComponentInfo & joint : info_.joints) {
-        //     if (joint.command_interfaces.size() != 1) {
-        //         ROS_ERROR("Joint '%s' has %d command interfaces found. 1 expected.", 
-        //             joint.name.c_str(), joint.command_interfaces.size());
-        //         return hardware_interface::return_type::ERROR;
-        //     }
+        for (const hardware_interface::ComponentInfo & joint : info_.joints) {
+            bool has_pos_cmd_interface = false;
+            for (auto i = 0u; i < joint.command_interfaces.size(); ++i) {
+                if (joint.command_interfaces[i].name == hardware_interface::HW_IF_POSITION) {
+                    has_pos_cmd_interface = true;
+                    break;
+                }
+            }
+            if (!has_pos_cmd_interface) {
+                ROS_ERROR("Joint '%s' has %d command interfaces found, but not found %s command interface",
+                    joint.name.c_str(), joint.command_interfaces.size(), hardware_interface::HW_IF_POSITION
+                );
+                return hardware_interface::return_type::ERROR;
+            }
 
-        //     if (joint.command_interfaces[0].name != hardware_interface::HW_IF_POSITION) {
-        //         ROS_ERROR("Joint '%s' have %s command interfaces found. '%s' expected.", 
-        //             joint.name.c_str(), joint.command_interfaces[0].name.c_str(), hardware_interface::HW_IF_POSITION);
-        //         return hardware_interface::return_type::ERROR;
-        //     }
-
-        //     if (joint.state_interfaces.size() != 1) {
-        //         ROS_ERROR("Joint '%s' has %d state interface. 1 expected.",
-        //             joint.name.c_str(), joint.state_interfaces.size());
-        //         return hardware_interface::return_type::ERROR;
-        //     }
-
-        //     if (joint.state_interfaces[0].name != hardware_interface::HW_IF_POSITION) {
-        //         ROS_ERROR("Joint '%s' have %s state interface. '%s' expected.",
-        //             joint.name.c_str(), joint.state_interfaces[0].name.c_str(), hardware_interface::HW_IF_POSITION);
-        //         return hardware_interface::return_type::ERROR;
-        //     }
-        // }
+            bool has_pos_state_interface = false;
+            for (auto i = 0u; i < joint.state_interfaces.size(); ++i) {
+                if (joint.state_interfaces[i].name == hardware_interface::HW_IF_POSITION) {
+                    has_pos_state_interface = true;
+                    break;
+                }
+            }
+            if (!has_pos_state_interface) {
+                ROS_ERROR("Joint '%s' has %d state interfaces found, but not found %s state interface",
+                    joint.name.c_str(), joint.state_interfaces.size(), hardware_interface::HW_IF_POSITION
+                );
+                return hardware_interface::return_type::ERROR;
+            }
+        }
 
         ROS_INFO("System Sucessfully configured!");
         status_ = hardware_interface::status::CONFIGURED;
