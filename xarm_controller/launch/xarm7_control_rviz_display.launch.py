@@ -17,7 +17,7 @@ def generate_launch_description():
     report_type = LaunchConfiguration('report_type', default='normal')
     
     prefix = LaunchConfiguration('prefix', default='')
-    ns = LaunchConfiguration('ns', default='xarm')
+    hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     limited = LaunchConfiguration('limited', default=False)
     effort_control = LaunchConfiguration('effort_control', default=False)
     velocity_control = LaunchConfiguration('velocity_control', default=False)
@@ -32,7 +32,7 @@ def generate_launch_description():
             'robot_ip': robot_ip,
             'report_type': report_type,
             'prefix': prefix,
-            'ns': ns,
+            'hw_ns': hw_ns,
             'limited': limited,
             'effort_control': effort_control,
             'velocity_control': velocity_control,

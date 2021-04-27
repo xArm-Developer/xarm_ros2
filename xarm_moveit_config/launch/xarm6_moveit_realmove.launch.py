@@ -17,6 +17,7 @@ from launch.substitutions import LaunchConfiguration, ThisLaunchFileDir, PathJoi
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node
 from launch.actions import ExecuteProcess
+from ros2launch.api.api import parse_launch_arguments
 
 
 package_path = get_package_share_directory('xarm_moveit_config')
@@ -29,7 +30,7 @@ def generate_launch_description():
     report_type = LaunchConfiguration('report_type', default='normal')
 
     prefix = LaunchConfiguration('prefix', default='')
-    ns = LaunchConfiguration('ns', default='xarm')
+    hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     limited = LaunchConfiguration('limited', default=False)
     effort_control = LaunchConfiguration('effort_control', default=False)
     velocity_control = LaunchConfiguration('velocity_control', default=False)
@@ -40,6 +41,6 @@ def generate_launch_description():
 
     return get_xarm_moveit_realmove_launch_description(
         robot_ip, report_type,
-        prefix, ns, limited, effort_control, velocity_control, add_gripper, add_vacuum_gripper,
+        prefix, hw_ns, limited, effort_control, velocity_control, add_gripper, add_vacuum_gripper,
         dof=str(dof), xarm_type='xarm{}'.format(dof)
     )

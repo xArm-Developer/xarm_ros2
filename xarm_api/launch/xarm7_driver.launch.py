@@ -30,7 +30,7 @@ def generate_launch_description():
     )
     declared_arguments.append(
         DeclareLaunchArgument(
-            'ns',
+            'hw_ns',
             default_value='xarm',
             description='The namespace of xarm_driver, default is xarm.',
         )
@@ -39,7 +39,7 @@ def generate_launch_description():
     # Initialize Arguments
     robot_ip = LaunchConfiguration('robot_ip')
     report_type = LaunchConfiguration('report_type', default='normal')
-    ns = LaunchConfiguration('ns', default='xarm')
+    hw_ns = LaunchConfiguration('hw_ns', default='xarm')
 
     xarm_driver_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/_xarm_driver.launch.py']),
@@ -47,7 +47,7 @@ def generate_launch_description():
             'robot_ip': robot_ip,
             'report_type': report_type,
             'dof': '7',
-            'ns': ns,
+            'hw_ns': hw_ns,
         }.items(),
     )
     return LaunchDescription(declared_arguments + [xarm_driver_launch])

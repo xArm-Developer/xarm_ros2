@@ -23,7 +23,7 @@ from xarm_description_lib import get_xarm_robot_description
 
 def generate_launch_description():
     prefix = LaunchConfiguration('prefix', default='')
-    ns = LaunchConfiguration('ns', default='xarm')
+    hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     limited = LaunchConfiguration('limited', default=False)
     effort_control = LaunchConfiguration('effort_control', default=False)
     velocity_control = LaunchConfiguration('velocity_control', default=False)
@@ -31,11 +31,11 @@ def generate_launch_description():
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     dof = LaunchConfiguration('dof', default=7)
     ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='xarm_control/XArmHW')
-    joint_states_remapping = LaunchConfiguration('joint_states_remapping', default='/joint_states')
+    joint_states_remapping = LaunchConfiguration('joint_states_remapping', default='joint_states')
 
     # robot_description
     robot_description = get_xarm_robot_description(
-        prefix, ns, limited, 
+        prefix, hw_ns, limited, 
         effort_control, velocity_control, 
         add_gripper, add_vacuum_gripper, 
         dof, ros2_control_plugin
@@ -48,7 +48,7 @@ def generate_launch_description():
         output="screen",
         parameters=[robot_description],
         remappings=[
-            ('/joint_states', joint_states_remapping)
+            ('joint_states', joint_states_remapping)
         ]
     )
 

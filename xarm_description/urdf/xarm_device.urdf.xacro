@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="xarm">
   <xacro:arg name="prefix" default=""/>
-  <xacro:arg name="ros_namespace" default="xarm"/>
+  <xacro:arg name="hw_ns" default="xarm"/>
   <xacro:arg name="limited" default="false"/>
   <xacro:arg name="effort_control" default="false"/>
   <xacro:arg name="velocity_control" default="false"/>
@@ -12,7 +12,7 @@
 
   <!-- load xarm device -->
   <xacro:include filename="$(find xarm_description)/urdf/xarm_device_macro.xacro" />
-  <xacro:xarm_device prefix="$(arg prefix)" namespace="$(arg ros_namespace)" limited="$(arg limited)" 
+  <xacro:xarm_device prefix="$(arg prefix)" namespace="$(arg hw_ns)" limited="$(arg limited)" 
     effort_control="$(arg effort_control)" velocity_control="$(arg velocity_control)"
     add_gripper="$(arg add_gripper)" add_vacuum_gripper="$(arg add_vacuum_gripper)" dof="$(arg dof)"
     ros2_control_plugin="$(arg ros2_control_plugin)"/>

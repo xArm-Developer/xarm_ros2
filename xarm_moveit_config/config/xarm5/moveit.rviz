@@ -121,7 +121,7 @@ Visualization Manager:
         Show Trail: false
         State Display Time: 0.05 s
         Trail Step Size: 1
-        Trajectory Topic: /display_planned_path
+        Trajectory Topic: display_planned_path
       Planning Metrics:
         Payload: 1
         Show Joint Torques: false
@@ -141,7 +141,7 @@ Visualization Manager:
         Show Workspace: false
         Start State Alpha: 1
         Start State Color: 0; 255; 0
-      Planning Scene Topic: /monitored_planning_scene
+      Planning Scene Topic: monitored_planning_scene
       Robot Description: robot_description
       Scene Geometry:
         Scene Alpha: 0.8999999761581421
@@ -211,7 +211,7 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /robot_description
+        Value: robot_description
       Enabled: true
       Links:
         All Links Enabled: true

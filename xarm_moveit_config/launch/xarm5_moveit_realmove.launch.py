@@ -29,7 +29,7 @@ def generate_launch_description():
     report_type = LaunchConfiguration('report_type', default='normal')
 
     prefix = LaunchConfiguration('prefix', default='')
-    ns = LaunchConfiguration('ns', default='xarm')
+    hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     limited = LaunchConfiguration('limited', default=False)
     effort_control = LaunchConfiguration('effort_control', default=False)
     velocity_control = LaunchConfiguration('velocity_control', default=False)
@@ -40,6 +40,6 @@ def generate_launch_description():
 
     return get_xarm_moveit_realmove_launch_description(
         robot_ip, report_type,
-        prefix, ns, limited, effort_control, velocity_control, add_gripper, add_vacuum_gripper,
+        prefix, hw_ns, limited, effort_control, velocity_control, add_gripper, add_vacuum_gripper,
         dof=str(dof), xarm_type='xarm{}'.format(dof)
     )

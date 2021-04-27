@@ -23,7 +23,7 @@ from xarm_description_lib import get_xarm_robot_description
 
 def generate_launch_description():
     prefix = LaunchConfiguration('prefix', default='')
-    ns = LaunchConfiguration('ns', default='xarm')
+    hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     limited = LaunchConfiguration('limited', default=False)
     effort_control = LaunchConfiguration('effort_control', default=False)
     velocity_control = LaunchConfiguration('velocity_control', default=False)
@@ -35,7 +35,7 @@ def generate_launch_description():
 
     # robot_description
     robot_description = get_xarm_robot_description(
-        prefix, ns, limited, 
+        prefix, hw_ns, limited, 
         effort_control, velocity_control, 
         add_gripper, add_vacuum_gripper, 
         dof, ros2_control_plugin
@@ -43,9 +43,29 @@ def generate_launch_description():
     
     # ros2 control node
     ros2_control_node = Node(
+        # namespace='/',
         package="controller_manager",
         executable="ros2_control_node",
-        parameters=[robot_description, controller_params],
+        # name='controller_manager',
+        parameters=[
+            robot_description,
+            controller_params,
+            # {
+            #     'update_rate': 48,  # Hz
+            #     'joint_state_controller.type': 'joint_state_controller/JointStateController',
+            #     'xarm6_traj_controller.type': 'joint_trajectory_controller/JointTrajectoryController',
+            #     'xarm6_traj_controller.joints': ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6'],
+            #     'xarm6_traj_controller.interface_name': 'position',
+            #     # 'joint_state_controller': {
+            #     #     'type': 'joint_state_controller/JointStateController'
+            #     # },
+            #     # 'xarm6_traj_controller': {
+            #     #     'type': 'joint_trajectory_controller/JointTrajectoryController',
+            #     #     'joints': ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6'],
+            #     #     'interface_name': 'position'
+            #     # }
+            # }
+        ],
         output='screen',
     )
 

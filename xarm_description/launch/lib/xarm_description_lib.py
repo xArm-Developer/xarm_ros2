@@ -12,7 +12,7 @@ from launch_ros.substitutions import FindPackageShare
 
 def get_xarm_robot_description(
     prefix,
-    ns,
+    hw_ns,
     limited, 
     effort_control,
     velocity_control, 
@@ -31,8 +31,8 @@ def get_xarm_robot_description(
             "prefix:=",
             prefix,
             " ",
-            "ros_namespace:=",
-            ns,
+            "hw_ns:=",
+            hw_ns,
             " ",
             "limited:=",
             limited,

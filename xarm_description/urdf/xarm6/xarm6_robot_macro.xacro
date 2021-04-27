@@ -31,6 +31,7 @@
       <xacro:xarm6_ros2_control prefix="${prefix}"
         velocity_control="${velocity_control}"
         ros2_control_plugin="${ros2_control_plugin}"
+        hw_ns="${namespace}"
         joint1_lower_limit="${-pi*0.99}" joint1_upper_limit="${pi*0.99}"
         joint2_lower_limit="${-2.059}" joint2_upper_limit="${2.0944}"
         joint3_lower_limit="${-pi*0.99}" joint3_upper_limit="${0.19198}"
@@ -47,7 +48,8 @@
     </xacro:if>
     <xacro:unless value="${limited}">
       <xacro:xarm6_ros2_control prefix="${prefix}" velocity_control="${velocity_control}"
-        ros2_control_plugin="${ros2_control_plugin}" />
+        ros2_control_plugin="${ros2_control_plugin}"
+        hw_ns="${namespace}" />
       <xacro:xarm6_urdf prefix="${prefix}"/>
     </xacro:unless>
 

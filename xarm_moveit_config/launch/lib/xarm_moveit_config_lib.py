@@ -19,6 +19,7 @@ from launch.substitution import Substitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 from launch.actions import ExecuteProcess
+from ros2launch.api.api import parse_launch_arguments
 import xacro
 
 package_path = get_package_share_directory('xarm_description')
@@ -48,7 +49,7 @@ def load_yaml(package_name, *file_path):
 
 
 def get_xarm_moveit_common_launch_entities(
-    prefix, ns, limited, 
+    prefix, hw_ns, limited, 
     effort_control, velocity_control, 
     add_gripper, add_vacuum_gripper, dof,
     ros2_control_plugin,
@@ -59,7 +60,7 @@ def get_xarm_moveit_common_launch_entities(
 
     # robot_description
     robot_description = get_xarm_robot_description(
-        prefix, ns, limited, 
+        prefix, hw_ns, limited, 
         effort_control, velocity_control, 
         add_gripper, add_vacuum_gripper, 
         dof, ros2_control_plugin
@@ -121,7 +122,7 @@ def get_xarm_moveit_common_launch_entities(
             robot_description,
             robot_description_semantic,
             robot_description_kinematics,
-            # robot_description_planning,
+            robot_description_planning,
             ompl_planning_pipeline_config,
             trajectory_execution,
             moveit_controllers,
@@ -141,7 +142,7 @@ def get_xarm_moveit_common_launch_entities(
             robot_description,
             robot_description_semantic,
             robot_description_kinematics,
-            # robot_description_planning,
+            robot_description_planning,
             ompl_planning_pipeline_config,
         ]
     )
@@ -163,7 +164,7 @@ def get_xarm_moveit_common_launch_entities(
 
 
 def get_xarm_moveit_fake_launch_description(
-    prefix, ns, limited, 
+    prefix, hw_ns, limited, 
     effort_control, velocity_control, 
     add_gripper, add_vacuum_gripper, 
     dof='7', xarm_type='xarm7'):
@@ -178,7 +179,7 @@ def get_xarm_moveit_fake_launch_description(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_description'), 'launch', '_xarm_robot_description.launch.py'])),
         launch_arguments={
             'prefix': prefix,
-            'ns': ns,
+            'hw_ns': hw_ns,
             'limited': limited,
             'effort_control': effort_control,
             'velocity_control': velocity_control,
@@ -186,12 +187,12 @@ def get_xarm_moveit_fake_launch_description(
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': dof,
             'ros2_control_plugin': ros2_control_plugin,
-            'joint_states_remapping': '/joint_states',
+            'joint_states_remapping': 'joint_states',
         }.items(),
     )
 
     entities = get_xarm_moveit_common_launch_entities(
-        prefix, ns, limited, effort_control, velocity_control, add_gripper, add_vacuum_gripper, dof,
+        prefix, hw_ns, limited, effort_control, velocity_control, add_gripper, add_vacuum_gripper, dof,
         ros2_control_plugin,
         xarm_type=xarm_type,
         controllers_name=controllers_name,
@@ -205,7 +206,7 @@ def get_xarm_moveit_fake_launch_description(
         executable="joint_state_publisher",
         name='joint_state_publisher',
         output='screen',
-        parameters=[{"source_list": ["/fake_controller_joint_states"]}],
+        parameters=[{"source_list": ["fake_controller_joint_states"]}],
     )
     return LaunchDescription([
         robot_description_launch, 
@@ -215,7 +216,7 @@ def get_xarm_moveit_fake_launch_description(
 
 def get_xarm_moveit_realmove_launch_description(
     robot_ip, report_type,
-    prefix, ns, limited, 
+    prefix, hw_ns, limited, 
     effort_control, velocity_control, 
     add_gripper, add_vacuum_gripper, 
     dof='7', xarm_type='xarm7'):
@@ -232,7 +233,7 @@ def get_xarm_moveit_realmove_launch_description(
             'robot_ip': robot_ip,
             'report_type': report_type,
             'dof': dof,
-            'ns': ns,
+            'hw_ns': hw_ns,
         }.items(),
     )
 
@@ -241,7 +242,7 @@ def get_xarm_moveit_realmove_launch_description(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_description'), 'launch', '_xarm_robot_description.launch.py'])),
         launch_arguments={
             'prefix': prefix,
-            'ns': ns,
+            'hw_ns': hw_ns,
             'limited': limited,
             'effort_control': effort_control,
             'velocity_control': velocity_control,
@@ -249,12 +250,12 @@ def get_xarm_moveit_realmove_launch_description(
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': dof,
             'ros2_control_plugin': ros2_control_plugin,
-            'joint_states_remapping': '/joint_states',
+            'joint_states_remapping': PathJoinSubstitution([hw_ns, 'joint_states']),
         }.items(),
     )
 
     entities = get_xarm_moveit_common_launch_entities(
-        prefix, ns, limited, effort_control, velocity_control, add_gripper, add_vacuum_gripper, dof,
+        prefix, hw_ns, limited, effort_control, velocity_control, add_gripper, add_vacuum_gripper, dof,
         ros2_control_plugin,
         xarm_type=xarm_type,
         controllers_name=controllers_name,
@@ -262,24 +263,28 @@ def get_xarm_moveit_realmove_launch_description(
         moveit_controller_manager_value=moveit_controller_manager_value,
     )
 
+    
+    launch_arguments_dict = dict(parse_launch_arguments(sys.argv[4:]))
+    hw_ns_str = launch_arguments_dict.get('hw_ns', 'xarm')
+
     # joint state publisher node
     joint_state_publisher_node = Node(
         package="joint_state_publisher",
         executable="joint_state_publisher",
         name='joint_state_publisher',
         output='screen',
-        parameters=[{"source_list": ["xarm/joint_states"]}],
+        parameters=[{'source_list': ['{}/joint_states'.format(hw_ns_str)]}],
         remappings=[
-            # ('/follow_joint_trajectory', 'xarm6_traj_controller/follow_joint_trajectory'),
-            # ('/tf_static', 'xarm/tf_static'),
-            # ('xarm/source_list', '/source_list')
+            ('follow_joint_trajectory', 'xarm6_traj_controller/follow_joint_trajectory'),
+            # ('tf_static', 'xarm/tf_static'),
+            # ('xarm/source_list', 'source_list')
         ],
-        # parameters=[{"source_list": [PathJoinSubstitution([ns, 'joint_states'])]}],
+        # parameters=[{"source_list": [PathJoinSubstitution([hw_ns, 'joint_states'])]}],
         # remappings=[
-        #     # ('/follow_joint_trajectory', PathJoinSubstitution([ns, '{}_traj_controller'.format(xarm_type), 'follow_joint_trajectory'])),
+        #     # ('/follow_joint_trajectory', PathJoinSubstitution([hw_ns, '{}_traj_controller'.format(xarm_type), 'follow_joint_trajectory'])),
         #     ('/follow_joint_trajectory', 'xarm/{}_traj_controller/follow_joint_trajectory'.format(xarm_type)),
-        #     # ('/tf_static', PathJoinSubstitution([ns, 'tf_static'])),
-        #     # (PathJoinSubstitution([ns, 'source_list']), '/source_list'),
+        #     # ('/tf_static', PathJoinSubstitution([hw_ns, 'tf_static'])),
+        #     # (PathJoinSubstitution([hw_ns, 'source_list']), '/source_list'),
         # ]
     )
 
@@ -289,7 +294,7 @@ def get_xarm_moveit_realmove_launch_description(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_controller'), 'launch', '_ros2_control.launch.py'])),
         launch_arguments={
             'prefix': prefix,
-            'ns': ns,
+            'hw_ns': hw_ns,
             'limited': limited,
             'effort_control': effort_control,
             'velocity_control': velocity_control,

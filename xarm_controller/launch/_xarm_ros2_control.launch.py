@@ -19,7 +19,7 @@ def generate_launch_description():
     report_type = LaunchConfiguration('report_type', default='normal')
 
     prefix = LaunchConfiguration('prefix', default='')
-    ns = LaunchConfiguration('ns', default='xarm')
+    hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     limited = LaunchConfiguration('limited', default=False)
     effort_control = LaunchConfiguration('effort_control', default=False)
     velocity_control = LaunchConfiguration('velocity_control', default=False)
@@ -27,7 +27,7 @@ def generate_launch_description():
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     dof = LaunchConfiguration('dof', default=7)
     ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='xarm_control/XArmHW')
-    joint_states_remapping = LaunchConfiguration('joint_states_remapping', default=PathJoinSubstitution(['/', ns, 'joint_states']))
+    joint_states_remapping = LaunchConfiguration('joint_states_remapping', default=PathJoinSubstitution([hw_ns, 'joint_states']))
     controller_params = LaunchConfiguration('controller_params', default=PathJoinSubstitution([FindPackageShare('xarm_controller'), 'config', 'xarm7_controllers.yaml']))
 
     # xarm driver launch
@@ -37,7 +37,7 @@ def generate_launch_description():
             'robot_ip': robot_ip,
             'report_type': report_type,
             'dof': dof,
-            'ns': ns,
+            'hw_ns': hw_ns,
         }.items(),
     )
 
@@ -46,7 +46,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_description'), 'launch', '_xarm_robot_joint.launch.py'])),
         launch_arguments={
             'prefix': prefix,
-            'ns': ns,
+            'hw_ns': hw_ns,
             'limited': limited,
             'effort_control': effort_control,
             'velocity_control': velocity_control,
@@ -63,7 +63,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_controller'), 'launch', '_ros2_control.launch.py'])),
         launch_arguments={
             'prefix': prefix,
-            'ns': ns,
+            'hw_ns': hw_ns,
             'limited': limited,
             'effort_control': effort_control,
             'velocity_control': velocity_control,
@@ -75,4 +75,8 @@ def generate_launch_description():
         }.items(),
     )
 
-    return LaunchDescription([xarm_driver_launch, xarm_robot_joint_launch, ros2_launch])
+    return LaunchDescription([
+        xarm_driver_launch,
+        xarm_robot_joint_launch,
+        ros2_launch
+    ])

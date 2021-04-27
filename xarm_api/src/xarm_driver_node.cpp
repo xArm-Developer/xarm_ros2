@@ -45,7 +45,8 @@ class XArmDriverRunner
         {
             // ROS_INFO("[2] state: %d, error_code: %d", report_data_ptr->state, report_data_ptr->err);
             last_now_ = now_;
-            now_ = node_->now();
+            // now_ = node_->now();
+            now_ = node_->get_clock()->now();
             double elapsed = (now_.nanoseconds() - last_now_.nanoseconds()) / 1e9;
             joint_state_msg_.header.stamp = now_;
             joint_state_msg_.header.frame_id = "joint-state data";

@@ -16,19 +16,26 @@ namespace xarm_control
 {
     void XArmHW::_joint_states_callback(const sensor_msgs::msg::JointState::SharedPtr states)
     {    
-        // std::string pos_str = "[ ";
-        // for (int i = 0; i < states->position.size(); i++) { 
-        //     pos_str += std::to_string(states->position[i]); 
-        //     pos_str += " ";
-        // }
-        // pos_str += "]";
-        // ROS_INFO("state_positon: %s", pos_str.c_str());
+        std::string pos_str = "[ ";
+        std::string vel_str = "[ ";
+        for (int i = 0; i < states->position.size(); i++) { 
+            pos_str += std::to_string(states->position[i]); 
+            pos_str += " ";
+            vel_str += std::to_string(states->velocity[i]); 
+            vel_str += " ";
+        }
+        pos_str += "]";
+        vel_str += "]";
+        // ROS_INFO("state_position: %s", pos_str.c_str());
+        // ROS_INFO("state_velocity: %s", vel_str.c_str());
+
         for (uint i = 0; i < position_states_.size(); i++) {
             position_states_[i] = states->position[i];
         }
-        // for (uint i = 0; i < velocity_states_.size(); i++) {
-        //     velocity_states_[i] = states->velocity[i];
-        // }
+        for (uint i = 0; i < velocity_states_.size(); i++) {
+            velocity_states_[i] = states->velocity[i];
+            // velocity_states_[i] = 0.000001;
+        }
         if (initial_write_) {
             initial_write_ = false;
         }
@@ -115,7 +122,15 @@ namespace xarm_control
 
     hardware_interface::return_type XArmHW::start()
     {
-        state_node_ = rclcpp::Node::make_shared("xarm_hw", "xarm");
+        info_.hardware_parameters.find("hw_ns");
+        std::string hw_ns = "xarm";
+        auto it = info_.hardware_parameters.find("hw_ns");
+        if (it != info_.hardware_parameters.end()) {
+            hw_ns = it->second;
+        }
+        ROS_INFO("HW_NS: %s", hw_ns.c_str());
+
+        state_node_ = rclcpp::Node::make_shared("xarm_hw", hw_ns);
         joint_state_sub_ = state_node_->create_subscription<sensor_msgs::msg::JointState>("joint_states", 100, std::bind(&XArmHW::_joint_states_callback, this, std::placeholders::_1));
         xarm_state_sub_ = state_node_->create_subscription<xarm_msgs::msg::RobotMsg>("xarm_states", 100, std::bind(&XArmHW::_xarm_states_callback, this, std::placeholders::_1));
         std::thread th([this]() -> void {
@@ -124,7 +139,7 @@ namespace xarm_control
         th.detach();
         rclcpp::sleep_for(std::chrono::seconds(1));
         
-        client_node_ = rclcpp::Node::make_shared("xarm_hw", "xarm");
+        client_node_ = rclcpp::Node::make_shared("xarm_hw", hw_ns);
         xarm_client_.init(client_node_);
         xarm_client_.motionEnable(1);
         xarm_client_.setMode(1);
