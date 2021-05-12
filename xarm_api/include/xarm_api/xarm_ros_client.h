@@ -20,7 +20,7 @@ class XARM_API_PUBLIC XArmROSClient
 {
 public:
 	XArmROSClient();
-	void init(rclcpp::Node::SharedPtr& node);
+	void init(rclcpp::Node::SharedPtr& node, std::string hw_ns = "xarm");
 	~XArmROSClient();
 
 	int motionEnable(short en);

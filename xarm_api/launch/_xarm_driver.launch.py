@@ -61,6 +61,7 @@ def generate_launch_description():
         name='xarm_driver',
         executable='xarm_driver_node',
         output='screen',
+        emulate_tty=True,
         parameters=[
             xarm_params,
             {'xarm_robot_ip': robot_ip},

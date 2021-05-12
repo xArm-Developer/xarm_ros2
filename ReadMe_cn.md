@@ -14,6 +14,12 @@ $ git submodule sync
 $ git submodule update --remote
 ```
 
+## 安装依赖
+```bash
+$ rosdep update
+$ rosdep install --from-paths . --ignore-src --rosdistro foxy -y
+```
+
 ## 编译 
 ```bash
 $ cd ~/dev_ws/

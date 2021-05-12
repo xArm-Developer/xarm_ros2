@@ -6,11 +6,19 @@
 #
 # Author: Vinman <vinman.wen@ufactory.cc> <vinman.cub@gmail.com>
 
+import os
+import sys
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, ThisLaunchFileDir, PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
+from ament_index_python import get_package_share_directory
+
+package_path = get_package_share_directory('xarm_controller')
+sys.path.append(os.path.join(package_path, 'launch', 'lib'))
+from xarm_controller_lib import get_controller_params
+
 
 def generate_launch_description():
     robot_ip = LaunchConfiguration('robot_ip')
@@ -26,6 +34,7 @@ def generate_launch_description():
     
     # xarm control launch
     controller_params = PathJoinSubstitution([FindPackageShare('xarm_controller'), 'config', 'xarm7_controllers.yaml'])
+    controller_params = get_controller_params(7)
     xarm_control_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/_xarm_ros2_control.launch.py']),
         launch_arguments={

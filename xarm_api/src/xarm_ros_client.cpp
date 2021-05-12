@@ -18,7 +18,7 @@ namespace xarm_api{
 XArmROSClient::XArmROSClient(){}
 XArmROSClient::~XArmROSClient(){}
 
-void XArmROSClient::init(rclcpp::Node::SharedPtr& node)
+void XArmROSClient::init(rclcpp::Node::SharedPtr& node, std::string hw_ns_)
 {   
     node_ = node;
     ROS_INFO("namespace: %s", node->get_namespace());
@@ -28,7 +28,8 @@ void XArmROSClient::init(rclcpp::Node::SharedPtr& node)
     //     client_ns += "/";
 
     // std::string hw_ns = "xarm/";
-    std::string hw_ns = "";
+    std::string hw_ns = hw_ns_ + "/";
+    // std::string hw_ns = "";
 
     motion_ctrl_client_ = node->create_client<xarm_msgs::srv::SetAxis>(hw_ns + "motion_ctrl");
     set_mode_client_ = node->create_client<xarm_msgs::srv::SetInt16>(hw_ns + "set_mode");

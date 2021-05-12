@@ -11,6 +11,7 @@
 
 #include <vector>
 #include <thread>
+#include <queue>
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/joint_state.hpp>
 #include "hardware_interface/hardware_info.hpp"
@@ -51,7 +52,7 @@ namespace xarm_control
         {
             return info_.name;
         }
-    
+
     protected:
         hardware_interface::HardwareInfo info_;
         hardware_interface::status status_;
@@ -62,6 +63,7 @@ namespace xarm_control
 		int curr_err_;
         bool initial_write_;
         std::vector<float> position_cmds_float_;
+        std::vector<float> prev_position_cmds_float_;
         std::vector<double> position_cmds_;
         std::vector<double> velocity_cmds_;
         std::vector<double> position_states_;
@@ -76,6 +78,7 @@ namespace xarm_control
 
         void _joint_states_callback(const sensor_msgs::msg::JointState::SharedPtr states);
         void _xarm_states_callback(const xarm_msgs::msg::RobotMsg::SharedPtr states);
+        bool _check_cmds_is_change(std::vector<float> prev, std::vector<float> cur);
     };
 }
 

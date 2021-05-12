@@ -58,6 +58,7 @@ namespace xarm_control
         position_cmds_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
         velocity_cmds_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
         position_cmds_float_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
+        prev_position_cmds_float_.resize(info_.joints.size());
 
         for (const hardware_interface::ComponentInfo & joint : info_.joints) {
             bool has_pos_cmd_interface = false;
@@ -122,7 +123,6 @@ namespace xarm_control
 
     hardware_interface::return_type XArmHW::start()
     {
-        info_.hardware_parameters.find("hw_ns");
         std::string hw_ns = "xarm";
         auto it = info_.hardware_parameters.find("hw_ns");
         if (it != info_.hardware_parameters.end()) {
@@ -130,17 +130,17 @@ namespace xarm_control
         }
         ROS_INFO("HW_NS: %s", hw_ns.c_str());
 
-        state_node_ = rclcpp::Node::make_shared("xarm_hw", hw_ns);
-        joint_state_sub_ = state_node_->create_subscription<sensor_msgs::msg::JointState>("joint_states", 100, std::bind(&XArmHW::_joint_states_callback, this, std::placeholders::_1));
-        xarm_state_sub_ = state_node_->create_subscription<xarm_msgs::msg::RobotMsg>("xarm_states", 100, std::bind(&XArmHW::_xarm_states_callback, this, std::placeholders::_1));
+        state_node_ = rclcpp::Node::make_shared("xarm_hw");
+        joint_state_sub_ = state_node_->create_subscription<sensor_msgs::msg::JointState>(hw_ns + "/joint_states", 100, std::bind(&XArmHW::_joint_states_callback, this, std::placeholders::_1));
+        xarm_state_sub_ = state_node_->create_subscription<xarm_msgs::msg::RobotMsg>(hw_ns + "/xarm_states", 100, std::bind(&XArmHW::_xarm_states_callback, this, std::placeholders::_1));
         std::thread th([this]() -> void {
             rclcpp::spin(state_node_);
         });
         th.detach();
         rclcpp::sleep_for(std::chrono::seconds(1));
         
-        client_node_ = rclcpp::Node::make_shared("xarm_hw", hw_ns);
-        xarm_client_.init(client_node_);
+        client_node_ = rclcpp::Node::make_shared("xarm_hw");
+        xarm_client_.init(client_node_, hw_ns);
         xarm_client_.motionEnable(1);
         xarm_client_.setMode(1);
         xarm_client_.setState(0);
@@ -186,6 +186,15 @@ namespace xarm_control
         return hardware_interface::return_type::OK;
     }
 
+    bool XArmHW::_check_cmds_is_change(std::vector<float> prev, std::vector<float> cur)
+    {
+        double threshold = 0.0001;
+        for (int i = 0; i < cur.size(); i++) {
+            if (std::abs(cur[i] - prev[i]) > threshold) return true;
+        }
+        return false;
+    }
+
     hardware_interface::return_type XArmHW::write()
     {
         if (initial_write_) {
@@ -202,7 +211,16 @@ namespace xarm_control
         for (int i = 0; i < position_cmds_.size(); i++) { 
             position_cmds_float_[i] = (float)position_cmds_[i];
         }
-        xarm_client_.setServoJ(position_cmds_float_);
+
+        if (_check_cmds_is_change(prev_position_cmds_float_, position_cmds_float_)) {
+            int ret = xarm_client_.setServoJ(position_cmds_float_);
+            if (ret == 0) {
+                for (int i = 0; i < prev_position_cmds_float_.size(); i++) { 
+                    prev_position_cmds_float_[i] = (float)position_cmds_float_[i];
+                }
+            }
+        }
+        
         return hardware_interface::return_type::OK;
     }
 }

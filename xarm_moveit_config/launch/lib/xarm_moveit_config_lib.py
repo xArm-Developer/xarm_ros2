@@ -26,6 +26,10 @@ package_path = get_package_share_directory('xarm_description')
 sys.path.append(os.path.join(package_path, 'launch', 'lib'))
 from xarm_description_lib import get_xarm_robot_description
 
+package_path = get_package_share_directory('xarm_controller')
+sys.path.append(os.path.join(package_path, 'launch', 'lib'))
+from xarm_controller_lib import get_controller_params
+
 
 def load_file(package_name, *file_path):
     package_path = get_package_share_directory(package_name)
@@ -262,7 +266,6 @@ def get_xarm_moveit_realmove_launch_description(
         moveit_controller_manager_key=moveit_controller_manager_key, 
         moveit_controller_manager_value=moveit_controller_manager_value,
     )
-
     
     launch_arguments_dict = dict(parse_launch_arguments(sys.argv[4:]))
     hw_ns_str = launch_arguments_dict.get('hw_ns', 'xarm')
@@ -275,7 +278,7 @@ def get_xarm_moveit_realmove_launch_description(
         output='screen',
         parameters=[{'source_list': ['{}/joint_states'.format(hw_ns_str)]}],
         remappings=[
-            ('follow_joint_trajectory', 'xarm6_traj_controller/follow_joint_trajectory'),
+            ('follow_joint_trajectory', '{}_traj_controller/follow_joint_trajectory'.format(xarm_type)),
             # ('tf_static', 'xarm/tf_static'),
             # ('xarm/source_list', 'source_list')
         ],
@@ -288,7 +291,8 @@ def get_xarm_moveit_realmove_launch_description(
         # ]
     )
 
-    controller_params = PathJoinSubstitution([FindPackageShare('xarm_controller'), 'config', '{}_controllers.yaml'.format(xarm_type)])
+    # controller_params = PathJoinSubstitution([FindPackageShare('xarm_controller'), 'config', '{}_controllers.yaml'.format(xarm_type)])
+    controller_params = get_controller_params(dof)
     # ros2 control launch
     ros2_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_controller'), 'launch', '_ros2_control.launch.py'])),
@@ -308,16 +312,30 @@ def get_xarm_moveit_realmove_launch_description(
 
     # Load controllers
     controllers = []
-    for controller in ['{}_traj_controller'.format(xarm_type)]:
-        controllers.append(ExecuteProcess(
-            cmd=["ros2 run controller_manager spawner.py {}".format(controller)],
-            shell=True,
-            output="screen",
-        ))
+    # for controller in ['{}_traj_controller'.format(xarm_type)]:
+    #     controllers.append(ExecuteProcess(
+    #         cmd=["ros2 run controller_manager spawner.py {}".format(controller)],
+    #         shell=True,
+    #         output="screen",
+    #     ))
+
+    ros_namespace = launch_arguments_dict.get('ros_namespace', '')
+    control_node = Node(
+        package="controller_manager",
+        executable="spawner.py",
+        output='screen',
+        arguments=[
+            '{}_traj_controller'.format(xarm_type),
+            '--controller-manager', '{}/controller_manager'.format(ros_namespace)
+        ],
+    )
+    
 
     return LaunchDescription([
         xarm_driver_launch,
         robot_description_launch,
         ros2_launch,
         joint_state_publisher_node,
-    ] + entities + controllers)
+    ] + entities + controllers + [
+        control_node
+    ])
