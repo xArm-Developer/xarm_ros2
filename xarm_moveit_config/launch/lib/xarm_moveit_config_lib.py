@@ -28,7 +28,7 @@ from xarm_description_lib import get_xarm_robot_description
 
 package_path = get_package_share_directory('xarm_controller')
 sys.path.append(os.path.join(package_path, 'launch', 'lib'))
-from xarm_controller_lib import get_controller_params
+from xarm_controller_lib import get_sys_param, get_controller_params
 
 
 def load_file(package_name, *file_path):
@@ -148,6 +148,10 @@ def get_xarm_moveit_common_launch_entities(
             robot_description_kinematics,
             robot_description_planning,
             ompl_planning_pipeline_config,
+        ],
+        remappings=[
+            ('/tf', 'tf'),
+            ('/tf_static', 'tf_static'),
         ]
     )
 
@@ -171,12 +175,15 @@ def get_xarm_moveit_fake_launch_description(
     prefix, hw_ns, limited, 
     effort_control, velocity_control, 
     add_gripper, add_vacuum_gripper, 
-    dof='7', xarm_type='xarm7'):
+    dof='7', xarm_type='xarm7',
+    ros_namespace_name='ros_namespace', ros_namespace_default_value=''):
 
     ros2_control_plugin = 'fake_components/GenericSystem'
     controllers_name = 'fake_controllers'
     moveit_controller_manager_key = 'moveit_fake_controller_manager'
     moveit_controller_manager_value = 'moveit_fake_controller_manager/MoveItFakeControllerManager'
+
+    ros_namespace = get_sys_param(ros_namespace_name, default=ros_namespace_default_value)
 
     # robot description launch
     robot_description_launch = IncludeLaunchDescription(
@@ -192,6 +199,7 @@ def get_xarm_moveit_fake_launch_description(
             'dof': dof,
             'ros2_control_plugin': ros2_control_plugin,
             'joint_states_remapping': 'joint_states',
+            'ros_namespace': ros_namespace,
         }.items(),
     )
 
@@ -223,12 +231,17 @@ def get_xarm_moveit_realmove_launch_description(
     prefix, hw_ns, limited, 
     effort_control, velocity_control, 
     add_gripper, add_vacuum_gripper, 
-    dof='7', xarm_type='xarm7'):
+    dof='7', xarm_type='xarm7',
+    ros_namespace_name='ros_namespace', ros_namespace_default_value=''):
 
     ros2_control_plugin = 'xarm_control/XArmHW'
     controllers_name = 'controllers'
     moveit_controller_manager_key = 'moveit_simple_controller_manager'
     moveit_controller_manager_value = 'moveit_simple_controller_manager/MoveItSimpleControllerManager'
+
+    ros_namespace = get_sys_param(ros_namespace_name, default=ros_namespace_default_value)
+    joint_states_remapping = PathJoinSubstitution(['/', ros_namespace, hw_ns, 'joint_states'])
+    controller_params = get_controller_params(dof, name=ros_namespace_name, default=ros_namespace_default_value)
 
     # xarm driver launch
     xarm_driver_launch = IncludeLaunchDescription(
@@ -238,6 +251,7 @@ def get_xarm_moveit_realmove_launch_description(
             'report_type': report_type,
             'dof': dof,
             'hw_ns': hw_ns,
+            'ros_namespace': ros_namespace,
         }.items(),
     )
 
@@ -254,7 +268,9 @@ def get_xarm_moveit_realmove_launch_description(
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': dof,
             'ros2_control_plugin': ros2_control_plugin,
-            'joint_states_remapping': PathJoinSubstitution([hw_ns, 'joint_states']),
+            # 'joint_states_remapping': PathJoinSubstitution([hw_ns, 'joint_states']),
+            'joint_states_remapping': joint_states_remapping,
+            'ros_namespace': ros_namespace,
         }.items(),
     )
 
@@ -292,7 +308,7 @@ def get_xarm_moveit_realmove_launch_description(
     )
 
     # controller_params = PathJoinSubstitution([FindPackageShare('xarm_controller'), 'config', '{}_controllers.yaml'.format(xarm_type)])
-    controller_params = get_controller_params(dof)
+    # controller_params = get_controller_params(dof)
     # ros2 control launch
     ros2_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_controller'), 'launch', '_ros2_control.launch.py'])),
@@ -307,6 +323,7 @@ def get_xarm_moveit_realmove_launch_description(
             'dof': dof,
             'ros2_control_plugin': ros2_control_plugin,
             'controller_params': controller_params,
+            'ros_namespace': ros_namespace,
         }.items(),
     )
 
@@ -319,7 +336,7 @@ def get_xarm_moveit_realmove_launch_description(
     #         output="screen",
     #     ))
 
-    ros_namespace = launch_arguments_dict.get('ros_namespace', '')
+    # ros_namespace = launch_arguments_dict.get('ros_namespace', '')
     control_node = Node(
         package="controller_manager",
         executable="spawner.py",

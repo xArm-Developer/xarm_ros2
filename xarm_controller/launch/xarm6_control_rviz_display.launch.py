@@ -17,7 +17,7 @@ from ament_index_python import get_package_share_directory
 
 package_path = get_package_share_directory('xarm_controller')
 sys.path.append(os.path.join(package_path, 'launch', 'lib'))
-from xarm_controller_lib import get_controller_params
+from xarm_controller_lib import get_xarm_ros2_control_launch_description
 
 
 def generate_launch_description():
@@ -33,23 +33,13 @@ def generate_launch_description():
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     
     # xarm control launch
-    # controller_params = PathJoinSubstitution([FindPackageShare('xarm_controller'), 'config', 'xarm6_controllers.yaml'])
-    controller_params = get_controller_params(6)
-    xarm_control_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/_xarm_ros2_control.launch.py']),
-        launch_arguments={
-            'robot_ip': robot_ip,
-            'report_type': report_type,
-            'prefix': prefix,
-            'hw_ns': hw_ns,
-            'limited': limited,
-            'effort_control': effort_control,
-            'velocity_control': velocity_control,
-            'add_gripper': add_gripper,
-            'add_vacuum_gripper': add_vacuum_gripper,
-            'dof': '6',
-            'controller_params': controller_params,
-        }.items(),
+    dof = 6
+    xarm_control_launch = get_xarm_ros2_control_launch_description(
+        robot_ip, report_type,
+        prefix, hw_ns, limited, 
+        effort_control, velocity_control, 
+        add_gripper, add_vacuum_gripper,
+        dof=str(dof)
     )
 
     # rviz2 display launch

@@ -48,7 +48,9 @@ def generate_launch_description():
         output="screen",
         parameters=[robot_description],
         remappings=[
-            ('joint_states', joint_states_remapping)
+            ('joint_states', joint_states_remapping),
+            ('/tf', 'tf'),
+            ('/tf_static', 'tf_static'),
         ]
     )
 

@@ -50,5 +50,8 @@ def generate_launch_description():
         output='screen'
     )
 
-    return LaunchDescription([joint_state_publisher_node, robot_description_launch])
+    return LaunchDescription([
+        joint_state_publisher_node, 
+        robot_description_launch,
+    ])
 

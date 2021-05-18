@@ -20,6 +20,10 @@ def generate_launch_description():
         name='rviz2',
         output='screen',
         arguments=['-d', rviz2_params],
+        remappings=[
+            ('/tf', 'tf'),
+            ('/tf_static', 'tf_static'),
+        ]
     )
     
     return LaunchDescription([rviz2_node])
