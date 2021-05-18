@@ -75,6 +75,13 @@ $ colcon build
     $ ros2 launch xarm_controller xarm6_control_rviz_display.launch.py robot_ip:=192.168.1.117
     ```
 
+- #### 6.3.2 （双臂控制）启动xarm_control并在rviz显示对应机械臂位置
+    ```bash
+    $ cd ~/dev_ws/
+    $ source install/setup.bash
+    $ ros2 launch xarm_controller two_xarm6_control_rviz_display.launch.py robot1_ip:=192.168.1.117 robot2_ip:=192.168.1.156
+    ```
+
 ### 6.4 测试包(xarm_moveit_config)
 - #### 6.4.1 启动moveit并在rviz显示, 控制虚拟机械臂
     ```bash
@@ -88,4 +95,18 @@ $ colcon build
     $ cd ~/dev_ws/
     $ source install/setup.bash
     $ ros2 launch xarm_moveit_config xarm6_moveit_realmove.launch.py robot_ip:=192.168.1.117
+    ```
+
+- #### 6.4.3 （双臂控制）启动moveit并在rviz显示, 控制虚拟机械臂
+    ```bash
+    $ cd ~/dev_ws/
+    $ source install/setup.bash
+    $ ros2 launch xarm_moveit_config two_xarm6_moveit_fake.launch.py
+    ```
+
+- #### 6.4.4 （双臂控制）启动moveit并在rviz显示, 控制真实机械臂
+    ```bash
+    $ cd ~/dev_ws/
+    $ source install/setup.bash
+    $ ros2 launch xarm_moveit_config two_xarm6_moveit_realmove.launch.py robot1_ip:=192.168.1.117 robot2_ip:=192.168.1.156
     ```
