@@ -13,6 +13,7 @@
 #include <thread>
 #include <queue>
 #include <rclcpp/rclcpp.hpp>
+#include <std_msgs/msg/string.hpp>
 #include <sensor_msgs/msg/joint_state.hpp>
 #include "hardware_interface/hardware_info.hpp"
 #include "hardware_interface/system_interface.hpp"
@@ -69,13 +70,15 @@ namespace xarm_control
         std::vector<double> position_states_;
         std::vector<double> velocity_states_;
 
-        std::shared_ptr<rclcpp::Node> state_node_;
+        std::shared_ptr<rclcpp::Node> node_;
         std::shared_ptr<rclcpp::Node> client_node_;
         xarm_api::XArmROSClient xarm_client_;
 
         rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr joint_state_sub_;
         rclcpp::Subscription<xarm_msgs::msg::RobotMsg>::SharedPtr xarm_state_sub_;
+        rclcpp::Subscription<std_msgs::msg::String>::SharedPtr trajectory_execution_event_sub_;
 
+        void _receive_event(const std_msgs::msg::String::SharedPtr event);
         void _joint_states_callback(const sensor_msgs::msg::JointState::SharedPtr states);
         void _xarm_states_callback(const xarm_msgs::msg::RobotMsg::SharedPtr states);
         bool _check_cmds_is_change(std::vector<float> prev, std::vector<float> cur);

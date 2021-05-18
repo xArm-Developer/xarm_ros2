@@ -16,12 +16,6 @@
 #include "xarm_msgs.h"
 #include "xarm/wrapper/xarm_api.h"
 
-
-#define ROS_INFO(...) RCLCPP_INFO(rclcpp::get_logger("xarm_driver"), __VA_ARGS__)
-#define ROS_WARN(...) RCLCPP_WARN(rclcpp::get_logger("xarm_driver"), __VA_ARGS__)
-#define ROS_ERROR(...) RCLCPP_ERROR(rclcpp::get_logger("xarm_driver"), __VA_ARGS__)
-
-
 namespace xarm_api
 {
     class XArmDriver
@@ -74,7 +68,7 @@ namespace xarm_api
         void pub_joint_state(sensor_msgs::msg::JointState &js_msg);
         void pub_cgpio_state(xarm_msgs::msg::CIOState &cio_msg);
 
-    
+        rclcpp::Logger get_logger() { return node_->get_logger(); }
     private:
         void _report_connect_changed_callback(bool connected, bool reported);
         void _report_data_callback(XArmReportData *report_data_ptr);

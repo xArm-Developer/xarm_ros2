@@ -58,6 +58,7 @@ ament_target_dependencies(
   hardware_interface
   pluginlib
   rclcpp
+  std_msgs
   sensor_msgs
   xarm_msgs
 )

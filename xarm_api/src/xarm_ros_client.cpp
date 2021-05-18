@@ -9,9 +9,6 @@
 #include "xarm_api/xarm_ros_client.h"
 
 #define SERVICE_CALL_FAILED 999
-#define ROS_INFO(...) RCLCPP_INFO(rclcpp::get_logger("xarm_ros_client"), __VA_ARGS__)
-#define ROS_WARN(...) RCLCPP_WARN(rclcpp::get_logger("xarm_ros_client"), __VA_ARGS__)
-#define ROS_ERROR(...) RCLCPP_ERROR(rclcpp::get_logger("xarm_ros_client"), __VA_ARGS__)
 
 namespace xarm_api{
 
@@ -21,7 +18,7 @@ XArmROSClient::~XArmROSClient(){}
 void XArmROSClient::init(rclcpp::Node::SharedPtr& node, std::string hw_ns_)
 {   
     node_ = node;
-    ROS_INFO("namespace: %s", node->get_namespace());
+    RCLCPP_INFO(node_->get_logger(), "namespace: %s", node->get_namespace());
     // std::string client_ns = "";
     // client_ns.assign(node->get_namespace());
     // if (client_ns.rfind("/") != client_ns.length()-1)
@@ -68,10 +65,10 @@ void XArmROSClient::init(rclcpp::Node::SharedPtr& node, std::string hw_ns_)
 
     // while (!motion_ctrl_client_->wait_for_service(std::chrono::seconds(2))) {
     //     if (!rclcpp::ok()) {
-    //         ROS_ERROR("Interrupted while waiting for the service. Exiting.");
+    //         RCLCPP_ERROR(node_->get_logger(), "Interrupted while waiting for the service. Exiting.");
     //         exit(1);
     //     }
-    //     ROS_INFO("service not available, waiting again...");
+    //     RCLCPP_INFO(node_->get_logger(), "service not available, waiting again...");
     // }
 
     set_axis_req_ = std::make_shared<xarm_msgs::srv::SetAxis::Request>();
@@ -97,36 +94,47 @@ int XArmROSClient::_call_request(std::shared_ptr<ServiceT> client, SharedRequest
     bool is_try_again = false;
     while (!client->wait_for_service(std::chrono::seconds(1))) {
         if (!rclcpp::ok()) {
-            ROS_ERROR("Interrupted while waiting for the service. Exiting.");
+            RCLCPP_ERROR(node_->get_logger(), "Interrupted while waiting for the service. Exiting.");
             exit(1);
         }
         if (!is_try_again) {
             is_try_again = true;
-            ROS_WARN("service %s not available, waiting ...", client->get_service_name());
+            RCLCPP_WARN(node_->get_logger(), "service %s not available, waiting ...", client->get_service_name());
         }
     }
     auto result_future = client->async_send_request(req);
     if (rclcpp::spin_until_future_complete(node_, result_future) != rclcpp::FutureReturnCode::SUCCESS)
     {
-        ROS_ERROR("Failed to call service %s", client->get_service_name());
+        RCLCPP_ERROR(node_->get_logger(), "Failed to call service %s", client->get_service_name());
         return SERVICE_CALL_FAILED;
     }
     auto res = result_future.get();
-    // ROS_INFO("call service %s, ret=%d, message=%s", client->get_service_name(), res->ret, res->message.c_str());
+    // RCLCPP_INFO(node_->get_logger(), "call service %s, ret=%d, message=%s", client->get_service_name(), res->ret, res->message.c_str());
     return res->ret;
 }
 
 template<typename ServiceT, typename SharedRequest = typename ServiceT::Request::SharedPtr, typename SharedResponse = typename ServiceT::Response::SharedPtr>
 int XArmROSClient::_call_request(std::shared_ptr<ServiceT> client, SharedRequest req, SharedResponse res)
 {
+    bool is_try_again = false;
+    while (!client->wait_for_service(std::chrono::seconds(1))) {
+        if (!rclcpp::ok()) {
+            RCLCPP_ERROR(node_->get_logger(), "Interrupted while waiting for the service. Exiting.");
+            exit(1);
+        }
+        if (!is_try_again) {
+            is_try_again = true;
+            RCLCPP_WARN(node_->get_logger(), "service %s not available, waiting ...", client->get_service_name());
+        }
+    }
     auto result_future = client->async_send_request(req);
     if (rclcpp::spin_until_future_complete(node_, result_future) != rclcpp::FutureReturnCode::SUCCESS)
     {
-        ROS_ERROR("Failed to call service %s", client->get_service_name());
+        RCLCPP_ERROR(node_->get_logger(), "Failed to call service %s", client->get_service_name());
         return SERVICE_CALL_FAILED;
     }
     res = result_future.get();
-    // ROS_INFO("%s", res->message.c_str());
+    // RCLCPP_INFO(node_->get_logger(), "call service %s, ret=%d, message=%s", client->get_service_name(), res->ret, res->message.c_str());
     return res->ret;
 }
 
@@ -186,7 +194,7 @@ int XArmROSClient::setTCPOffset(const std::vector<float>& tcp_offset)
 {
     if(tcp_offset.size() != 6)
     {
-        ROS_ERROR("Set tcp offset service parameter should be 6-element Cartesian offset!");
+        RCLCPP_ERROR(node_->get_logger(), "Set tcp offset service parameter should be 6-element Cartesian offset!");
         return 1;
     }
     

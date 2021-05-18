@@ -26,7 +26,7 @@ class XArmDriverRunner
             node->get_parameter_or("joint_names", joint_name_, 
                 std::vector<std::string>({"joint1", "joint2", "joint3", "joint4", "joint5", "joint6", "joint7"}));
             
-            ROS_INFO("robot_ip=%s, report_type=%s, dof=%d", server_ip.c_str(), report_type_.c_str(), joint_num_);
+            RCLCPP_INFO(node_->get_logger(), "robot_ip=%s, report_type=%s, dof=%d", server_ip.c_str(), report_type_.c_str(), joint_num_);
 
             is_first_cycle_ = true;
             prev_angle_ = new double [joint_num_];
@@ -37,13 +37,13 @@ class XArmDriverRunner
         }
         void _report_connect_changed_callback(bool connected, bool reported)
         {
-            ROS_INFO("[TCP STATUS] CONTROL: %d, REPORT: %d", connected, reported);
+            RCLCPP_INFO(node_->get_logger(), "[TCP STATUS] CONTROL: %d, REPORT: %d", connected, reported);
             if (!reported) is_first_cycle_ = true;
         }
 
         void _report_data_callback(XArmReportData *report_data_ptr)
         {
-            // ROS_INFO("[2] state: %d, error_code: %d", report_data_ptr->state, report_data_ptr->err);
+            // RCLCPP_INFO(node_->get_logger(), "[2] state: %d, error_code: %d", report_data_ptr->state, report_data_ptr->err);
             last_now_ = now_;
             // now_ = node_->now();
             now_ = node_->get_clock()->now();
@@ -144,7 +144,7 @@ int main(int argc, char **argv)
     rclcpp::init(argc, argv);
     std::shared_ptr<rclcpp::Node> node = rclcpp::Node::make_shared("xarm_driver_node");
 
-    ROS_INFO("namespace: %s", node->get_namespace());
+    RCLCPP_INFO(node->get_logger(), "namespace: %s", node->get_namespace());
 
     node->declare_parameter("xarm_robot_ip");
     node->declare_parameter("xarm_report_type");
@@ -154,18 +154,18 @@ int main(int argc, char **argv)
     std::string robot_ip = "";
     node->get_parameter_or("xarm_robot_ip", robot_ip, robot_ip);
     if (robot_ip == "") {
-        ROS_ERROR("No param named 'xarm_robot_ip'");
+        RCLCPP_ERROR(node->get_logger(), "No param named 'xarm_robot_ip'");
         exit(1);
     }
 
-    ROS_INFO("xarm_driver_node start");
+    RCLCPP_INFO(node->get_logger(), "xarm_driver_node start");
     XArmDriverRunner xarm_driver_runner(node, robot_ip);
 
     signal(SIGINT, exit_sig_handler);
     rclcpp::spin(node);
     rclcpp::shutdown();
 
-    ROS_INFO("xarm_driver_node over");
+    RCLCPP_INFO(node->get_logger(), "xarm_driver_node over");
 
     return 0;
 }

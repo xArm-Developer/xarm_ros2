@@ -14,11 +14,15 @@ from ament_index_python import get_package_share_directory
 from ros2launch.api.api import parse_launch_arguments
 
 
-def get_controller_params(dof):
+def get_sys_param(name, default=None):
+    launch_arguments_dict = dict(parse_launch_arguments(sys.argv[4:]))
+    return launch_arguments_dict.get(name, default)
+
+
+def get_controller_params(dof, name='ros_namespace', default=None):
     package_path = get_package_share_directory('xarm_controller')
     controller_params = os.path.join(package_path, 'config', 'xarm{}_controllers.yaml'.format(dof))
-    launch_arguments_dict = dict(parse_launch_arguments(sys.argv[4:]))
-    ros_namespace = launch_arguments_dict.get('ros_namespace', '')
+    ros_namespace = get_sys_param(name, default=default)
     if ros_namespace:
         with open(controller_params, 'r') as f:
             controller_params_yaml = yaml.safe_load(f)

@@ -41,8 +41,8 @@ void xarm_cgpio_states_callback(const xarm_msgs::msg::CIOState::SharedPtr states
 int main(int argc, char **argv)
 {
     rclcpp::init(argc, argv);
-    std::string ns = "xarm";
-    std::shared_ptr<rclcpp::Node> node = rclcpp::Node::make_shared("test_xarm_states", ns);
+    std::string hw_ns = "xarm";
+    std::shared_ptr<rclcpp::Node> node = rclcpp::Node::make_shared("test_xarm_states", hw_ns);
 
     RCLCPP_INFO(rclcpp::get_logger("test_xarm_states"), "namespace: %s", node->get_namespace());
     RCLCPP_INFO(rclcpp::get_logger("test_xarm_states"), "test_xarm_states start");

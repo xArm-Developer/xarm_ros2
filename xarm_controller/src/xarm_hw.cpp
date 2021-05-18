@@ -8,12 +8,13 @@
 
 #include "xarm_controller/xarm_hw.h"
 
-#define ROS_INFO(...) RCLCPP_INFO(rclcpp::get_logger("xarm_hw"), __VA_ARGS__)
-#define ROS_WARN(...) RCLCPP_WARN(rclcpp::get_logger("xarm_hw"), __VA_ARGS__)
-#define ROS_ERROR(...) RCLCPP_ERROR(rclcpp::get_logger("xarm_hw"), __VA_ARGS__)
-
 namespace xarm_control
 {
+    void XArmHW::_receive_event(const std_msgs::msg::String::SharedPtr event)
+    {
+        RCLCPP_INFO(node_->get_logger(), "receive_event: %s", event->data.c_str());
+    }
+
     void XArmHW::_joint_states_callback(const sensor_msgs::msg::JointState::SharedPtr states)
     {    
         std::string pos_str = "[ ";
@@ -26,8 +27,8 @@ namespace xarm_control
         }
         pos_str += "]";
         vel_str += "]";
-        // ROS_INFO("state_position: %s", pos_str.c_str());
-        // ROS_INFO("state_velocity: %s", vel_str.c_str());
+        // RCLCPP_INFO(node_->get_logger(), "state_position: %s", pos_str.c_str());
+        // RCLCPP_INFO(node_->get_logger(), "state_velocity: %s", vel_str.c_str());
 
         for (uint i = 0; i < position_states_.size(); i++) {
             position_states_[i] = states->position[i];
@@ -52,6 +53,8 @@ namespace xarm_control
     {
         info_ = info;
         initial_write_ = true;
+        node_ = rclcpp::Node::make_shared("xarm_hw");
+        RCLCPP_INFO(node_->get_logger(), "namespace: %s", node_->get_namespace());
         
         position_states_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
         velocity_states_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
@@ -69,7 +72,7 @@ namespace xarm_control
                 }
             }
             if (!has_pos_cmd_interface) {
-                ROS_ERROR("Joint '%s' has %d command interfaces found, but not found %s command interface",
+                RCLCPP_ERROR(node_->get_logger(), "Joint '%s' has %d command interfaces found, but not found %s command interface",
                     joint.name.c_str(), joint.command_interfaces.size(), hardware_interface::HW_IF_POSITION
                 );
                 return hardware_interface::return_type::ERROR;
@@ -83,14 +86,14 @@ namespace xarm_control
                 }
             }
             if (!has_pos_state_interface) {
-                ROS_ERROR("Joint '%s' has %d state interfaces found, but not found %s state interface",
+                RCLCPP_ERROR(node_->get_logger(), "Joint '%s' has %d state interfaces found, but not found %s state interface",
                     joint.name.c_str(), joint.state_interfaces.size(), hardware_interface::HW_IF_POSITION
                 );
                 return hardware_interface::return_type::ERROR;
             }
         }
 
-        ROS_INFO("System Sucessfully configured!");
+        RCLCPP_INFO(node_->get_logger(), "System Sucessfully configured!");
         status_ = hardware_interface::status::CONFIGURED;
         return hardware_interface::return_type::OK;
     }
@@ -128,18 +131,20 @@ namespace xarm_control
         if (it != info_.hardware_parameters.end()) {
             hw_ns = it->second;
         }
-        ROS_INFO("HW_NS: %s", hw_ns.c_str());
 
-        state_node_ = rclcpp::Node::make_shared("xarm_hw");
-        joint_state_sub_ = state_node_->create_subscription<sensor_msgs::msg::JointState>(hw_ns + "/joint_states", 100, std::bind(&XArmHW::_joint_states_callback, this, std::placeholders::_1));
-        xarm_state_sub_ = state_node_->create_subscription<xarm_msgs::msg::RobotMsg>(hw_ns + "/xarm_states", 100, std::bind(&XArmHW::_xarm_states_callback, this, std::placeholders::_1));
+        // node_ = rclcpp::Node::make_shared("xarm_hw");
+        RCLCPP_INFO(node_->get_logger(), "hw_ns: %s", hw_ns.c_str());
+        joint_state_sub_ = node_->create_subscription<sensor_msgs::msg::JointState>(hw_ns + "/joint_states", 100, std::bind(&XArmHW::_joint_states_callback, this, std::placeholders::_1));
+        xarm_state_sub_ = node_->create_subscription<xarm_msgs::msg::RobotMsg>(hw_ns + "/xarm_states", 100, std::bind(&XArmHW::_xarm_states_callback, this, std::placeholders::_1));
+        // trajectory_execution_event_sub_ = node_->create_subscription<std_msgs::msg::String>("trajectory_execution_event", 100, std::bind(&XArmHW::_receive_event, this, std::placeholders::_1));
         std::thread th([this]() -> void {
-            rclcpp::spin(state_node_);
+            rclcpp::spin(node_);
+            rclcpp::shutdown();
         });
         th.detach();
         rclcpp::sleep_for(std::chrono::seconds(1));
         
-        client_node_ = rclcpp::Node::make_shared("xarm_hw");
+        client_node_ = rclcpp::Node::make_shared("xarm_ros_client");
         xarm_client_.init(client_node_, hw_ns);
         xarm_client_.motionEnable(1);
         xarm_client_.setMode(1);
@@ -166,18 +171,18 @@ namespace xarm_control
 
         status_ = hardware_interface::status::STARTED;
         
-        ROS_INFO("System Sucessfully started!");
+        RCLCPP_INFO(node_->get_logger(), "System Sucessfully started!");
         return hardware_interface::return_type::OK;
     }
 
     hardware_interface::return_type XArmHW::stop()
     {
-        ROS_INFO("Stopping ...please wait...");
+        RCLCPP_INFO(node_->get_logger(), "Stopping ...please wait...");
         status_ = hardware_interface::status::STOPPED;
 
         xarm_client_.setMode(0);
 
-        ROS_INFO("System sucessfully stopped!");
+        RCLCPP_INFO(node_->get_logger(), "System sucessfully stopped!");
         return hardware_interface::return_type::OK;
     }
 
@@ -200,13 +205,14 @@ namespace xarm_control
         if (initial_write_) {
             return hardware_interface::return_type::OK;
         }
+        // return hardware_interface::return_type::OK;
         // std::string pos_str = "[ ";
         // for (int i = 0; i < position_cmds_.size(); i++) { 
         //     pos_str += std::to_string(position_cmds_[i]); 
         //     pos_str += " ";
         // }
         // pos_str += "]";
-        // ROS_INFO("positon: %s", pos_str.c_str());
+        // RCLCPP_INFO(node_->get_logger(), "positon: %s", pos_str.c_str());
 
         for (int i = 0; i < position_cmds_.size(); i++) { 
             position_cmds_float_[i] = (float)position_cmds_[i];
@@ -220,7 +226,7 @@ namespace xarm_control
                 }
             }
         }
-        
+
         return hardware_interface::return_type::OK;
     }
 }

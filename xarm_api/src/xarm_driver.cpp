@@ -29,7 +29,7 @@ void* cmd_heart_beat(void* args)
             my_driver->arm->get_cmdnum(&cmdnum);
         }
     }
-    ROS_ERROR("xArm Control Connection Failed! Please Shut Down (Ctrl-C) and Retry ...");
+    RCLCPP_ERROR(my_driver->get_logger(), "xArm Control Connection Failed! Please Shut Down (Ctrl-C) and Retry ...");
     return (void*)0;
 }
 
@@ -50,12 +50,12 @@ namespace xarm_api
 
     void XArmDriver::_report_connect_changed_callback(bool connected, bool reported)
     {
-        ROS_INFO("[TCP STATUS] CONTROL: %d, REPORT: %d", connected, reported);
+        RCLCPP_INFO(node_->get_logger(), "[TCP STATUS] CONTROL: %d, REPORT: %d", connected, reported);
     }
 
     void XArmDriver::_report_data_callback(XArmReportData *report_data_ptr)
     {
-        // ROS_INFO("[1] state: %d, error_code: %d", report_data_ptr->state, report_data_ptr->err);
+        // RCLCPP_INFO(node_->get_logger(), "[1] state: %d, error_code: %d", report_data_ptr->state, report_data_ptr->err);
         curr_state_ = report_data_ptr->state;
         curr_err_ = report_data_ptr->err;
     }
@@ -91,7 +91,7 @@ namespace xarm_api
         int err_warn[2] = {0};
         int ret = arm->get_err_warn_code(err_warn);
         if (err_warn[0] != 0) {
-            ROS_WARN("xArmErrorCode: %d", err_warn[0]);
+            RCLCPP_WARN(node_->get_logger(), "xArmErrorCode: %d", err_warn[0]);
         }
         
         std::thread th(cmd_heart_beat, this);
@@ -104,12 +104,12 @@ namespace xarm_api
             if((dbg_msg[i*2]==1)&&(dbg_msg[i*2+1]==40))
             {
                 arm->clean_error();
-                ROS_WARN("Cleared low-voltage error of joint %d", i+1);
+                RCLCPP_WARN(node_->get_logger(), "Cleared low-voltage error of joint %d", i+1);
             }
             else if((dbg_msg[i*2]==1))
             {
                 arm->clean_error();
-                ROS_WARN("There is servo error code:(0x%x) in joint %d, trying to clear it..", dbg_msg[i*2+1], i+1);
+                RCLCPP_WARN(node_->get_logger(), "There is servo error code:(0x%x) in joint %d, trying to clear it..", dbg_msg[i*2+1], i+1);
             }
         }
 
@@ -315,7 +315,7 @@ namespace xarm_api
             res->message = "set Controller digital Output "+ std::to_string(req->io_num) +" to "+ std::to_string(req->value) + " : ret = " + std::to_string(res->ret); 
             return res->ret >= 0;
         }
-        ROS_WARN("Controller Digital IO io_num: from 1 to 16");
+        RCLCPP_WARN(node_->get_logger(), "Controller Digital IO io_num: from 1 to 16");
         return false;
     }
 
@@ -338,7 +338,7 @@ namespace xarm_api
             res->message = "get Controller digital Input ret = " + std::to_string(res->ret);
             return res->ret >= 0;
         }
-        ROS_WARN("Controller Digital IO io_num: from 1 to 8");
+        RCLCPP_WARN(node_->get_logger(), "Controller Digital IO io_num: from 1 to 8");
         return false;
     }
 
@@ -432,7 +432,7 @@ namespace xarm_api
         if(curr_err_)
         {
             arm->set_state(XARM_STATE::START);
-            ROS_WARN("Cleared Existing Error Code %d", curr_err_);
+            RCLCPP_WARN(node_->get_logger(), "Cleared Existing Error Code %d", curr_err_);
         }
 
         int ret = arm->set_tgpio_modbus_baudrate(req->baud_rate);

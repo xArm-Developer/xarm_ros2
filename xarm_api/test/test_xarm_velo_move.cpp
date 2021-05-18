@@ -21,14 +21,14 @@ void exit_sig_handler(int signum)
 int main(int argc, char **argv)
 {
     rclcpp::init(argc, argv);
-    std::shared_ptr<rclcpp::Node> node = rclcpp::Node::make_shared("test_xarm_velo_move");
-    RCLCPP_INFO(rclcpp::get_logger("test_xarm_velo_move"), "namespace: %s", node->get_namespace());
+    std::string hw_ns = "xarm";
+    std::shared_ptr<rclcpp::Node> node = rclcpp::Node::make_shared("xarm_ros_client");
     RCLCPP_INFO(rclcpp::get_logger("test_xarm_velo_move"), "test_xarm_velo_move start");
 
     signal(SIGINT, exit_sig_handler);
 
     xarm_api::XArmROSClient client;
-    client.init(node, "xarm");
+    client.init(node, hw_ns);
     client.motionEnable(1);
     client.setMode(4);
 	client.setState(0);
