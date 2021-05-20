@@ -1,0 +1,6 @@
+bool exec
+bool wait
+
+---
+
+bool success

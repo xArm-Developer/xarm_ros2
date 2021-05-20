@@ -110,3 +110,22 @@ $ colcon build
     $ source install/setup.bash
     $ ros2 launch xarm_moveit_config two_xarm6_moveit_realmove.launch.py robot1_ip:=192.168.1.117 robot2_ip:=192.168.1.156
     ```
+
+### 6.5 测试包(xarm_planner)
+- #### 6.5.1 启动moveit并在rviz显示, 通过planner控制虚拟机械臂
+    ```bash
+    $ cd ~/dev_ws/
+    $ source install/setup.bash
+    $ ros2 launch xarm_planner xarm6_simple_planner_fake.launch.py
+    # 运行planner例子
+    $ ros2 launch xarm_planner test_xarm_simple_planner_joint.launch.py dof:=6
+    ```
+
+- #### 6.5.2 启动moveit并在rviz显示, 通过planner控制真实机械臂
+    ```bash
+    $ cd ~/dev_ws/
+    $ source install/setup.bash
+    $ ros2 launch xarm_planner xarm6_simple_planner_realmove.launch.py robot_ip:=192.168.1.117
+    # 运行planner例子
+    $ ros2 launch xarm_planner test_xarm_simple_planner_joint.launch.py dof:=6
+    ```

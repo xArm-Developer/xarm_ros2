@@ -11,7 +11,7 @@
 
 void exit_sig_handler(int signum)
 {
-    fprintf(stderr, "[xarm_driver] Ctrl-C caught, exit process...\n");
+    fprintf(stderr, "[xarm_driver_node] Ctrl-C caught, exit process...\n");
     exit(-1);
 }
 

@@ -58,6 +58,7 @@ def get_xarm_moveit_common_launch_entities(
     add_gripper, add_vacuum_gripper, dof,
     ros2_control_plugin,
     xarm_type='xarm7',
+    no_gui_ctrl=False,
     controllers_name='fake_controllers',
     moveit_controller_manager_key='moveit_fake_controller_manager', 
     moveit_controller_manager_value='moveit_fake_controller_manager/MoveItFakeControllerManager'):
@@ -126,7 +127,7 @@ def get_xarm_moveit_common_launch_entities(
             robot_description,
             robot_description_semantic,
             robot_description_kinematics,
-            robot_description_planning,
+            # robot_description_planning,
             ompl_planning_pipeline_config,
             trajectory_execution,
             moveit_controllers,
@@ -135,7 +136,7 @@ def get_xarm_moveit_common_launch_entities(
     )
 
     # rviz with moveit configuration
-    rviz_config_file = PathJoinSubstitution([FindPackageShare(moveit_config_package_name), 'config', xarm_type, 'moveit.rviz'])
+    rviz_config_file = PathJoinSubstitution([FindPackageShare(moveit_config_package_name), 'config', xarm_type, 'planner.rviz' if no_gui_ctrl else 'moveit.rviz'])
     rviz_node = Node(
         package="rviz2",
         executable="rviz2",
@@ -146,7 +147,7 @@ def get_xarm_moveit_common_launch_entities(
             robot_description,
             robot_description_semantic,
             robot_description_kinematics,
-            robot_description_planning,
+            # robot_description_planning,
             ompl_planning_pipeline_config,
         ],
         remappings=[
@@ -176,6 +177,7 @@ def get_xarm_moveit_fake_launch_description(
     effort_control, velocity_control, 
     add_gripper, add_vacuum_gripper, 
     dof='7', xarm_type='xarm7',
+    no_gui_ctrl=False,
     ros_namespace_name='ros_namespace', ros_namespace_default_value=''):
 
     ros2_control_plugin = 'fake_components/GenericSystem'
@@ -207,6 +209,7 @@ def get_xarm_moveit_fake_launch_description(
         prefix, hw_ns, limited, effort_control, velocity_control, add_gripper, add_vacuum_gripper, dof,
         ros2_control_plugin,
         xarm_type=xarm_type,
+        no_gui_ctrl=no_gui_ctrl,
         controllers_name=controllers_name,
         moveit_controller_manager_key=moveit_controller_manager_key, 
         moveit_controller_manager_value=moveit_controller_manager_value,
@@ -232,6 +235,7 @@ def get_xarm_moveit_realmove_launch_description(
     effort_control, velocity_control, 
     add_gripper, add_vacuum_gripper, 
     dof='7', xarm_type='xarm7',
+    no_gui_ctrl=False,
     ros_namespace_name='ros_namespace', ros_namespace_default_value=''):
 
     ros2_control_plugin = 'xarm_control/XArmHW'
@@ -278,6 +282,7 @@ def get_xarm_moveit_realmove_launch_description(
         prefix, hw_ns, limited, effort_control, velocity_control, add_gripper, add_vacuum_gripper, dof,
         ros2_control_plugin,
         xarm_type=xarm_type,
+        no_gui_ctrl=no_gui_ctrl,
         controllers_name=controllers_name,
         moveit_controller_manager_key=moveit_controller_manager_key, 
         moveit_controller_manager_value=moveit_controller_manager_value,

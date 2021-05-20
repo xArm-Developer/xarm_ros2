@@ -1,20 +1,19 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>xarm_msgs</name>
+  <name>xarm_planner</name>
   <version>0.0.0</version>
-  <description>The xarm_msgs package</description>
+  <description>TODO: Package description</description>
   <maintainer email="vinman.cub@gmail.com">Vinman</maintainer>
   <license>BSD</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
-  <build_depend>rosidl_default_generators</build_depend>
-
+  
+  <depend>moveit_ros_planning_interface</depend>
+  <depend>rclcpp</depend>
   <depend>std_msgs</depend>
+  <depend>xarm_msgs</depend>
   <depend>geometry_msgs</depend>
-
-  <exec_depend>rosidl_default_runtime</exec_depend>
-  <member_of_group>rosidl_interface_packages</member_of_group>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
