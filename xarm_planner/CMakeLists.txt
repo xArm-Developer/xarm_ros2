@@ -32,20 +32,70 @@ find_package(geometry_msgs REQUIRED)
 
 set(dependencies "rclcpp" "std_msgs" "geometry_msgs" "xarm_msgs")
 
-add_executable(xarm_simple_planner src/xarm_simple_planner.cpp)
-ament_target_dependencies(xarm_simple_planner
+include_directories(
+  include
+  ${ament_INCLUDE_DIRS}
+)
+
+add_library(xarm_planner SHARED
+  src/xarm_planner.cpp
+)
+ament_target_dependencies(xarm_planner 
   moveit_ros_planning_interface
   ${dependencies}
 )
 
-add_executable(xarm_simple_planner_joint_test test/xarm_simple_planner_joint_test.cpp)
-ament_target_dependencies(xarm_simple_planner_joint_test
+add_executable(xarm_planner_node src/xarm_planner_node.cpp)
+ament_target_dependencies(xarm_planner_node
   ${dependencies}
 )
-add_executable(xarm_simple_planner_pose_test test/xarm_simple_planner_pose_test.cpp)
-ament_target_dependencies(xarm_simple_planner_pose_test
+target_link_libraries(xarm_planner_node 
+  xarm_planner
+  ${ament_LIBRARIES}
+)
+
+add_executable(test_xarm_planner_joint test/test_xarm_planner_joint.cpp)
+ament_target_dependencies(test_xarm_planner_joint
   ${dependencies}
 )
+target_link_libraries(test_xarm_planner_joint 
+  xarm_planner
+  ${ament_LIBRARIES}
+)
+
+add_executable(test_xarm_planner_pose test/test_xarm_planner_pose.cpp)
+ament_target_dependencies(test_xarm_planner_pose
+  ${dependencies}
+)
+target_link_libraries(test_xarm_planner_pose 
+  xarm_planner
+  ${ament_LIBRARIES}
+)
+
+add_executable(test_xarm_planner_node_joint test/test_xarm_planner_node_joint.cpp)
+ament_target_dependencies(test_xarm_planner_node_joint
+  ${dependencies}
+)
+
+add_executable(test_xarm_planner_node_pose test/test_xarm_planner_node_pose.cpp)
+ament_target_dependencies(test_xarm_planner_node_pose
+  ${dependencies}
+)
+
+# add_executable(xarm_simple_planner src/xarm_simple_planner.cpp)
+# ament_target_dependencies(xarm_simple_planner
+#   moveit_ros_planning_interface
+#   ${dependencies}
+# )
+
+# add_executable(xarm_simple_planner_joint_test test/xarm_simple_planner_joint_test.cpp)
+# ament_target_dependencies(xarm_simple_planner_joint_test
+#   ${dependencies}
+# )
+# add_executable(xarm_simple_planner_pose_test test/xarm_simple_planner_pose_test.cpp)
+# ament_target_dependencies(xarm_simple_planner_pose_test
+#   ${dependencies}
+# )
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -58,11 +108,25 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-install(TARGETS xarm_simple_planner xarm_simple_planner_joint_test xarm_simple_planner_pose_test
+install(
+  DIRECTORY include/
+  DESTINATION include
+)
+
+install(
+  TARGETS 
+  xarm_planner
+  xarm_planner_node
+  test_xarm_planner_joint
+  test_xarm_planner_pose
+  test_xarm_planner_node_joint
+  test_xarm_planner_node_pose
+  # xarm_simple_planner 
+  # xarm_simple_planner_joint_test 
+  # xarm_simple_planner_pose_test
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
   RUNTIME DESTINATION lib/${PROJECT_NAME}
-  INCLUDES DESTINATION include
 )
 
 install(DIRECTORY

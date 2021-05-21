@@ -53,79 +53,74 @@ int call_request(std::shared_ptr<ServiceT> client, SharedRequest req)
 int main(int argc, char** argv)
 {	
     rclcpp::init(argc, argv);
-    node = rclcpp::Node::make_shared("xarm_simple_planner_joint_test");
-    RCLCPP_INFO(node->get_logger(), "xarm_simple_planner_joint_test start");
-    node->declare_parameter("DOF");
-    int dof;
-    node->get_parameter_or("DOF", dof, 7);
-    RCLCPP_INFO(node->get_logger(), "namespace: %s, dof: %d", node->get_namespace(), dof);
-    
+    node = rclcpp::Node::make_shared("xarm_planner_node_test_pose");
+    RCLCPP_INFO(node->get_logger(), "xarm_planner_node_test_pose start");
     signal(SIGINT, exit_sig_handler);
 
-    rclcpp::Client<xarm_msgs::srv::PlanJoint>::SharedPtr joint_plan_client_ = node->create_client<xarm_msgs::srv::PlanJoint>("xarm_joint_plan");
-    // rclcpp::Client<xarm_msgs::srv::PlanPose>::SharedPtr pose_plan_client_ = node->create_client<xarm_msgs::srv::PlanPose>("xarm_pose_plan");
-    // rclcpp::Client<xarm_msgs::srv::PlanSingleStraight>::SharedPtr single_straight_plan_client_ = node->create_client<xarm_msgs::srv::PlanSingleStraight>("xarm_straight_plan");
+    rclcpp::Client<xarm_msgs::srv::PlanPose>::SharedPtr pose_plan_client_ = node->create_client<xarm_msgs::srv::PlanPose>("xarm_pose_plan");
     rclcpp::Client<xarm_msgs::srv::PlanExec>::SharedPtr exec_plan_client_ = node->create_client<xarm_msgs::srv::PlanExec>("xarm_exec_plan");
 
-    std::shared_ptr<xarm_msgs::srv::PlanJoint::Request> joint_plan_req = std::make_shared<xarm_msgs::srv::PlanJoint::Request>();;
+    std::shared_ptr<xarm_msgs::srv::PlanPose::Request> pose_plan_req = std::make_shared<xarm_msgs::srv::PlanPose::Request>();;
     std::shared_ptr<xarm_msgs::srv::PlanExec::Request> exec_plan_req = std::make_shared<xarm_msgs::srv::PlanExec::Request>();;
 
     exec_plan_req->exec = true;
     exec_plan_req->wait = true;
 
-    std::vector<double> tar_joint1;
-    std::vector<double> tar_joint2;
-    std::vector<double> tar_joint3;
-    
-    switch (dof) {
-    case 5:
-        {
-            tar_joint1 = {1.570796, -1.570796, -1.047198, 2.792527, -1.570796};
-            tar_joint2 = {0, 0, 0, 0, 0};
-            tar_joint3 = {-1.570796, -1.570796, -1.047198, -0.349066, 2.617994};
-        }
-        break;
-    case 6:
-        {
-            tar_joint1 = {1.570796, -1.570796, -1.047198, 2.967060, 2.792527, -3.124139};
-            tar_joint2 = {0, 0, 0, 0, 0, 0};
-            tar_joint3 = {-1.570796, -1.570796, -1.047198, -2.967060, -0.349066, 3.124139};
-        }
-        break;
-    case 7:
-        {
-            tar_joint1 = {1.570796, -1.570796, -1.570796, 1.396263, 2.967060, 2.792527, -1.570796};
-            tar_joint2 = {0, 0, 0, 0, 0, 0, 0};
-            tar_joint3 = {-1.570796, -1.570796, 1.570796, 1.396263, -2.967060, -0.349066, 2.617994};
-        }
-        break;
-    default:
-        {
-            RCLCPP_INFO(node->get_logger(), "param dof error");
-            exit(1);
-        }
-        break;
-    }
+    geometry_msgs::msg::Pose target_pose1;
+    target_pose1.position.x = 0.3;
+	target_pose1.position.y = -0.1;
+	target_pose1.position.z = 0.2;
+	target_pose1.orientation.x = 1;
+	target_pose1.orientation.y = 0;
+	target_pose1.orientation.z = 0;
+	target_pose1.orientation.w = 0;
+
+    geometry_msgs::msg::Pose target_pose2;
+    target_pose2.position.x = 0.3;
+	target_pose2.position.y = 0.1;
+	target_pose2.position.z = 0.2;
+	target_pose2.orientation.x = 1;
+	target_pose2.orientation.y = 0;
+	target_pose2.orientation.z = 0;
+	target_pose2.orientation.w = 0;
+
+    geometry_msgs::msg::Pose target_pose3;
+    target_pose3.position.x = 0.3;
+	target_pose3.position.y = 0.1;
+	target_pose3.position.z = 0.4;
+	target_pose3.orientation.x = 1;
+	target_pose3.orientation.y = 0;
+	target_pose3.orientation.z = 0;
+	target_pose3.orientation.w = 0;
+
+    geometry_msgs::msg::Pose target_pose4;
+    target_pose4.position.x = 0.3;
+	target_pose4.position.y = -0.1;
+	target_pose4.position.z = 0.4;
+	target_pose4.orientation.x = 1;
+	target_pose4.orientation.y = 0;
+	target_pose4.orientation.z = 0;
+	target_pose4.orientation.w = 0;
     
     while (rclcpp::ok())
     {
-        joint_plan_req->target = tar_joint2;
-        call_request(joint_plan_client_, joint_plan_req);
+        pose_plan_req->target = target_pose1;
+        call_request(pose_plan_client_, pose_plan_req);
         call_request(exec_plan_client_, exec_plan_req);
 
-        joint_plan_req->target = tar_joint1;
-        call_request(joint_plan_client_, joint_plan_req);
+        pose_plan_req->target = target_pose2;
+        call_request(pose_plan_client_, pose_plan_req);
         call_request(exec_plan_client_, exec_plan_req);
 
-        joint_plan_req->target = tar_joint2;
-        call_request(joint_plan_client_, joint_plan_req);
+        pose_plan_req->target = target_pose3;
+        call_request(pose_plan_client_, pose_plan_req);
         call_request(exec_plan_client_, exec_plan_req);
 
-        joint_plan_req->target = tar_joint3;
-        call_request(joint_plan_client_, joint_plan_req);
+        pose_plan_req->target = target_pose4;
+        call_request(pose_plan_client_, pose_plan_req);
         call_request(exec_plan_client_, exec_plan_req);
     }
 
-    RCLCPP_INFO(node->get_logger(), "xarm_simple_planner_joint_test over");
+    RCLCPP_INFO(node->get_logger(), "xarm_planner_node_test_pose over");
     return 0;
 }

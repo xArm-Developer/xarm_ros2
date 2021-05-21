@@ -1,0 +1,83 @@
+/* Copyright 2021 UFACTORY Inc. All Rights Reserved.
+ *
+ * Software License Agreement (BSD License)
+ *
+ * Author: Vinman <vinman.cub@gmail.com>
+ ============================================================================*/
+ 
+#include "xarm_planner/xarm_planner.h"
+
+void exit_sig_handler(int signum)
+{
+    fprintf(stderr, "[xarm_simple_planner_test] Ctrl-C caught, exit process...\n");
+    exit(-1);
+}
+
+int main(int argc, char** argv)
+{
+    rclcpp::init(argc, argv);
+    rclcpp::NodeOptions node_options;
+    node_options.automatically_declare_parameters_from_overrides(true);
+    std::shared_ptr<rclcpp::Node> node = rclcpp::Node::make_shared("xarm_planner_test_joint", node_options);
+    RCLCPP_INFO(node->get_logger(), "xarm_planner_test_joint start");
+    int dof;
+    node->get_parameter_or("DOF", dof, 7);
+    RCLCPP_INFO(node->get_logger(), "namespace: %s, dof: %d", node->get_namespace(), dof);
+
+    signal(SIGINT, exit_sig_handler);
+
+    std::string group_name = "xarm" + std::to_string(dof);
+    xarm_planner::XArmPlanner planner(node, group_name);
+
+    std::vector<double> tar_joint1;
+    std::vector<double> tar_joint2;
+    std::vector<double> tar_joint3;
+    
+    switch (dof) {
+    case 5:
+        {
+            tar_joint1 = {1.570796, -1.570796, -1.047198, 2.792527, -1.570796};
+            tar_joint2 = {0, 0, 0, 0, 0};
+            tar_joint3 = {-1.570796, -1.570796, -1.047198, -0.349066, 2.617994};
+        }
+        break;
+    case 6:
+        {
+            tar_joint1 = {1.570796, -1.570796, -1.047198, 2.967060, 2.792527, -3.124139};
+            tar_joint2 = {0, 0, 0, 0, 0, 0};
+            tar_joint3 = {-1.570796, -1.570796, -1.047198, -2.967060, -0.349066, 3.124139};
+        }
+        break;
+    case 7:
+        {
+            tar_joint1 = {1.570796, -1.570796, -1.570796, 1.396263, 2.967060, 2.792527, -1.570796};
+            tar_joint2 = {0, 0, 0, 0, 0, 0, 0};
+            tar_joint3 = {-1.570796, -1.570796, 1.570796, 1.396263, -2.967060, -0.349066, 2.617994};
+        }
+        break;
+    default:
+        {
+            RCLCPP_INFO(node->get_logger(), "param dof error");
+            exit(1);
+        }
+        break;
+    }
+
+    while (rclcpp::ok())
+    {
+        planner.planJointTarget(tar_joint2);
+        planner.executePath();
+
+        planner.planJointTarget(tar_joint1);
+        planner.executePath();
+
+        planner.planJointTarget(tar_joint2);
+        planner.executePath();
+        
+        planner.planJointTarget(tar_joint3);
+        planner.executePath();
+    }
+
+    RCLCPP_INFO(node->get_logger(), "xarm_planner_test_joint over");
+    return 0;
+}
