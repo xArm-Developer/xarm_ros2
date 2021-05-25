@@ -24,6 +24,7 @@ def generate_launch_description():
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
 
+    dof = 5
     xarm_moveit_realmove_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_xarm_moveit_realmove.launch.py'])),
         launch_arguments={
@@ -36,11 +37,27 @@ def generate_launch_description():
             'velocity_control': velocity_control,
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
-            'dof': '5',
-            'no_gui_ctrl': 'false',
+            'dof': str(dof),
+            'no_gui_ctrl': 'true',
+        }.items(),
+    )
+
+    xarm_planner_node_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_planner'), 'launch', '_xarm_planner.launch.py'])),
+        launch_arguments={
+            'prefix': prefix,
+            'hw_ns': hw_ns,
+            'limited': limited,
+            'effort_control': effort_control,
+            'velocity_control': velocity_control,
+            'add_gripper': add_gripper,
+            'add_vacuum_gripper': add_vacuum_gripper,
+            'dof': str(dof),
+            'ros2_control_plugin': 'xarm_control/XArmHW',
         }.items(),
     )
     
     return LaunchDescription([
-        xarm_moveit_realmove_launch
+        xarm_moveit_realmove_launch,
+        xarm_planner_node_launch
     ])

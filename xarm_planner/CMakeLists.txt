@@ -54,48 +54,33 @@ target_link_libraries(xarm_planner_node
   ${ament_LIBRARIES}
 )
 
-add_executable(test_xarm_planner_joint test/test_xarm_planner_joint.cpp)
-ament_target_dependencies(test_xarm_planner_joint
+add_executable(test_xarm_planner_api_joint test/test_xarm_planner_api_joint.cpp)
+ament_target_dependencies(test_xarm_planner_api_joint
   ${dependencies}
 )
-target_link_libraries(test_xarm_planner_joint 
+target_link_libraries(test_xarm_planner_api_joint 
   xarm_planner
   ${ament_LIBRARIES}
 )
 
-add_executable(test_xarm_planner_pose test/test_xarm_planner_pose.cpp)
-ament_target_dependencies(test_xarm_planner_pose
+add_executable(test_xarm_planner_api_pose test/test_xarm_planner_api_pose.cpp)
+ament_target_dependencies(test_xarm_planner_api_pose
   ${dependencies}
 )
-target_link_libraries(test_xarm_planner_pose 
+target_link_libraries(test_xarm_planner_api_pose 
   xarm_planner
   ${ament_LIBRARIES}
 )
 
-add_executable(test_xarm_planner_node_joint test/test_xarm_planner_node_joint.cpp)
-ament_target_dependencies(test_xarm_planner_node_joint
+add_executable(test_xarm_planner_client_joint test/test_xarm_planner_client_joint.cpp)
+ament_target_dependencies(test_xarm_planner_client_joint
   ${dependencies}
 )
 
-add_executable(test_xarm_planner_node_pose test/test_xarm_planner_node_pose.cpp)
-ament_target_dependencies(test_xarm_planner_node_pose
+add_executable(test_xarm_planner_client_pose test/test_xarm_planner_client_pose.cpp)
+ament_target_dependencies(test_xarm_planner_client_pose
   ${dependencies}
 )
-
-# add_executable(xarm_simple_planner src/xarm_simple_planner.cpp)
-# ament_target_dependencies(xarm_simple_planner
-#   moveit_ros_planning_interface
-#   ${dependencies}
-# )
-
-# add_executable(xarm_simple_planner_joint_test test/xarm_simple_planner_joint_test.cpp)
-# ament_target_dependencies(xarm_simple_planner_joint_test
-#   ${dependencies}
-# )
-# add_executable(xarm_simple_planner_pose_test test/xarm_simple_planner_pose_test.cpp)
-# ament_target_dependencies(xarm_simple_planner_pose_test
-#   ${dependencies}
-# )
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -117,13 +102,10 @@ install(
   TARGETS 
   xarm_planner
   xarm_planner_node
-  test_xarm_planner_joint
-  test_xarm_planner_pose
-  test_xarm_planner_node_joint
-  test_xarm_planner_node_pose
-  # xarm_simple_planner 
-  # xarm_simple_planner_joint_test 
-  # xarm_simple_planner_pose_test
+  test_xarm_planner_api_joint
+  test_xarm_planner_api_pose
+  test_xarm_planner_client_joint
+  test_xarm_planner_client_pose
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
   RUNTIME DESTINATION lib/${PROJECT_NAME}

@@ -6,16 +6,20 @@
 #
 # Author: Vinman <vinman.wen@ufactory.cc> <vinman.cub@gmail.com>
 
+import os
+import json
+from ament_index_python import get_package_share_directory
+from launch.launch_description_sources import load_python_launch_file_as_module
 from launch import LaunchDescription
+from launch.actions import OpaqueFunction
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 
-def generate_launch_description():
-    robot_ip = LaunchConfiguration('robot_ip')
-    report_type = LaunchConfiguration('report_type', default='normal')
+def launch_setup(context, *args, **kwargs):
     prefix = LaunchConfiguration('prefix', default='')
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     limited = LaunchConfiguration('limited', default=False)
@@ -23,12 +27,13 @@ def generate_launch_description():
     velocity_control = LaunchConfiguration('velocity_control', default=False)
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
+    dof = LaunchConfiguration('dof')
 
-    xarm_moveit_realmove_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_xarm_moveit_realmove.launch.py'])),
+    node_executable = 'test_xarm_planner_api_joint'
+    node_parameters = {}
+    xarm_planner_node_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_planner'), 'launch', '_xarm_planner.launch.py'])),
         launch_arguments={
-            'robot_ip': robot_ip,
-            'report_type': report_type,
             'prefix': prefix,
             'hw_ns': hw_ns,
             'limited': limited,
@@ -36,11 +41,18 @@ def generate_launch_description():
             'velocity_control': velocity_control,
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
-            'dof': '5',
-            'no_gui_ctrl': 'false',
+            'dof': dof,
+            'node_executable': node_executable,
+            'node_parameters': json.dumps(node_parameters)
         }.items(),
     )
-    
+
+    return [
+        xarm_planner_node_launch
+    ]
+
+
+def generate_launch_description():
     return LaunchDescription([
-        xarm_moveit_realmove_launch
+        OpaqueFunction(function=launch_setup)
     ])

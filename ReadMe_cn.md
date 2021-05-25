@@ -116,27 +116,27 @@ $ colcon build
     ```bash
     $ cd ~/dev_ws/
     $ source install/setup.bash
-    $ ros2 launch xarm_planner fake_xarm6_planner_node.launch.py
+    $ ros2 launch xarm_planner xarm6_planner_fake.launch.py
     # 通过xarm_planner_node提供的service控制（此方式每次都需要重启xarm_planner_node，即上面那个操作）
-    $ ros2 launch xarm_planner test_xarm_planner_node_joint.launch.py dof:=6
-    # $ ros2 launch xarm_planner test_xarm_planner_node_pose.launch.py dof:=6
+    $ ros2 launch xarm_planner test_xarm_planner_client_joint.launch.py dof:=6
+    # $ ros2 launch xarm_planner test_xarm_planner_client_pose.launch.py dof:=6
     
     # 通过xarm_planner api控制
-    $ ros2 launch xarm_planner test_xarm6_planner_joint.launch.py
-    # $ ros2 launch xarm_planner test_xarm6_planner_pose.launch.py
+    $ ros2 launch xarm_planner test_xarm6_planner_api_joint.launch.py
+    # $ ros2 launch xarm_planner test_xarm6_planner_api_pose.launch.py
     ```
 
 - #### 6.5.2 启动moveit并在rviz显示, 通过planner控制真实机械臂
     ```bash
     $ cd ~/dev_ws/
     $ source install/setup.bash
-    $ ros2 launch xarm_planner realmove_xarm6_planner_node.launch.py robot_ip:=192.168.1.117
+    $ ros2 launch xarm_planner xarm6_planner_realmove.launch.py robot_ip:=192.168.1.117
 
     # 通过xarm_planner_node提供的service控制（此方式每次都需要重启xarm_planner_node，即上面那个操作）
-    $ ros2 launch xarm_planner test_xarm_planner_node_joint.launch.py dof:=6
-    # $ ros2 launch xarm_planner test_xarm_planner_node_pose.launch.py dof:=6
+    $ ros2 launch xarm_planner test_xarm_planner_client_joint.launch.py dof:=6
+    # $ ros2 launch xarm_planner test_xarm_planner_client_pose.launch.py dof:=6
     
     # 通过xarm_planner api控制
-    $ ros2 launch xarm_planner test_xarm6_planner_joint.launch.py
-    # $ ros2 launch xarm_planner test_xarm6_planner_pose.launch.py
+    $ ros2 launch xarm_planner test_xarm6_planner_api_joint.launch.py
+    # $ ros2 launch xarm_planner test_xarm6_planner_api_pose.launch.py
     ```

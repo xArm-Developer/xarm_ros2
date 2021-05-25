@@ -15,9 +15,9 @@ def generate_launch_description():
     dof = LaunchConfiguration('dof')
 
     xarm_planner_node_test = Node(
-        name="test_xarm_planner_node_joint",
+        name="test_xarm_planner_client_joint",
         package="xarm_planner",
-        executable="test_xarm_planner_node_joint",
+        executable="test_xarm_planner_client_joint",
         output="screen",
         parameters=[
             {'DOF': dof},

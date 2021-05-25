@@ -7,21 +7,30 @@
 # Author: Vinman <vinman.wen@ufactory.cc> <vinman.cub@gmail.com>
 
 import os
-import sys
+import yaml
+from tempfile import NamedTemporaryFile
 from ament_index_python import get_package_share_directory
+from launch.launch_description_sources import load_python_launch_file_as_module
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
+from launch.actions import OpaqueFunction
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
-from launch_ros.substitutions import FindPackageShare
-
-package_path = get_package_share_directory('xarm_description')
-sys.path.append(os.path.join(package_path, 'launch', 'lib'))
-from xarm_description_lib import get_xarm_robot_description
 
 
-def generate_launch_description():
+def generate_ros2_controll_params(ros2_control_params_path, ros_namespace=''):
+    if ros_namespace:
+        with open(ros2_control_params_path, 'r') as f:
+            ros2_control_params_yaml = yaml.safe_load(f)
+        ros2_control_params_yaml = {
+            ros_namespace: ros2_control_params_yaml
+        }
+        with NamedTemporaryFile(mode='w', prefix='launch_params_', delete=False) as h:
+            yaml.dump(ros2_control_params_yaml, h, default_flow_style=False)
+            return h.name
+    return ros2_control_params_path
+
+
+def launch_setup(context, *args, **kwargs):
     prefix = LaunchConfiguration('prefix', default='')
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     limited = LaunchConfiguration('limited', default=False)
@@ -31,42 +40,34 @@ def generate_launch_description():
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     dof = LaunchConfiguration('dof', default=7)
     ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='xarm_control/XArmHW')
-    controller_params = LaunchConfiguration('controller_params', default=PathJoinSubstitution([FindPackageShare('xarm_controller'), 'config', 'xarm7_controllers.yaml']))
 
     # robot_description
+    mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_description'), 'launch', 'lib', 'xarm_description_lib.py'))
+    get_xarm_robot_description = getattr(mod, 'get_xarm_robot_description')
     robot_description = get_xarm_robot_description(
         prefix, hw_ns, limited, 
         effort_control, velocity_control, 
         add_gripper, add_vacuum_gripper, 
         dof, ros2_control_plugin
     )
-    
     # ros2 control node
+    ros2_control_params = generate_ros2_controll_params(
+        os.path.join(get_package_share_directory('xarm_controller'), 'config', 'xarm{}_controllers.yaml'.format(dof.perform(context))),
+        LaunchConfiguration('ros_namespace', default='').perform(context)
+    )
     ros2_control_node = Node(
-        # namespace='/',
         package="controller_manager",
         executable="ros2_control_node",
-        # name='controller_manager',
         parameters=[
             robot_description,
-            controller_params,
-            # {
-            #     'update_rate': 48,  # Hz
-            #     'joint_state_controller.type': 'joint_state_controller/JointStateController',
-            #     'xarm6_traj_controller.type': 'joint_trajectory_controller/JointTrajectoryController',
-            #     'xarm6_traj_controller.joints': ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6'],
-            #     'xarm6_traj_controller.interface_name': 'position',
-            #     # 'joint_state_controller': {
-            #     #     'type': 'joint_state_controller/JointStateController'
-            #     # },
-            #     # 'xarm6_traj_controller': {
-            #     #     'type': 'joint_trajectory_controller/JointTrajectoryController',
-            #     #     'joints': ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6'],
-            #     #     'interface_name': 'position'
-            #     # }
-            # }
+            ros2_control_params,
         ],
         output='screen',
     )
+    return [ros2_control_node]
 
-    return LaunchDescription([ros2_control_node])
+
+def generate_launch_description():
+    return LaunchDescription([
+        OpaqueFunction(function=launch_setup)
+    ])
