@@ -21,7 +21,7 @@ std::shared_ptr<rclcpp::Node> node;
 
 void exit_sig_handler(int signum)
 {
-    fprintf(stderr, "[xarm_simple_planner_test] Ctrl-C caught, exit process...\n");
+    fprintf(stderr, "[test_xarm_planner_node_pose] Ctrl-C caught, exit process...\n");
     exit(-1);
 }
 
@@ -53,9 +53,13 @@ int call_request(std::shared_ptr<ServiceT> client, SharedRequest req)
 int main(int argc, char** argv)
 {	
     rclcpp::init(argc, argv);
-    node = rclcpp::Node::make_shared("xarm_planner_node_test_pose");
-    RCLCPP_INFO(node->get_logger(), "xarm_planner_node_test_pose start");
+    node = rclcpp::Node::make_shared("test_xarm_planner_node_pose");
+    RCLCPP_INFO(node->get_logger(), "test_xarm_planner_node_pose start");
     signal(SIGINT, exit_sig_handler);
+
+    int dof;
+    node->get_parameter_or("DOF", dof, 7);
+    RCLCPP_INFO(node->get_logger(), "namespace: %s, dof: %d", node->get_namespace(), dof);
 
     rclcpp::Client<xarm_msgs::srv::PlanPose>::SharedPtr pose_plan_client_ = node->create_client<xarm_msgs::srv::PlanPose>("xarm_pose_plan");
     rclcpp::Client<xarm_msgs::srv::PlanExec>::SharedPtr exec_plan_client_ = node->create_client<xarm_msgs::srv::PlanExec>("xarm_exec_plan");
@@ -121,6 +125,6 @@ int main(int argc, char** argv)
         call_request(exec_plan_client_, exec_plan_req);
     }
 
-    RCLCPP_INFO(node->get_logger(), "xarm_planner_node_test_pose over");
+    RCLCPP_INFO(node->get_logger(), "test_xarm_planner_node_pose over");
     return 0;
 }

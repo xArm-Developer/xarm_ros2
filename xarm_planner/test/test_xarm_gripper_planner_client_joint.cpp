@@ -21,7 +21,7 @@ std::shared_ptr<rclcpp::Node> node;
 
 void exit_sig_handler(int signum)
 {
-    fprintf(stderr, "[test_xarm_planner_node_joint] Ctrl-C caught, exit process...\n");
+    fprintf(stderr, "[test_xarm_gripper_planner_node_joint] Ctrl-C caught, exit process...\n");
     exit(-1);
 }
 
@@ -55,17 +55,14 @@ int main(int argc, char** argv)
     rclcpp::init(argc, argv);
     rclcpp::NodeOptions node_options;
     node_options.automatically_declare_parameters_from_overrides(true);
-    node = rclcpp::Node::make_shared("test_xarm_planner_node_joint", node_options);
-    RCLCPP_INFO(node->get_logger(), "test_xarm_planner_node_joint start");
-    // node->declare_parameter("DOF");
-    int dof;
-    node->get_parameter_or("DOF", dof, 7);
-    RCLCPP_INFO(node->get_logger(), "namespace: %s, dof: %d", node->get_namespace(), dof);
+    node = rclcpp::Node::make_shared("test_xarm_gripper_planner_node_joint", node_options);
+    RCLCPP_INFO(node->get_logger(), "test_xarm_gripper_planner_node_joint start");
+    RCLCPP_INFO(node->get_logger(), "namespace: %s", node->get_namespace());
     
     signal(SIGINT, exit_sig_handler);
 
-    rclcpp::Client<xarm_msgs::srv::PlanJoint>::SharedPtr joint_plan_client_ = node->create_client<xarm_msgs::srv::PlanJoint>("xarm_joint_plan");
-    rclcpp::Client<xarm_msgs::srv::PlanExec>::SharedPtr exec_plan_client_ = node->create_client<xarm_msgs::srv::PlanExec>("xarm_exec_plan");
+    rclcpp::Client<xarm_msgs::srv::PlanJoint>::SharedPtr joint_plan_client_ = node->create_client<xarm_msgs::srv::PlanJoint>("xarm_gripper_joint_plan");
+    rclcpp::Client<xarm_msgs::srv::PlanExec>::SharedPtr exec_plan_client_ = node->create_client<xarm_msgs::srv::PlanExec>("xarm_gripper_exec_plan");
 
     std::shared_ptr<xarm_msgs::srv::PlanJoint::Request> joint_plan_req = std::make_shared<xarm_msgs::srv::PlanJoint::Request>();;
     std::shared_ptr<xarm_msgs::srv::PlanExec::Request> exec_plan_req = std::make_shared<xarm_msgs::srv::PlanExec::Request>();;
@@ -73,47 +70,11 @@ int main(int argc, char** argv)
     exec_plan_req->exec = true;
     exec_plan_req->wait = true;
 
-    std::vector<double> tar_joint1;
-    std::vector<double> tar_joint2;
-    std::vector<double> tar_joint3;
-    
-    switch (dof) {
-    case 5:
-        {
-            tar_joint1 = {1.570796, -1.570796, -1.047198, 2.792527, -1.570796};
-            tar_joint2 = {0, 0, 0, 0, 0};
-            tar_joint3 = {-1.570796, -1.570796, -1.047198, -0.349066, 2.617994};
-        }
-        break;
-    case 6:
-        {
-            tar_joint1 = {1.570796, -1.570796, -1.047198, 2.967060, 2.792527, -3.124139};
-            tar_joint2 = {0, 0, 0, 0, 0, 0};
-            tar_joint3 = {-1.570796, -1.570796, -1.047198, -2.967060, -0.349066, 3.124139};
-        }
-        break;
-    case 7:
-        {
-            tar_joint1 = {1.570796, -1.570796, -1.570796, 1.396263, 2.967060, 2.792527, -1.570796};
-            tar_joint2 = {0, 0, 0, 0, 0, 0, 0};
-            tar_joint3 = {-1.570796, -1.570796, 1.570796, 1.396263, -2.967060, -0.349066, 2.617994};
-        }
-        break;
-    default:
-        {
-            RCLCPP_INFO(node->get_logger(), "param dof error");
-            exit(1);
-        }
-        break;
-    }
+    std::vector<double> tar_joint1(6, 0.0);  // open
+    std::vector<double> tar_joint2(6, 0.85); // close
     
     while (rclcpp::ok())
     {
-        joint_plan_req->target = tar_joint2;
-        call_request(joint_plan_client_, joint_plan_req);
-        call_request(exec_plan_client_, exec_plan_req);
-        // rclcpp::sleep_for(std::chrono::seconds(3));
-
         joint_plan_req->target = tar_joint1;
         call_request(joint_plan_client_, joint_plan_req);
         call_request(exec_plan_client_, exec_plan_req);
@@ -123,13 +84,8 @@ int main(int argc, char** argv)
         call_request(joint_plan_client_, joint_plan_req);
         call_request(exec_plan_client_, exec_plan_req);
         // rclcpp::sleep_for(std::chrono::seconds(3));
-
-        joint_plan_req->target = tar_joint3;
-        call_request(joint_plan_client_, joint_plan_req);
-        call_request(exec_plan_client_, exec_plan_req);
-        // rclcpp::sleep_for(std::chrono::seconds(3));
     }
 
-    RCLCPP_INFO(node->get_logger(), "test_xarm_planner_node_joint over");
+    RCLCPP_INFO(node->get_logger(), "test_xarm_gripper_planner_node_joint over");
     return 0;
 }

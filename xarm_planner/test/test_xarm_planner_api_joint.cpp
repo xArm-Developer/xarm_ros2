@@ -9,7 +9,7 @@
 
 void exit_sig_handler(int signum)
 {
-    fprintf(stderr, "[xarm_simple_planner_test] Ctrl-C caught, exit process...\n");
+    fprintf(stderr, "[test_xarm_planner_api_joint] Ctrl-C caught, exit process...\n");
     exit(-1);
 }
 
@@ -18,15 +18,17 @@ int main(int argc, char** argv)
     rclcpp::init(argc, argv);
     rclcpp::NodeOptions node_options;
     node_options.automatically_declare_parameters_from_overrides(true);
-    std::shared_ptr<rclcpp::Node> node = rclcpp::Node::make_shared("xarm_planner_test_joint", node_options);
-    RCLCPP_INFO(node->get_logger(), "xarm_planner_test_joint start");
-    int dof;
-    node->get_parameter_or("DOF", dof, 7);
-    RCLCPP_INFO(node->get_logger(), "namespace: %s, dof: %d", node->get_namespace(), dof);
+    std::shared_ptr<rclcpp::Node> node = rclcpp::Node::make_shared("test_xarm_planner_api_joint", node_options);
+    RCLCPP_INFO(node->get_logger(), "test_xarm_planner_api_joint start");
 
     signal(SIGINT, exit_sig_handler);
 
+    int dof;
+    node->get_parameter_or("DOF", dof, 7);
     std::string group_name = "xarm" + std::to_string(dof);
+
+    RCLCPP_INFO(node->get_logger(), "namespace: %s, group_name: %s", node->get_namespace(), group_name.c_str());
+
     xarm_planner::XArmPlanner planner(node, group_name);
 
     std::vector<double> tar_joint1;
@@ -78,6 +80,6 @@ int main(int argc, char** argv)
         planner.executePath();
     }
 
-    RCLCPP_INFO(node->get_logger(), "xarm_planner_test_joint over");
+    RCLCPP_INFO(node->get_logger(), "test_xarm_planner_api_joint over");
     return 0;
 }

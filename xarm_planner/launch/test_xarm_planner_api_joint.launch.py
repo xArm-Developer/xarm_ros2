@@ -39,7 +39,7 @@ def launch_setup(context, *args, **kwargs):
             'limited': limited,
             'effort_control': effort_control,
             'velocity_control': velocity_control,
-            'add_gripper': add_gripper,
+            'add_gripper': 'false',
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': dof,
             'node_executable': node_executable,

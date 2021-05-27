@@ -30,6 +30,7 @@ def launch_setup(context, *args, **kwargs):
     node_executable = LaunchConfiguration('node_executable', default='xarm_planner_node')
     node_name = LaunchConfiguration('node_name', default=node_executable)
     node_parameters = LaunchConfiguration('node_parameters', default={})
+    use_gripper_node = LaunchConfiguration('use_gripper_node', default=add_gripper)
 
     moveit_config_package_name = 'xarm_moveit_config'
     xarm_type = 'xarm{}'.format(dof.perform(context))
@@ -59,9 +60,23 @@ def launch_setup(context, *args, **kwargs):
             xarm_planner_parameters,
         ],
     )
-    return [
+
+    nodes = [
         xarm_planner_node
     ]
+    if add_gripper.perform(context) == 'true' and use_gripper_node.perform(context) == 'true':
+        xarm_gripper_planner_node = Node(
+            name=node_name,
+            package="xarm_planner",
+            executable='xarm_gripper_planner_node',
+            output="screen",
+            parameters=[
+                robot_description_parameters,
+                {'PLANNING_GROUP': 'xarm_gripper'},
+            ],
+        )
+        nodes.append(xarm_gripper_planner_node)
+    return nodes
 
 
 def generate_launch_description():

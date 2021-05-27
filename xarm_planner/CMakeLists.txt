@@ -54,6 +54,15 @@ target_link_libraries(xarm_planner_node
   ${ament_LIBRARIES}
 )
 
+add_executable(xarm_gripper_planner_node src/xarm_gripper_planner_node.cpp)
+ament_target_dependencies(xarm_gripper_planner_node
+  ${dependencies}
+)
+target_link_libraries(xarm_gripper_planner_node 
+  xarm_planner
+  ${ament_LIBRARIES}
+)
+
 add_executable(test_xarm_planner_api_joint test/test_xarm_planner_api_joint.cpp)
 ament_target_dependencies(test_xarm_planner_api_joint
   ${dependencies}
@@ -72,6 +81,15 @@ target_link_libraries(test_xarm_planner_api_pose
   ${ament_LIBRARIES}
 )
 
+add_executable(test_xarm_gripper_planner_api_joint test/test_xarm_gripper_planner_api_joint.cpp)
+ament_target_dependencies(test_xarm_gripper_planner_api_joint
+  ${dependencies}
+)
+target_link_libraries(test_xarm_gripper_planner_api_joint 
+  xarm_planner
+  ${ament_LIBRARIES}
+)
+
 add_executable(test_xarm_planner_client_joint test/test_xarm_planner_client_joint.cpp)
 ament_target_dependencies(test_xarm_planner_client_joint
   ${dependencies}
@@ -79,6 +97,11 @@ ament_target_dependencies(test_xarm_planner_client_joint
 
 add_executable(test_xarm_planner_client_pose test/test_xarm_planner_client_pose.cpp)
 ament_target_dependencies(test_xarm_planner_client_pose
+  ${dependencies}
+)
+
+add_executable(test_xarm_gripper_planner_client_joint test/test_xarm_gripper_planner_client_joint.cpp)
+ament_target_dependencies(test_xarm_gripper_planner_client_joint
   ${dependencies}
 )
 
@@ -102,10 +125,13 @@ install(
   TARGETS 
   xarm_planner
   xarm_planner_node
+  xarm_gripper_planner_node
   test_xarm_planner_api_joint
   test_xarm_planner_api_pose
+  test_xarm_gripper_planner_api_joint
   test_xarm_planner_client_joint
   test_xarm_planner_client_pose
+  test_xarm_gripper_planner_client_joint
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
   RUNTIME DESTINATION lib/${PROJECT_NAME}
