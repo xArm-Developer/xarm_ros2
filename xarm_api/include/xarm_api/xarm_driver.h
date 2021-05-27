@@ -10,8 +10,10 @@
 #define __XARM_DRIVER_H
 
 #include <rclcpp/rclcpp.hpp>
+#include <rclcpp_action/rclcpp_action.hpp>
 #include <std_msgs/msg/float32.hpp>
 #include <sensor_msgs/msg/joint_state.hpp>
+#include <control_msgs/action/gripper_command.hpp>
 
 #include "xarm_msgs.h"
 #include "xarm/wrapper/xarm_api.h"
@@ -69,11 +71,18 @@ namespace xarm_api
         void pub_cgpio_state(xarm_msgs::msg::CIOState &cio_msg);
 
         rclcpp::Logger get_logger() { return node_->get_logger(); }
+
     private:
         void _report_connect_changed_callback(bool connected, bool reported);
         void _report_data_callback(XArmReportData *report_data_ptr);
         bool _get_wait_param(void);
-    
+
+        rclcpp_action::GoalResponse _handle_gripper_action_goal(const rclcpp_action::GoalUUID & uuid, std::shared_ptr<const control_msgs::action::GripperCommand::Goal> goal);
+        rclcpp_action::CancelResponse _handle_gripper_action_cancel(const std::shared_ptr<rclcpp_action::ServerGoalHandle<control_msgs::action::GripperCommand>> goal_handle);
+        void _handle_gripper_action_accepted(const std::shared_ptr<rclcpp_action::ServerGoalHandle<control_msgs::action::GripperCommand>> goal_handle);
+        void _gripper_action_execute(const std::shared_ptr<rclcpp_action::ServerGoalHandle<control_msgs::action::GripperCommand>> goal_handle);
+        void _pub_gripper_joint_states(float pos);
+
     public:
         XArmAPI *arm;
 
@@ -84,41 +93,42 @@ namespace xarm_api
         int curr_err_;
 
         rclcpp::Node::SharedPtr node_;
-        rclcpp::Service<xarm_msgs::srv::SetAxis>::SharedPtr motion_ctrl_server_;
-        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr set_mode_server_;
-        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr set_state_server_;
-        rclcpp::Service<xarm_msgs::srv::TCPOffset>::SharedPtr set_tcp_offset_server_;
-        rclcpp::Service<xarm_msgs::srv::SetLoad>::SharedPtr set_load_server_;
-        rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr go_home_server_;
-        rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_joint_server_;
-        rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_jointb_server_;
-        rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_lineb_server_;
-        rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_line_server_;
-        rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_line_tool_server_;
-        rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_servoj_server_;
-        rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_servo_cart_server_;
-        rclcpp::Service<xarm_msgs::srv::ClearErr>::SharedPtr clear_err_server_;
-        rclcpp::Service<xarm_msgs::srv::ClearErr>::SharedPtr moveit_clear_err_server_;
-        rclcpp::Service<xarm_msgs::srv::GetErr>::SharedPtr get_err_server_;
-        rclcpp::Service<xarm_msgs::srv::MoveAxisAngle>::SharedPtr move_line_aa_server_;
-        rclcpp::Service<xarm_msgs::srv::MoveAxisAngle>::SharedPtr move_servo_cart_aa_server_;
-        rclcpp::Service<xarm_msgs::srv::SetDigitalIO>::SharedPtr set_end_io_server_;
-        rclcpp::Service<xarm_msgs::srv::GetDigitalIO>::SharedPtr get_digital_in_server_;
-        rclcpp::Service<xarm_msgs::srv::GetAnalogIO>::SharedPtr get_analog_in_server_;
-        rclcpp::Service<xarm_msgs::srv::ConfigToolModbus>::SharedPtr config_modbus_server_;
-        rclcpp::Service<xarm_msgs::srv::SetToolModbus>::SharedPtr set_modbus_server_;
-        rclcpp::Service<xarm_msgs::srv::GripperConfig>::SharedPtr gripper_config_server_;
-        rclcpp::Service<xarm_msgs::srv::GripperMove>::SharedPtr gripper_move_server_;
-        rclcpp::Service<xarm_msgs::srv::GripperState>::SharedPtr gripper_state_server_;
-        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr set_vacuum_gripper_server_;
-        rclcpp::Service<xarm_msgs::srv::SetDigitalIO>::SharedPtr set_controller_dout_server_;
-        rclcpp::Service<xarm_msgs::srv::GetControllerDigitalIO>::SharedPtr get_controller_din_server_;
-        rclcpp::Service<xarm_msgs::srv::SetControllerAnalogIO>::SharedPtr set_controller_aout_server_;
-        rclcpp::Service<xarm_msgs::srv::GetAnalogIO>::SharedPtr get_controller_ain_server_;
-        rclcpp::Service<xarm_msgs::srv::MoveVelo>::SharedPtr vc_set_jointv_server_;
-        rclcpp::Service<xarm_msgs::srv::MoveVelo>::SharedPtr vc_set_linev_server_;
-        rclcpp::Service<xarm_msgs::srv::SetFloat32>::SharedPtr set_max_jacc_server_;
-        rclcpp::Service<xarm_msgs::srv::SetFloat32>::SharedPtr set_max_lacc_server_;
+        rclcpp::Node::SharedPtr hw_node_;
+        rclcpp::Service<xarm_msgs::srv::SetAxis>::SharedPtr motion_ctrl_service_;
+        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr set_mode_service_;
+        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr set_state_service_;
+        rclcpp::Service<xarm_msgs::srv::TCPOffset>::SharedPtr set_tcp_offset_service_;
+        rclcpp::Service<xarm_msgs::srv::SetLoad>::SharedPtr set_load_service_;
+        rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr go_home_service_;
+        rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_joint_service_;
+        rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_jointb_service_;
+        rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_lineb_service_;
+        rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_line_service_;
+        rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_line_tool_service_;
+        rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_servoj_service_;
+        rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_servo_cart_service_;
+        rclcpp::Service<xarm_msgs::srv::ClearErr>::SharedPtr clear_err_service_;
+        rclcpp::Service<xarm_msgs::srv::ClearErr>::SharedPtr moveit_clear_err_service_;
+        rclcpp::Service<xarm_msgs::srv::GetErr>::SharedPtr get_err_service_;
+        rclcpp::Service<xarm_msgs::srv::MoveAxisAngle>::SharedPtr move_line_aa_service_;
+        rclcpp::Service<xarm_msgs::srv::MoveAxisAngle>::SharedPtr move_servo_cart_aa_service_;
+        rclcpp::Service<xarm_msgs::srv::SetDigitalIO>::SharedPtr set_end_io_service_;
+        rclcpp::Service<xarm_msgs::srv::GetDigitalIO>::SharedPtr get_digital_in_service_;
+        rclcpp::Service<xarm_msgs::srv::GetAnalogIO>::SharedPtr get_analog_in_service_;
+        rclcpp::Service<xarm_msgs::srv::ConfigToolModbus>::SharedPtr config_modbus_service_;
+        rclcpp::Service<xarm_msgs::srv::SetToolModbus>::SharedPtr set_modbus_service_;
+        rclcpp::Service<xarm_msgs::srv::GripperConfig>::SharedPtr gripper_config_service_;
+        rclcpp::Service<xarm_msgs::srv::GripperMove>::SharedPtr gripper_move_service_;
+        rclcpp::Service<xarm_msgs::srv::GripperState>::SharedPtr gripper_state_service_;
+        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr set_vacuum_gripper_service_;
+        rclcpp::Service<xarm_msgs::srv::SetDigitalIO>::SharedPtr set_controller_dout_service_;
+        rclcpp::Service<xarm_msgs::srv::GetControllerDigitalIO>::SharedPtr get_controller_din_service_;
+        rclcpp::Service<xarm_msgs::srv::SetControllerAnalogIO>::SharedPtr set_controller_aout_service_;
+        rclcpp::Service<xarm_msgs::srv::GetAnalogIO>::SharedPtr get_controller_ain_service_;
+        rclcpp::Service<xarm_msgs::srv::MoveVelo>::SharedPtr vc_set_jointv_service_;
+        rclcpp::Service<xarm_msgs::srv::MoveVelo>::SharedPtr vc_set_linev_service_;
+        rclcpp::Service<xarm_msgs::srv::SetFloat32>::SharedPtr set_max_jacc_service_;
+        rclcpp::Service<xarm_msgs::srv::SetFloat32>::SharedPtr set_max_lacc_service_;
 
         rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr joint_state_pub_;
         rclcpp::Publisher<xarm_msgs::msg::RobotMsg>::SharedPtr robot_state_pub_;
@@ -126,6 +136,8 @@ namespace xarm_api
 
         rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr sleep_sub_;
 
+        rclcpp_action::Server<control_msgs::action::GripperCommand>::SharedPtr gripper_action_server_;
+        sensor_msgs::msg::JointState gripper_joint_state_msg_;
     };
 }
 

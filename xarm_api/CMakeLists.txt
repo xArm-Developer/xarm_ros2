@@ -37,8 +37,10 @@ if(BUILD_TESTING)
 endif()
 
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_action REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(control_msgs REQUIRED)
 find_package(xarm_msgs REQUIRED)
 find_package(xarm_sdk REQUIRED)
 
@@ -48,7 +50,7 @@ include_directories(
   ${ament_INCLUDE_DIRS}
 )
 
-set(dependencies "rclcpp" "std_msgs" "sensor_msgs" "xarm_msgs")
+set(dependencies "rclcpp" "rclcpp_action" "std_msgs" "sensor_msgs" "control_msgs" "xarm_msgs")
 
 add_executable(xarm_driver_node
   src/xarm_driver_node.cpp
@@ -65,6 +67,15 @@ add_library(xarm_ros_client SHARED
   src/xarm_ros_client.cpp
 )
 ament_target_dependencies(xarm_ros_client ${dependencies})
+
+# add_executable(xarm_gripper_node
+#   src/xarm_gripper_node.cpp
+# )
+# ament_target_dependencies(xarm_gripper_node ${dependencies})
+# target_link_libraries(xarm_gripper_node 
+#   xarm_ros_client
+#   ${ament_LIBRARIES}
+# )
 
 
 add_executable(test_xarm_ros_client
@@ -107,6 +118,7 @@ install(
 install(
   TARGETS
   xarm_driver_node 
+  # xarm_gripper_node
   test_xarm_ros_client
   test_xarm_velo_move
   test_xarm_states

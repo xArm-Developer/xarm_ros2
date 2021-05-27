@@ -9,19 +9,14 @@
 import os
 import sys
 from ament_index_python import get_package_share_directory
+from launch.launch_description_sources import load_python_launch_file_as_module
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
-from launch.conditions import IfCondition, UnlessCondition
-from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
+from launch.actions import OpaqueFunction, DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
-from launch_ros.substitutions import FindPackageShare
-
-package_path = get_package_share_directory('xarm_description')
-sys.path.append(os.path.join(package_path, 'launch', 'lib'))
-from xarm_description_lib import get_xarm_robot_description
 
 
-def generate_launch_description():
+def launch_setup(context, *args, **kwargs):
     prefix = LaunchConfiguration('prefix', default='')
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     limited = LaunchConfiguration('limited', default=False)
@@ -34,8 +29,10 @@ def generate_launch_description():
     joint_states_remapping = LaunchConfiguration('joint_states_remapping', default='joint_states')
 
     # robot_description
+    mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_description'), 'launch', 'lib', 'xarm_description_lib.py'))
+    get_xarm_robot_description = getattr(mod, 'get_xarm_robot_description')
     robot_description = get_xarm_robot_description(
-        prefix, hw_ns, limited, 
+        prefix, hw_ns.perform(context).strip('/'), limited, 
         effort_control, velocity_control, 
         add_gripper, add_vacuum_gripper, 
         dof, ros2_control_plugin
@@ -48,10 +45,17 @@ def generate_launch_description():
         output="screen",
         parameters=[robot_description],
         remappings=[
-            ('joint_states', joint_states_remapping),
+            # ('joint_states', joint_states_remapping),
             ('/tf', 'tf'),
             ('/tf_static', 'tf_static'),
         ]
     )
+    return [
+        robot_state_publisher_node
+    ]
 
-    return LaunchDescription([robot_state_publisher_node])
+
+def generate_launch_description():
+    return LaunchDescription([
+        OpaqueFunction(function=launch_setup)
+    ])

@@ -21,9 +21,9 @@ class XArmDriverRunner
         XArmDriverRunner(rclcpp::Node::SharedPtr& node, std::string &server_ip)
         {
             node_ = node;
-            node->get_parameter_or("DOF", joint_num_, 7);
-            node->get_parameter_or("xarm_report_type", report_type_, std::string("normal"));
-            node->get_parameter_or("joint_names", joint_name_, 
+            node_->get_parameter_or("DOF", joint_num_, 7);
+            node_->get_parameter_or("xarm_report_type", report_type_, std::string("normal"));
+            node_->get_parameter_or("joint_names", joint_name_, 
                 std::vector<std::string>({"joint1", "joint2", "joint3", "joint4", "joint5", "joint6", "joint7"}));
             
             RCLCPP_INFO(node_->get_logger(), "robot_ip=%s, report_type=%s, dof=%d", server_ip.c_str(), report_type_.c_str(), joint_num_);
@@ -31,7 +31,7 @@ class XArmDriverRunner
             is_first_cycle_ = true;
             prev_angle_ = new double [joint_num_];
 
-            xarm_driver_.init(node, server_ip);
+            xarm_driver_.init(node_, server_ip);
             xarm_driver_.arm->register_connect_changed_callback(std::bind(&XArmDriverRunner::_report_connect_changed_callback, this, std::placeholders::_1, std::placeholders::_2));
             xarm_driver_.arm->register_report_data_callback(std::bind(&XArmDriverRunner::_report_data_callback, this, std::placeholders::_1));
         }
@@ -142,14 +142,11 @@ class XArmDriverRunner
 int main(int argc, char **argv)
 {
     rclcpp::init(argc, argv);
-    std::shared_ptr<rclcpp::Node> node = rclcpp::Node::make_shared("xarm_driver_node");
+    rclcpp::NodeOptions node_options;
+    node_options.automatically_declare_parameters_from_overrides(true);
+    std::shared_ptr<rclcpp::Node> node = rclcpp::Node::make_shared("xarm_driver_node", node_options);
 
     RCLCPP_INFO(node->get_logger(), "namespace: %s", node->get_namespace());
-
-    node->declare_parameter("xarm_robot_ip");
-    node->declare_parameter("xarm_report_type");
-    node->declare_parameter("DOF");
-    node->declare_parameter("joint_names");
 
     std::string robot_ip = "";
     node->get_parameter_or("xarm_robot_ip", robot_ip, robot_ip);

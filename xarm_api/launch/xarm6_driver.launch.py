@@ -40,6 +40,7 @@ def generate_launch_description():
     robot_ip = LaunchConfiguration('robot_ip')
     report_type = LaunchConfiguration('report_type', default='normal')
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
+    add_gripper = LaunchConfiguration('add_gripper', default=False)
 
     xarm_driver_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/_xarm_driver.launch.py']),
@@ -48,6 +49,7 @@ def generate_launch_description():
             'report_type': report_type,
             'dof': '6',
             'hw_ns': hw_ns,
+            'add_gripper': add_gripper,
         }.items(),
     )
     return LaunchDescription(declared_arguments + [xarm_driver_launch])

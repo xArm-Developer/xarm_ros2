@@ -1,5 +1,6 @@
 controller_names:
   - fake_xarm7_traj_controller
+  - fake_xarm_gripper_controller
 
 fake_xarm7_traj_controller:
   joints:
@@ -10,3 +11,7 @@ fake_xarm7_traj_controller:
     - joint5
     - joint6
     - joint7
+
+fake_xarm_gripper_controller:
+  joints:
+    - drive_joint

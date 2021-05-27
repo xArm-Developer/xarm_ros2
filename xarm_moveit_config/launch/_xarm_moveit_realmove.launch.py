@@ -42,6 +42,7 @@ def launch_setup(context, *args, **kwargs):
             'report_type': report_type,
             'dof': dof,
             'hw_ns': hw_ns,
+            'add_gripper': add_gripper,
         }.items(),
     )
     
@@ -88,7 +89,7 @@ def launch_setup(context, *args, **kwargs):
         executable="joint_state_publisher",
         name='joint_state_publisher',
         output='screen',
-        parameters=[{'source_list': ['{}/joint_states'.format(hw_ns.perform(context))]}],
+        parameters=[{'source_list': ['{}/joint_states'.format(hw_ns.perform(context))], 'rate': 10}],
         remappings=[
             ('follow_joint_trajectory', '{}_traj_controller/follow_joint_trajectory'.format(xarm_type)),
         ],

@@ -45,7 +45,7 @@ def launch_setup(context, *args, **kwargs):
     mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_description'), 'launch', 'lib', 'xarm_description_lib.py'))
     get_xarm_robot_description = getattr(mod, 'get_xarm_robot_description')
     robot_description = get_xarm_robot_description(
-        prefix, hw_ns, limited, 
+        prefix, hw_ns.perform(context).strip('/'), limited, 
         effort_control, velocity_control, 
         add_gripper, add_vacuum_gripper, 
         dof, ros2_control_plugin

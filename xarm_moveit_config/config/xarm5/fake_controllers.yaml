@@ -1,5 +1,6 @@
 controller_names:
   - fake_xarm5_traj_controller
+  - fake_xarm_gripper_controller
 
 fake_xarm5_traj_controller:
   joints:
@@ -8,3 +9,7 @@ fake_xarm5_traj_controller:
     - joint3
     - joint4
     - joint5
+
+fake_xarm_gripper_controller:
+  joints:
+    - drive_joint

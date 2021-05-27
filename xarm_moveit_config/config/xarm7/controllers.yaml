@@ -1,5 +1,6 @@
 controller_names:
   - xarm7_traj_controller
+  - xarm_gripper
 
 xarm7_traj_controller:
   action_ns: follow_joint_trajectory
@@ -14,3 +15,9 @@ xarm7_traj_controller:
     - joint6
     - joint7
 
+xarm_gripper:
+  action_ns: gripper_action
+  type: GripperCommand
+  default: true
+  joints:
+    - drive_joint

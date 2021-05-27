@@ -34,6 +34,7 @@ endif()
 
 install(DIRECTORY
   config
+  rviz
   srdf
   launch
   DESTINATION share/${PROJECT_NAME}/

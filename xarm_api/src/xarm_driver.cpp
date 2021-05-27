@@ -12,6 +12,7 @@
 #define DEBUG_MODE 1
 
 #define BIND_CLS_CB(func) std::bind(func, this, std::placeholders::_1, std::placeholders::_2)
+#define BIND_CLS_CB_1(func) std::bind(func, this, std::placeholders::_1)
 
 
 void* cmd_heart_beat(void* args)
@@ -61,10 +62,13 @@ namespace xarm_api
     }
 
     void XArmDriver::init(rclcpp::Node::SharedPtr& node, std::string &server_ip)
-    {   
+    {
         node_ = node;
-        node->get_parameter_or("DOF", dof_, 7);
-        node->get_parameter_or("xarm_report_type", report_type_, std::string("normal"));
+        std::string hw_ns;
+        node_->get_parameter_or("hw_ns", hw_ns, std::string("xarm"));
+        hw_node_ = node->create_sub_node(hw_ns);
+        node_->get_parameter_or("DOF", dof_, 7);
+        node_->get_parameter_or("xarm_report_type", report_type_, std::string("normal"));
         
         arm = new XArmAPI(
             server_ip, 
@@ -114,48 +118,181 @@ namespace xarm_api
         }
 
         // api command services:
-        motion_ctrl_server_ = node->create_service<xarm_msgs::srv::SetAxis>("motion_ctrl", BIND_CLS_CB(&XArmDriver::MotionCtrlCB));
-        set_mode_server_ = node->create_service<xarm_msgs::srv::SetInt16>("set_mode", BIND_CLS_CB(&XArmDriver::SetModeCB));
-        set_state_server_ = node->create_service<xarm_msgs::srv::SetInt16>("set_state", BIND_CLS_CB(&XArmDriver::SetStateCB));
-        set_tcp_offset_server_ = node->create_service<xarm_msgs::srv::TCPOffset>("set_tcp_offset", BIND_CLS_CB(&XArmDriver::SetTCPOffsetCB));
-        set_load_server_ = node->create_service<xarm_msgs::srv::SetLoad>("set_load", BIND_CLS_CB(&XArmDriver::SetLoadCB));
-        go_home_server_ = node->create_service<xarm_msgs::srv::Move>("go_home", BIND_CLS_CB(&XArmDriver::GoHomeCB));
-        move_joint_server_ = node->create_service<xarm_msgs::srv::Move>("move_joint", BIND_CLS_CB(&XArmDriver::MoveJointCB));
-        move_jointb_server_ = node->create_service<xarm_msgs::srv::Move>("move_jointb", BIND_CLS_CB(&XArmDriver::MoveJointbCB));
-        move_lineb_server_ = node->create_service<xarm_msgs::srv::Move>("move_lineb", BIND_CLS_CB(&XArmDriver::MoveLinebCB));
-        move_line_server_ = node->create_service<xarm_msgs::srv::Move>("move_line", BIND_CLS_CB(&XArmDriver::MoveLineCB));
-        move_line_tool_server_ = node->create_service<xarm_msgs::srv::Move>("move_line_tool", BIND_CLS_CB(&XArmDriver::MoveLineToolCB));
-        move_servoj_server_ = node->create_service<xarm_msgs::srv::Move>("move_servoj", BIND_CLS_CB(&XArmDriver::MoveServoJCB));
-        move_servo_cart_server_ = node->create_service<xarm_msgs::srv::Move>("move_servo_cart", BIND_CLS_CB(&XArmDriver::MoveServoCartCB));
-        clear_err_server_ = node->create_service<xarm_msgs::srv::ClearErr>("clear_err", BIND_CLS_CB(&XArmDriver::ClearErrCB));
-        moveit_clear_err_server_ = node->create_service<xarm_msgs::srv::ClearErr>("moveit_clear_err", BIND_CLS_CB(&XArmDriver::MoveitClearErrCB));
-        get_err_server_ = node->create_service<xarm_msgs::srv::GetErr>("get_err", BIND_CLS_CB(&XArmDriver::GetErrCB));
-        move_line_aa_server_ = node->create_service<xarm_msgs::srv::MoveAxisAngle>("move_line_aa", BIND_CLS_CB(&XArmDriver::MoveLineAACB));
-        move_servo_cart_aa_server_ = node->create_service<xarm_msgs::srv::MoveAxisAngle>("move_servo_cart_aa", BIND_CLS_CB(&XArmDriver::MoveServoCartAACB));
-        set_end_io_server_ = node->create_service<xarm_msgs::srv::SetDigitalIO>("set_digital_out", BIND_CLS_CB(&XArmDriver::SetDigitalIOCB));
-        get_digital_in_server_ = node->create_service<xarm_msgs::srv::GetDigitalIO>("get_digital_in", BIND_CLS_CB(&XArmDriver::GetDigitalIOCB));
-        get_analog_in_server_ = node->create_service<xarm_msgs::srv::GetAnalogIO>("get_analog_in", BIND_CLS_CB(&XArmDriver::GetAnalogIOCB));
-        config_modbus_server_ = node->create_service<xarm_msgs::srv::ConfigToolModbus>("config_tool_modbus", BIND_CLS_CB(&XArmDriver::ConfigModbusCB));
-        set_modbus_server_ = node->create_service<xarm_msgs::srv::SetToolModbus>("set_tool_modbus", BIND_CLS_CB(&XArmDriver::SetModbusCB));
-        gripper_config_server_ = node->create_service<xarm_msgs::srv::GripperConfig>("gripper_config", BIND_CLS_CB(&XArmDriver::GripperConfigCB));
-        gripper_move_server_ = node->create_service<xarm_msgs::srv::GripperMove>("gripper_move", BIND_CLS_CB(&XArmDriver::GripperMoveCB));
-        gripper_state_server_ = node->create_service<xarm_msgs::srv::GripperState>("gripper_state", BIND_CLS_CB(&XArmDriver::GripperStateCB));
-        set_vacuum_gripper_server_ = node->create_service<xarm_msgs::srv::SetInt16>("vacuum_gripper_set", BIND_CLS_CB(&XArmDriver::VacuumGripperCB));
-        set_controller_dout_server_ = node->create_service<xarm_msgs::srv::SetDigitalIO>("set_controller_dout", BIND_CLS_CB(&XArmDriver::SetControllerDOutCB));
-        get_controller_din_server_ = node->create_service<xarm_msgs::srv::GetControllerDigitalIO>("get_controller_din", BIND_CLS_CB(&XArmDriver::GetControllerDInCB));
-        set_controller_aout_server_ = node->create_service<xarm_msgs::srv::SetControllerAnalogIO>("set_controller_aout", BIND_CLS_CB(&XArmDriver::SetControllerAOutCB));
-        get_controller_ain_server_ = node->create_service<xarm_msgs::srv::GetAnalogIO>("get_controller_ain", BIND_CLS_CB(&XArmDriver::GetControllerAInCB));
-        vc_set_jointv_server_ = node->create_service<xarm_msgs::srv::MoveVelo>("velo_move_joint", BIND_CLS_CB(&XArmDriver::VeloMoveJointCB));
-        vc_set_linev_server_ = node->create_service<xarm_msgs::srv::MoveVelo>("velo_move_line", BIND_CLS_CB(&XArmDriver::VeloMoveLineVCB));
-        set_max_jacc_server_ = node->create_service<xarm_msgs::srv::SetFloat32>("set_max_acc_joint", BIND_CLS_CB(&XArmDriver::SetMaxJAccCB));
-        set_max_lacc_server_ = node->create_service<xarm_msgs::srv::SetFloat32>("set_max_acc_line", BIND_CLS_CB(&XArmDriver::SetMaxLAccCB));
+        motion_ctrl_service_ = hw_node_->create_service<xarm_msgs::srv::SetAxis>("motion_ctrl", BIND_CLS_CB(&XArmDriver::MotionCtrlCB));
+        set_mode_service_ = hw_node_->create_service<xarm_msgs::srv::SetInt16>("set_mode", BIND_CLS_CB(&XArmDriver::SetModeCB));
+        set_state_service_ = hw_node_->create_service<xarm_msgs::srv::SetInt16>("set_state", BIND_CLS_CB(&XArmDriver::SetStateCB));
+        set_tcp_offset_service_ = hw_node_->create_service<xarm_msgs::srv::TCPOffset>("set_tcp_offset", BIND_CLS_CB(&XArmDriver::SetTCPOffsetCB));
+        set_load_service_ = hw_node_->create_service<xarm_msgs::srv::SetLoad>("set_load", BIND_CLS_CB(&XArmDriver::SetLoadCB));
+        go_home_service_ = hw_node_->create_service<xarm_msgs::srv::Move>("go_home", BIND_CLS_CB(&XArmDriver::GoHomeCB));
+        move_joint_service_ = hw_node_->create_service<xarm_msgs::srv::Move>("move_joint", BIND_CLS_CB(&XArmDriver::MoveJointCB));
+        move_jointb_service_ = hw_node_->create_service<xarm_msgs::srv::Move>("move_jointb", BIND_CLS_CB(&XArmDriver::MoveJointbCB));
+        move_lineb_service_ = hw_node_->create_service<xarm_msgs::srv::Move>("move_lineb", BIND_CLS_CB(&XArmDriver::MoveLinebCB));
+        move_line_service_ = hw_node_->create_service<xarm_msgs::srv::Move>("move_line", BIND_CLS_CB(&XArmDriver::MoveLineCB));
+        move_line_tool_service_ = hw_node_->create_service<xarm_msgs::srv::Move>("move_line_tool", BIND_CLS_CB(&XArmDriver::MoveLineToolCB));
+        move_servoj_service_ = hw_node_->create_service<xarm_msgs::srv::Move>("move_servoj", BIND_CLS_CB(&XArmDriver::MoveServoJCB));
+        move_servo_cart_service_ = hw_node_->create_service<xarm_msgs::srv::Move>("move_servo_cart", BIND_CLS_CB(&XArmDriver::MoveServoCartCB));
+        clear_err_service_ = hw_node_->create_service<xarm_msgs::srv::ClearErr>("clear_err", BIND_CLS_CB(&XArmDriver::ClearErrCB));
+        moveit_clear_err_service_ = hw_node_->create_service<xarm_msgs::srv::ClearErr>("moveit_clear_err", BIND_CLS_CB(&XArmDriver::MoveitClearErrCB));
+        get_err_service_ = hw_node_->create_service<xarm_msgs::srv::GetErr>("get_err", BIND_CLS_CB(&XArmDriver::GetErrCB));
+        move_line_aa_service_ = hw_node_->create_service<xarm_msgs::srv::MoveAxisAngle>("move_line_aa", BIND_CLS_CB(&XArmDriver::MoveLineAACB));
+        move_servo_cart_aa_service_ = hw_node_->create_service<xarm_msgs::srv::MoveAxisAngle>("move_servo_cart_aa", BIND_CLS_CB(&XArmDriver::MoveServoCartAACB));
+        set_end_io_service_ = hw_node_->create_service<xarm_msgs::srv::SetDigitalIO>("set_digital_out", BIND_CLS_CB(&XArmDriver::SetDigitalIOCB));
+        get_digital_in_service_ = hw_node_->create_service<xarm_msgs::srv::GetDigitalIO>("get_digital_in", BIND_CLS_CB(&XArmDriver::GetDigitalIOCB));
+        get_analog_in_service_ = hw_node_->create_service<xarm_msgs::srv::GetAnalogIO>("get_analog_in", BIND_CLS_CB(&XArmDriver::GetAnalogIOCB));
+        config_modbus_service_ = hw_node_->create_service<xarm_msgs::srv::ConfigToolModbus>("config_tool_modbus", BIND_CLS_CB(&XArmDriver::ConfigModbusCB));
+        set_modbus_service_ = hw_node_->create_service<xarm_msgs::srv::SetToolModbus>("set_tool_modbus", BIND_CLS_CB(&XArmDriver::SetModbusCB));
+        gripper_config_service_ = hw_node_->create_service<xarm_msgs::srv::GripperConfig>("gripper_config", BIND_CLS_CB(&XArmDriver::GripperConfigCB));
+        gripper_move_service_ = hw_node_->create_service<xarm_msgs::srv::GripperMove>("gripper_move", BIND_CLS_CB(&XArmDriver::GripperMoveCB));
+        gripper_state_service_ = hw_node_->create_service<xarm_msgs::srv::GripperState>("gripper_state", BIND_CLS_CB(&XArmDriver::GripperStateCB));
+        set_vacuum_gripper_service_ = hw_node_->create_service<xarm_msgs::srv::SetInt16>("vacuum_gripper_set", BIND_CLS_CB(&XArmDriver::VacuumGripperCB));
+        set_controller_dout_service_ = hw_node_->create_service<xarm_msgs::srv::SetDigitalIO>("set_controller_dout", BIND_CLS_CB(&XArmDriver::SetControllerDOutCB));
+        get_controller_din_service_ = hw_node_->create_service<xarm_msgs::srv::GetControllerDigitalIO>("get_controller_din", BIND_CLS_CB(&XArmDriver::GetControllerDInCB));
+        set_controller_aout_service_ = hw_node_->create_service<xarm_msgs::srv::SetControllerAnalogIO>("set_controller_aout", BIND_CLS_CB(&XArmDriver::SetControllerAOutCB));
+        get_controller_ain_service_ = hw_node_->create_service<xarm_msgs::srv::GetAnalogIO>("get_controller_ain", BIND_CLS_CB(&XArmDriver::GetControllerAInCB));
+        vc_set_jointv_service_ = hw_node_->create_service<xarm_msgs::srv::MoveVelo>("velo_move_joint", BIND_CLS_CB(&XArmDriver::VeloMoveJointCB));
+        vc_set_linev_service_ = hw_node_->create_service<xarm_msgs::srv::MoveVelo>("velo_move_line", BIND_CLS_CB(&XArmDriver::VeloMoveLineVCB));
+        set_max_jacc_service_ = hw_node_->create_service<xarm_msgs::srv::SetFloat32>("set_max_acc_joint", BIND_CLS_CB(&XArmDriver::SetMaxJAccCB));
+        set_max_lacc_service_ = hw_node_->create_service<xarm_msgs::srv::SetFloat32>("set_max_acc_line", BIND_CLS_CB(&XArmDriver::SetMaxLAccCB));
 
-        joint_state_pub_ = node->create_publisher<sensor_msgs::msg::JointState>("joint_states", 10);
-        robot_state_pub_ = node->create_publisher<xarm_msgs::msg::RobotMsg>("xarm_states", 10);
-        cgpio_state_pub_ = node->create_publisher<xarm_msgs::msg::CIOState>("xarm_cgpio_states", 10);
+        joint_state_pub_ = hw_node_->create_publisher<sensor_msgs::msg::JointState>("joint_states", 10);
+        robot_state_pub_ = hw_node_->create_publisher<xarm_msgs::msg::RobotMsg>("xarm_states", 10);
+        cgpio_state_pub_ = hw_node_->create_publisher<xarm_msgs::msg::CIOState>("xarm_cgpio_states", 10);
 
         // subscribed topics
-        sleep_sub_ = node->create_subscription<std_msgs::msg::Float32>("sleep_sec", 1, std::bind(&XArmDriver::SleepTopicCB, this, std::placeholders::_1));
+        sleep_sub_ = hw_node_->create_subscription<std_msgs::msg::Float32>("sleep_sec", 1, std::bind(&XArmDriver::SleepTopicCB, this, std::placeholders::_1));
+
+        gripper_joint_state_msg_.header.stamp = node_->get_clock()->now();
+        gripper_joint_state_msg_.header.frame_id = "gripper-joint-state data";
+        gripper_joint_state_msg_.name.resize(6);
+        gripper_joint_state_msg_.position.resize(6, std::numeric_limits<double>::quiet_NaN());
+        gripper_joint_state_msg_.velocity.resize(6, std::numeric_limits<double>::quiet_NaN());
+        gripper_joint_state_msg_.effort.resize(6, std::numeric_limits<double>::quiet_NaN());
+        gripper_joint_state_msg_.name[0] = "drive_joint";
+        gripper_joint_state_msg_.name[1] = "left_finger_joint";
+        gripper_joint_state_msg_.name[2] = "left_inner_knuckle_joint";
+        gripper_joint_state_msg_.name[3] = "right_outer_knuckle_joint";
+        gripper_joint_state_msg_.name[4] = "right_finger_joint";
+        gripper_joint_state_msg_.name[5] = "right_inner_knuckle_joint";
+        gripper_action_server_ = rclcpp_action::create_server<control_msgs::action::GripperCommand>(
+            node, "xarm_gripper/gripper_action",
+            BIND_CLS_CB(&XArmDriver::_handle_gripper_action_goal),
+            BIND_CLS_CB_1(&XArmDriver::_handle_gripper_action_cancel),
+            BIND_CLS_CB_1(&XArmDriver::_handle_gripper_action_accepted));
+    }
+
+    void XArmDriver::_pub_gripper_joint_states(float pos)
+    {
+        gripper_joint_state_msg_.header.stamp = node_->get_clock()->now();
+        float p = pos / 1000;
+        for (int i = 0; i < 6; i++) {
+            gripper_joint_state_msg_.position[i] = p;
+        }
+        pub_joint_state(gripper_joint_state_msg_);
+    }
+
+    rclcpp_action::GoalResponse XArmDriver::_handle_gripper_action_goal(const rclcpp_action::GoalUUID & uuid, std::shared_ptr<const control_msgs::action::GripperCommand::Goal> goal)
+    {
+        // RCLCPP_INFO(node_->get_logger(), "Received gripper move goal request, target_pulse=%f, pulse_speed=%f", goal->target_pulse, goal->pulse_speed);
+        RCLCPP_INFO(node_->get_logger(), "Received gripper move goal request, position=%f, max_effort=%f", goal->command.position, goal->command.max_effort);
+        (void)uuid;
+        return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
+    }
+
+    rclcpp_action::CancelResponse XArmDriver::_handle_gripper_action_cancel(const std::shared_ptr<rclcpp_action::ServerGoalHandle<control_msgs::action::GripperCommand>> goal_handle)
+    {
+        RCLCPP_INFO(node_->get_logger(), "Received request to cancel gripper move goal");
+        (void)goal_handle;
+        return rclcpp_action::CancelResponse::ACCEPT;
+    }
+
+    void XArmDriver::_handle_gripper_action_accepted(const std::shared_ptr<rclcpp_action::ServerGoalHandle<control_msgs::action::GripperCommand>> goal_handle)
+    {
+        // this needs to return quickly to avoid blocking the executor, so spin up a new thread
+        std::thread{BIND_CLS_CB_1(&XArmDriver::_gripper_action_execute), goal_handle}.detach();
+    }
+
+    void XArmDriver::_gripper_action_execute(const std::shared_ptr<rclcpp_action::ServerGoalHandle<control_msgs::action::GripperCommand>> goal_handle)
+    {
+        rclcpp::Rate loop_rate(10);
+        const auto goal = goal_handle->get_goal();
+        RCLCPP_INFO(node_->get_logger(), "gripper_action_execute, position=%f, max_effort=%f", goal->command.position, goal->command.max_effort);
+        auto feedback = std::make_shared<control_msgs::action::GripperCommand::Feedback>();
+        auto result = std::make_shared<control_msgs::action::GripperCommand::Result>();
+        
+        const int max_pos = 850;
+        int ret;
+        float cur_pos = 0;
+        int err = 0;
+        ret = arm->get_gripper_err_code(&err);
+        if (err != 0) {
+            goal_handle->canceled(result);
+            RCLCPP_ERROR(node_->get_logger(), "get_gripper_err_code, ret=%d, err=%d", ret, err);
+            return;
+        }
+        ret = arm->get_gripper_position(&cur_pos);
+        _pub_gripper_joint_states(fabs(max_pos - cur_pos));
+
+        ret = arm->set_gripper_mode(0);
+        if (ret != 0) {
+            result->position = fabs(max_pos - cur_pos) / 1000;
+            goal_handle->canceled(result);
+            ret = arm->get_gripper_err_code(&err);
+            RCLCPP_WARN(node_->get_logger(), "set_gripper_mode, ret=%d, err=%d, cur_pos=%f", ret, err, cur_pos);
+            return;
+        }
+        RCLCPP_INFO(node_->get_logger(), "set_gripper_mode");
+        ret = arm->set_gripper_enable(true);
+        if (ret != 0) {
+            result->position = fabs(max_pos - cur_pos) / 1000;
+            goal_handle->canceled(result);
+            ret = arm->get_gripper_err_code(&err);
+            RCLCPP_WARN(node_->get_logger(), "set_gripper_enable, ret=%d, err=%d, cur_pos=%f", ret, err, cur_pos);
+            return;
+        }
+        RCLCPP_INFO(node_->get_logger(), "set_gripper_enable");
+        ret = arm->set_gripper_speed(3000);
+        if (ret != 0) {
+            result->position = fabs(max_pos - cur_pos) / 1000;
+            goal_handle->canceled(result);
+            ret = arm->get_gripper_err_code(&err);
+            RCLCPP_WARN(node_->get_logger(), "set_gripper_speed, ret=%d, err=%d, cur_pos=%f", ret, err, cur_pos);
+            return;
+        }
+        RCLCPP_INFO(node_->get_logger(), "set_gripper_speed");
+
+        float target_pos = fabs(max_pos - goal->command.position * 1000);
+        bool is_move = true;
+        std::thread([this, &target_pos, &is_move, &cur_pos]() {
+            is_move = true;
+            int ret2 = arm->set_gripper_position(target_pos, true);
+            int err;
+            arm->get_gripper_err_code(&err);
+            RCLCPP_INFO(node_->get_logger(), "set_gripper_position, ret=%d, err=%d, cur_pos=%f", ret2, err, cur_pos);
+            is_move = false;
+        }).detach();
+        while (is_move && rclcpp::ok())
+        {
+            loop_rate.sleep();
+            ret = arm->get_gripper_position(&cur_pos);
+            if (ret == 0) {
+                feedback->position = fabs(max_pos - cur_pos) / 1000;
+                goal_handle->publish_feedback(feedback);
+                _pub_gripper_joint_states(fabs(max_pos - cur_pos));
+            }
+            // if (goal_handle->is_canceling()) {
+            //     result->position = fabs(850 - cur_pos) / 1000;
+            //     goal_handle->canceled(result);
+            //     RCLCPP_INFO(this->get_logger(), "Goal canceled, cur_pos=%f", cur_pos);
+            //     return;
+            // }
+        }
+        arm->get_gripper_position(&cur_pos);
+        RCLCPP_INFO(node_->get_logger(), "move finish, cur_pos=%f", cur_pos);
+        if (rclcpp::ok()) {
+            result->position = fabs(max_pos - cur_pos) / 1000;
+            goal_handle->succeed(result);
+            RCLCPP_INFO(this->get_logger(), "Goal succeeded");
+        }
     }
 
     void XArmDriver::SleepTopicCB(const std_msgs::msg::Float32::SharedPtr msg)

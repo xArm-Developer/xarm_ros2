@@ -7,13 +7,14 @@
 # Author: Vinman <vinman.wen@ufactory.cc> <vinman.cub@gmail.com>
 
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
+from launch.actions import OpaqueFunction, IncludeLaunchDescription, DeclareLaunchArgument
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
-def generate_launch_description():
+
+def launch_setup(context, *args, **kwargs):
     prefix = LaunchConfiguration('prefix', default='')
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     limited = LaunchConfiguration('limited', default=False)
@@ -47,11 +48,16 @@ def generate_launch_description():
         package="joint_state_publisher",
         executable="joint_state_publisher",
         name='joint_state_publisher',
-        output='screen'
+        output='screen',
+        parameters=[{'source_list': ['{}/joint_states'.format(hw_ns.perform(context))]}],
     )
 
-    return LaunchDescription([
-        joint_state_publisher_node, 
+    return [
         robot_description_launch,
-    ])
+        joint_state_publisher_node,
+    ]
 
+def generate_launch_description():
+    return LaunchDescription([
+        OpaqueFunction(function=launch_setup)
+    ])
