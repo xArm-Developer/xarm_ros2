@@ -92,6 +92,12 @@ def launch_setup(context, *args, **kwargs):
         parameters=[{'source_list': ['{}/joint_states'.format(hw_ns.perform(context))], 'rate': 10}],
         remappings=[
             ('follow_joint_trajectory', '{}_traj_controller/follow_joint_trajectory'.format(xarm_type)),
+            # ('move_action/_action/feedback', 'xarm_gripper/gripper_action/_action/feedback'),
+            ('move_action', 'xarm_gripper/move_action'),
+            ('gripper_action', 'xarm_gripper/gripper_action'),
+            # ('move_action/goal', 'xarm_gripper/gripper_action/goal'),
+            # ('move_action/feedback', 'xarm_gripper/gripper_action/feedback'),
+            # ('move_action/result', 'xarm_gripper/gripper_action/result')
         ],
     )
 

@@ -10,6 +10,7 @@
 #define CMD_HEARTBEAT_SEC 30 // 30s
 
 #define DEBUG_MODE 1
+#define PARAM_ERROR 998
 
 #define BIND_CLS_CB(func) std::bind(func, this, std::placeholders::_1, std::placeholders::_2)
 #define BIND_CLS_CB_1(func) std::bind(func, this, std::placeholders::_1)
@@ -240,7 +241,6 @@ namespace xarm_api
             RCLCPP_WARN(node_->get_logger(), "set_gripper_mode, ret=%d, err=%d, cur_pos=%f", ret, err, cur_pos);
             return;
         }
-        RCLCPP_INFO(node_->get_logger(), "set_gripper_mode");
         ret = arm->set_gripper_enable(true);
         if (ret != 0) {
             result->position = fabs(max_pos - cur_pos) / 1000;
@@ -249,7 +249,6 @@ namespace xarm_api
             RCLCPP_WARN(node_->get_logger(), "set_gripper_enable, ret=%d, err=%d, cur_pos=%f", ret, err, cur_pos);
             return;
         }
-        RCLCPP_INFO(node_->get_logger(), "set_gripper_enable");
         ret = arm->set_gripper_speed(3000);
         if (ret != 0) {
             result->position = fabs(max_pos - cur_pos) / 1000;
@@ -258,7 +257,6 @@ namespace xarm_api
             RCLCPP_WARN(node_->get_logger(), "set_gripper_speed, ret=%d, err=%d, cur_pos=%f", ret, err, cur_pos);
             return;
         }
-        RCLCPP_INFO(node_->get_logger(), "set_gripper_speed");
 
         float target_pos = fabs(max_pos - goal->command.position * 1000);
         bool is_move = true;
@@ -620,7 +618,7 @@ namespace xarm_api
         int index = 0;
         if(req->pose.size() != 6)
         {
-            res->ret = -1;
+            res->ret = PARAM_ERROR;
             res->message = "number of parameters incorrect!";
             return false;
         }
@@ -642,7 +640,7 @@ namespace xarm_api
         int index = 0;
         if(req->pose.size() != 6)
         {
-            res->ret = -1;
+            res->ret = PARAM_ERROR;
             res->message = "number of parameters incorrect!";
             return false;
         }
@@ -664,7 +662,7 @@ namespace xarm_api
         int index = 0;
         if(req->pose.size() != 6)
         {
-            res->ret = -1;
+            res->ret = PARAM_ERROR;
             res->message = "number of parameters incorrect!";
             return false;
         }
@@ -739,7 +737,7 @@ namespace xarm_api
         int index = 0;
         if(req->pose.size() != 6)
         {
-            res->ret = -1;
+            res->ret = PARAM_ERROR;
             res->message = "MoveServoCartCB parameters incorrect!";
             return false;
         }
@@ -762,7 +760,7 @@ namespace xarm_api
         int index = 0;
         if(req->pose.size() != 6)
         {
-            res->ret = -1;
+            res->ret = PARAM_ERROR;
             res->message = "MoveServoCartCB parameters incorrect!";
             return false;
         }
@@ -784,7 +782,7 @@ namespace xarm_api
         int index = 0;
         if(req->pose.size() != 6)
         {
-            res->ret = -1;
+            res->ret = PARAM_ERROR;
             res->message = "MoveServoCartAACB parameters incorrect!";
             return false;
         }
@@ -833,7 +831,7 @@ namespace xarm_api
         int index = 0;
         if(req->velocities.size() < 6)
         {
-            res->ret = -1;
+            res->ret = PARAM_ERROR;
             res->message = "number of parameters incorrect!";
             return false;
         }
@@ -854,7 +852,7 @@ namespace xarm_api
     {
         if(req->data<0 || req->data>20.0)
         {
-            res->ret = -1;
+            res->ret = PARAM_ERROR;
             res->message = "set max joint acc: " + std::to_string(req->data) + "error! Proper range is: 0-20.0 rad/s^2";
             return false;
         }
@@ -867,7 +865,7 @@ namespace xarm_api
     {
         if(req->data<0 || req->data>50000.0)
         {
-            res->ret = -1;
+            res->ret = PARAM_ERROR;
             res->message = "set max linear acc: " + std::to_string(req->data) + "error! Proper range is: 0-50000.0 mm/s^2";
             return false;
         }
