@@ -335,7 +335,7 @@ namespace xarm_api
     {
         res->ret = 0;
         res->err = curr_err_;
-        res->message = "current error code = "  + std::to_string(res->err);
+        res->message = "current error code = " + std::to_string(res->err);
         return true;
     }
 
@@ -344,7 +344,7 @@ namespace xarm_api
         res->ret = arm->motion_enable(req->data, req->id);
         if(req->data == 1)
         {
-            res->message = "motion enable, ret = "  + std::to_string(res->ret);
+            res->message = "motion enable, ret = " + std::to_string(res->ret);
         }
         else
         {
@@ -450,7 +450,9 @@ namespace xarm_api
             res->message = "set Controller digital Output "+ std::to_string(req->io_num) +" to "+ std::to_string(req->value) + " : ret = " + std::to_string(res->ret); 
             return res->ret >= 0;
         }
-        RCLCPP_WARN(node_->get_logger(), "Controller Digital IO io_num: from 1 to 16");
+        res->ret = PARAM_ERROR;
+        res->message = "Controller Digital IO io_num: from 1 to 16";
+        RCLCPP_WARN(node_->get_logger(), res->message);
         return false;
     }
 
@@ -473,7 +475,9 @@ namespace xarm_api
             res->message = "get Controller digital Input ret = " + std::to_string(res->ret);
             return res->ret >= 0;
         }
-        RCLCPP_WARN(node_->get_logger(), "Controller Digital IO io_num: from 1 to 8");
+        res->ret = PARAM_ERROR;
+        res->message = "Controller Digital IO io_num: from 1 to 16";
+        RCLCPP_WARN(node_->get_logger(), res->message);
         return false;
     }
 
@@ -486,6 +490,7 @@ namespace xarm_api
                 res->ret = arm->get_cgpio_analog(req->port_num-1, &res->analog_value);
                 break;
             default:
+                res->ret = PARAM_ERROR;
                 res->message = "GetAnalogIO Fail: port number incorrect ! Must be 1 or 2";
                 return false;
         }
@@ -502,6 +507,7 @@ namespace xarm_api
                 res->ret = arm->set_cgpio_analog(req->port_num-1, req->analog_value);
                 break;
             default:
+                res->ret = PARAM_ERROR;
                 res->message = "SetAnalogIO Fail: port number incorrect ! Must be 1 or 2";
                 return false;
         }
@@ -532,6 +538,7 @@ namespace xarm_api
                 res->ret = arm->get_tgpio_analog(req->port_num-1, &res->analog_value);
                 break;
             default:
+                res->ret = PARAM_ERROR;
                 res->message = "GetAnalogIO Fail: port number incorrect ! Must be 1 or 2";
                 return false;
         }
@@ -592,7 +599,7 @@ namespace xarm_api
         int index = 0;
         if(req->pose.size() != dof_)
         {
-            res->ret = req->pose.size();
+            res->ret = PARAM_ERROR;
             res->message = "pose parameters incorrect! Expected: "+std::to_string(dof_);
             return false;
         }
@@ -685,7 +692,7 @@ namespace xarm_api
         int index = 0;
         if(req->pose.size() != dof_)
         {
-            res->ret = req->pose.size();
+            res->ret = PARAM_ERROR;
             res->message = "number of joint parameters incorrect! Expected: "+std::to_string(dof_);
             return false;
         }
@@ -711,7 +718,7 @@ namespace xarm_api
         int index = 0;
         if(req->pose.size() != dof_)
         {
-            res->ret = req->pose.size();
+            res->ret = PARAM_ERROR;
             res->message = "pose parameters incorrect! Expected: "+std::to_string(dof_);
             return false;
         }
@@ -804,8 +811,8 @@ namespace xarm_api
         int index = 0;
         if(req->velocities.size() < dof_)
         {
-            res->ret = req->velocities.size();
-            res->message = "pose parameters incorrect! Expected: "+std::to_string(dof_);
+            res->ret = PARAM_ERROR;
+            res->message = "velocities parameters incorrect! Expected: "+std::to_string(dof_);
             return false;
         }
         else
@@ -832,7 +839,7 @@ namespace xarm_api
         if(req->velocities.size() < 6)
         {
             res->ret = PARAM_ERROR;
-            res->message = "number of parameters incorrect!";
+            res->message = "number of parameters velocities incorrect!";
             return false;
         }
         else

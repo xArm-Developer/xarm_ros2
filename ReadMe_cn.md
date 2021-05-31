@@ -11,7 +11,7 @@ $ git clone git@192.168.1.19:vinman/xarm_ros2.git --recursive
 $ cd ~/dev_ws/src/xarm_ros2
 $ git pull
 $ git submodule sync
-$ git submodule update --remote
+$ git submodule update --init --remote
 ```
 
 ## 安装依赖

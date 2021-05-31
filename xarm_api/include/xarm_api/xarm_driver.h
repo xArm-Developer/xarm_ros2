@@ -28,7 +28,7 @@ namespace xarm_api
         void init(rclcpp::Node::SharedPtr& node, std::string &server_ip);
 
         // provide a list of services:
-         bool MotionCtrlCB(const std::shared_ptr<xarm_msgs::srv::SetAxis::Request> req, std::shared_ptr<xarm_msgs::srv::SetAxis::Response> res);
+        bool MotionCtrlCB(const std::shared_ptr<xarm_msgs::srv::SetAxis::Request> req, std::shared_ptr<xarm_msgs::srv::SetAxis::Response> res);
         bool SetModeCB(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
         bool SetStateCB(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
         bool SetTCPOffsetCB(const std::shared_ptr<xarm_msgs::srv::TCPOffset::Request> req, std::shared_ptr<xarm_msgs::srv::TCPOffset::Response> res);
@@ -138,6 +138,121 @@ namespace xarm_api
 
         rclcpp_action::Server<control_msgs::action::GripperCommand>::SharedPtr gripper_action_server_;
         sensor_msgs::msg::JointState gripper_joint_state_msg_;
+    
+    private:
+        bool _get_version();
+        bool _get_robot_sn();
+        bool _get_state();
+        bool _shutdown_system();
+        bool _get_cmdnum();
+        bool _get_err_warn_code();
+        bool _get_position();
+        bool _get_servo_angle();
+        bool _get_pose_offset();
+        bool _get_position_aa();
+
+        bool _motion_enable();
+        bool _set_mode();
+        bool _set_state();
+        bool _set_servo_attach();
+        bool _set_servo_detach();
+        bool _clean_error();
+        bool _clean_warn();
+        bool _set_pause_time();
+        bool _set_collision_sensitivity();
+        bool _set_teach_sensitivity();
+        bool _set_gravity_direction();
+        bool _clean_conf();
+        bool _save_conf();
+        bool _set_position();
+        bool _set_tool_position();
+        bool _set_servo_angle();
+        bool _set_servo_angle_j();
+        bool _set_servo_cartesian();
+        bool _set_position_aa();
+        bool _set_servo_cartesian_aa();
+        bool _move_circle();
+        bool _move_gohome();
+        bool _reset();
+        bool _vc_set_joint_velocity();
+        bool _vc_set_cartesian_velocity();
+        bool _emergency_stop();
+        bool _set_tcp_offset();
+        bool _set_tcp_load();
+        bool _set_tcp_jerk();
+        bool _set_tcp_maxacc();
+        bool _set_joint_jerk();
+        bool _set_joint_maxacc();
+        bool _set_world_offset();
+
+        bool _get_gripper_version();
+        bool _set_gripper_enable();
+        bool _set_gripper_mode();
+        bool _get_gripper_position();
+        bool _set_gripper_position();
+        bool _set_gripper_speed();
+        bool _get_gripper_err_code();
+        bool _clean_gripper_error();
+
+        bool _get_tgpio_version();
+        bool _get_tgpio_digital();
+        bool _set_tgpio_digital();
+        bool _get_tgpio_analog();
+        bool _set_tgpio_digital_with_xyz();
+        bool _config_tgpio_reset_when_stop();
+        bool _get_cgpio_digital();
+        bool _get_cgpio_analog();
+        bool _set_cgpio_digital();
+        bool _set_cgpio_analog();
+        bool _set_cgpio_digital_input_function();
+        bool _set_cgpio_digital_output_function();
+        bool _get_cgpio_state();
+        bool _set_cgpio_digital_with_xyz();
+        bool _set_cgpio_analog_with_xyz();
+        bool _config_cgpio_reset_when_stop();
+
+        bool _get_vacuum_gripper(); // get_suction_cup
+        bool _set_vacuum_gripper(); // set_suction_cup
+
+        bool _reload_dynamics();
+        bool _get_reduced_mode();
+        bool _set_reduced_mode();
+        bool _set_reduced_max_tcp_speed();
+        bool _set_reduced_max_joint_speed();
+        bool _set_reduced_tcp_boundary();
+        bool _set_reduced_joint_range();
+        bool _set_fence_mode();
+        bool _set_collision_rebound();
+        bool _get_reduced_states();
+
+        bool _start_record_trajectory();
+        bool _stop_record_trajectory();
+        bool _save_record_trajectory();
+        bool _load_trajectory();
+        bool _playback_trajectory();
+
+        bool _set_counter_reset();
+        bool _set_counter_increase();
+
+        bool _robotiq_reset();
+        bool _robotiq_set_activate();
+        bool _robotiq_set_position();
+        bool _robotiq_open();
+        bool _robotiq_close();
+        bool _robotiq_get_status();
+
+        bool _set_bio_gripper_enable();
+        bool _set_bio_gripper_speed();
+        bool _open_bio_gripper();
+        bool _close_bio_gripper();
+        bool _get_bio_gripper_status();
+        bool _get_bio_gripper_error();
+        bool _clean_bio_gripper_error();
+
+        bool _set_tgpio_modbus_timeout();
+        bool _set_tgpio_modbus_baudrate();
+        bool _get_tgpio_modbus_baudrate();
+        bool _getset_tgpio_modbus_data();
     };
 }
 
