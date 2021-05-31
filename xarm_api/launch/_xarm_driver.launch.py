@@ -66,32 +66,20 @@ def launch_setup(context, *args, **kwargs):
         parameters=[
             xarm_params,
             {
-                'xarm_robot_ip': robot_ip,
-                'xarm_report_type': report_type,
-                'DOF': dof,
+                'robot_ip': robot_ip,
+                'report_type': report_type,
+                'dof': dof,
                 'add_gripper': add_gripper,
                 'hw_ns': hw_ns.perform(context).strip('/')
             },
         ]
     )
-    # xarm_gripper_node = Node(
-    #     # namespace='xarm_gripper',
-    #     package='xarm_api',
-    #     name='xarm_gripper',
-    #     executable='xarm_gripper_node',
-    #     output='screen',
-    #     emulate_tty=True,
-    #     remappings=[
-    #         ('gripper_action', 'gripper_action2')
-    #     ]
-    # )
+
     return [
         xarm_driver_node
     ]
 
 def generate_launch_description():
-    # ld = LaunchDescription()
-    # ld.add_action(xarm_driver_node)
     return LaunchDescription([
         OpaqueFunction(function=launch_setup),
     ])

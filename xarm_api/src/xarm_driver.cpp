@@ -68,8 +68,8 @@ namespace xarm_api
         std::string hw_ns;
         node_->get_parameter_or("hw_ns", hw_ns, std::string("xarm"));
         hw_node_ = node->create_sub_node(hw_ns);
-        node_->get_parameter_or("DOF", dof_, 7);
-        node_->get_parameter_or("xarm_report_type", report_type_, std::string("normal"));
+        node_->get_parameter_or("dof", dof_, 7);
+        node_->get_parameter_or("report_type", report_type_, std::string("normal"));
         
         arm = new XArmAPI(
             server_ip, 
@@ -162,29 +162,65 @@ namespace xarm_api
         // subscribed topics
         sleep_sub_ = hw_node_->create_subscription<std_msgs::msg::Float32>("sleep_sec", 1, std::bind(&XArmDriver::SleepTopicCB, this, std::placeholders::_1));
 
+        _init_gripper();
+    }
+
+    void XArmDriver::_init_gripper()
+    {
+        node_->get_parameter_or("xarm_gripper.speed", gripper_speed_, 2000);  // 机械爪速度
+        node_->get_parameter_or("xarm_gripper.max_pos", gripper_max_pos_, 850); // 机械爪最大值，用来转换
+        node_->get_parameter_or("xarm_gripper.frequency", gripper_frequency_, 10); // 发送机械爪位置后查询机械爪位置的频率
+        node_->get_parameter_or("xarm_gripper.threshold", gripper_threshold_, 3); // 检测机械爪当前位置和上一次位置的差值如果小于当前值，则认为机械爪没动
+        node_->get_parameter_or("xarm_gripper.threshold_times", gripper_threshold_times_, 10); // 如果检测到机械爪没动的次数超过此值且当前位置和目标位置差值不超过15，则认为机械爪运动成功
+        RCLCPP_INFO(node_->get_logger(), "gripper_speed: %d, gripper_max_pos: %d, gripper_frequency : %d, gripper_threshold: %d, gripper_threshold_times: %d", 
+            gripper_speed_, gripper_max_pos_, gripper_frequency_, gripper_threshold_, gripper_threshold_times_);
+
+        gripper_feedback_ = std::make_shared<control_msgs::action::GripperCommand::Feedback>();
+        gripper_result_ = std::make_shared<control_msgs::action::GripperCommand::Result>();;
         gripper_joint_state_msg_.header.stamp = node_->get_clock()->now();
-        gripper_joint_state_msg_.header.frame_id = "gripper-joint-state data";
+        gripper_joint_state_msg_.header.frame_id = "gripper-joint-state data";        
         gripper_joint_state_msg_.name.resize(6);
         gripper_joint_state_msg_.position.resize(6, std::numeric_limits<double>::quiet_NaN());
         gripper_joint_state_msg_.velocity.resize(6, std::numeric_limits<double>::quiet_NaN());
         gripper_joint_state_msg_.effort.resize(6, std::numeric_limits<double>::quiet_NaN());
-        gripper_joint_state_msg_.name[0] = "drive_joint";
-        gripper_joint_state_msg_.name[1] = "left_finger_joint";
-        gripper_joint_state_msg_.name[2] = "left_inner_knuckle_joint";
-        gripper_joint_state_msg_.name[3] = "right_outer_knuckle_joint";
-        gripper_joint_state_msg_.name[4] = "right_finger_joint";
-        gripper_joint_state_msg_.name[5] = "right_inner_knuckle_joint";
+        node_->get_parameter_or("xarm_gripper.joint_names", gripper_joint_state_msg_.name, 
+            std::vector<std::string>({"drive_joint", "left_finger_joint", "left_inner_knuckle_joint", "right_outer_knuckle_joint", "right_finger_joint", "right_inner_knuckle_joint"}));
         gripper_action_server_ = rclcpp_action::create_server<control_msgs::action::GripperCommand>(
-            node, "xarm_gripper/gripper_action",
+            node_, "xarm_gripper/gripper_action",
             BIND_CLS_CB(&XArmDriver::_handle_gripper_action_goal),
             BIND_CLS_CB_1(&XArmDriver::_handle_gripper_action_cancel),
             BIND_CLS_CB_1(&XArmDriver::_handle_gripper_action_accepted));
+        
+        bool add_gripper;
+        node_->get_parameter_or("add_gripper", add_gripper, false);
+        if (add_gripper) {
+            gripper_init_loop_ = false;
+            std::thread([this]() {
+                float cur_pos;
+                int ret = arm->get_gripper_position(&cur_pos);
+                while (ret == 0 && !gripper_init_loop_)
+                {
+                    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+                    _pub_gripper_joint_states(cur_pos);
+                }
+            }).detach();
+        }
+    }
+
+    inline float XArmDriver::_gripper_pos_convert(float pos, bool reversed)
+    {
+        if (reversed) {
+            return fabs(gripper_max_pos_ - pos * 1000);
+        }
+        else {
+            return fabs(gripper_max_pos_ - pos) / 1000;
+        }
     }
 
     void XArmDriver::_pub_gripper_joint_states(float pos)
     {
         gripper_joint_state_msg_.header.stamp = node_->get_clock()->now();
-        float p = pos / 1000;
+        float p = _gripper_pos_convert(pos);
         for (int i = 0; i < 6; i++) {
             gripper_joint_state_msg_.position[i] = p;
         }
@@ -214,51 +250,48 @@ namespace xarm_api
 
     void XArmDriver::_gripper_action_execute(const std::shared_ptr<rclcpp_action::ServerGoalHandle<control_msgs::action::GripperCommand>> goal_handle)
     {
-        rclcpp::Rate loop_rate(10);
+        gripper_init_loop_ = true;
         const auto goal = goal_handle->get_goal();
         RCLCPP_INFO(node_->get_logger(), "gripper_action_execute, position=%f, max_effort=%f", goal->command.position, goal->command.max_effort);
-        auto feedback = std::make_shared<control_msgs::action::GripperCommand::Feedback>();
-        auto result = std::make_shared<control_msgs::action::GripperCommand::Result>();
         
-        const int max_pos = 850;
         int ret;
         float cur_pos = 0;
         int err = 0;
         ret = arm->get_gripper_err_code(&err);
         if (err != 0) {
-            goal_handle->canceled(result);
+            goal_handle->canceled(gripper_result_);
             RCLCPP_ERROR(node_->get_logger(), "get_gripper_err_code, ret=%d, err=%d", ret, err);
             return;
         }
         ret = arm->get_gripper_position(&cur_pos);
-        _pub_gripper_joint_states(fabs(max_pos - cur_pos));
+        _pub_gripper_joint_states(cur_pos);
 
         ret = arm->set_gripper_mode(0);
         if (ret != 0) {
-            result->position = fabs(max_pos - cur_pos) / 1000;
-            goal_handle->canceled(result);
+            gripper_result_->position = _gripper_pos_convert(cur_pos);
+            goal_handle->canceled(gripper_result_);
             ret = arm->get_gripper_err_code(&err);
             RCLCPP_WARN(node_->get_logger(), "set_gripper_mode, ret=%d, err=%d, cur_pos=%f", ret, err, cur_pos);
             return;
         }
         ret = arm->set_gripper_enable(true);
         if (ret != 0) {
-            result->position = fabs(max_pos - cur_pos) / 1000;
-            goal_handle->canceled(result);
+            gripper_result_->position = _gripper_pos_convert(cur_pos);
+            goal_handle->canceled(gripper_result_);
             ret = arm->get_gripper_err_code(&err);
             RCLCPP_WARN(node_->get_logger(), "set_gripper_enable, ret=%d, err=%d, cur_pos=%f", ret, err, cur_pos);
             return;
         }
-        ret = arm->set_gripper_speed(3000);
+        ret = arm->set_gripper_speed(gripper_speed_);
         if (ret != 0) {
-            result->position = fabs(max_pos - cur_pos) / 1000;
-            goal_handle->canceled(result);
+            gripper_result_->position = _gripper_pos_convert(cur_pos);
+            goal_handle->canceled(gripper_result_);
             ret = arm->get_gripper_err_code(&err);
             RCLCPP_WARN(node_->get_logger(), "set_gripper_speed, ret=%d, err=%d, cur_pos=%f", ret, err, cur_pos);
             return;
         }
-
-        float target_pos = fabs(max_pos - goal->command.position * 1000);
+        float last_pos = -gripper_max_pos_;
+        float target_pos = _gripper_pos_convert(goal->command.position, true);
         bool is_move = true;
         std::thread([this, &target_pos, &is_move, &cur_pos]() {
             is_move = true;
@@ -268,28 +301,45 @@ namespace xarm_api
             RCLCPP_INFO(node_->get_logger(), "set_gripper_position, ret=%d, err=%d, cur_pos=%f", ret2, err, cur_pos);
             is_move = false;
         }).detach();
+        int cnt = 0;
+        bool is_succeed = false;
+        auto sltime = std::chrono::nanoseconds(1000000000 / gripper_frequency_);
         while (is_move && rclcpp::ok())
         {
-            loop_rate.sleep();
+            std::this_thread::sleep_for(sltime);
             ret = arm->get_gripper_position(&cur_pos);
             if (ret == 0) {
-                feedback->position = fabs(max_pos - cur_pos) / 1000;
-                goal_handle->publish_feedback(feedback);
-                _pub_gripper_joint_states(fabs(max_pos - cur_pos));
+                if (!is_succeed) {
+                    if (fabs(last_pos - cur_pos) < gripper_threshold_) {
+                        cnt += 1;
+                        if (cnt >= gripper_threshold_times_ && fabs(target_pos - cur_pos) < 15) {
+                            gripper_result_->position = _gripper_pos_convert(cur_pos);
+                            goal_handle->succeed(gripper_result_);
+                            is_succeed = true;
+                        }
+                    }
+                    else {
+                        cnt = 0;
+                        last_pos = cur_pos;
+                    }
+                }
+                gripper_feedback_->position = _gripper_pos_convert(cur_pos);
+                goal_handle->publish_feedback(gripper_feedback_);
+                _pub_gripper_joint_states(cur_pos);
             }
             // if (goal_handle->is_canceling()) {
-            //     result->position = fabs(850 - cur_pos) / 1000;
-            //     goal_handle->canceled(result);
+            //     gripper_result_->position = _gripper_pos_convert(cur_pos);
+            //     goal_handle->canceled(gripper_result_);
             //     RCLCPP_INFO(this->get_logger(), "Goal canceled, cur_pos=%f", cur_pos);
             //     return;
             // }
         }
         arm->get_gripper_position(&cur_pos);
         RCLCPP_INFO(node_->get_logger(), "move finish, cur_pos=%f", cur_pos);
-        if (rclcpp::ok()) {
-            result->position = fabs(max_pos - cur_pos) / 1000;
-            goal_handle->succeed(result);
-            RCLCPP_INFO(this->get_logger(), "Goal succeeded");
+        if (rclcpp::ok() && !is_succeed) {
+            gripper_result_->position = _gripper_pos_convert(cur_pos);
+            goal_handle->succeed(gripper_result_);
+            RCLCPP_INFO(node_->get_logger(), "Goal succeeded");
         }
     }
 

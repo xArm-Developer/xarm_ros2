@@ -68,16 +68,6 @@ add_library(xarm_ros_client SHARED
 )
 ament_target_dependencies(xarm_ros_client ${dependencies})
 
-# add_executable(xarm_gripper_node
-#   src/xarm_gripper_node.cpp
-# )
-# ament_target_dependencies(xarm_gripper_node ${dependencies})
-# target_link_libraries(xarm_gripper_node 
-#   xarm_ros_client
-#   ${ament_LIBRARIES}
-# )
-
-
 add_executable(test_xarm_ros_client
    test/test_xarm_ros_client.cpp
 )
@@ -118,7 +108,6 @@ install(
 install(
   TARGETS
   xarm_driver_node 
-  # xarm_gripper_node
   test_xarm_ros_client
   test_xarm_velo_move
   test_xarm_states

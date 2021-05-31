@@ -1,5 +1,11 @@
-xarm:
-  xarm_driver:
-    ros__parameters:
-      DOF: 7
-      joint_names: ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6', 'joint7']
+xarm_driver:
+  ros__parameters:
+    DOF: 7
+    joint_names: ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6', 'joint7']
+    xarm_gripper:
+      joint_names: ['drive_joint', 'left_finger_joint', 'left_inner_knuckle_joint', 'right_outer_knuckle_joint', 'right_finger_joint', 'right_inner_knuckle_joint']
+      speed: 2000
+      max_pos: 850
+      frequency: 10
+      threshold: 3
+      threshold_times: 10

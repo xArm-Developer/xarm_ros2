@@ -77,6 +77,8 @@ namespace xarm_api
         void _report_data_callback(XArmReportData *report_data_ptr);
         bool _get_wait_param(void);
 
+        void _init_gripper();
+        inline float _gripper_pos_convert(float pos, bool reversed = false);
         rclcpp_action::GoalResponse _handle_gripper_action_goal(const rclcpp_action::GoalUUID & uuid, std::shared_ptr<const control_msgs::action::GripperCommand::Goal> goal);
         rclcpp_action::CancelResponse _handle_gripper_action_cancel(const std::shared_ptr<rclcpp_action::ServerGoalHandle<control_msgs::action::GripperCommand>> goal_handle);
         void _handle_gripper_action_accepted(const std::shared_ptr<rclcpp_action::ServerGoalHandle<control_msgs::action::GripperCommand>> goal_handle);
@@ -136,123 +138,168 @@ namespace xarm_api
 
         rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr sleep_sub_;
 
-        rclcpp_action::Server<control_msgs::action::GripperCommand>::SharedPtr gripper_action_server_;
+        bool gripper_init_loop_;
+        int gripper_speed_;
+        int gripper_max_pos_;
+        int gripper_frequency_;
+        int gripper_threshold_;
+        int gripper_threshold_times_;
         sensor_msgs::msg::JointState gripper_joint_state_msg_;
+        control_msgs::action::GripperCommand::Feedback::SharedPtr gripper_feedback_;
+        control_msgs::action::GripperCommand::Result::SharedPtr gripper_result_;
+        rclcpp_action::Server<control_msgs::action::GripperCommand>::SharedPtr gripper_action_server_;
     
-    private:
-        bool _get_version();
-        bool _get_robot_sn();
-        bool _get_state();
-        bool _shutdown_system();
-        bool _get_cmdnum();
-        bool _get_err_warn_code();
-        bool _get_position();
-        bool _get_servo_angle();
-        bool _get_pose_offset();
-        bool _get_position_aa();
+    // private:
+    //     // SetInt16
+    //     bool _set_mode(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+    //     bool _set_state(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+    //     bool _set_collision_sensitivity(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+    //     bool _set_teach_sensitivity(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+    //     bool _shutdown_system(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
 
-        bool _motion_enable();
-        bool _set_mode();
-        bool _set_state();
-        bool _set_servo_attach();
-        bool _set_servo_detach();
-        bool _clean_error();
-        bool _clean_warn();
-        bool _set_pause_time();
-        bool _set_collision_sensitivity();
-        bool _set_teach_sensitivity();
-        bool _set_gravity_direction();
-        bool _clean_conf();
-        bool _save_conf();
-        bool _set_position();
-        bool _set_tool_position();
-        bool _set_servo_angle();
-        bool _set_servo_angle_j();
-        bool _set_servo_cartesian();
-        bool _set_position_aa();
-        bool _set_servo_cartesian_aa();
-        bool _move_circle();
-        bool _move_gohome();
-        bool _reset();
-        bool _vc_set_joint_velocity();
-        bool _vc_set_cartesian_velocity();
-        bool _emergency_stop();
-        bool _set_tcp_offset();
-        bool _set_tcp_load();
-        bool _set_tcp_jerk();
-        bool _set_tcp_maxacc();
-        bool _set_joint_jerk();
-        bool _set_joint_maxacc();
-        bool _set_world_offset();
+    //     // Call
+    //     bool _clean_error(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
+    //     bool _clean_warn(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
+    //     bool _clean_conf(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
+    //     bool _save_conf(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
+    //     bool _reload_dynamics(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
+    //     bool _set_counter_reset(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
+    //     bool _set_counter_increase(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
 
-        bool _get_gripper_version();
-        bool _set_gripper_enable();
-        bool _set_gripper_mode();
-        bool _get_gripper_position();
-        bool _set_gripper_position();
-        bool _set_gripper_speed();
-        bool _get_gripper_err_code();
-        bool _clean_gripper_error();
+    //     // SetInt16ById
+    //     bool _motion_enable(const std::shared_ptr<xarm_msgs::srv::SetInt16ById::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16ById::Response> res);
+    //     bool _set_servo_attach(const std::shared_ptr<xarm_msgs::srv::SetInt16ById::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16ById::Response> res);
+    //     bool _set_servo_detach(const std::shared_ptr<xarm_msgs::srv::SetInt16ById::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16ById::Response> res);
+        
+    //     // GetString
+    //     bool _get_version(const std::shared_ptr<xarm_msgs::srv::GetString::Request> req, std::shared_ptr<xarm_msgs::srv::GetString::Response> res);
+    //     bool _get_robot_sn(const std::shared_ptr<xarm_msgs::srv::GetString::Request> req, std::shared_ptr<xarm_msgs::srv::GetString::Response> res);
+        
+    //     // GetInt16
+    //     bool _get_state(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
+    //     bool _get_cmdnum(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
 
-        bool _get_tgpio_version();
-        bool _get_tgpio_digital();
-        bool _set_tgpio_digital();
-        bool _get_tgpio_analog();
-        bool _set_tgpio_digital_with_xyz();
-        bool _config_tgpio_reset_when_stop();
-        bool _get_cgpio_digital();
-        bool _get_cgpio_analog();
-        bool _set_cgpio_digital();
-        bool _set_cgpio_analog();
-        bool _set_cgpio_digital_input_function();
-        bool _set_cgpio_digital_output_function();
-        bool _get_cgpio_state();
-        bool _set_cgpio_digital_with_xyz();
-        bool _set_cgpio_analog_with_xyz();
-        bool _config_cgpio_reset_when_stop();
+    //     // SetFloat32
+    //     bool _set_pause_time(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
+    //     bool _set_tcp_jerk(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
+    //     bool _set_tcp_maxacc(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
+    //     bool _set_joint_jerk(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
+    //     bool _set_joint_maxacc(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
 
-        bool _get_vacuum_gripper(); // get_suction_cup
-        bool _set_vacuum_gripper(); // set_suction_cup
+    //     //GetInt16List
+    //     bool _get_err_warn_code(const std::shared_ptr<xarm_msgs::srv::GetInt16List::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16List::Response> res);
+        
+    //     // GetFloat32List
+    //     bool _get_position(const std::shared_ptr<xarm_msgs::srv::GetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::GetFloat32List::Response> res);
+    //     bool _get_servo_angle(const std::shared_ptr<xarm_msgs::srv::GetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::GetFloat32List::Response> res);
+    //     bool _get_position_aa(const std::shared_ptr<xarm_msgs::srv::GetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::GetFloat32List::Response> res);
+        
+    //     // SetFloat32List
+    //     bool _set_gravity_direction(const std::shared_ptr<xarm_msgs::srv::SetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32List::Response> res);
+    //     bool _set_tcp_load(const std::shared_ptr<xarm_msgs::srv::SetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32List::Response> res);
+    //     bool _set_tcp_offset(const std::shared_ptr<xarm_msgs::srv::SetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32List::Response> res);
+    //     bool _set_world_offset(const std::shared_ptr<xarm_msgs::srv::SetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32List::Response> res);
 
-        bool _reload_dynamics();
-        bool _get_reduced_mode();
-        bool _set_reduced_mode();
-        bool _set_reduced_max_tcp_speed();
-        bool _set_reduced_max_joint_speed();
-        bool _set_reduced_tcp_boundary();
-        bool _set_reduced_joint_range();
-        bool _set_fence_mode();
-        bool _set_collision_rebound();
-        bool _get_reduced_states();
+    //     // MoveLine
+    //     bool _move_line()
+    //     bool _move_line_aa()
 
-        bool _start_record_trajectory();
-        bool _stop_record_trajectory();
-        bool _save_record_trajectory();
-        bool _load_trajectory();
-        bool _playback_trajectory();
+    //     // MoveArcLine
+    //     bool _move_arc_line()
+        
+    //     // MoveJoint
+    //     // MoveArcJoint
+    //     // MoveCircle
+    //     // MoveGoHome
 
-        bool _set_counter_reset();
-        bool _set_counter_increase();
 
-        bool _robotiq_reset();
-        bool _robotiq_set_activate();
-        bool _robotiq_set_position();
-        bool _robotiq_open();
-        bool _robotiq_close();
-        bool _robotiq_get_status();
+    //     // Move
+    //     bool _set_position(const std::shared_ptr<xarm_msgs::srv::Move::Request> req, std::shared_ptr<xarm_msgs::srv::Move::Response> res);
+    //     bool _set_tool_position(const std::shared_ptr<xarm_msgs::srv::Move::Request> req, std::shared_ptr<xarm_msgs::srv::Move::Response> res);
+    //     bool _set_servo_angle(const std::shared_ptr<xarm_msgs::srv::Move::Request> req, std::shared_ptr<xarm_msgs::srv::Move::Response> res);
+    //     bool _set_servo_angle_j(const std::shared_ptr<xarm_msgs::srv::Move::Request> req, std::shared_ptr<xarm_msgs::srv::Move::Response> res);
 
-        bool _set_bio_gripper_enable();
-        bool _set_bio_gripper_speed();
-        bool _open_bio_gripper();
-        bool _close_bio_gripper();
-        bool _get_bio_gripper_status();
-        bool _get_bio_gripper_error();
-        bool _clean_bio_gripper_error();
+    //     // MoveAA
+    //     bool _set_position_aa(const std::shared_ptr<xarm_msgs::srv::MoveAA::Request> req, std::shared_ptr<xarm_msgs::srv::MoveAA::Response> res);
+    //     bool _set_servo_cartesian_aa(const std::shared_ptr<xarm_msgs::srv::MoveAA::Request> req, std::shared_ptr<xarm_msgs::srv::MoveAA::Response> res);
 
-        bool _set_tgpio_modbus_timeout();
-        bool _set_tgpio_modbus_baudrate();
-        bool _get_tgpio_modbus_baudrate();
-        bool _getset_tgpio_modbus_data();
+    //     bool _get_pose_offset();
+        
+        
+        
+    //     bool _set_servo_cartesian();
+        
+    //     bool _move_circle();
+    //     bool _move_gohome();
+    //     bool _reset();
+    //     bool _vc_set_joint_velocity();
+    //     bool _vc_set_cartesian_velocity();
+    //     bool _emergency_stop();
+        
+    //     bool _get_gripper_version();
+    //     bool _set_gripper_enable();
+    //     bool _set_gripper_mode();
+    //     bool _get_gripper_position();
+    //     bool _set_gripper_position();
+    //     bool _set_gripper_speed();
+    //     bool _get_gripper_err_code();
+    //     bool _clean_gripper_error();
+
+    //     bool _get_tgpio_version();
+    //     bool _get_tgpio_digital();
+    //     bool _set_tgpio_digital();
+    //     bool _get_tgpio_analog();
+    //     bool _set_tgpio_digital_with_xyz();
+    //     bool _config_tgpio_reset_when_stop();
+    //     bool _get_cgpio_digital();
+    //     bool _get_cgpio_analog();
+    //     bool _set_cgpio_digital();
+    //     bool _set_cgpio_analog();
+    //     bool _set_cgpio_digital_input_function();
+    //     bool _set_cgpio_digital_output_function();
+    //     bool _get_cgpio_state();
+    //     bool _set_cgpio_digital_with_xyz();
+    //     bool _set_cgpio_analog_with_xyz();
+    //     bool _config_cgpio_reset_when_stop();
+
+    //     bool _get_vacuum_gripper(); // get_suction_cup
+    //     bool _set_vacuum_gripper(); // set_suction_cup
+
+    //     bool _get_reduced_mode();
+    //     bool _set_reduced_mode();
+    //     bool _set_reduced_max_tcp_speed();
+    //     bool _set_reduced_max_joint_speed();
+    //     bool _set_reduced_tcp_boundary();
+    //     bool _set_reduced_joint_range();
+    //     bool _set_fence_mode();
+    //     bool _set_collision_rebound();
+    //     bool _get_reduced_states();
+
+    //     bool _start_record_trajectory();
+    //     bool _stop_record_trajectory();
+    //     bool _save_record_trajectory();
+    //     bool _load_trajectory();
+    //     bool _playback_trajectory();
+
+    //     bool _robotiq_reset();
+    //     bool _robotiq_set_activate();
+    //     bool _robotiq_set_position();
+    //     bool _robotiq_open();
+    //     bool _robotiq_close();
+    //     bool _robotiq_get_status();
+
+    //     bool _set_bio_gripper_enable();
+    //     bool _set_bio_gripper_speed();
+    //     bool _open_bio_gripper();
+    //     bool _close_bio_gripper();
+    //     bool _get_bio_gripper_status();
+    //     bool _get_bio_gripper_error();
+    //     bool _clean_bio_gripper_error();
+
+    //     bool _set_tgpio_modbus_timeout();
+    //     bool _set_tgpio_modbus_baudrate();
+    //     bool _get_tgpio_modbus_baudrate();
+    //     bool _getset_tgpio_modbus_data();
     };
 }
 

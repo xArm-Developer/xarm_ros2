@@ -21,9 +21,9 @@ class XArmDriverRunner
         XArmDriverRunner(rclcpp::Node::SharedPtr& node, std::string &server_ip)
         {
             node_ = node;
-            node_->get_parameter_or("DOF", joint_num_, 7);
-            node_->get_parameter_or("xarm_report_type", report_type_, std::string("normal"));
-            node_->get_parameter_or("joint_names", joint_name_, 
+            node_->get_parameter_or("dof", joint_num_, 7);
+            node_->get_parameter_or("report_type", report_type_, std::string("normal"));
+            node_->get_parameter_or("joint_names", joint_names_, 
                 std::vector<std::string>({"joint1", "joint2", "joint3", "joint4", "joint5", "joint6", "joint7"}));
             
             RCLCPP_INFO(node_->get_logger(), "robot_ip=%s, report_type=%s, dof=%d", server_ip.c_str(), report_type_.c_str(), joint_num_);
@@ -57,7 +57,7 @@ class XArmDriverRunner
             for(int i = 0; i < joint_num_; i++)
             {
                 double d = (double)report_data_ptr->angle[i];
-                joint_state_msg_.name[i] = joint_name_[i];
+                joint_state_msg_.name[i] = joint_names_[i];
                 joint_state_msg_.position[i] = d;
 
                 if (is_first_cycle_)
@@ -134,7 +134,7 @@ class XArmDriverRunner
         xarm_msgs::msg::CIOState cgpio_state_msg_;
 
         int joint_num_;
-        std::vector<std::string> joint_name_;
+        std::vector<std::string> joint_names_;
         bool is_first_cycle_;
         double *prev_angle_;
 };
@@ -149,9 +149,9 @@ int main(int argc, char **argv)
     RCLCPP_INFO(node->get_logger(), "namespace: %s", node->get_namespace());
 
     std::string robot_ip = "";
-    node->get_parameter_or("xarm_robot_ip", robot_ip, robot_ip);
+    node->get_parameter_or("robot_ip", robot_ip, robot_ip);
     if (robot_ip == "") {
-        RCLCPP_ERROR(node->get_logger(), "No param named 'xarm_robot_ip'");
+        RCLCPP_ERROR(node->get_logger(), "No param named 'robot_ip'");
         exit(1);
     }
 
