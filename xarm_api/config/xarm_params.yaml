@@ -21,7 +21,7 @@ xarm_driver:
       clean_bio_gripper_error: false
       start_record_trajectory: false
       stop_record_trajectory: false
-      get_state: true
+      get_state: false
       get_cmdnum: false
       get_vacuum_gripper: false
       get_gripper_err_code: false

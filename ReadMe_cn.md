@@ -30,6 +30,8 @@ $ colcon build
 ```
 
 ## 6. 测试 (xarm6为例)
+__注意1: xarm_driver提供的各个服务名称和SDK的API名称保持一致，是否开启请看注意2__
+__注意2: xarm_api/config/xarm_params.yaml文件里面的services下的配置表示对应的服务是否开启__
 ### 6.1 测试包(xarm_api)
 - #### 6.1.1 运行 xarm_driver_node
     ```bash
