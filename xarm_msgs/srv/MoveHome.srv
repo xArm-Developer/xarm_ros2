@@ -1,0 +1,10 @@
+float32 speed       0
+float32 acc         0
+float32 mvtime      0
+bool wait           false
+float32 timeout     -1
+
+---
+
+int16 ret
+string message

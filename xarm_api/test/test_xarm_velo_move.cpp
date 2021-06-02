@@ -29,38 +29,38 @@ int main(int argc, char **argv)
 
     xarm_api::XArmROSClient client;
     client.init(node, hw_ns);
-    client.motionEnable(1);
-    client.setMode(4);
-	client.setState(0);
+    client.motion_enable(true);
+    client.set_mode(4);
+	client.set_state(0);
 
     int ret;
 
     std::vector<float> jnt_v = { 1, 0, 0, 0, 0, 0, 0 };
-    ret = client.veloMoveJoint(jnt_v);
+    ret = client.vc_set_joint_velocity(jnt_v);
     RCLCPP_INFO(rclcpp::get_logger("test_xarm_velo_move"), "velo_move_joint: %d", ret);
     rclcpp::sleep_for(std::chrono::seconds(2));
     jnt_v[0] = -1;
-    ret = client.veloMoveJoint(jnt_v);
+    ret = client.vc_set_joint_velocity(jnt_v);
     RCLCPP_INFO(rclcpp::get_logger("test_xarm_velo_move"), "velo_move_joint: %d", ret);
     rclcpp::sleep_for(std::chrono::seconds(2));
     // stop
     jnt_v[0] = 0;
-    ret = client.veloMoveJoint(jnt_v);
+    ret = client.vc_set_joint_velocity(jnt_v);
     RCLCPP_INFO(rclcpp::get_logger("test_xarm_velo_move"), "velo_move_joint: %d", ret);
 
     std::vector<float> line_v = { 100, 0, 0, 0, 0, 0};
-    client.setMode(5);
-    client.setState(0);
-    ret = client.veloMoveLine(line_v);
+    client.set_mode(5);
+	client.set_state(0);
+    ret = client.vc_set_cartesian_velocity(line_v);
     RCLCPP_INFO(rclcpp::get_logger("test_xarm_velo_move"), "velo_move_line: %d", ret);
     rclcpp::sleep_for(std::chrono::seconds(2));
     line_v[0] = -100;
-    ret = client.veloMoveLine(line_v);
+    ret = client.vc_set_cartesian_velocity(line_v);
     RCLCPP_INFO(rclcpp::get_logger("test_xarm_velo_move"), "velo_move_line: %d", ret);
     rclcpp::sleep_for(std::chrono::seconds(2));
     // stop
     line_v[0] = 0;
-    ret = client.veloMoveLine(line_v);
+    ret = client.vc_set_cartesian_velocity(line_v);
     RCLCPP_INFO(rclcpp::get_logger("test_xarm_velo_move"), "velo_move_line: %d", ret);
 
     RCLCPP_INFO(rclcpp::get_logger("test_xarm_velo_move"), "test_xarm_velo_move over");

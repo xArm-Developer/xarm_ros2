@@ -1,0 +1,23 @@
+# set_position/set_tool_position/set_position_aa/set_servo_cartesian/set_servo_cartesian_aa
+float32[] pose
+float32 speed       0
+float32 acc         0
+float32 mvtime      0
+
+# set_position/set_position_aa
+bool wait           false
+float32 timeout     -1
+
+# set_position
+float32 radius      -1
+
+# set_position_aa/set_servo_cartesian/set_servo_cartesian_aa
+bool is_tool_coord  false
+
+# set_position_aa/set_servo_cartesian_aa
+bool relative       false
+
+---
+
+int16 ret
+string message

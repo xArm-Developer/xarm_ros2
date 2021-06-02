@@ -1,0 +1,8 @@
+bool enable
+bool wait       false
+float32 timeout 3
+
+---
+
+int16 ret
+string message

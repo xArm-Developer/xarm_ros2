@@ -1,0 +1,14 @@
+float32[] pose1
+float32[] pose2
+
+float32 percent
+float32 speed       0
+float32 acc         0
+float32 mvtime      0
+bool wait           false
+float32 timeout     -1
+
+---
+
+int16 ret
+string message

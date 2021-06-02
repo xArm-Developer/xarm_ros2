@@ -28,9 +28,9 @@ int main(int argc, char **argv)
 
     xarm_api::XArmROSClient client;
     client.init(node, hw_ns);
-    client.motionEnable(1);
-    client.setMode(0);
-	client.setState(0);
+    client.motion_enable(true);
+    client.set_mode(0);
+	client.set_state(0);
 
     RCLCPP_INFO(rclcpp::get_logger("test_xarm_ros_client"), "test_xarm_ros_client over");
     return 0;

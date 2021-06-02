@@ -67,7 +67,6 @@ int main(int argc, char** argv)
     std::shared_ptr<xarm_msgs::srv::PlanPose::Request> pose_plan_req = std::make_shared<xarm_msgs::srv::PlanPose::Request>();;
     std::shared_ptr<xarm_msgs::srv::PlanExec::Request> exec_plan_req = std::make_shared<xarm_msgs::srv::PlanExec::Request>();;
 
-    exec_plan_req->exec = true;
     exec_plan_req->wait = true;
 
     geometry_msgs::msg::Pose target_pose1;

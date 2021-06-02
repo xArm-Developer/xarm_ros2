@@ -55,6 +55,7 @@ set(dependencies "rclcpp" "rclcpp_action" "std_msgs" "sensor_msgs" "control_msgs
 add_executable(xarm_driver_node
   src/xarm_driver_node.cpp
   src/xarm_driver.cpp
+  src/xarm_driver_service.cpp
 )
 
 ament_target_dependencies(xarm_driver_node ${dependencies})

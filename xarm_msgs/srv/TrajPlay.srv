@@ -1,0 +1,9 @@
+string filename
+int16 times         1
+int16 double_speed  1
+bool wait           false
+
+---
+
+int16 ret
+string message

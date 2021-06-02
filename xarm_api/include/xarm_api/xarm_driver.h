@@ -27,44 +27,44 @@ namespace xarm_api
         ~XArmDriver();
         void init(rclcpp::Node::SharedPtr& node, std::string &server_ip);
 
-        // provide a list of services:
-        bool MotionCtrlCB(const std::shared_ptr<xarm_msgs::srv::SetAxis::Request> req, std::shared_ptr<xarm_msgs::srv::SetAxis::Response> res);
-        bool SetModeCB(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
-        bool SetStateCB(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
-        bool SetTCPOffsetCB(const std::shared_ptr<xarm_msgs::srv::TCPOffset::Request> req, std::shared_ptr<xarm_msgs::srv::TCPOffset::Response> res);
-        bool SetLoadCB(const std::shared_ptr<xarm_msgs::srv::SetLoad::Request> req, std::shared_ptr<xarm_msgs::srv::SetLoad::Response> res);
-        bool SetDigitalIOCB(const std::shared_ptr<xarm_msgs::srv::SetDigitalIO::Request> req, std::shared_ptr<xarm_msgs::srv::SetDigitalIO::Response> res);
-        bool GetDigitalIOCB(const std::shared_ptr<xarm_msgs::srv::GetDigitalIO::Request> req, std::shared_ptr<xarm_msgs::srv::GetDigitalIO::Response> res);
-        bool GetAnalogIOCB(const std::shared_ptr<xarm_msgs::srv::GetAnalogIO::Request> req, std::shared_ptr<xarm_msgs::srv::GetAnalogIO::Response> res);
-        bool ClearErrCB(const std::shared_ptr<xarm_msgs::srv::ClearErr::Request> req, std::shared_ptr<xarm_msgs::srv::ClearErr::Response> res);
-        bool MoveitClearErrCB(const std::shared_ptr<xarm_msgs::srv::ClearErr::Request> req, std::shared_ptr<xarm_msgs::srv::ClearErr::Response> res);
-        bool GetErrCB(const std::shared_ptr<xarm_msgs::srv::GetErr::Request> req, std::shared_ptr<xarm_msgs::srv::GetErr::Response> res);
-        bool GoHomeCB(const std::shared_ptr<xarm_msgs::srv::Move::Request> req, std::shared_ptr<xarm_msgs::srv::Move::Response> res);
-        bool MoveJointCB(const std::shared_ptr<xarm_msgs::srv::Move::Request> req, std::shared_ptr<xarm_msgs::srv::Move::Response> res);
-        bool MoveJointbCB(const std::shared_ptr<xarm_msgs::srv::Move::Request> req, std::shared_ptr<xarm_msgs::srv::Move::Response> res);
-        bool MoveLinebCB(const std::shared_ptr<xarm_msgs::srv::Move::Request> req, std::shared_ptr<xarm_msgs::srv::Move::Response> res);
-        bool MoveLineCB(const std::shared_ptr<xarm_msgs::srv::Move::Request> req, std::shared_ptr<xarm_msgs::srv::Move::Response> res);
-        bool MoveLineToolCB(const std::shared_ptr<xarm_msgs::srv::Move::Request> req, std::shared_ptr<xarm_msgs::srv::Move::Response> res);
-        bool MoveServoJCB(const std::shared_ptr<xarm_msgs::srv::Move::Request> req, std::shared_ptr<xarm_msgs::srv::Move::Response> res);
-        bool MoveServoCartCB(const std::shared_ptr<xarm_msgs::srv::Move::Request> req, std::shared_ptr<xarm_msgs::srv::Move::Response> res);
-        bool MoveLineAACB(const std::shared_ptr<xarm_msgs::srv::MoveAxisAngle::Request> req, std::shared_ptr<xarm_msgs::srv::MoveAxisAngle::Response> res);
-        bool MoveServoCartAACB(const std::shared_ptr<xarm_msgs::srv::MoveAxisAngle::Request> req, std::shared_ptr<xarm_msgs::srv::MoveAxisAngle::Response> res);
-        bool GripperConfigCB(const std::shared_ptr<xarm_msgs::srv::GripperConfig::Request> req, std::shared_ptr<xarm_msgs::srv::GripperConfig::Response> res);
-        bool GripperMoveCB(const std::shared_ptr<xarm_msgs::srv::GripperMove::Request> req, std::shared_ptr<xarm_msgs::srv::GripperMove::Response> res);
-        bool GripperStateCB(const std::shared_ptr<xarm_msgs::srv::GripperState::Request> req, std::shared_ptr<xarm_msgs::srv::GripperState::Response> res);
-        bool VacuumGripperCB(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
-        bool SetModbusCB(const std::shared_ptr<xarm_msgs::srv::SetToolModbus::Request> req, std::shared_ptr<xarm_msgs::srv::SetToolModbus::Response> res);
-        bool ConfigModbusCB(const std::shared_ptr<xarm_msgs::srv::ConfigToolModbus::Request> req, std::shared_ptr<xarm_msgs::srv::ConfigToolModbus::Response> res);
-        bool SetControllerDOutCB(const std::shared_ptr<xarm_msgs::srv::SetDigitalIO::Request> req, std::shared_ptr<xarm_msgs::srv::SetDigitalIO::Response> res);
-        bool GetControllerDInCB(const std::shared_ptr<xarm_msgs::srv::GetControllerDigitalIO::Request> req, std::shared_ptr<xarm_msgs::srv::GetControllerDigitalIO::Response> res);
-        bool SetControllerAOutCB(const std::shared_ptr<xarm_msgs::srv::SetControllerAnalogIO::Request> req, std::shared_ptr<xarm_msgs::srv::SetControllerAnalogIO::Response> res);
-        bool GetControllerAInCB(const std::shared_ptr<xarm_msgs::srv::GetAnalogIO::Request> req, std::shared_ptr<xarm_msgs::srv::GetAnalogIO::Response> res);
-        bool VeloMoveJointCB(const std::shared_ptr<xarm_msgs::srv::MoveVelo::Request> req, std::shared_ptr<xarm_msgs::srv::MoveVelo::Response> res);
-        bool VeloMoveLineVCB(const std::shared_ptr<xarm_msgs::srv::MoveVelo::Request> req, std::shared_ptr<xarm_msgs::srv::MoveVelo::Response> res);
-        bool SetMaxJAccCB(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
-        bool SetMaxLAccCB(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
+        // // provide a list of services:
+        // bool MotionCtrlCB(const std::shared_ptr<xarm_msgs::srv::SetAxis::Request> req, std::shared_ptr<xarm_msgs::srv::SetAxis::Response> res);
+        // bool SetModeCB(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+        // bool SetStateCB(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+        // bool SetTCPOffsetCB(const std::shared_ptr<xarm_msgs::srv::TCPOffset::Request> req, std::shared_ptr<xarm_msgs::srv::TCPOffset::Response> res);
+        // bool SetLoadCB(const std::shared_ptr<xarm_msgs::srv::SetLoad::Request> req, std::shared_ptr<xarm_msgs::srv::SetLoad::Response> res);
+        // bool SetDigitalIOCB(const std::shared_ptr<xarm_msgs::srv::SetDigitalIO::Request> req, std::shared_ptr<xarm_msgs::srv::SetDigitalIO::Response> res);
+        // bool GetDigitalIOCB(const std::shared_ptr<xarm_msgs::srv::GetDigitalIO::Request> req, std::shared_ptr<xarm_msgs::srv::GetDigitalIO::Response> res);
+        // bool GetAnalogIOCB(const std::shared_ptr<xarm_msgs::srv::GetAnalogIO::Request> req, std::shared_ptr<xarm_msgs::srv::GetAnalogIO::Response> res);
+        // bool ClearErrCB(const std::shared_ptr<xarm_msgs::srv::ClearErr::Request> req, std::shared_ptr<xarm_msgs::srv::ClearErr::Response> res);
+        // bool MoveitClearErrCB(const std::shared_ptr<xarm_msgs::srv::ClearErr::Request> req, std::shared_ptr<xarm_msgs::srv::ClearErr::Response> res);
+        // bool GetErrCB(const std::shared_ptr<xarm_msgs::srv::GetErr::Request> req, std::shared_ptr<xarm_msgs::srv::GetErr::Response> res);
+        // bool GoHomeCB(const std::shared_ptr<xarm_msgs::srv::Move::Request> req, std::shared_ptr<xarm_msgs::srv::Move::Response> res);
+        // bool MoveJointCB(const std::shared_ptr<xarm_msgs::srv::Move::Request> req, std::shared_ptr<xarm_msgs::srv::Move::Response> res);
+        // bool MoveJointbCB(const std::shared_ptr<xarm_msgs::srv::Move::Request> req, std::shared_ptr<xarm_msgs::srv::Move::Response> res);
+        // bool MoveLinebCB(const std::shared_ptr<xarm_msgs::srv::Move::Request> req, std::shared_ptr<xarm_msgs::srv::Move::Response> res);
+        // bool MoveLineCB(const std::shared_ptr<xarm_msgs::srv::Move::Request> req, std::shared_ptr<xarm_msgs::srv::Move::Response> res);
+        // bool MoveLineToolCB(const std::shared_ptr<xarm_msgs::srv::Move::Request> req, std::shared_ptr<xarm_msgs::srv::Move::Response> res);
+        // bool MoveServoJCB(const std::shared_ptr<xarm_msgs::srv::Move::Request> req, std::shared_ptr<xarm_msgs::srv::Move::Response> res);
+        // bool MoveServoCartCB(const std::shared_ptr<xarm_msgs::srv::Move::Request> req, std::shared_ptr<xarm_msgs::srv::Move::Response> res);
+        // bool MoveLineAACB(const std::shared_ptr<xarm_msgs::srv::MoveAxisAngle::Request> req, std::shared_ptr<xarm_msgs::srv::MoveAxisAngle::Response> res);
+        // bool MoveServoCartAACB(const std::shared_ptr<xarm_msgs::srv::MoveAxisAngle::Request> req, std::shared_ptr<xarm_msgs::srv::MoveAxisAngle::Response> res);
+        // bool GripperConfigCB(const std::shared_ptr<xarm_msgs::srv::GripperConfig::Request> req, std::shared_ptr<xarm_msgs::srv::GripperConfig::Response> res);
+        // bool GripperMoveCB(const std::shared_ptr<xarm_msgs::srv::GripperMove::Request> req, std::shared_ptr<xarm_msgs::srv::GripperMove::Response> res);
+        // bool GripperStateCB(const std::shared_ptr<xarm_msgs::srv::GripperState::Request> req, std::shared_ptr<xarm_msgs::srv::GripperState::Response> res);
+        // bool VacuumGripperCB(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+        // bool SetModbusCB(const std::shared_ptr<xarm_msgs::srv::SetToolModbus::Request> req, std::shared_ptr<xarm_msgs::srv::SetToolModbus::Response> res);
+        // bool ConfigModbusCB(const std::shared_ptr<xarm_msgs::srv::ConfigToolModbus::Request> req, std::shared_ptr<xarm_msgs::srv::ConfigToolModbus::Response> res);
+        // bool SetControllerDOutCB(const std::shared_ptr<xarm_msgs::srv::SetDigitalIO::Request> req, std::shared_ptr<xarm_msgs::srv::SetDigitalIO::Response> res);
+        // bool GetControllerDInCB(const std::shared_ptr<xarm_msgs::srv::GetControllerDigitalIO::Request> req, std::shared_ptr<xarm_msgs::srv::GetControllerDigitalIO::Response> res);
+        // bool SetControllerAOutCB(const std::shared_ptr<xarm_msgs::srv::SetControllerAnalogIO::Request> req, std::shared_ptr<xarm_msgs::srv::SetControllerAnalogIO::Response> res);
+        // bool GetControllerAInCB(const std::shared_ptr<xarm_msgs::srv::GetAnalogIO::Request> req, std::shared_ptr<xarm_msgs::srv::GetAnalogIO::Response> res);
+        // bool VeloMoveJointCB(const std::shared_ptr<xarm_msgs::srv::MoveVelo::Request> req, std::shared_ptr<xarm_msgs::srv::MoveVelo::Response> res);
+        // bool VeloMoveLineVCB(const std::shared_ptr<xarm_msgs::srv::MoveVelo::Request> req, std::shared_ptr<xarm_msgs::srv::MoveVelo::Response> res);
+        // bool SetMaxJAccCB(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
+        // bool SetMaxLAccCB(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
 
-        void SleepTopicCB(const std_msgs::msg::Float32::SharedPtr msg);
+        // void SleepTopicCB(const std_msgs::msg::Float32::SharedPtr msg);
 
         void pub_robot_msg(xarm_msgs::msg::RobotMsg &rm_msg);
         void pub_joint_state(sensor_msgs::msg::JointState &js_msg);
@@ -85,6 +85,12 @@ namespace xarm_api
         void _gripper_action_execute(const std::shared_ptr<rclcpp_action::ServerGoalHandle<control_msgs::action::GripperCommand>> goal_handle);
         void _pub_gripper_joint_states(float pos);
 
+        template<typename ServiceT, typename CallbackT>
+    	typename rclcpp::Service<ServiceT>::SharedPtr _create_service(const std::string & service_name, CallbackT && callback);
+
+        void _init_service();
+        void _init_publisher();
+
     public:
         XArmAPI *arm;
 
@@ -96,41 +102,41 @@ namespace xarm_api
 
         rclcpp::Node::SharedPtr node_;
         rclcpp::Node::SharedPtr hw_node_;
-        rclcpp::Service<xarm_msgs::srv::SetAxis>::SharedPtr motion_ctrl_service_;
-        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr set_mode_service_;
-        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr set_state_service_;
-        rclcpp::Service<xarm_msgs::srv::TCPOffset>::SharedPtr set_tcp_offset_service_;
-        rclcpp::Service<xarm_msgs::srv::SetLoad>::SharedPtr set_load_service_;
-        rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr go_home_service_;
-        rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_joint_service_;
-        rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_jointb_service_;
-        rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_lineb_service_;
-        rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_line_service_;
-        rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_line_tool_service_;
-        rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_servoj_service_;
-        rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_servo_cart_service_;
-        rclcpp::Service<xarm_msgs::srv::ClearErr>::SharedPtr clear_err_service_;
-        rclcpp::Service<xarm_msgs::srv::ClearErr>::SharedPtr moveit_clear_err_service_;
-        rclcpp::Service<xarm_msgs::srv::GetErr>::SharedPtr get_err_service_;
-        rclcpp::Service<xarm_msgs::srv::MoveAxisAngle>::SharedPtr move_line_aa_service_;
-        rclcpp::Service<xarm_msgs::srv::MoveAxisAngle>::SharedPtr move_servo_cart_aa_service_;
-        rclcpp::Service<xarm_msgs::srv::SetDigitalIO>::SharedPtr set_end_io_service_;
-        rclcpp::Service<xarm_msgs::srv::GetDigitalIO>::SharedPtr get_digital_in_service_;
-        rclcpp::Service<xarm_msgs::srv::GetAnalogIO>::SharedPtr get_analog_in_service_;
-        rclcpp::Service<xarm_msgs::srv::ConfigToolModbus>::SharedPtr config_modbus_service_;
-        rclcpp::Service<xarm_msgs::srv::SetToolModbus>::SharedPtr set_modbus_service_;
-        rclcpp::Service<xarm_msgs::srv::GripperConfig>::SharedPtr gripper_config_service_;
-        rclcpp::Service<xarm_msgs::srv::GripperMove>::SharedPtr gripper_move_service_;
-        rclcpp::Service<xarm_msgs::srv::GripperState>::SharedPtr gripper_state_service_;
-        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr set_vacuum_gripper_service_;
-        rclcpp::Service<xarm_msgs::srv::SetDigitalIO>::SharedPtr set_controller_dout_service_;
-        rclcpp::Service<xarm_msgs::srv::GetControllerDigitalIO>::SharedPtr get_controller_din_service_;
-        rclcpp::Service<xarm_msgs::srv::SetControllerAnalogIO>::SharedPtr set_controller_aout_service_;
-        rclcpp::Service<xarm_msgs::srv::GetAnalogIO>::SharedPtr get_controller_ain_service_;
-        rclcpp::Service<xarm_msgs::srv::MoveVelo>::SharedPtr vc_set_jointv_service_;
-        rclcpp::Service<xarm_msgs::srv::MoveVelo>::SharedPtr vc_set_linev_service_;
-        rclcpp::Service<xarm_msgs::srv::SetFloat32>::SharedPtr set_max_jacc_service_;
-        rclcpp::Service<xarm_msgs::srv::SetFloat32>::SharedPtr set_max_lacc_service_;
+        // rclcpp::Service<xarm_msgs::srv::SetAxis>::SharedPtr motion_ctrl_service_;
+        // rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr set_mode_service_;
+        // rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr set_state_service_;
+        // rclcpp::Service<xarm_msgs::srv::TCPOffset>::SharedPtr set_tcp_offset_service_;
+        // rclcpp::Service<xarm_msgs::srv::SetLoad>::SharedPtr set_load_service_;
+        // rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr go_home_service_;
+        // rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_joint_service_;
+        // rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_jointb_service_;
+        // rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_lineb_service_;
+        // rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_line_service_;
+        // rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_line_tool_service_;
+        // rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_servoj_service_;
+        // rclcpp::Service<xarm_msgs::srv::Move>::SharedPtr move_servo_cart_service_;
+        // rclcpp::Service<xarm_msgs::srv::ClearErr>::SharedPtr clear_err_service_;
+        // rclcpp::Service<xarm_msgs::srv::ClearErr>::SharedPtr moveit_clear_err_service_;
+        // rclcpp::Service<xarm_msgs::srv::GetErr>::SharedPtr get_err_service_;
+        // rclcpp::Service<xarm_msgs::srv::MoveAxisAngle>::SharedPtr move_line_aa_service_;
+        // rclcpp::Service<xarm_msgs::srv::MoveAxisAngle>::SharedPtr move_servo_cart_aa_service_;
+        // rclcpp::Service<xarm_msgs::srv::SetDigitalIO>::SharedPtr set_end_io_service_;
+        // rclcpp::Service<xarm_msgs::srv::GetDigitalIO>::SharedPtr get_digital_in_service_;
+        // rclcpp::Service<xarm_msgs::srv::GetAnalogIO>::SharedPtr get_analog_in_service_;
+        // rclcpp::Service<xarm_msgs::srv::ConfigToolModbus>::SharedPtr config_modbus_service_;
+        // rclcpp::Service<xarm_msgs::srv::SetToolModbus>::SharedPtr set_modbus_service_;
+        // rclcpp::Service<xarm_msgs::srv::GripperConfig>::SharedPtr gripper_config_service_;
+        // rclcpp::Service<xarm_msgs::srv::GripperMove>::SharedPtr gripper_move_service_;
+        // rclcpp::Service<xarm_msgs::srv::GripperState>::SharedPtr gripper_state_service_;
+        // rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr set_vacuum_gripper_service_;
+        // rclcpp::Service<xarm_msgs::srv::SetDigitalIO>::SharedPtr set_controller_dout_service_;
+        // rclcpp::Service<xarm_msgs::srv::GetControllerDigitalIO>::SharedPtr get_controller_din_service_;
+        // rclcpp::Service<xarm_msgs::srv::SetControllerAnalogIO>::SharedPtr set_controller_aout_service_;
+        // rclcpp::Service<xarm_msgs::srv::GetAnalogIO>::SharedPtr get_controller_ain_service_;
+        // rclcpp::Service<xarm_msgs::srv::MoveVelo>::SharedPtr vc_set_jointv_service_;
+        // rclcpp::Service<xarm_msgs::srv::MoveVelo>::SharedPtr vc_set_linev_service_;
+        // rclcpp::Service<xarm_msgs::srv::SetFloat32>::SharedPtr set_max_jacc_service_;
+        // rclcpp::Service<xarm_msgs::srv::SetFloat32>::SharedPtr set_max_lacc_service_;
 
         rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr joint_state_pub_;
         rclcpp::Publisher<xarm_msgs::msg::RobotMsg>::SharedPtr robot_state_pub_;
@@ -149,157 +155,232 @@ namespace xarm_api
         control_msgs::action::GripperCommand::Result::SharedPtr gripper_result_;
         rclcpp_action::Server<control_msgs::action::GripperCommand>::SharedPtr gripper_action_server_;
     
-    // private:
-    //     // SetInt16
-    //     bool _set_mode(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
-    //     bool _set_state(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
-    //     bool _set_collision_sensitivity(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
-    //     bool _set_teach_sensitivity(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
-    //     bool _shutdown_system(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+    private:
+        // Call
+        rclcpp::Service<xarm_msgs::srv::Call>::SharedPtr service_clean_error_;
+        rclcpp::Service<xarm_msgs::srv::Call>::SharedPtr service_clean_warn_;
+        rclcpp::Service<xarm_msgs::srv::Call>::SharedPtr service_clean_conf_;
+        rclcpp::Service<xarm_msgs::srv::Call>::SharedPtr service_save_conf_;
+        rclcpp::Service<xarm_msgs::srv::Call>::SharedPtr service_reload_dynamics_;
+        rclcpp::Service<xarm_msgs::srv::Call>::SharedPtr service_set_counter_reset_;
+        rclcpp::Service<xarm_msgs::srv::Call>::SharedPtr service_set_counter_increase_;
+        rclcpp::Service<xarm_msgs::srv::Call>::SharedPtr service_clean_gripper_error_;
+        rclcpp::Service<xarm_msgs::srv::Call>::SharedPtr service_clean_bio_gripper_error_;
+        rclcpp::Service<xarm_msgs::srv::Call>::SharedPtr service_start_record_trajectory_;
+        rclcpp::Service<xarm_msgs::srv::Call>::SharedPtr service_stop_record_trajectory_;
+        bool _clean_error(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
+        bool _clean_warn(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
+        bool _clean_conf(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
+        bool _save_conf(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
+        bool _reload_dynamics(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
+        bool _set_counter_reset(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
+        bool _set_counter_increase(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
+        bool _clean_gripper_error(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res); 
+        bool _clean_bio_gripper_error(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
+        bool _start_record_trajectory(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
+        bool _stop_record_trajectory(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
 
-    //     // Call
-    //     bool _clean_error(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
-    //     bool _clean_warn(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
-    //     bool _clean_conf(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
-    //     bool _save_conf(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
-    //     bool _reload_dynamics(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
-    //     bool _set_counter_reset(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
-    //     bool _set_counter_increase(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
+        // GetInt16
+        rclcpp::Service<xarm_msgs::srv::GetInt16>::SharedPtr service_get_state_;
+        rclcpp::Service<xarm_msgs::srv::GetInt16>::SharedPtr service_get_cmdnum_;
+        rclcpp::Service<xarm_msgs::srv::GetInt16>::SharedPtr service_get_vacuum_gripper_;
+        rclcpp::Service<xarm_msgs::srv::GetInt16>::SharedPtr service_get_gripper_err_code_;
+        rclcpp::Service<xarm_msgs::srv::GetInt16>::SharedPtr service_get_bio_gripper_status_;
+        rclcpp::Service<xarm_msgs::srv::GetInt16>::SharedPtr service_get_bio_gripper_error_;
+        bool _get_state(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
+        bool _get_cmdnum(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
+        bool _get_vacuum_gripper(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
+        bool _get_gripper_err_code(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
+        bool _get_bio_gripper_status(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
+        bool _get_bio_gripper_error(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
 
-    //     // SetInt16ById
-    //     bool _motion_enable(const std::shared_ptr<xarm_msgs::srv::SetInt16ById::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16ById::Response> res);
-    //     bool _set_servo_attach(const std::shared_ptr<xarm_msgs::srv::SetInt16ById::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16ById::Response> res);
-    //     bool _set_servo_detach(const std::shared_ptr<xarm_msgs::srv::SetInt16ById::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16ById::Response> res);
+        // GetErrWarn
+        rclcpp::Service<xarm_msgs::srv::GetErrWarn>::SharedPtr service_get_err_warn_code_;
+        bool _get_err_warn_code(const std::shared_ptr<xarm_msgs::srv::GetErrWarn::Request> req, std::shared_ptr<xarm_msgs::srv::GetErrWarn::Response> res);
+
+        // SetInt16
+        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_mode_;
+        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_state_;
+        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_collision_sensitivity_;
+        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_teach_sensitivity_;
+        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_gripper_mode_;
+        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_gripper_enable_;
+        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_tgpio_modbus_timeout_;
+        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_bio_gripper_speed_;
+        bool _set_mode(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+        bool _set_state(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+        bool _set_collision_sensitivity(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+        bool _set_teach_sensitivity(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+        bool _set_gripper_mode(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+        bool _set_gripper_enable(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+        bool _set_tgpio_modbus_timeout(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+        bool _set_bio_gripper_speed(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+
+        // SetInt16ById
+        rclcpp::Service<xarm_msgs::srv::SetInt16ById>::SharedPtr service_motion_enable_;
+        rclcpp::Service<xarm_msgs::srv::SetInt16ById>::SharedPtr service_set_servo_attach_;
+        rclcpp::Service<xarm_msgs::srv::SetInt16ById>::SharedPtr service_set_servo_detach_;
+        bool _motion_enable(const std::shared_ptr<xarm_msgs::srv::SetInt16ById::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16ById::Response> res);
+        bool _set_servo_attach(const std::shared_ptr<xarm_msgs::srv::SetInt16ById::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16ById::Response> res);
+        bool _set_servo_detach(const std::shared_ptr<xarm_msgs::srv::SetInt16ById::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16ById::Response> res);
         
-    //     // GetString
-    //     bool _get_version(const std::shared_ptr<xarm_msgs::srv::GetString::Request> req, std::shared_ptr<xarm_msgs::srv::GetString::Response> res);
-    //     bool _get_robot_sn(const std::shared_ptr<xarm_msgs::srv::GetString::Request> req, std::shared_ptr<xarm_msgs::srv::GetString::Response> res);
+        // GetInt32
+        rclcpp::Service<xarm_msgs::srv::GetInt32>::SharedPtr service_get_tgpio_modbus_baudrate_;
+        bool _get_tgpio_modbus_baudrate(const std::shared_ptr<xarm_msgs::srv::GetInt32::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt32::Response> res);
+
+        // SetInt32
+        rclcpp::Service<xarm_msgs::srv::SetInt32>::SharedPtr service_set_tgpio_modbus_baudrate_;
+        bool _set_tgpio_modbus_baudrate(const std::shared_ptr<xarm_msgs::srv::SetInt32::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt32::Response> res);
+
+        // GetFloat32
+        rclcpp::Service<xarm_msgs::srv::GetFloat32>::SharedPtr service_get_gripper_position_;
+        bool _get_gripper_position(const std::shared_ptr<xarm_msgs::srv::GetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::GetFloat32::Response> res);
+
+        // GetFloat32List
+        rclcpp::Service<xarm_msgs::srv::GetFloat32List>::SharedPtr service_get_position_;
+        rclcpp::Service<xarm_msgs::srv::GetFloat32List>::SharedPtr service_get_servo_angle_;
+        rclcpp::Service<xarm_msgs::srv::GetFloat32List>::SharedPtr service_get_position_aa_;
+        bool _get_position(const std::shared_ptr<xarm_msgs::srv::GetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::GetFloat32List::Response> res);
+        bool _get_servo_angle(const std::shared_ptr<xarm_msgs::srv::GetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::GetFloat32List::Response> res);
+        bool _get_position_aa(const std::shared_ptr<xarm_msgs::srv::GetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::GetFloat32List::Response> res);
         
-    //     // GetInt16
-    //     bool _get_state(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
-    //     bool _get_cmdnum(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
+        // SetFloat32
+        rclcpp::Service<xarm_msgs::srv::SetFloat32>::SharedPtr service_set_pause_time_;
+        rclcpp::Service<xarm_msgs::srv::SetFloat32>::SharedPtr service_set_tcp_jerk_;
+        rclcpp::Service<xarm_msgs::srv::SetFloat32>::SharedPtr service_set_tcp_maxacc_;
+        rclcpp::Service<xarm_msgs::srv::SetFloat32>::SharedPtr service_set_joint_jerk_;
+        rclcpp::Service<xarm_msgs::srv::SetFloat32>::SharedPtr service_set_joint_maxacc_;
+        rclcpp::Service<xarm_msgs::srv::SetFloat32>::SharedPtr service_set_gripper_speed_;
+        bool _set_pause_time(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
+        bool _set_tcp_jerk(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
+        bool _set_tcp_maxacc(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
+        bool _set_joint_jerk(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
+        bool _set_joint_maxacc(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
+        bool _set_gripper_speed(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
 
-    //     // SetFloat32
-    //     bool _set_pause_time(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
-    //     bool _set_tcp_jerk(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
-    //     bool _set_tcp_maxacc(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
-    //     bool _set_joint_jerk(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
-    //     bool _set_joint_maxacc(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
+        // SetFloat32List
+        rclcpp::Service<xarm_msgs::srv::SetFloat32List>::SharedPtr service_set_gravity_direction_;
+        rclcpp::Service<xarm_msgs::srv::SetFloat32List>::SharedPtr service_set_tcp_offset_;
+        rclcpp::Service<xarm_msgs::srv::SetFloat32List>::SharedPtr service_set_world_offset_;
+        bool _set_gravity_direction(const std::shared_ptr<xarm_msgs::srv::SetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32List::Response> res);
+        bool _set_tcp_offset(const std::shared_ptr<xarm_msgs::srv::SetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32List::Response> res);
+        bool _set_world_offset(const std::shared_ptr<xarm_msgs::srv::SetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32List::Response> res);
 
-    //     //GetInt16List
-    //     bool _get_err_warn_code(const std::shared_ptr<xarm_msgs::srv::GetInt16List::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16List::Response> res);
+        // SetTcpLoad
+        rclcpp::Service<xarm_msgs::srv::SetTcpLoad>::SharedPtr service_set_tcp_load_;
+        bool _set_tcp_load(const std::shared_ptr<xarm_msgs::srv::SetTcpLoad::Request> req, std::shared_ptr<xarm_msgs::srv::SetTcpLoad::Response> res);
+
+        // MoveCartesian
+        rclcpp::Service<xarm_msgs::srv::MoveCartesian>::SharedPtr service_set_position_;
+        rclcpp::Service<xarm_msgs::srv::MoveCartesian>::SharedPtr service_set_tool_position_;
+        rclcpp::Service<xarm_msgs::srv::MoveCartesian>::SharedPtr service_set_position_aa_;
+        rclcpp::Service<xarm_msgs::srv::MoveCartesian>::SharedPtr service_set_servo_cartesian_;
+        rclcpp::Service<xarm_msgs::srv::MoveCartesian>::SharedPtr service_set_servo_cartesian_aa_;
+        bool _set_position(const std::shared_ptr<xarm_msgs::srv::MoveCartesian::Request> req, std::shared_ptr<xarm_msgs::srv::MoveCartesian::Response> res);
+        bool _set_tool_position(const std::shared_ptr<xarm_msgs::srv::MoveCartesian::Request> req, std::shared_ptr<xarm_msgs::srv::MoveCartesian::Response> res);
+        bool _set_position_aa(const std::shared_ptr<xarm_msgs::srv::MoveCartesian::Request> req, std::shared_ptr<xarm_msgs::srv::MoveCartesian::Response> res);
+        bool _set_servo_cartesian(const std::shared_ptr<xarm_msgs::srv::MoveCartesian::Request> req, std::shared_ptr<xarm_msgs::srv::MoveCartesian::Response> res);
+        bool _set_servo_cartesian_aa(const std::shared_ptr<xarm_msgs::srv::MoveCartesian::Request> req, std::shared_ptr<xarm_msgs::srv::MoveCartesian::Response> res);
+
+        // MoveJoint
+        rclcpp::Service<xarm_msgs::srv::MoveJoint>::SharedPtr service_set_servo_angle_;
+        rclcpp::Service<xarm_msgs::srv::MoveJoint>::SharedPtr service_set_servo_angle_j_;
+        bool _set_servo_angle(const std::shared_ptr<xarm_msgs::srv::MoveJoint::Request> req, std::shared_ptr<xarm_msgs::srv::MoveJoint::Response> res);
+        bool _set_servo_angle_j(const std::shared_ptr<xarm_msgs::srv::MoveJoint::Request> req, std::shared_ptr<xarm_msgs::srv::MoveJoint::Response> res);
+
+        // MoveCircle
+        rclcpp::Service<xarm_msgs::srv::MoveCircle>::SharedPtr service_move_circle_;
+        bool _move_circle(const std::shared_ptr<xarm_msgs::srv::MoveCircle::Request> req, std::shared_ptr<xarm_msgs::srv::MoveCircle::Response> res);
+
+        // MoveHome
+        rclcpp::Service<xarm_msgs::srv::MoveHome>::SharedPtr service_move_gohome_;
+        bool _move_gohome(const std::shared_ptr<xarm_msgs::srv::MoveHome::Request> req, std::shared_ptr<xarm_msgs::srv::MoveHome::Response> res);
+
+        // MoveVelocity
+        rclcpp::Service<xarm_msgs::srv::MoveVelocity>::SharedPtr service_vc_set_joint_velocity_;
+        rclcpp::Service<xarm_msgs::srv::MoveVelocity>::SharedPtr service_vc_set_cartesian_velocity_;
+        bool _vc_set_joint_velocity(const std::shared_ptr<xarm_msgs::srv::MoveVelocity::Request> req, std::shared_ptr<xarm_msgs::srv::MoveVelocity::Response> res);
+        bool _vc_set_cartesian_velocity(const std::shared_ptr<xarm_msgs::srv::MoveVelocity::Request> req, std::shared_ptr<xarm_msgs::srv::MoveVelocity::Response> res);
+
+        // GetDigitalIO
+        rclcpp::Service<xarm_msgs::srv::GetDigitalIO>::SharedPtr service_get_tgpio_digital_;
+        rclcpp::Service<xarm_msgs::srv::GetDigitalIO>::SharedPtr service_get_cgpio_digital_;
+        bool _get_tgpio_digital(const std::shared_ptr<xarm_msgs::srv::GetDigitalIO::Request> req, std::shared_ptr<xarm_msgs::srv::GetDigitalIO::Response> res);
+        bool _get_cgpio_digital(const std::shared_ptr<xarm_msgs::srv::GetDigitalIO::Request> req, std::shared_ptr<xarm_msgs::srv::GetDigitalIO::Response> res);
+
+        // GetAnalogIO
+        rclcpp::Service<xarm_msgs::srv::GetAnalogIO>::SharedPtr service_get_tgpio_analog_;
+        rclcpp::Service<xarm_msgs::srv::GetAnalogIO>::SharedPtr service_get_cgpio_analog_;
+        bool _get_tgpio_analog(const std::shared_ptr<xarm_msgs::srv::GetAnalogIO::Request> req, std::shared_ptr<xarm_msgs::srv::GetAnalogIO::Response> res);
+        bool _get_cgpio_analog(const std::shared_ptr<xarm_msgs::srv::GetAnalogIO::Request> req, std::shared_ptr<xarm_msgs::srv::GetAnalogIO::Response> res);
+
+        // SetDigitalIO
+        rclcpp::Service<xarm_msgs::srv::SetDigitalIO>::SharedPtr service_set_tgpio_digital_;
+        rclcpp::Service<xarm_msgs::srv::SetDigitalIO>::SharedPtr service_set_cgpio_digital_;
+        rclcpp::Service<xarm_msgs::srv::SetDigitalIO>::SharedPtr service_set_tgpio_digital_with_xyz_;
+        rclcpp::Service<xarm_msgs::srv::SetDigitalIO>::SharedPtr service_set_cgpio_digital_with_xyz_;
+        bool _set_tgpio_digital(const std::shared_ptr<xarm_msgs::srv::SetDigitalIO::Request> req, std::shared_ptr<xarm_msgs::srv::SetDigitalIO::Response> res);
+        bool _set_cgpio_digital(const std::shared_ptr<xarm_msgs::srv::SetDigitalIO::Request> req, std::shared_ptr<xarm_msgs::srv::SetDigitalIO::Response> res);
+        bool _set_tgpio_digital_with_xyz(const std::shared_ptr<xarm_msgs::srv::SetDigitalIO::Request> req, std::shared_ptr<xarm_msgs::srv::SetDigitalIO::Response> res);
+        bool _set_cgpio_digital_with_xyz(const std::shared_ptr<xarm_msgs::srv::SetDigitalIO::Request> req, std::shared_ptr<xarm_msgs::srv::SetDigitalIO::Response> res);
+
+        // SetAnalogIO
+        rclcpp::Service<xarm_msgs::srv::SetAnalogIO>::SharedPtr service_set_cgpio_analog_;
+        rclcpp::Service<xarm_msgs::srv::SetAnalogIO>::SharedPtr service_set_cgpio_analog_with_xyz_;
+        bool _set_cgpio_analog(const std::shared_ptr<xarm_msgs::srv::SetAnalogIO::Request> req, std::shared_ptr<xarm_msgs::srv::SetAnalogIO::Response> res);
+        bool _set_cgpio_analog_with_xyz(const std::shared_ptr<xarm_msgs::srv::SetAnalogIO::Request> req, std::shared_ptr<xarm_msgs::srv::SetAnalogIO::Response> res);
+
+        // VacuumGripperCtrl
+        rclcpp::Service<xarm_msgs::srv::VacuumGripperCtrl>::SharedPtr service_set_vacuum_gripper_;
+        bool _set_vacuum_gripper(const std::shared_ptr<xarm_msgs::srv::VacuumGripperCtrl::Request> req, std::shared_ptr<xarm_msgs::srv::VacuumGripperCtrl::Response> res);
+
+        // GripperMove
+        rclcpp::Service<xarm_msgs::srv::GripperMove>::SharedPtr service_set_gripper_position_;
+        bool _set_gripper_position(const std::shared_ptr<xarm_msgs::srv::GripperMove::Request> req, std::shared_ptr<xarm_msgs::srv::GripperMove::Response> res);
         
-    //     // GetFloat32List
-    //     bool _get_position(const std::shared_ptr<xarm_msgs::srv::GetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::GetFloat32List::Response> res);
-    //     bool _get_servo_angle(const std::shared_ptr<xarm_msgs::srv::GetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::GetFloat32List::Response> res);
-    //     bool _get_position_aa(const std::shared_ptr<xarm_msgs::srv::GetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::GetFloat32List::Response> res);
+        // BioGripperEnable
+        rclcpp::Service<xarm_msgs::srv::BioGripperEnable>::SharedPtr service_set_bio_gripper_enable_;
+        bool _set_bio_gripper_enable(const std::shared_ptr<xarm_msgs::srv::BioGripperEnable::Request> req, std::shared_ptr<xarm_msgs::srv::BioGripperEnable::Response> res);
         
-    //     // SetFloat32List
-    //     bool _set_gravity_direction(const std::shared_ptr<xarm_msgs::srv::SetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32List::Response> res);
-    //     bool _set_tcp_load(const std::shared_ptr<xarm_msgs::srv::SetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32List::Response> res);
-    //     bool _set_tcp_offset(const std::shared_ptr<xarm_msgs::srv::SetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32List::Response> res);
-    //     bool _set_world_offset(const std::shared_ptr<xarm_msgs::srv::SetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32List::Response> res);
-
-    //     // MoveLine
-    //     bool _move_line()
-    //     bool _move_line_aa()
-
-    //     // MoveArcLine
-    //     bool _move_arc_line()
+        // BioGripperCtrl
+        rclcpp::Service<xarm_msgs::srv::BioGripperCtrl>::SharedPtr service_open_bio_gripper_;
+        rclcpp::Service<xarm_msgs::srv::BioGripperCtrl>::SharedPtr service_close_bio_gripper_;
+        bool _open_bio_gripper(const std::shared_ptr<xarm_msgs::srv::BioGripperCtrl::Request> req, std::shared_ptr<xarm_msgs::srv::BioGripperCtrl::Response> res);
+        bool _close_bio_gripper(const std::shared_ptr<xarm_msgs::srv::BioGripperCtrl::Request> req, std::shared_ptr<xarm_msgs::srv::BioGripperCtrl::Response> res);         
         
-    //     // MoveJoint
-    //     // MoveArcJoint
-    //     // MoveCircle
-    //     // MoveGoHome
-
-
-    //     // Move
-    //     bool _set_position(const std::shared_ptr<xarm_msgs::srv::Move::Request> req, std::shared_ptr<xarm_msgs::srv::Move::Response> res);
-    //     bool _set_tool_position(const std::shared_ptr<xarm_msgs::srv::Move::Request> req, std::shared_ptr<xarm_msgs::srv::Move::Response> res);
-    //     bool _set_servo_angle(const std::shared_ptr<xarm_msgs::srv::Move::Request> req, std::shared_ptr<xarm_msgs::srv::Move::Response> res);
-    //     bool _set_servo_angle_j(const std::shared_ptr<xarm_msgs::srv::Move::Request> req, std::shared_ptr<xarm_msgs::srv::Move::Response> res);
-
-    //     // MoveAA
-    //     bool _set_position_aa(const std::shared_ptr<xarm_msgs::srv::MoveAA::Request> req, std::shared_ptr<xarm_msgs::srv::MoveAA::Response> res);
-    //     bool _set_servo_cartesian_aa(const std::shared_ptr<xarm_msgs::srv::MoveAA::Request> req, std::shared_ptr<xarm_msgs::srv::MoveAA::Response> res);
-
-    //     bool _get_pose_offset();
+        // RobotiqReset
+        rclcpp::Service<xarm_msgs::srv::RobotiqReset>::SharedPtr service_robotiq_reset_;
+        bool _robotiq_reset(const std::shared_ptr<xarm_msgs::srv::RobotiqReset::Request> req, std::shared_ptr<xarm_msgs::srv::RobotiqReset::Response> res);
         
+        // RobotiqActivate
+        rclcpp::Service<xarm_msgs::srv::RobotiqActivate>::SharedPtr service_robotiq_set_activate_;
+        bool _robotiq_set_activate(const std::shared_ptr<xarm_msgs::srv::RobotiqActivate::Request> req, std::shared_ptr<xarm_msgs::srv::RobotiqActivate::Response> res);
         
+        // RobotiqMove
+        rclcpp::Service<xarm_msgs::srv::RobotiqMove>::SharedPtr service_robotiq_set_position_;
+        rclcpp::Service<xarm_msgs::srv::RobotiqMove>::SharedPtr service_robotiq_open_;
+        rclcpp::Service<xarm_msgs::srv::RobotiqMove>::SharedPtr service_robotiq_close_;
+        bool _robotiq_set_position(const std::shared_ptr<xarm_msgs::srv::RobotiqMove::Request> req, std::shared_ptr<xarm_msgs::srv::RobotiqMove::Response> res);
+        bool _robotiq_open(const std::shared_ptr<xarm_msgs::srv::RobotiqMove::Request> req, std::shared_ptr<xarm_msgs::srv::RobotiqMove::Response> res);
+        bool _robotiq_close(const std::shared_ptr<xarm_msgs::srv::RobotiqMove::Request> req, std::shared_ptr<xarm_msgs::srv::RobotiqMove::Response> res);
         
-    //     bool _set_servo_cartesian();
+        // RobotiqGetStatus
+        rclcpp::Service<xarm_msgs::srv::RobotiqGetStatus>::SharedPtr service_robotiq_get_status_;
+        bool _robotiq_get_status(const std::shared_ptr<xarm_msgs::srv::RobotiqGetStatus::Request> req, std::shared_ptr<xarm_msgs::srv::RobotiqGetStatus::Response> res);
+
+        // GetSetModbusData
+        rclcpp::Service<xarm_msgs::srv::GetSetModbusData>::SharedPtr service_getset_tgpio_modbus_data_;
+        bool _getset_tgpio_modbus_data(const std::shared_ptr<xarm_msgs::srv::GetSetModbusData::Request> req, std::shared_ptr<xarm_msgs::srv::GetSetModbusData::Response> res);
         
-    //     bool _move_circle();
-    //     bool _move_gohome();
-    //     bool _reset();
-    //     bool _vc_set_joint_velocity();
-    //     bool _vc_set_cartesian_velocity();
-    //     bool _emergency_stop();
+        // TrajCtrl
+        rclcpp::Service<xarm_msgs::srv::TrajCtrl>::SharedPtr service_save_record_trajectory_;
+        rclcpp::Service<xarm_msgs::srv::TrajCtrl>::SharedPtr service_load_trajectory_;
+        bool _save_record_trajectory(const std::shared_ptr<xarm_msgs::srv::TrajCtrl::Request> req, std::shared_ptr<xarm_msgs::srv::TrajCtrl::Response> res);
+        bool _load_trajectory(const std::shared_ptr<xarm_msgs::srv::TrajCtrl::Request> req, std::shared_ptr<xarm_msgs::srv::TrajCtrl::Response> res);
         
-    //     bool _get_gripper_version();
-    //     bool _set_gripper_enable();
-    //     bool _set_gripper_mode();
-    //     bool _get_gripper_position();
-    //     bool _set_gripper_position();
-    //     bool _set_gripper_speed();
-    //     bool _get_gripper_err_code();
-    //     bool _clean_gripper_error();
-
-    //     bool _get_tgpio_version();
-    //     bool _get_tgpio_digital();
-    //     bool _set_tgpio_digital();
-    //     bool _get_tgpio_analog();
-    //     bool _set_tgpio_digital_with_xyz();
-    //     bool _config_tgpio_reset_when_stop();
-    //     bool _get_cgpio_digital();
-    //     bool _get_cgpio_analog();
-    //     bool _set_cgpio_digital();
-    //     bool _set_cgpio_analog();
-    //     bool _set_cgpio_digital_input_function();
-    //     bool _set_cgpio_digital_output_function();
-    //     bool _get_cgpio_state();
-    //     bool _set_cgpio_digital_with_xyz();
-    //     bool _set_cgpio_analog_with_xyz();
-    //     bool _config_cgpio_reset_when_stop();
-
-    //     bool _get_vacuum_gripper(); // get_suction_cup
-    //     bool _set_vacuum_gripper(); // set_suction_cup
-
-    //     bool _get_reduced_mode();
-    //     bool _set_reduced_mode();
-    //     bool _set_reduced_max_tcp_speed();
-    //     bool _set_reduced_max_joint_speed();
-    //     bool _set_reduced_tcp_boundary();
-    //     bool _set_reduced_joint_range();
-    //     bool _set_fence_mode();
-    //     bool _set_collision_rebound();
-    //     bool _get_reduced_states();
-
-    //     bool _start_record_trajectory();
-    //     bool _stop_record_trajectory();
-    //     bool _save_record_trajectory();
-    //     bool _load_trajectory();
-    //     bool _playback_trajectory();
-
-    //     bool _robotiq_reset();
-    //     bool _robotiq_set_activate();
-    //     bool _robotiq_set_position();
-    //     bool _robotiq_open();
-    //     bool _robotiq_close();
-    //     bool _robotiq_get_status();
-
-    //     bool _set_bio_gripper_enable();
-    //     bool _set_bio_gripper_speed();
-    //     bool _open_bio_gripper();
-    //     bool _close_bio_gripper();
-    //     bool _get_bio_gripper_status();
-    //     bool _get_bio_gripper_error();
-    //     bool _clean_bio_gripper_error();
-
-    //     bool _set_tgpio_modbus_timeout();
-    //     bool _set_tgpio_modbus_baudrate();
-    //     bool _get_tgpio_modbus_baudrate();
-    //     bool _getset_tgpio_modbus_data();
+        // TrajPlay
+        rclcpp::Service<xarm_msgs::srv::TrajPlay>::SharedPtr service_playback_trajectory_;
+        bool _playback_trajectory(const std::shared_ptr<xarm_msgs::srv::TrajPlay::Request> req, std::shared_ptr<xarm_msgs::srv::TrajPlay::Response> res);    
     };
 }
 

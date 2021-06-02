@@ -40,32 +40,73 @@ set(msg_files
   "msg/IOState.msg"
   "msg/CIOState.msg"
 )
-set(srv_files
-  "srv/Move.srv"
-  "srv/SetAxis.srv"
-  "srv/SetInt16.srv"
-  "srv/TCPOffset.srv"
-  "srv/SetDigitalIO.srv"
-  "srv/GetDigitalIO.srv"
-  "srv/GetAnalogIO.srv"
-  "srv/ClearErr.srv"
-  "srv/GetErr.srv"
-  "srv/GripperConfig.srv"
-  "srv/GripperMove.srv"
-  "srv/GripperState.srv"
-  "srv/SetLoad.srv"
-  "srv/SetToolModbus.srv"
-  "srv/ConfigToolModbus.srv"
-  "srv/GetControllerDigitalIO.srv"
-  "srv/SetControllerAnalogIO.srv"
-  "srv/MoveAxisAngle.srv"
-  "srv/MoveVelo.srv"
-  "srv/SetFloat32.srv"
+# set(srv_files
+#   "srv/Move.srv"
+#   "srv/SetAxis.srv"
+#   "srv/SetInt16.srv"
+#   "srv/TCPOffset.srv"
+#   "srv/SetDigitalIO.srv"
+#   "srv/GetDigitalIO.srv"
+#   "srv/GetAnalogIO.srv"
+#   "srv/ClearErr.srv"
+#   "srv/GetErr.srv"
+#   "srv/GripperConfig.srv"
+#   "srv/GripperMove.srv"
+#   "srv/GripperState.srv"
+#   "srv/SetLoad.srv"
+#   "srv/SetToolModbus.srv"
+#   "srv/ConfigToolModbus.srv"
+#   "srv/GetControllerDigitalIO.srv"
+#   "srv/SetControllerAnalogIO.srv"
+#   "srv/MoveAxisAngle.srv"
+#   "srv/MoveVelo.srv"
+#   "srv/SetFloat32.srv"
 
-  "srv/PlanExec.srv"
-  "srv/PlanJoint.srv"
-  "srv/PlanPose.srv"
-  "srv/PlanSingleStraight.srv"
+#   "srv/PlanExec.srv"
+#   "srv/PlanJoint.srv"
+#   "srv/PlanPose.srv"
+#   "srv/PlanSingleStraight.srv"
+# )
+
+set(srv_dir "srv")
+set(srv_files
+  ${srv_dir}/BioGripperCtrl.srv
+  ${srv_dir}/BioGripperEnable.srv
+  ${srv_dir}/Call.srv
+  ${srv_dir}/GetAnalogIO.srv
+  ${srv_dir}/GetDigitalIO.srv
+  ${srv_dir}/GetFloat32.srv
+  ${srv_dir}/GetFloat32List.srv
+  ${srv_dir}/GetInt16.srv
+  ${srv_dir}/GetErrWarn.srv
+  ${srv_dir}/GetInt32.srv
+  ${srv_dir}/GetSetModbusData.srv
+  ${srv_dir}/GripperMove.srv
+  ${srv_dir}/MoveCartesian.srv
+  ${srv_dir}/MoveCircle.srv
+  ${srv_dir}/MoveHome.srv
+  ${srv_dir}/MoveJoint.srv
+  ${srv_dir}/MoveVelocity.srv
+  ${srv_dir}/RobotiqActivate.srv
+  ${srv_dir}/RobotiqGetStatus.srv
+  ${srv_dir}/RobotiqMove.srv
+  ${srv_dir}/RobotiqReset.srv
+  ${srv_dir}/SetAnalogIO.srv
+  ${srv_dir}/SetDigitalIO.srv
+  ${srv_dir}/SetFloat32.srv
+  ${srv_dir}/SetFloat32List.srv
+  ${srv_dir}/SetInt16.srv
+  ${srv_dir}/SetInt16ById.srv
+  ${srv_dir}/SetInt32.srv
+  ${srv_dir}/TrajCtrl.srv
+  ${srv_dir}/TrajPlay.srv
+  ${srv_dir}/VacuumGripperCtrl.srv
+  ${srv_dir}/SetTcpLoad.srv
+
+  ${srv_dir}/PlanExec.srv
+  ${srv_dir}/PlanJoint.srv
+  ${srv_dir}/PlanPose.srv
+  ${srv_dir}/PlanSingleStraight.srv
 )
 
 # set(active_files

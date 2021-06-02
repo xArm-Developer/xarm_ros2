@@ -3,4 +3,5 @@
 int16 ret
 string message
 
-int16[] digitals
+int16 error
+int16 warn

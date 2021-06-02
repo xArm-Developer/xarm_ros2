@@ -1,0 +1,7 @@
+float32 weight
+float32[] center_of_gravity
+
+---
+
+int32 ret
+string message

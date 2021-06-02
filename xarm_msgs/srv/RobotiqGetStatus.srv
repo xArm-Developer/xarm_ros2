@@ -1,0 +1,8 @@
+uint8 number_of_registers 3
+
+---
+
+int16 ret
+string message
+
+uint8[] ret_data

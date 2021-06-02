@@ -1,11 +1,15 @@
-# Setting the 2 digital Output port at robot end connector
-
-int16 io_num
-
+# set_tgpio_digital/set_cgpio_digital/set_tgpio_digital_with_xyz/set_cgpio_digital_with_xyz
+int16 ionum
 int16 value
+
+# set_tgpio_digital/set_cgpio_digital
+float32 delay_sec   0
+
+# set_tgpio_digital_with_xyz/set_cgpio_digital_with_xyz
+float32[] xyz
+float32 tol_r
 
 ---
 
 int16 ret
-
 string message

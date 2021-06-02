@@ -146,9 +146,9 @@ namespace xarm_control
         
         client_node_ = rclcpp::Node::make_shared("xarm_ros_client");
         xarm_client_.init(client_node_, hw_ns);
-        xarm_client_.motionEnable(1);
-        xarm_client_.setMode(1);
-        xarm_client_.setState(0);
+        xarm_client_.motion_enable(true);
+        xarm_client_.set_mode(1);
+        xarm_client_.set_state(0);
 
         rclcpp::sleep_for(std::chrono::seconds(1));
 
@@ -180,7 +180,7 @@ namespace xarm_control
         RCLCPP_INFO(node_->get_logger(), "Stopping ...please wait...");
         status_ = hardware_interface::status::STOPPED;
 
-        xarm_client_.setMode(0);
+        xarm_client_.set_mode(0);
 
         RCLCPP_INFO(node_->get_logger(), "System sucessfully stopped!");
         return hardware_interface::return_type::OK;
@@ -219,7 +219,7 @@ namespace xarm_control
         }
 
         if (_check_cmds_is_change(prev_position_cmds_float_, position_cmds_float_)) {
-            int ret = xarm_client_.setServoJ(position_cmds_float_);
+            int ret = xarm_client_.set_servo_angle_j(position_cmds_float_);
             if (ret == 0) {
                 for (int i = 0; i < prev_position_cmds_float_.size(); i++) { 
                     prev_position_cmds_float_[i] = (float)position_cmds_float_[i];

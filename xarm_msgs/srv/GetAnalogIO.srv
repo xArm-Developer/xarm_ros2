@@ -1,11 +1,8 @@
-# Getting one of the 2 analog Input port at robot end connector or controller
-
-int16 port_num
+int16 ionum
 
 ---
 
-float32 analog_value
-
 int16 ret
-
 string message
+
+float32 data

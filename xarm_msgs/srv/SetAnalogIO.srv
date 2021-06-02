@@ -1,0 +1,12 @@
+# set_cgpio_analog/set_cgpio_analog_with_xyz
+int16 ionum
+float32 value
+
+# set_cgpio_analog_with_xyz
+float32[] xyz
+float32 tol_r
+
+---
+
+int16 ret
+string message

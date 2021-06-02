@@ -1,0 +1,13 @@
+# vc_set_joint_velocity/vc_set_cartesian_velocity
+float32[] speeds
+
+# vc_set_joint_velocity
+bool is_sync        true
+
+# vc_set_cartesian_velocity
+bool is_tool_coord  false
+
+---
+
+int16 ret
+string message

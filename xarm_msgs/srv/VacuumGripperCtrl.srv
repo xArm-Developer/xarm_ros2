@@ -1,6 +1,7 @@
-float32 pos
+bool on
 bool wait           false
-float32 timeout     10
+float32 timeout     3
+float32 delay_sec   0
 
 ---
 

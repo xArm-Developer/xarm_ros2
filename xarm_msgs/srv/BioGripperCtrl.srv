@@ -1,0 +1,8 @@
+int16 speed     0
+bool wait       true
+float32 timeout 5
+
+---
+
+int16 ret
+string message

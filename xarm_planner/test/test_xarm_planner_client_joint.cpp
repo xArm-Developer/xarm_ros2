@@ -70,7 +70,6 @@ int main(int argc, char** argv)
     std::shared_ptr<xarm_msgs::srv::PlanJoint::Request> joint_plan_req = std::make_shared<xarm_msgs::srv::PlanJoint::Request>();;
     std::shared_ptr<xarm_msgs::srv::PlanExec::Request> exec_plan_req = std::make_shared<xarm_msgs::srv::PlanExec::Request>();;
 
-    exec_plan_req->exec = true;
     exec_plan_req->wait = true;
 
     std::vector<double> tar_joint1;
