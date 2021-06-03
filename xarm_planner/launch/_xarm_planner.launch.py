@@ -41,7 +41,8 @@ def launch_setup(context, *args, **kwargs):
         prefix, hw_ns.perform(context).strip('/'), limited, 
         effort_control, velocity_control, 
         add_gripper, add_vacuum_gripper, 
-        dof, xarm_type, ros2_control_plugin
+        dof, xarm_type, ros2_control_plugin,
+        context=context,
     )
 
     try:

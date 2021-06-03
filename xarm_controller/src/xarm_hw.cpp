@@ -17,16 +17,16 @@ namespace xarm_control
 
     void XArmHW::_joint_states_callback(const sensor_msgs::msg::JointState::SharedPtr states)
     {    
-        std::string pos_str = "[ ";
-        std::string vel_str = "[ ";
-        for (int i = 0; i < states->position.size(); i++) { 
-            pos_str += std::to_string(states->position[i]); 
-            pos_str += " ";
-            vel_str += std::to_string(states->velocity[i]); 
-            vel_str += " ";
-        }
-        pos_str += "]";
-        vel_str += "]";
+        // std::string pos_str = "[ ";
+        // std::string vel_str = "[ ";
+        // for (int i = 0; i < states->position.size(); i++) { 
+        //     pos_str += std::to_string(states->position[i]); 
+        //     pos_str += " ";
+        //     vel_str += std::to_string(states->velocity[i]); 
+        //     vel_str += " ";
+        // }
+        // pos_str += "]";
+        // vel_str += "]";
         // RCLCPP_INFO(node_->get_logger(), "state_position: %s", pos_str.c_str());
         // RCLCPP_INFO(node_->get_logger(), "state_velocity: %s", vel_str.c_str());
 
@@ -44,6 +44,11 @@ namespace xarm_control
 
     void XArmHW::_xarm_states_callback(const xarm_msgs::msg::RobotMsg::SharedPtr states)
     {
+        if (((curr_state_ != 4 && curr_state_ != 5) && (states->state == 4 || states->state == 5))
+            || (states->mode != 1 && curr_mode_ == 1) || (states->err != 0 && curr_err_ == 0)
+        ) {
+            RCLCPP_ERROR(node_->get_logger(), "mode: %d, state: %d, error: %d", states->mode, states->state, states->err);
+        }
         curr_state_ = states->state;
 		curr_mode_ = states->mode;
 		curr_err_ = states->err;
@@ -53,6 +58,9 @@ namespace xarm_control
     {
         info_ = info;
         initial_write_ = true;
+        curr_state_ = 4;
+        curr_mode_ = 0;
+        curr_err_ = 0;
         node_ = rclcpp::Node::make_shared("xarm_hw");
         RCLCPP_INFO(node_->get_logger(), "namespace: %s", node_->get_namespace());
         
