@@ -24,8 +24,8 @@ void XArmROSClient::init(rclcpp::Node::SharedPtr& node, std::string hw_ns)
     req_call_ = std::make_shared<xarm_msgs::srv::Call::Request>();
     req_get_int16_ = std::make_shared<xarm_msgs::srv::GetInt16::Request>();
     res_get_int16_ = std::make_shared<xarm_msgs::srv::GetInt16::Response>();
-    req_get_err_warn_ = std::make_shared<xarm_msgs::srv::GetErrWarn::Request>();
-    res_get_err_warn_ = std::make_shared<xarm_msgs::srv::GetErrWarn::Response>();
+    req_get_int16_list_ = std::make_shared<xarm_msgs::srv::GetInt16List::Request>();
+    res_get_int16_list_ = std::make_shared<xarm_msgs::srv::GetInt16List::Response>();
     req_set_int16_ = std::make_shared<xarm_msgs::srv::SetInt16::Request>();
 	req_set_int16_by_id_ = std::make_shared<xarm_msgs::srv::SetInt16ById::Request>();
 	req_get_int32_ = std::make_shared<xarm_msgs::srv::GetInt32::Request>();
@@ -37,6 +37,7 @@ void XArmROSClient::init(rclcpp::Node::SharedPtr& node, std::string hw_ns)
 	res_get_float32_list_ = std::make_shared<xarm_msgs::srv::GetFloat32List::Response>();
 	req_set_float32_ = std::make_shared<xarm_msgs::srv::SetFloat32::Request>();
 	req_set_float32_list_ = std::make_shared<xarm_msgs::srv::SetFloat32List::Request>();
+	req_set_tcp_load_ = std::make_shared<xarm_msgs::srv::SetTcpLoad::Request>();
 	req_move_cartesian_ = std::make_shared<xarm_msgs::srv::MoveCartesian::Request>();
 	req_move_joint_ = std::make_shared<xarm_msgs::srv::MoveJoint::Request>();
 	req_move_circle_ = std::make_shared<xarm_msgs::srv::MoveCircle::Request>();
@@ -84,7 +85,7 @@ void XArmROSClient::init(rclcpp::Node::SharedPtr& node, std::string hw_ns)
     client_get_bio_gripper_status_ = _create_client<xarm_msgs::srv::GetInt16>("get_bio_gripper_status");
     client_get_bio_gripper_error_ = _create_client<xarm_msgs::srv::GetInt16>("get_bio_gripper_error");
     
-    client_get_err_warn_code_ = _create_client<xarm_msgs::srv::GetErrWarn>("get_err_warn_code");
+    client_get_err_warn_code_ = _create_client<xarm_msgs::srv::GetInt16List>("get_err_warn_code");
     
     client_set_mode_ = _create_client<xarm_msgs::srv::SetInt16>("set_mode");
     client_set_state_ = _create_client<xarm_msgs::srv::SetInt16>("set_state");
@@ -204,12 +205,15 @@ int XArmROSClient::_call_request(std::shared_ptr<ServiceT> client, SharedRequest
         return SERVICE_CALL_FAILED;
     }
     auto res = result_future.get();
-    RCLCPP_DEBUG(node_->get_logger(), "call service %s, ret=%d, message=%s", client->get_service_name(), res->ret, res->message.c_str());
+    if (res->message.size() != 0)
+        RCLCPP_INFO(node_->get_logger(), "call service %s, ret=%d, message(%s)", client->get_service_name(), res->ret, res->message.c_str());
+    else
+        RCLCPP_INFO(node_->get_logger(), "call service %s, ret=%d", client->get_service_name(), res->ret);
     return res->ret;
 }
 
 template<typename ServiceT, typename SharedRequest = typename ServiceT::Request::SharedPtr, typename SharedResponse = typename ServiceT::Response::SharedPtr>
-int XArmROSClient::_call_request(std::shared_ptr<ServiceT> client, SharedRequest req, SharedResponse res)
+int XArmROSClient::_call_request(std::shared_ptr<ServiceT> client, SharedRequest req, SharedResponse& res)
 {
     bool is_try_again = false;
     while (!client->wait_for_service(std::chrono::seconds(1))) {
@@ -229,7 +233,10 @@ int XArmROSClient::_call_request(std::shared_ptr<ServiceT> client, SharedRequest
         return SERVICE_CALL_FAILED;
     }
     res = result_future.get();
-    RCLCPP_DEBUG(node_->get_logger(), "call service %s, ret=%d, message=%s", client->get_service_name(), res->ret, res->message.c_str());
+    if (res->message.size() != 0)
+        RCLCPP_INFO(node_->get_logger(), "call service %s, ret=%d, message(%s)", client->get_service_name(), res->ret, res->message.c_str());
+    else
+        RCLCPP_INFO(node_->get_logger(), "call service %s, ret=%d", client->get_service_name(), res->ret);
     return res->ret;
 }
 
@@ -327,12 +334,14 @@ int XArmROSClient::get_bio_gripper_error(int *err)
     return ret;
 }
 
-//GetErrWarn
-int XArmROSClient::get_err_warn_code(int err_warn[2])
+// GetInt16List
+int XArmROSClient::get_err_warn_code(std::vector<int>& err_warn)
 {
-    int ret = _call_request(client_get_err_warn_code_, req_get_err_warn_, res_get_err_warn_);
-    err_warn[0] = res_get_err_warn_->error;
-    err_warn[1] = res_get_err_warn_->warn;
+    int ret = _call_request(client_get_err_warn_code_, req_get_int16_list_, res_get_int16_list_);
+    err_warn.resize(2);
+    // err_warn.swap(res_get_int16_list_->datas);
+    err_warn.assign(res_get_int16_list_->datas.begin(), res_get_int16_list_->datas.end());
+    res_get_int16_list_->datas.clear();
     return ret;
 }
 
@@ -427,31 +436,31 @@ int XArmROSClient::get_gripper_position(fp32 *pos)
 }
 
 // GetFloat32List
-int XArmROSClient::get_position(fp32 pose[6])
+int XArmROSClient::get_position(std::vector<fp32>& pose)
 {
     int ret = _call_request(client_get_position_, req_get_float32_list_, res_get_float32_list_);
-    for (int i = 0; i < 6; i++) {
-        pose[i] = res_get_float32_list_->datas[i];
-    }
+    pose.resize(6);
+    pose.swap(res_get_float32_list_->datas);
+    // pose.assign(res_get_float32_list_->datas.begin(), res_get_float32_list_->datas.end());
     res_get_float32_list_->datas.clear();
     return ret;
 }
-int XArmROSClient::get_servo_angle(fp32 angles[7])
+int XArmROSClient::get_servo_angle(std::vector<fp32>& angles)
 {
     int ret = _call_request(client_get_servo_angle_, req_get_float32_list_, res_get_float32_list_);
-    for (int i = 0; i < 7; i++) {
-        angles[i] = res_get_float32_list_->datas[i];
-    }
+    angles.resize(7);
+    angles.swap(res_get_float32_list_->datas);
+    // angles.assign(res_get_float32_list_->datas.begin(), res_get_float32_list_->datas.end());
     res_get_float32_list_->datas.clear();
     return ret;
 }
 
-int XArmROSClient::get_position_aa(fp32 pose[6])
+int XArmROSClient::get_position_aa(std::vector<fp32>& pose)
 {
     int ret = _call_request(client_get_position_aa_, req_get_float32_list_, res_get_float32_list_);
-    for (int i = 0; i < 6; i++) {
-        pose[i] = res_get_float32_list_->datas[i];
-    }
+    pose.resize(6);
+    pose.swap(res_get_float32_list_->datas);
+    // pose.assign(res_get_float32_list_->datas.begin(), res_get_float32_list_->datas.end());
     res_get_float32_list_->datas.clear();
     return ret;
 }
@@ -504,8 +513,7 @@ int XArmROSClient::set_tcp_load(fp32 weight, const std::vector<fp32>& center_of_
 {
     req_set_tcp_load_->weight = weight;
     req_set_tcp_load_->center_of_gravity = center_of_gravity;
-    int ret = _call_request(client_set_tcp_load_, req_set_tcp_load_);
-    return ret;
+    return _call_request(client_set_tcp_load_, req_set_tcp_load_);
 }
 
 int XArmROSClient::set_tcp_offset(const std::vector<fp32>& offset)
@@ -613,7 +621,7 @@ int XArmROSClient::set_servo_angle(const std::vector<fp32>& angles, fp32 speed, 
     req_move_joint_->wait = wait;
     req_move_joint_->timeout = timeout;
     req_move_joint_->radius = radius;
-    return _call_request(client_set_servo_angle_j_, req_move_joint_);
+    return _call_request(client_set_servo_angle_, req_move_joint_);
 }
 
 int XArmROSClient::set_servo_angle(const std::vector<fp32>& angles, bool wait, fp32 timeout, fp32 radius)
@@ -675,25 +683,44 @@ int XArmROSClient::vc_set_cartesian_velocity(const std::vector<fp32>& speeds, bo
 }
 
 // GetDigitalIO
-int XArmROSClient::get_tgpio_digital(int *io0_value, int *io1_value)
+int XArmROSClient::get_tgpio_digital(std::vector<int>& digitals)
 {
     int ret = _call_request(client_get_tgpio_digital_, req_get_digital_io_, res_get_digital_io_);
-    *io0_value = res_get_digital_io_->digitals[0];
-    *io1_value = res_get_digital_io_->digitals[1];
+    digitals.resize(2);
+    // digitals.swap(res_get_digital_io_->digitals);
+    digitals.assign(res_get_digital_io_->digitals.begin(), res_get_digital_io_->digitals.end());
+    res_get_digital_io_->digitals.clear();
     return ret;
 }
 
-int XArmROSClient::get_cgpio_digital(int *digitals, int *digitals2)
+int XArmROSClient::get_cgpio_digital(std::vector<int>& digitals)
 {
     int ret = _call_request(client_get_cgpio_digital_, req_get_digital_io_, res_get_digital_io_);
-    *digitals = res_get_digital_io_->digitals[0];
-    for (int i = 0; i < 8; i++) {
-        digitals[i] = res_get_digital_io_->digitals[i];
-        if (digitals2 != NULL)
-            digitals2[i] = res_get_digital_io_->digitals[i + 8];
-    }
+    digitals.resize(16);
+    // digitals.swap(res_get_digital_io_->digitals);
+    digitals.assign(res_get_digital_io_->digitals.begin(), res_get_digital_io_->digitals.end());
+    res_get_digital_io_->digitals.clear();
     return ret;
 }
+// int XArmROSClient::get_tgpio_digital(int *io0_value, int *io1_value)
+// {
+//     int ret = _call_request(client_get_tgpio_digital_, req_get_digital_io_, res_get_digital_io_);
+//     *io0_value = res_get_digital_io_->digitals[0];
+//     *io1_value = res_get_digital_io_->digitals[1];
+//     return ret;
+// }
+
+// int XArmROSClient::get_cgpio_digital(int *digitals, int *digitals2)
+// {
+//     int ret = _call_request(client_get_cgpio_digital_, req_get_digital_io_, res_get_digital_io_);
+//     *digitals = res_get_digital_io_->digitals[0];
+//     for (int i = 0; i < 8; i++) {
+//         digitals[i] = res_get_digital_io_->digitals[i];
+//         if (digitals2 != NULL)
+//             digitals2[i] = res_get_digital_io_->digitals[i + 8];
+//     }
+//     return ret;
+// }
 
 // GetAnalogIO
 int XArmROSClient::get_tgpio_analog(int ionum, fp32 *value)
@@ -820,137 +847,177 @@ int XArmROSClient::close_bio_gripper(bool wait, fp32 timeout)
 }
 
 // RobotiqReset
-int XArmROSClient::robotiq_reset(unsigned char ret_data[6])
+int XArmROSClient::robotiq_reset()
 {
-    int ret = _call_request(client_robotiq_reset_, req_robotiq_reset_, res_robotiq_reset_);
-    if (ret_data != NULL) {
-        for (int i = 0; i < 6; i++) {
-            ret_data[i] = res_robotiq_reset_->ret_data[i];
-        }
-    }
-    return ret;
+    return _call_request(client_robotiq_reset_, req_robotiq_reset_, res_robotiq_reset_);
 }
+// int XArmROSClient::robotiq_reset(std::vector<unsigned char>& ret_data)
+// {
+//     int ret = _call_request(client_robotiq_reset_, req_robotiq_reset_, res_robotiq_reset_);
+//     ret_data.resize(6);
+//     ret_data.assign(res_robotiq_reset_->ret_data.begin(), res_robotiq_reset_->ret_data.end());
+//     return ret;
+// }
 
 // RobotiqActivate
-int XArmROSClient::robotiq_set_activate(bool wait, fp32 timeout, unsigned char ret_data[6])
+int XArmROSClient::robotiq_set_activate(bool wait, fp32 timeout)
 {
     req_robotiq_activate_->wait = wait;
     req_robotiq_activate_->timeout = timeout;
-    int ret = _call_request(client_robotiq_set_activate_, req_robotiq_activate_, res_robotiq_activate_);
-    if (ret_data != NULL) {
-        for (int i = 0; i < 6; i++) {
-            ret_data[i] = res_robotiq_activate_->ret_data[i];
-        }
-    }
-    return ret;
+    return  _call_request(client_robotiq_set_activate_, req_robotiq_activate_, res_robotiq_activate_);
 }
+// int XArmROSClient::robotiq_set_activate(bool wait, fp32 timeout, unsigned char ret_data[6])
+// {
+//     req_robotiq_activate_->wait = wait;
+//     req_robotiq_activate_->timeout = timeout;
+//     int ret = _call_request(client_robotiq_set_activate_, req_robotiq_activate_, res_robotiq_activate_);
+//     if (ret_data != NULL) {
+//         for (int i = 0; i < 6; i++) {
+//             ret_data[i] = res_robotiq_activate_->ret_data[i];
+//         }
+//     }
+//     return ret;
+// }
 
-int XArmROSClient::robotiq_set_activate(bool wait, unsigned char ret_data[6])
-{
-    return robotiq_set_activate(wait, 3, ret_data);
-}
+// int XArmROSClient::robotiq_set_activate(bool wait, unsigned char ret_data[6])
+// {
+//     return robotiq_set_activate(wait, 3, ret_data);
+// }
 
-int XArmROSClient::robotiq_set_activate(unsigned char ret_data[6])
-{
-    return robotiq_set_activate(true, 3, ret_data);
-}
+// int XArmROSClient::robotiq_set_activate(unsigned char ret_data[6])
+// {
+//     return robotiq_set_activate(true, 3, ret_data);
+// }
 
 // RobotiqMove
-int XArmROSClient::robotiq_set_position(unsigned char pos, unsigned char speed, unsigned char force, bool wait, fp32 timeout, unsigned char ret_data[6])
+int XArmROSClient::robotiq_set_position(unsigned char pos, unsigned char speed, unsigned char force, bool wait, fp32 timeout)
 {
     req_robotiq_move_->pos = pos;
     req_robotiq_move_->speed = speed;
     req_robotiq_move_->force = force;
     req_robotiq_move_->wait = wait;
     req_robotiq_move_->timeout = timeout;
-    int ret = _call_request(client_robotiq_set_position_, req_robotiq_move_, res_robotiq_move_);
-    if (ret_data != NULL) {
-        for (int i = 0; i < 6; i++) {
-            ret_data[i] = res_robotiq_move_->ret_data[i];
-        }
-    }
-    return ret;
+    return _call_request(client_robotiq_set_position_, req_robotiq_move_, res_robotiq_move_);
 }
 
-int XArmROSClient::robotiq_set_position(unsigned char pos, bool wait, fp32 timeout, unsigned char ret_data[6])
+int XArmROSClient::robotiq_set_position(unsigned char pos, bool wait, fp32 timeout)
 {
-    return robotiq_set_position(pos, 0xFF, 0xFF, wait, timeout, ret_data);
+    return robotiq_set_position(pos, 0xFF, 0xFF, wait, timeout);
 }
 
-int XArmROSClient::robotiq_set_position(unsigned char pos, bool wait, unsigned char ret_data[6])
+int XArmROSClient::robotiq_open(unsigned char speed, unsigned char force, bool wait, fp32 timeout)
 {
-    return robotiq_set_position(pos, wait, 5, ret_data);
+    return robotiq_set_position(0x00, speed, force, wait, timeout);
 }
 
-int XArmROSClient::robotiq_set_position(unsigned char pos, unsigned char ret_data[6])
+int XArmROSClient::robotiq_open(bool wait, fp32 timeout)
 {
-    return robotiq_set_position(pos, true, ret_data);
+    return robotiq_open(0xFF, 0xFF, wait, timeout);
 }
 
-int XArmROSClient::robotiq_open(unsigned char speed, unsigned char force, bool wait, fp32 timeout, unsigned char ret_data[6])
+int XArmROSClient::robotiq_close(unsigned char speed, unsigned char force, bool wait, fp32 timeout)
 {
-    return robotiq_set_position(0x00, speed, force, wait, timeout, ret_data);
+    return robotiq_set_position(0xFF, speed, force, wait, timeout);
 }
 
-int XArmROSClient::robotiq_open(bool wait, fp32 timeout, unsigned char ret_data[6])
+int XArmROSClient::robotiq_close(bool wait, fp32 timeout)
 {
-    return robotiq_set_position(0x00, wait, timeout, ret_data);
+    return robotiq_close(0xFF, 0xFF, wait, timeout);
 }
+// int XArmROSClient::robotiq_set_position(unsigned char pos, unsigned char speed, unsigned char force, bool wait, fp32 timeout, unsigned char ret_data[6])
+// {
+//     req_robotiq_move_->pos = pos;
+//     req_robotiq_move_->speed = speed;
+//     req_robotiq_move_->force = force;
+//     req_robotiq_move_->wait = wait;
+//     req_robotiq_move_->timeout = timeout;
+//     int ret = _call_request(client_robotiq_set_position_, req_robotiq_move_, res_robotiq_move_);
+//     if (ret_data != NULL) {
+//         for (int i = 0; i < 6; i++) {
+//             ret_data[i] = res_robotiq_move_->ret_data[i];
+//         }
+//     }
+//     return ret;
+// }
 
-int XArmROSClient::robotiq_open(bool wait, unsigned char ret_data[6])
-{
-    return robotiq_open(wait, 5, ret_data);
-}
+// int XArmROSClient::robotiq_set_position(unsigned char pos, bool wait, fp32 timeout, unsigned char ret_data[6])
+// {
+//     return robotiq_set_position(pos, 0xFF, 0xFF, wait, timeout, ret_data);
+// }
 
-int XArmROSClient::robotiq_open(unsigned char ret_data[6])
-{
-    return robotiq_open(true, ret_data);
-}
+// int XArmROSClient::robotiq_set_position(unsigned char pos, bool wait, unsigned char ret_data[6])
+// {
+//     return robotiq_set_position(pos, wait, 5, ret_data);
+// }
 
-int XArmROSClient::robotiq_close(unsigned char speed, unsigned char force, bool wait, fp32 timeout, unsigned char ret_data[6])
-{
-    return robotiq_set_position(0xFF, speed, force, wait, timeout, ret_data);
-}
+// int XArmROSClient::robotiq_set_position(unsigned char pos, unsigned char ret_data[6])
+// {
+//     return robotiq_set_position(pos, true, ret_data);
+// }
 
-int XArmROSClient::robotiq_close(bool wait, fp32 timeout, unsigned char ret_data[6])
-{
-    return robotiq_set_position(0xFF, wait, timeout, ret_data);
-}
+// int XArmROSClient::robotiq_open(unsigned char speed, unsigned char force, bool wait, fp32 timeout, unsigned char ret_data[6])
+// {
+//     return robotiq_set_position(0x00, speed, force, wait, timeout, ret_data);
+// }
 
-int XArmROSClient::robotiq_close(bool wait, unsigned char ret_data[6])
-{
-    return robotiq_close(wait, 5, ret_data);
-}
+// int XArmROSClient::robotiq_open(bool wait, fp32 timeout, unsigned char ret_data[6])
+// {
+//     return robotiq_set_position(0x00, wait, timeout, ret_data);
+// }
 
-int XArmROSClient::robotiq_close(unsigned char ret_data[6])
-{
-    return robotiq_close(true, ret_data);
-}
+// int XArmROSClient::robotiq_open(bool wait, unsigned char ret_data[6])
+// {
+//     return robotiq_open(wait, 5, ret_data);
+// }
+
+// int XArmROSClient::robotiq_open(unsigned char ret_data[6])
+// {
+//     return robotiq_open(true, ret_data);
+// }
+
+// int XArmROSClient::robotiq_close(unsigned char speed, unsigned char force, bool wait, fp32 timeout, unsigned char ret_data[6])
+// {
+//     return robotiq_set_position(0xFF, speed, force, wait, timeout, ret_data);
+// }
+
+// int XArmROSClient::robotiq_close(bool wait, fp32 timeout, unsigned char ret_data[6])
+// {
+//     return robotiq_set_position(0xFF, wait, timeout, ret_data);
+// }
+
+// int XArmROSClient::robotiq_close(bool wait, unsigned char ret_data[6])
+// {
+//     return robotiq_close(wait, 5, ret_data);
+// }
+
+// int XArmROSClient::robotiq_close(unsigned char ret_data[6])
+// {
+//     return robotiq_close(true, ret_data);
+// }
 
 // RobotiqGetStatus
-int XArmROSClient::robotiq_get_status(unsigned char ret_data[9], unsigned char number_of_registers)
+int XArmROSClient::robotiq_get_status(std::vector<unsigned char>& ret_data, unsigned char number_of_registers)
 {
     req_robotiq_get_status_->number_of_registers = number_of_registers;
     int ret = _call_request(client_robotiq_get_status_, req_robotiq_get_status_, res_robotiq_get_status_);
-    if (ret_data != NULL) {
-        for (int i = 0; i < 9; i++) {
-            ret_data[i] = res_robotiq_get_status_->ret_data[i];
-        }
-    }
+    ret_data.resize(9);
+    ret_data.swap(res_robotiq_get_status_->ret_data);
+    // ret_data.assign(res_robotiq_get_status_->ret_data.begin(), res_robotiq_get_status_->ret_data.end());
+    res_robotiq_get_status_->ret_data.clear();
     return ret;
 }
 
 // GetSetModbusData
-int XArmROSClient::getset_tgpio_modbus_data(const std::vector<unsigned char>& modbus_data, int modbus_length, std::vector<unsigned char> ret_data, int ret_length)
+int XArmROSClient::getset_tgpio_modbus_data(const std::vector<unsigned char>& modbus_data, int modbus_length, std::vector<unsigned char>& ret_data, int ret_length)
 {
     req_getset_modbus_data_->modbus_data = modbus_data;
     req_getset_modbus_data_->modbus_length = modbus_length;
     req_getset_modbus_data_->ret_length = ret_length;
     int ret = _call_request(client_getset_tgpio_modbus_data_, req_getset_modbus_data_, res_getset_modbus_data_);
     ret_data.resize(ret_length);
-    for (int i = 0; i < ret_length; i++) {
-        ret_data[i] = res_getset_modbus_data_->ret_data[i];
-    }
+    ret_data.swap(res_getset_modbus_data_->ret_data);
+    // ret_data.assign(res_getset_modbus_data_->ret_data.begin(), res_getset_modbus_data_->ret_data.end());
+    res_getset_modbus_data_->ret_data.clear();
     return ret;
 }
 

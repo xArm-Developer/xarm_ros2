@@ -35,7 +35,7 @@
 #include <xarm_msgs/srv/get_float32.hpp>
 #include <xarm_msgs/srv/get_float32_list.hpp>
 #include <xarm_msgs/srv/get_int16.hpp>
-#include <xarm_msgs/srv/get_err_warn.hpp>
+#include <xarm_msgs/srv/get_int16_list.hpp>
 #include <xarm_msgs/srv/get_int32.hpp>
 #include <xarm_msgs/srv/get_set_modbus_data.hpp>
 #include <xarm_msgs/srv/gripper_move.hpp>

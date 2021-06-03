@@ -82,6 +82,7 @@ namespace xarm_api
         rclcpp_action::Server<control_msgs::action::GripperCommand>::SharedPtr gripper_action_server_;
     
     private:
+        bool service_debug_;
         // Call
         rclcpp::Service<xarm_msgs::srv::Call>::SharedPtr service_clean_error_;
         rclcpp::Service<xarm_msgs::srv::Call>::SharedPtr service_clean_warn_;
@@ -120,9 +121,9 @@ namespace xarm_api
         bool _get_bio_gripper_status(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
         bool _get_bio_gripper_error(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
 
-        // GetErrWarn
-        rclcpp::Service<xarm_msgs::srv::GetErrWarn>::SharedPtr service_get_err_warn_code_;
-        bool _get_err_warn_code(const std::shared_ptr<xarm_msgs::srv::GetErrWarn::Request> req, std::shared_ptr<xarm_msgs::srv::GetErrWarn::Response> res);
+        // GetInt16List
+        rclcpp::Service<xarm_msgs::srv::GetInt16List>::SharedPtr service_get_err_warn_code_;
+        bool _get_err_warn_code(const std::shared_ptr<xarm_msgs::srv::GetInt16List::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16List::Response> res);
 
         // SetInt16
         rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_mode_;

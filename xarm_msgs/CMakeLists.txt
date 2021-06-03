@@ -35,38 +35,12 @@ endif()
 find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
+
 set(msg_files
   "msg/RobotMsg.msg"
   "msg/IOState.msg"
   "msg/CIOState.msg"
 )
-# set(srv_files
-#   "srv/Move.srv"
-#   "srv/SetAxis.srv"
-#   "srv/SetInt16.srv"
-#   "srv/TCPOffset.srv"
-#   "srv/SetDigitalIO.srv"
-#   "srv/GetDigitalIO.srv"
-#   "srv/GetAnalogIO.srv"
-#   "srv/ClearErr.srv"
-#   "srv/GetErr.srv"
-#   "srv/GripperConfig.srv"
-#   "srv/GripperMove.srv"
-#   "srv/GripperState.srv"
-#   "srv/SetLoad.srv"
-#   "srv/SetToolModbus.srv"
-#   "srv/ConfigToolModbus.srv"
-#   "srv/GetControllerDigitalIO.srv"
-#   "srv/SetControllerAnalogIO.srv"
-#   "srv/MoveAxisAngle.srv"
-#   "srv/MoveVelo.srv"
-#   "srv/SetFloat32.srv"
-
-#   "srv/PlanExec.srv"
-#   "srv/PlanJoint.srv"
-#   "srv/PlanPose.srv"
-#   "srv/PlanSingleStraight.srv"
-# )
 
 set(srv_dir "srv")
 set(srv_files
@@ -78,7 +52,7 @@ set(srv_files
   ${srv_dir}/GetFloat32.srv
   ${srv_dir}/GetFloat32List.srv
   ${srv_dir}/GetInt16.srv
-  ${srv_dir}/GetErrWarn.srv
+  ${srv_dir}/GetInt16List.srv
   ${srv_dir}/GetInt32.srv
   ${srv_dir}/GetSetModbusData.srv
   ${srv_dir}/GripperMove.srv

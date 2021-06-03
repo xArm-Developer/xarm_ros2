@@ -10,6 +10,7 @@ xarm_driver:
       threshold: 3
       threshold_times: 10
     services:
+      debug: false  # When debug is true, all services will be turned on
       clean_error: true
       clean_warn: true
       clean_conf: false

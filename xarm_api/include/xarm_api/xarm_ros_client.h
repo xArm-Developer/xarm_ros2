@@ -32,7 +32,7 @@ private:
 	int _call_request(std::shared_ptr<ServiceT> client, SharedRequest req);
 
 	template<typename ServiceT, typename SharedRequest = typename ServiceT::Request::SharedPtr, typename SharedResponse = typename ServiceT::Response::SharedPtr>
-	int _call_request(std::shared_ptr<ServiceT> client, SharedRequest req, SharedResponse res);
+	int _call_request(std::shared_ptr<ServiceT> client, SharedRequest req, SharedResponse& res);
 
 	template<typename ServiceT>
 	typename rclcpp::Client<ServiceT>::SharedPtr _create_client(const std::string & service_name);
@@ -63,8 +63,8 @@ public:
 	int get_bio_gripper_status(int *status);
 	int get_bio_gripper_error(int *err);
 
-	//GetErrWarn
-	int get_err_warn_code(int err_warn[2]);
+	//GetInt16List
+	int get_err_warn_code(std::vector<int>& err_warn);
 
 	// SetInt16
 	int set_mode(int mode);
@@ -91,9 +91,9 @@ public:
 	int get_gripper_position(fp32 *pos);
 
 	// GetFloat32List
-	int get_position(fp32 pose[6]);
-	int get_servo_angle(fp32 angles[7]);
-	int get_position_aa(fp32 pose[6]);
+	int get_position(std::vector<fp32>& pose);
+	int get_servo_angle(std::vector<fp32>& angles);
+	int get_position_aa(std::vector<fp32>& pose);
 
 	// SetFloat32
 	int set_pause_time(fp32 sltime);
@@ -105,9 +105,11 @@ public:
 
 	// SetFloat32List
 	int set_gravity_direction(const std::vector<fp32>& gravity_dir);
-	int set_tcp_load(fp32 weight, const std::vector<fp32>& center_of_gravity);
 	int set_tcp_offset(const std::vector<fp32>& offset);
 	int set_world_offset(const std::vector<fp32>& offset);
+
+	// SetTcpLoad
+	int set_tcp_load(fp32 weight, const std::vector<fp32>& center_of_gravity);
 
 	// MoveCartesian
 	int set_position(const std::vector<fp32>& pose, fp32 radius = -1, fp32 speed = 0, fp32 acc = 0, fp32 mvtime = 0, bool wait = false, fp32 timeout = NO_TIMEOUT);
@@ -138,8 +140,10 @@ public:
 	int vc_set_cartesian_velocity(const std::vector<fp32>& speeds, bool is_tool_coord = false);
 
 	// GetDigitalIO
-	int get_tgpio_digital(int *io0_value, int *io1_value);
-	int get_cgpio_digital(int *digitals, int *digitals2 = NULL);
+	int get_tgpio_digital(std::vector<int>& digitals);
+	int get_cgpio_digital(std::vector<int>& digitals);
+	// int get_tgpio_digital(int *io0_value, int *io1_value);
+	// int get_cgpio_digital(int *digitals, int *digitals2 = NULL);
 
 	// GetAnalogIO
 	int get_tgpio_analog(int ionum, fp32 *value);
@@ -171,32 +175,40 @@ public:
 	int close_bio_gripper(bool wait = true, fp32 timeout = 5);
 
 	// RobotiqReset
-	int robotiq_reset(unsigned char ret_data[6] = NULL);
+	int robotiq_reset();
+	// int robotiq_reset(std::vector<unsigned char>& ret_data);
 	
 	// RobotiqActivate
-	int robotiq_set_activate(bool wait = true, fp32 timeout = 3, unsigned char ret_data[6] = NULL);
-	int robotiq_set_activate(bool wait = true, unsigned char ret_data[6] = NULL);
-	int robotiq_set_activate(unsigned char ret_data[6] = NULL);
+	int robotiq_set_activate(bool wait = true, fp32 timeout = 3);
+	// int robotiq_set_activate(bool wait = true, fp32 timeout = 3, unsigned char ret_data[6] = NULL);
+	// int robotiq_set_activate(bool wait = true, unsigned char ret_data[6] = NULL);
+	// int robotiq_set_activate(unsigned char ret_data[6] = NULL);
 
 	// RobotiqMove
-	int robotiq_set_position(unsigned char pos, unsigned char speed = 0xFF, unsigned char force = 0xFF, bool wait = true, fp32 timeout = 5, unsigned char ret_data[6] = NULL);
-	int robotiq_set_position(unsigned char pos, bool wait = true, fp32 timeout = 5, unsigned char ret_data[6] = NULL);
-	int robotiq_set_position(unsigned char pos, bool wait = true, unsigned char ret_data[6] = NULL);
-	int robotiq_set_position(unsigned char pos, unsigned char ret_data[6] = NULL);
-	int robotiq_open(unsigned char speed = 0xFF, unsigned char force = 0xFF, bool wait = true, fp32 timeout = 5, unsigned char ret_data[6] = NULL);
-	int robotiq_open(bool wait = true, fp32 timeout = 5, unsigned char ret_data[6] = NULL);
-	int robotiq_open(bool wait = true, unsigned char ret_data[6] = NULL);
-	int robotiq_open(unsigned char ret_data[6] = NULL);
-	int robotiq_close(unsigned char speed = 0xFF, unsigned char force = 0xFF, bool wait = true, fp32 timeout = 5, unsigned char ret_data[6] = NULL);
-	int robotiq_close(bool wait = true, fp32 timeout = 5, unsigned char ret_data[6] = NULL);
-	int robotiq_close(bool wait = true, unsigned char ret_data[6] = NULL);
-	int robotiq_close(unsigned char ret_data[6] = NULL);
+	int robotiq_set_position(unsigned char pos, unsigned char speed = 0xFF, unsigned char force = 0xFF, bool wait = true, fp32 timeout = 5);
+	int robotiq_set_position(unsigned char pos, bool wait = true, fp32 timeout = 5);
+	int robotiq_open(unsigned char speed = 0xFF, unsigned char force = 0xFF, bool wait = true, fp32 timeout = 5);
+	int robotiq_open(bool wait = true, fp32 timeout = 5);
+	int robotiq_close(unsigned char speed = 0xFF, unsigned char force = 0xFF, bool wait = true, fp32 timeout = 5);
+	int robotiq_close(bool wait = true, fp32 timeout = 5);
+	// int robotiq_set_position(unsigned char pos, unsigned char speed = 0xFF, unsigned char force = 0xFF, bool wait = true, fp32 timeout = 5, unsigned char ret_data[6] = NULL);
+	// int robotiq_set_position(unsigned char pos, bool wait = true, fp32 timeout = 5, unsigned char ret_data[6] = NULL);
+	// int robotiq_set_position(unsigned char pos, bool wait = true, unsigned char ret_data[6] = NULL);
+	// int robotiq_set_position(unsigned char pos, unsigned char ret_data[6] = NULL);
+	// int robotiq_open(unsigned char speed = 0xFF, unsigned char force = 0xFF, bool wait = true, fp32 timeout = 5, unsigned char ret_data[6] = NULL);
+	// int robotiq_open(bool wait = true, fp32 timeout = 5, unsigned char ret_data[6] = NULL);
+	// int robotiq_open(bool wait = true, unsigned char ret_data[6] = NULL);
+	// int robotiq_open(unsigned char ret_data[6] = NULL);
+	// int robotiq_close(unsigned char speed = 0xFF, unsigned char force = 0xFF, bool wait = true, fp32 timeout = 5, unsigned char ret_data[6] = NULL);
+	// int robotiq_close(bool wait = true, fp32 timeout = 5, unsigned char ret_data[6] = NULL);
+	// int robotiq_close(bool wait = true, unsigned char ret_data[6] = NULL);
+	// int robotiq_close(unsigned char ret_data[6] = NULL);
 
 	// RobotiqGetStatus
-	int robotiq_get_status(unsigned char ret_data[9], unsigned char number_of_registers = 3);
+	int robotiq_get_status(std::vector<unsigned char>& ret_data, unsigned char number_of_registers = 3);
 
 	// GetSetModbusData
-	int getset_tgpio_modbus_data(const std::vector<unsigned char>& modbus_data, int modbus_length, std::vector<unsigned char> ret_data, int ret_length);
+	int getset_tgpio_modbus_data(const std::vector<unsigned char>& modbus_data, int modbus_length, std::vector<unsigned char>& ret_data, int ret_length);
 
 	// TrajCtrl
 	int save_record_trajectory(std::string& filename, float timeout = 10);
@@ -230,10 +242,10 @@ private:
 	rclcpp::Client<xarm_msgs::srv::GetInt16>::SharedPtr client_get_bio_gripper_status_;
 	rclcpp::Client<xarm_msgs::srv::GetInt16>::SharedPtr client_get_bio_gripper_error_;
 	
-	// GetErrWarn
-	std::shared_ptr<xarm_msgs::srv::GetErrWarn::Request> req_get_err_warn_;
-	std::shared_ptr<xarm_msgs::srv::GetErrWarn::Response> res_get_err_warn_;
-	rclcpp::Client<xarm_msgs::srv::GetErrWarn>::SharedPtr client_get_err_warn_code_;
+	// GetInt16List
+	std::shared_ptr<xarm_msgs::srv::GetInt16List::Request> req_get_int16_list_;
+	std::shared_ptr<xarm_msgs::srv::GetInt16List::Response> res_get_int16_list_;
+	rclcpp::Client<xarm_msgs::srv::GetInt16List>::SharedPtr client_get_err_warn_code_;
 	
 	// SetInt16
 	std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req_set_int16_;
