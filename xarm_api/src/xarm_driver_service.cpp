@@ -16,10 +16,9 @@ namespace xarm_api
     {
         bool enable;
         node_->get_parameter_or("services." + service_name, enable, false);
-        RCLCPP_INFO(node_->get_logger(), "%s, enable: %d, service_debug_: %d", service_name.c_str(), enable, service_debug_);
         if (service_debug_ || enable) {
             auto service = hw_node_->create_service<ServiceT>(service_name, BIND_CLS_CB(callback));
-            RCLCPP_INFO(node_->get_logger(), "create_service: %s", service->get_service_name());
+            RCLCPP_DEBUG(node_->get_logger(), "create_service: %s", service->get_service_name());
             return service;
         }
         return NULL;

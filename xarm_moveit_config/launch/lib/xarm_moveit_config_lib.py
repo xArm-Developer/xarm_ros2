@@ -10,7 +10,8 @@ import os
 import yaml
 from ament_index_python import get_package_share_directory
 from launch.launch_description_sources import load_python_launch_file_as_module
-from launch.substitutions.launch_configuration import LaunchConfiguration
+from launch.substitutions import Command, FindExecutable, PathJoinSubstitution
+from launch_ros.substitutions import FindPackageShare
 
 
 def load_file(package_name, *file_path):
@@ -34,6 +35,22 @@ def load_yaml(package_name, *file_path):
         return None
 
 
+def get_xarm_robot_description_semantic(srdf_path, add_gripper):
+    # robot_description_semantic
+    robot_description_semantic_content = Command(
+        [
+            PathJoinSubstitution([FindExecutable(name="xacro")]),
+            " ",
+            srdf_path,
+            " ",
+            "add_gripper:=",
+            add_gripper,
+            " ",
+        ]
+    )
+    return {"robot_description_semantic": robot_description_semantic_content}
+
+
 def get_xarm_robot_description_parameters(
     prefix, hw_ns, limited, 
     effort_control, velocity_control, 
@@ -55,7 +72,9 @@ def get_xarm_robot_description_parameters(
     #     srdf_name = '{}_with_gripper'.format(xarm_type)
 
     moveit_config_package_name = 'xarm_moveit_config'
-    robot_description_semantic = {'robot_description_semantic': load_file(moveit_config_package_name, 'srdf', '{}.srdf'.format(srdf_name))}    
+    srdf_path = PathJoinSubstitution([FindPackageShare(moveit_config_package_name), 'srdf', '{}.srdf'.format(srdf_name)])
+    robot_description_semantic = get_xarm_robot_description_semantic(srdf_path, add_gripper)
+    # robot_description_semantic = {'robot_description_semantic': load_file(moveit_config_package_name, 'srdf', '{}.srdf'.format(srdf_name))}    
     robot_description_kinematics = {'robot_description_kinematics': load_yaml(moveit_config_package_name, 'config', xarm_type, 'kinematics.yaml')}
     robot_description_planning = {'robot_description_planning': load_yaml(moveit_config_package_name, 'config', xarm_type, 'joint_limits.yaml')}
     ret = {}
