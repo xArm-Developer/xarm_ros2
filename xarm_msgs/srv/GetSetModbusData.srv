@@ -1,3 +1,6 @@
+# This format is suitable for the following services
+#   - getset_tgpio_modbus_data
+
 uint8[] modbus_data
 int16 modbus_length
 int16 ret_length

@@ -1,3 +1,10 @@
+# This format is suitable for the following services
+#   - set_position
+#   - set_tool_position
+#   - set_position_aa
+#   - set_servo_cartesian
+#   - set_servo_cartesian_aa
+
 # set_position/set_tool_position/set_position_aa/set_servo_cartesian/set_servo_cartesian_aa
 float32[] pose
 float32 speed       0

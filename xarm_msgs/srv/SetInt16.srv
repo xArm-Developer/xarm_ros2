@@ -1,3 +1,13 @@
+# This format is suitable for the following services
+#   - set_mode
+#   - set_state
+#   - set_collision_sensitivity
+#   - set_teach_sensitivity
+#   - set_gripper_mode
+#   - set_gripper_enable
+#   - set_tgpio_modbus_timeout
+#   - set_bio_gripper_speed
+
 int16 data
 
 ---

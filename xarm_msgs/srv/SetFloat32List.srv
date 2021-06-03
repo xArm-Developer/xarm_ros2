@@ -1,3 +1,8 @@
+# This format is suitable for the following services
+#   - set_gravity_direction
+#   - set_tcp_offset
+#   - set_world_offset
+
 float32[] datas
 
 ---

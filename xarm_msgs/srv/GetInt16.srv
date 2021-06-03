@@ -1,3 +1,11 @@
+# This format is suitable for the following services
+#   - get_state
+#   - get_cmdnum
+#   - get_vacuum_gripper
+#   - get_gripper_err_code
+#   - get_bio_gripper_status
+#   - get_bio_gripper_error
+
 ---
 
 int16 ret
