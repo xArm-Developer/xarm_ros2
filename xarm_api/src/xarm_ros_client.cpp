@@ -206,9 +206,9 @@ int XArmROSClient::_call_request(std::shared_ptr<ServiceT> client, SharedRequest
     }
     auto res = result_future.get();
     if (res->message.size() != 0)
-        RCLCPP_INFO(node_->get_logger(), "call service %s, ret=%d, message(%s)", client->get_service_name(), res->ret, res->message.c_str());
+        RCLCPP_DEBUG(node_->get_logger(), "call service %s, ret=%d, message(%s)", client->get_service_name(), res->ret, res->message.c_str());
     else
-        RCLCPP_INFO(node_->get_logger(), "call service %s, ret=%d", client->get_service_name(), res->ret);
+        RCLCPP_DEBUG(node_->get_logger(), "call service %s, ret=%d", client->get_service_name(), res->ret);
     return res->ret;
 }
 
@@ -234,9 +234,9 @@ int XArmROSClient::_call_request(std::shared_ptr<ServiceT> client, SharedRequest
     }
     res = result_future.get();
     if (res->message.size() != 0)
-        RCLCPP_INFO(node_->get_logger(), "call service %s, ret=%d, message(%s)", client->get_service_name(), res->ret, res->message.c_str());
+        RCLCPP_DEBUG(node_->get_logger(), "call service %s, ret=%d, message(%s)", client->get_service_name(), res->ret, res->message.c_str());
     else
-        RCLCPP_INFO(node_->get_logger(), "call service %s, ret=%d", client->get_service_name(), res->ret);
+        RCLCPP_DEBUG(node_->get_logger(), "call service %s, ret=%d", client->get_service_name(), res->ret);
     return res->ret;
 }
 

@@ -7,13 +7,27 @@
 # Author: Vinman <vinman.wen@ufactory.cc> <vinman.cub@gmail.com>
 
 import os
-import sys
-# from ament_index_python.packages import get_package_share_directory
+import yaml
+from tempfile import NamedTemporaryFile
+from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import OpaqueFunction, DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
+
+
+def generate_xarm_params(xarm_params_path, ros_namespace=''):
+    if ros_namespace:
+        with open(xarm_params_path, 'r') as f:
+            ros2_control_params_yaml = yaml.safe_load(f)
+        xarm_params_yaml = {
+            ros_namespace: ros2_control_params_yaml
+        }
+        with NamedTemporaryFile(mode='w', prefix='launch_params_', delete=False) as h:
+            yaml.dump(xarm_params_yaml, h, default_flow_style=False)
+            return h.name
+    return xarm_params_path
 
 
 def launch_setup(context, *args, **kwargs):
@@ -54,7 +68,10 @@ def launch_setup(context, *args, **kwargs):
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     
-    xarm_params = PathJoinSubstitution([FindPackageShare('xarm_api'), 'config', 'xarm_params.yaml'])
+    xarm_params = generate_xarm_params(
+        os.path.join(get_package_share_directory('xarm_api'), 'config', 'xarm_params.yaml'),
+        LaunchConfiguration('ros_namespace', default='').perform(context)
+    )
     
     xarm_driver_node = Node(
         # namespace=hw_ns,
