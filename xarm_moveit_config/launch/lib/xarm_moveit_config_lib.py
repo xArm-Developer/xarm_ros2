@@ -35,7 +35,7 @@ def load_yaml(package_name, *file_path):
         return None
 
 
-def get_xarm_robot_description_semantic(srdf_path, add_gripper):
+def get_xarm_robot_description_semantic(srdf_path, add_gripper, prefix):
     # robot_description_semantic
     robot_description_semantic_content = Command(
         [
@@ -45,6 +45,31 @@ def get_xarm_robot_description_semantic(srdf_path, add_gripper):
             " ",
             "add_gripper:=",
             add_gripper,
+            " ",
+            "prefix:=",
+            prefix,
+            " ",
+        ]
+    )
+    return {"robot_description_semantic": robot_description_semantic_content}
+
+
+def get_dual_xarm_robot_description_semantic(srdf_path, add_gripper, prefix_1, prefix_2):
+    # robot_description_semantic
+    robot_description_semantic_content = Command(
+        [
+            PathJoinSubstitution([FindExecutable(name="xacro")]),
+            " ",
+            srdf_path,
+            " ",
+            "add_gripper:=",
+            add_gripper,
+            " ",
+            "prefix_1:=",
+            prefix_1,
+            " ",
+            "prefix_2:=",
+            prefix_2,
             " ",
         ]
     )
@@ -72,8 +97,43 @@ def get_xarm_robot_description_parameters(
     #     srdf_name = '{}_with_gripper'.format(xarm_type)
 
     moveit_config_package_name = 'xarm_moveit_config'
-    srdf_path = PathJoinSubstitution([FindPackageShare(moveit_config_package_name), 'srdf', '{}.srdf'.format(srdf_name)])
-    robot_description_semantic = get_xarm_robot_description_semantic(srdf_path, add_gripper)
+    srdf_path = PathJoinSubstitution([FindPackageShare(moveit_config_package_name), 'srdf', '{}.srdf.xacro'.format(srdf_name)])
+    robot_description_semantic = get_xarm_robot_description_semantic(srdf_path, add_gripper, prefix)
+    # robot_description_semantic = {'robot_description_semantic': load_file(moveit_config_package_name, 'srdf', '{}.srdf'.format(srdf_name))}    
+    robot_description_kinematics = {'robot_description_kinematics': load_yaml(moveit_config_package_name, 'config', xarm_type, 'kinematics.yaml')}
+    robot_description_planning = {'robot_description_planning': load_yaml(moveit_config_package_name, 'config', xarm_type, 'joint_limits.yaml')}
+    ret = {}
+    ret.update(robot_description)
+    ret.update(robot_description_semantic)
+    ret.update(robot_description_kinematics)
+    # ret.update(robot_description_planning)
+    return ret
+
+
+def get_dual_xarm_robot_description_parameters(
+    prefix_1, prefix_2, hw_ns, limited, 
+    effort_control, velocity_control, 
+    add_gripper, add_vacuum_gripper, 
+    dof, xarm_type, ros2_control_plugin='xarm_control/XArmHW',
+    context=None):
+    
+    # robot_description
+    mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_description'), 'launch', 'lib', 'xarm_description_lib.py'))
+    get_dual_xarm_robot_description = getattr(mod, 'get_dual_xarm_robot_description')
+    robot_description = get_dual_xarm_robot_description(
+        prefix_1, prefix_2, hw_ns, limited, 
+        effort_control, velocity_control, 
+        add_gripper, add_vacuum_gripper, 
+        dof, ros2_control_plugin
+    )
+    
+    srdf_name = xarm_type
+    # if context is not None and isinstance(add_gripper, LaunchConfiguration)  and add_gripper.perform(context) == 'true':
+    #     srdf_name = '{}_with_gripper'.format(xarm_type)
+
+    moveit_config_package_name = 'xarm_moveit_config'
+    srdf_path = PathJoinSubstitution([FindPackageShare(moveit_config_package_name), 'srdf', '{}.srdf.xacro'.format(srdf_name)])
+    robot_description_semantic = get_dual_xarm_robot_description_semantic(srdf_path, add_gripper, prefix_1, prefix_2)
     # robot_description_semantic = {'robot_description_semantic': load_file(moveit_config_package_name, 'srdf', '{}.srdf'.format(srdf_name))}    
     robot_description_kinematics = {'robot_description_kinematics': load_yaml(moveit_config_package_name, 'config', xarm_type, 'kinematics.yaml')}
     robot_description_planning = {'robot_description_planning': load_yaml(moveit_config_package_name, 'config', xarm_type, 'joint_limits.yaml')}

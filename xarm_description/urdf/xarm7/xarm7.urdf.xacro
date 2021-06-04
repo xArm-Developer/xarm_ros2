@@ -10,19 +10,19 @@
     joint6_lower_limit:=${-1.69297}  joint6_upper_limit:=${pi}
     joint7_lower_limit:=${-2.0*pi}  joint7_upper_limit:=${2.0*pi}">
 
-    <material name="Black">
+    <material name="${prefix}Black">
       <color rgba="0.0 0.0 0.0 1.0"/>
     </material>
 
-    <material name="Red">
+    <material name="${prefix}Red">
       <color rgba="0.8 0.0 0.0 1.0"/>
     </material>
 
-    <material name="White">
+    <material name="${prefix}White">
       <color rgba="1.0 1.0 1.0 1.0"/>
     </material>
 
-    <material name="Silver">
+    <material name="${prefix}Silver">
       <color rgba="0.753 0.753 0.753 1.0"/>
     </material>
 
@@ -50,7 +50,7 @@
         <mesh
           filename="package://xarm_description/meshes/xarm7/visual/link_base.STL" />
       </geometry>
-      <material name="White" />
+      <material name="${prefix}White" />
     </visual>
     <collision>
       <origin
@@ -86,7 +86,7 @@
         <mesh
           filename="package://xarm_description/meshes/xarm7/visual/link1.STL" />
       </geometry>
-      <material name="White" />
+      <material name="${prefix}White" />
     </visual>
     <collision>
       <origin
@@ -143,7 +143,7 @@
         <mesh
           filename="package://xarm_description/meshes/xarm7/visual/link2.STL" />
       </geometry>
-      <material name="White" />
+      <material name="${prefix}White" />
     </visual>
     <collision>
       <origin
@@ -200,7 +200,7 @@
         <mesh
           filename="package://xarm_description/meshes/xarm7/visual/link3.STL" />
       </geometry>
-      <material name="White" />
+      <material name="${prefix}White" />
     </visual>
     <collision>
       <origin
@@ -257,7 +257,7 @@
         <mesh
           filename="package://xarm_description/meshes/xarm7/visual/link4.STL" />
       </geometry>
-      <material name="White" />
+      <material name="${prefix}White" />
     </visual>
     <collision>
       <origin
@@ -314,7 +314,7 @@
         <mesh
           filename="package://xarm_description/meshes/xarm7/visual/link5.STL" />
       </geometry>
-      <material name="White" />
+      <material name="${prefix}White" />
     </visual>
     <collision>
       <origin
@@ -371,7 +371,7 @@
         <mesh
           filename="package://xarm_description/meshes/xarm7/visual/link6.STL" />
       </geometry>
-      <material name="White" />
+      <material name="${prefix}White" />
     </visual>
     <collision>
       <origin
@@ -428,7 +428,7 @@
         <mesh
           filename="package://xarm_description/meshes/xarm7/visual/link7.STL" />
       </geometry>
-      <material name="Silver" />
+      <material name="${prefix}Silver" />
     </visual>
     <collision>
       <origin

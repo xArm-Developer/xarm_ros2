@@ -65,8 +65,11 @@ namespace xarm_api
     void XArmDriver::init(rclcpp::Node::SharedPtr& node, std::string &server_ip)
     {
         node_ = node;
+        std::string prefix = "";
+        node_->get_parameter_or("prefix", prefix, std::string(""));
         std::string hw_ns;
         node_->get_parameter_or("hw_ns", hw_ns, std::string("xarm"));
+        hw_ns = prefix + hw_ns;
         hw_node_ = node->create_sub_node(hw_ns);
         node_->get_parameter_or("dof", dof_, 7);
         node_->get_parameter_or("report_type", report_type_, std::string("normal"));
@@ -150,8 +153,17 @@ namespace xarm_api
         gripper_joint_state_msg_.effort.resize(6, std::numeric_limits<double>::quiet_NaN());
         node_->get_parameter_or("xarm_gripper.joint_names", gripper_joint_state_msg_.name, 
             std::vector<std::string>({"drive_joint", "left_finger_joint", "left_inner_knuckle_joint", "right_outer_knuckle_joint", "right_finger_joint", "right_inner_knuckle_joint"}));
+        
+        std::string prefix = "";
+        node_->get_parameter_or("prefix", prefix, std::string(""));
+        if (prefix != "") {
+            for (int i = 0; i < gripper_joint_state_msg_.name.size(); i++) {
+                gripper_joint_state_msg_.name[i] = prefix + gripper_joint_state_msg_.name[i];
+            }
+        }
+
         gripper_action_server_ = rclcpp_action::create_server<control_msgs::action::GripperCommand>(
-            node_, "xarm_gripper/gripper_action",
+            node_, prefix + "xarm_gripper/gripper_action",
             BIND_CLS_CB(&XArmDriver::_handle_gripper_action_goal),
             BIND_CLS_CB_1(&XArmDriver::_handle_gripper_action_cancel),
             BIND_CLS_CB_1(&XArmDriver::_handle_gripper_action_accepted));

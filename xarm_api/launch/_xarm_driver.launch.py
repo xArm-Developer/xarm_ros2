@@ -67,6 +67,7 @@ def launch_setup(context, *args, **kwargs):
     dof = LaunchConfiguration('dof', default=7)
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     add_gripper = LaunchConfiguration('add_gripper', default=False)
+    prefix = LaunchConfiguration('prefix', default='')
     
     xarm_params = generate_xarm_params(
         os.path.join(get_package_share_directory('xarm_api'), 'config', 'xarm_params.yaml'),
@@ -87,7 +88,8 @@ def launch_setup(context, *args, **kwargs):
                 'report_type': report_type,
                 'dof': dof,
                 'add_gripper': add_gripper,
-                'hw_ns': hw_ns.perform(context).strip('/')
+                'hw_ns': hw_ns.perform(context).strip('/'),
+                'prefix': prefix.perform(context).strip('/'),
             },
         ]
     )

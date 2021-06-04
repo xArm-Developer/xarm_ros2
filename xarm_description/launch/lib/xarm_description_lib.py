@@ -58,3 +58,56 @@ def get_xarm_robot_description(
         ]
     )
     return {"robot_description": robot_description_content}
+
+
+def get_dual_xarm_robot_description(
+    prefix_1, prefix_2,
+    hw_ns,
+    limited, 
+    effort_control,
+    velocity_control, 
+    add_gripper,
+    add_vacuum_gripper,
+    dof,
+    ros2_control_plugin):
+    
+    # robot_description
+    robot_description_content = Command(
+        [
+            PathJoinSubstitution([FindExecutable(name="xacro")]),
+            " ",
+            PathJoinSubstitution([FindPackageShare('xarm_description'), 'urdf', 'dual_xarm_device.urdf.xacro']),
+            " ",
+            "prefix_1:=",
+            prefix_1,
+            " ",
+            "prefix_2:=",
+            prefix_2,
+            " ",
+            "hw_ns:=",
+            hw_ns,
+            " ",
+            "limited:=",
+            limited,
+            " ",
+            "effort_control:=",
+            effort_control,
+            " ",
+            "velocity_control:=",
+            velocity_control,
+            " ",
+            "add_gripper:=",
+            add_gripper,
+            " ",
+            "add_vacuum_gripper:=",
+            add_vacuum_gripper,
+            " ",
+            "dof:=",
+            dof,
+            " ",
+            "ros2_control_plugin:=",
+            ros2_control_plugin,
+            " ",
+        ]
+    )
+    return {"robot_description": robot_description_content}

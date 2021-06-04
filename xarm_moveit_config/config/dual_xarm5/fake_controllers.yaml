@@ -1,0 +1,29 @@
+controller_names:
+  - fake_L_xarm5_traj_controller
+  - fake_L_xarm_gripper_controller
+  - fake_R_xarm5_traj_controller
+  - fake_R_xarm_gripper_controller
+
+fake_L_xarm5_traj_controller:
+  joints:
+    - L_joint1
+    - L_joint2
+    - L_joint3
+    - L_joint4
+    - L_joint5
+
+fake_L_xarm_gripper_controller:
+  joints:
+    - L_drive_joint
+
+fake_R_xarm5_traj_controller:
+  joints:
+    - R_joint1
+    - R_joint2
+    - R_joint3
+    - R_joint4
+    - R_joint5
+
+fake_R_xarm_gripper_controller:
+  joints:
+    - R_drive_joint

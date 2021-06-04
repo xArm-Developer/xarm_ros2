@@ -8,19 +8,19 @@
     joint4_lower_limit:=${-1.69297}  joint4_upper_limit:=${pi}
     joint5_lower_limit:=${-2.0*pi}  joint5_upper_limit:=${2.0*pi}">
 
-    <material name="Black">
+    <material name="${prefix}Black">
       <color rgba="0.0 0.0 0.0 1.0"/>
     </material>
 
-    <material name="Red">
+    <material name="${prefix}Red">
       <color rgba="0.8 0.0 0.0 1.0"/>
     </material>
 
-    <material name="White">
+    <material name="${prefix}White">
       <color rgba="1.0 1.0 1.0 1.0"/>
     </material>
 
-    <material name="Silver">
+    <material name="${prefix}Silver">
       <color rgba="0.753 0.753 0.753 1.0"/>
     </material>
 
@@ -48,7 +48,7 @@
           <mesh
             filename="package://xarm_description/meshes/xarm5/visual/base_link.STL" />
         </geometry>
-        <material name="White" />
+        <material name="${prefix}White" />
       </visual>
       <collision>
         <origin
@@ -84,7 +84,7 @@
           <mesh
             filename="package://xarm_description/meshes/xarm5/visual/link1.STL" />
         </geometry>
-        <material name="White" />
+        <material name="${prefix}White" />
       </visual>
       <collision>
         <origin
@@ -141,7 +141,7 @@
           <mesh
             filename="package://xarm_description/meshes/xarm5/visual/link2.STL" />
         </geometry>
-        <material name="White" />
+        <material name="${prefix}White" />
       </visual>
       <collision>
         <origin
@@ -198,7 +198,7 @@
           <mesh
             filename="package://xarm_description/meshes/xarm5/visual/link3.STL" />
         </geometry>
-        <material name="White" />
+        <material name="${prefix}White" />
       </visual>
       <collision>
         <origin
@@ -255,7 +255,7 @@
           <mesh
             filename="package://xarm_description/meshes/xarm5/visual/link4.STL" />
         </geometry>
-        <material name="White" />
+        <material name="${prefix}White" />
       </visual>
       <collision>
         <origin
@@ -312,7 +312,7 @@
           <mesh
             filename="package://xarm_description/meshes/xarm5/visual/link5.STL" />
         </geometry>
-        <material name="Silver" />
+        <material name="${prefix}Silver" />
       </visual>
       <collision>
         <origin

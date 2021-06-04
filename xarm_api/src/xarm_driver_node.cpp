@@ -28,6 +28,14 @@ class XArmDriverRunner
             
             RCLCPP_INFO(node_->get_logger(), "robot_ip=%s, report_type=%s, dof=%d", server_ip.c_str(), report_type_.c_str(), joint_num_);
 
+            std::string prefix = "";
+            node_->get_parameter_or("prefix", prefix, std::string(""));
+            if (prefix != "") {
+                for (int i = 0; i < joint_names_.size(); i++) {
+                    joint_names_[i] = prefix + joint_names_[i];
+                }
+            }
+
             is_first_cycle_ = true;
             prev_angle_ = new double [joint_num_];
 
