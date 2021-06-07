@@ -1,3 +1,4 @@
 .vscode/
 .idea/
 *bak/
+ignore_*

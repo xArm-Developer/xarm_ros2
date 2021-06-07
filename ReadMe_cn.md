@@ -1,168 +1,197 @@
-# xarm_ros2测试说明（暂定调试使用）
+# xarm_ros说明
 
-## 获取源码包
-```bash
-$ cd ~/dev_ws/src
-$ git clone git@192.168.1.19:vinman/xarm_ros2.git --recursive
-```
+## 1. 简介
 
-## 升级源码包
-```bash
-$ cd ~/dev_ws/src/xarm_ros2
-$ git pull
-$ git submodule sync
-$ git submodule update --init --remote
-```
+&ensp;&ensp;&ensp;&ensp;此代码库包含xArm模型文件以及相关的控制、规划等示例开发包。开发及测试使用的环境为 Ubuntu 20.04 + ROS Foxy。
 
-## 安装依赖
-```bash
-$ rosdep update
-$ rosdep install --from-paths . --ignore-src --rosdistro foxy -y
-```
 
-## 编译 
+## 2. 更新记录
+
+&ensp;&ensp;&ensp;&ensp;暂无
+
+
+## 3. 准备工作
+
+- ### 3.1 安装 [ROS Foxy](https://docs.ros.org/en/foxy/Installation.html) 
+
+- ### 3.2 安装 [Moveit2](https://moveit.ros.org/install-moveit2/source/)
+
+
+## 4. 使用说明
+
+- ### 4.1 创建工作区
+    ```bash
+    # 如果已经有自己工作区，请跳过这一步骤
+    $ cd ~
+    $ mkdir -p dev_ws/src
+    ```
+
+- ### 4.2 获取xarm_ros2源码包
+    ```bash
+    $ cd ~/dev_ws/src
+    # 注意需要--recursive参数，否则不会下载源码包的子模块源码
+    $ git clone git@192.168.1.19:vinman/xarm_ros2.git --recursive
+    ```
+
+- ### 4.3 升级xarm_ros2源码包
+    ```bash
+    $ cd ~/dev_ws/src/xarm_ros2
+    $ git pull
+    $ git submodule sync
+    $ git submodule update --init --remote
+    ```
+
+- ### 4.4 安装xarm_ros2依赖
+    ```bash
+    # 记得先source已安装的ros foxy环境
+    $ cd ~/dev_ws/src/
+    $ rosdep update
+    $ rosdep install --from-paths . --ignore-src --rosdistro 
+    ```
+
+- ### 4.5 编译xarm_ros2
+    ```bash
+    # 记得先source已安装的ros foxy环境和moveit2环境
+    $ cd ~/dev_ws/
+    # 编译所有包
+    $ colcon build
+    
+    # 编译单个包
+    # $ colcon build --packages-select xarm_api
+    ```
+
+
+## 5. 模块说明
+__注意1： 运行xarm_ros2中的程序或启动脚本之前请先source当前工作区环境__
 ```bash
 $ cd ~/dev_ws/
-# 编译所有包
-$ colcon build
-# 编译单个包
-# $ colcon build --packages-select xarm_api
+$ source install/setup.bash
 ```
+__注意2： 以下启动说明以6轴为例，5轴和7轴的用法只需找到对应的启动文件或指定对应的参数__
 
-## 6. 测试 (xarm6为例)
-__注意1: xarm_driver提供的各个服务名称和SDK的API名称保持一致，是否开启请看注意2__
-__注意2: xarm_api/config/xarm_params.yaml文件里面的services下的配置表示对应的服务是否开启__
-### 6.1 测试包(xarm_api)
-- #### 6.1.1 运行 xarm_driver_node
+- ### 5.1 xarm_description
+    此模块包含机械臂的描述文件，通过以下启动脚本可以在rviz中显示对应的机械臂模型
     ```bash
     $ cd ~/dev_ws/
-    $ source install/setup.bash
-    $ ros2 launch xarm_api xarm6_driver.launch.py robot_ip:=192.168.1.117
+    # add_gripper为true时会加载xarm夹爪的模型
+    # add_vacuum_gripper为true时会加载xarm真空吸头的模型
+    # 注意：只能加载一款末端器件
+    $ ros2 launch xarm_description xarm6_rviz_display.launch.py [add_gripper:=true] [add_vacuum_gripper:=true]
     ```
 
-- #### 6.1.2 测试 xarm_ros_client
-    ```bash
-    $ cd ~/dev_ws/
-    $ source install/setup.bash
-    $ ros2 run xarm_api test_xarm_ros_client
-    ```
+- ### 5.2 xarm_msgs
+    此模块包含整个xarm_ros2所使用到的服务和主题通信格式，使用时请查阅每个文件里的说明
 
-- #### 6.1.3 测试 xarm_velo_move 
-    ```bash
-    $ cd ~/dev_ws/
-    $ source install/setup.bash
-    $ ros2 run xarm_api test_xarm_velo_move
-    ```
+- ### 5.3 xarm_sdk
+    此模块是作为子模块存在的，子模块仓库为[xArm-CPLUS-SDK](https://github.com/xArm-Developer/xArm-CPLUS-SDK.git), 作为控制机械臂的SDK，如需使用请参阅xArm-CPLUS-SDK的文档说明
 
-- #### 6.1.4 测试 xarm_states_topic 
-    ```bash
-    $ cd ~/dev_ws/
-    $ source install/setup.bash
-    $ ros2 run xarm_api test_xarm_states
-    ```
-
-### 6.2 测试包(xarm_description)
-- #### 6.2.1 测试rviz显示模型
-    ```bash
-    $ cd ~/dev_ws/
-    $ source install/setup.bash
-    $ ros2 launch xarm_description xarm6_rviz_display.launch.py
-    ```
-
-### 6.3 测试包(xarm_controller)
-- #### 6.3.1 启动xarm_control并在rviz显示对应机械臂位置
-    ```bash
-    $ cd ~/dev_ws/
-    $ source install/setup.bash
-    $ ros2 launch xarm_controller xarm6_control_rviz_display.launch.py robot_ip:=192.168.1.117
-    ```
-
-- #### 6.3.2 （双臂控制）启动xarm_control并在rviz显示对应机械臂位置
-    ```bash
-    $ cd ~/dev_ws/
-    $ source install/setup.bash
-    $ ros2 launch xarm_controller two_xarm6_control_rviz_display.launch.py robot1_ip:=192.168.1.117 robot2_ip:=192.168.1.156
-    ```
-
-### 6.4 测试包(xarm_moveit_config)
-- #### 6.4.1 启动moveit并在rviz显示, 控制虚拟机械臂
-    ```bash
-    $ cd ~/dev_ws/
-    $ source install/setup.bash
-    $ ros2 launch xarm_moveit_config xarm6_moveit_fake.launch.py
-    ```
-
-- #### 6.4.2 启动moveit并在rviz显示, 控制真实机械臂
-    ```bash
-    $ cd ~/dev_ws/
-    $ source install/setup.bash
-    $ ros2 launch xarm_moveit_config xarm6_moveit_realmove.launch.py robot_ip:=192.168.1.117
-    ```
-
-- #### 6.4.3 （双臂控制）启动moveit并在rviz显示, 控制虚拟机械臂
-    ```bash
-    $ cd ~/dev_ws/
-    $ source install/setup.bash
-    $ ros2 launch xarm_moveit_config two_xarm6_moveit_fake.launch.py
-    ```
-
-- #### 6.4.4 （双臂控制）启动moveit并在rviz显示, 控制真实机械臂
-    ```bash
-    $ cd ~/dev_ws/
-    $ source install/setup.bash
-    $ ros2 launch xarm_moveit_config two_xarm6_moveit_realmove.launch.py robot1_ip:=192.168.1.117 robot2_ip:=192.168.1.156
-    ```
-
-### 6.5 测试包(xarm_planner)
-- #### 6.5.1 启动moveit并在rviz显示, 通过planner控制虚拟机械臂
-    ```bash
-    $ cd ~/dev_ws/
-    $ source install/setup.bash
-    $ ros2 launch xarm_planner xarm6_planner_fake.launch.py
-    # 通过xarm_planner_node提供的service控制（此方式每次都需要重启xarm_planner_node，即上面那个操作）
-    $ ros2 launch xarm_planner test_xarm_planner_client_joint.launch.py dof:=6
-    # $ ros2 launch xarm_planner test_xarm_planner_client_pose.launch.py dof:=6
+- ### 5.4 xarm_api
+    此模块是针对xarm_sdk封装，提供对应的ros service和ros topic，整个xarm_ros2是通过使用此模块的service和topic来和机械臂的通信的
+    所有service和topic默认都处于xarm/空间下(除非指定了hw_ns参数)，即joint_states的完整名字为xarm/joint_states
     
-    # 通过xarm_planner api控制
+    - __services__: 所有提供的service的名字和SDK中的API名字是对应的，但是否创建对应的服务是根据xarm_api/config/xarm_params.yaml的services来决定的，只有当services下对应的service的值为true时才会创建对应的service
+        motion_enable:
+        set_mode:
+        set_state: 
+        ...
+
+    - __topics__:
+        __joint_states__: 格式为 __sensor_msgs::msg::JointState__
+        __xarm_states__: 格式为 __xarm_msgs::msg::RobotMsg__
+        __xarm_cgpio_states__: 格式为 __xarm_msgs::msg::CIOState__
+    
+    - 启动与测试
+        ```bash
+        $ cd ~/dev_ws/
+        # 启动xarm_driver_node
+        $ ros2 launch xarm_api xarm6_driver.launch.py robot_ip:=192.168.1.117
+        # 测试service
+        $ ros2 run xarm_api test_xarm_ros_client
+        # 测试topic
+        $ ros2 run xarm_api test_xarm_states
+        ```
+
+- ### 5.5 xarm_controller
+    此模块是ros2_control和机械臂通信的硬件接口模块
+    ```bash
+    $ cd ~/dev_ws/
+    # add_gripper为true时会加载xarm夹爪的模型
+    $ ros2 launch xarm6_control_rviz_display.launch.py robot_ip:=192.168.1.117 [add_gripper:=true]
+    # 启动两个rviz窗口对应两台机械臂
+    
+    # $ ros2 launch two_xarm6_control_rviz_display.launch.py robot1_ip:=192.168.1.117 robot2_ip:=192.168.1.203
+    ```
+
+- ### 5.6 xarm_moveit_config
+    此模块提供了通过moveit来控制机械臂的功能
+
+    - 【虚拟】启动moveit并在rviz显示, 控制机械臂
+        ```bash
+        $ cd ~/dev_ws/
+        # add_gripper为true时会加载xarm夹爪的模型
+        $ ros2 launch xarm_moveit_config xarm6_moveit_fake.launch.py [add_gripper:=true]
+        ```
+    
+    - 【真机】启动moveit并在rviz显示, 控制机械臂
+        ```bash
+        $ cd ~/dev_ws/
+        # add_gripper为true时会加载xarm夹爪的模型
+        $ ros2 launch xarm_moveit_config xarm6_moveit_realmove.launch.py robot_ip:=192.168.1.117 [add_gripper:=true]
+        ```
+    
+    - 【虚拟x2】启动两个moveit(包括rviz)，分别控制两台机械臂
+        ```bash
+        $ cd ~/dev_ws/
+        # add_gripper为true时会加载xarm夹爪的模型
+        $ ros2 launch xarm_moveit_config two_xarm6_moveit_fake.launch.py [add_gripper:=true]
+        ```
+    
+    - 【真机x2】启动两个moveit(包括rviz)，分别控制两台机械臂
+        ```bash
+        $ cd ~/dev_ws/
+        # add_gripper为true时会加载xarm夹爪的模型
+        $ ros2 launch xarm_moveit_config two_xarm6_moveit_realmove.launch.py robot1_ip:=192.168.1.117 robot2_ip:=192.168.1.203 [add_gripper:=true]
+        ```
+    
+    - 【Dual虚拟】启动moveit并在rviz显示, 控制两台机械臂
+        ```bash
+        $ cd ~/dev_ws/
+        # add_gripper为true时会加载xarm夹爪的模型
+        $ ros2 launch xarm_moveit_config dual_xarm6_moveit_fake.launch.py [add_gripper:=true]
+        ```
+    
+    - 【Dual真机】启动moveit并在rviz显示, 控制两台机械臂
+        ```bash
+        $ cd ~/dev_ws/
+        # add_gripper为true时会加载xarm夹爪的模型
+        $ ros2 launch xarm_moveit_config dual_xarm6_moveit_realmove.launch.py robot1_ip:=192.168.1.117 robot2_ip:=192.168.1.203 [add_gripper:=true]
+        ```
+
+- ### 5.7 xarm_planner
+    此模块提供了通过moveit API控制机械臂
+    ```bash
+    $ cd ~/dev_ws/
+    # 【虚拟】启动xarm_planner_node
+    $ ros2 launch xarm_planner xarm6_planner_fake.launch.py [add_gripper:=true]
+    # 【真机】启动xarm_planner_node
+    # $ ros2 launch xarm_planner xarm6_planner_realmove.launch.py robot_ip:=192.168.1.117 [add_gripper:=true]
+
+    # 运行测试(通过API控制)
     $ ros2 launch xarm_planner test_xarm_planner_api_joint.launch.py dof:=6
-    # $ ros2 launch xarm_planner test_xarm_planner_api_pose.launch.py dof:=6
-    ```
+    $ ros2 launch xarm_planner test_xarm_planner_api_pose.launch.py dof:=6
 
-- #### 6.5.2 启动moveit并在rviz显示, 通过planner控制虚拟机械爪
-    ```bash
-    $ cd ~/dev_ws/
-    $ source install/setup.bash
-    $ ros2 launch xarm_planner xarm6_planner_fake.launch.py add_gripper:=true
-    # 通过xarm_planner_node提供的service控制（此方式每次都需要重启xarm_planner_node，即上面那个操作）
-    $ ros2 launch xarm_planner test_xarm_gripper_planner_client_joint.launch.py
-    
-    # 通过xarm_planner api控制
-    $ ros2 launch xarm_planner test_xarm_gripper_planner_api_joint.launch.py dof:=6
-    ```
-
-- #### 6.5.3 启动moveit并在rviz显示, 通过planner控制真实机械臂
-    ```bash
-    $ cd ~/dev_ws/
-    $ source install/setup.bash
-    $ ros2 launch xarm_planner xarm6_planner_realmove.launch.py robot_ip:=192.168.1.117
-
-    # 通过xarm_planner_node提供的service控制（此方式每次都需要重启xarm_planner_node，即上面那个操作）
+    # 运行测试（通过service控制）
     $ ros2 launch xarm_planner test_xarm_planner_client_joint.launch.py dof:=6
-    # $ ros2 launch xarm_planner test_xarm_planner_client_pose.launch.py dof:=6
-    
-    # 通过xarm_planner api控制
-    $ ros2 launch xarm_planner test_xarm_planner_api_joint.launch.py dof:=6
-    # $ ros2 launch xarm_planner test_xarm_planner_api_pose.launch.py dof:=6
+    $ ros2 launch xarm_planner test_xarm_planner_client_pose.launch.py dof:=6
+
+    # 运行测试（通过API控制机械爪）
+    $ ros2 launch xarm_planner test_xarm_gripper_planner_api_joint.launch.py dof:=6
+
+    # 运行测试（通过service控制机械爪）
+    $ ros2 launch xarm_planner test_xarm_gripper_planner_client_joint.launch.py dof:=6
     ```
 
-- #### 6.5.4 启动moveit并在rviz显示, 通过planner控制真实机械爪
-    ```bash
-    $ cd ~/dev_ws/
-    $ source install/setup.bash
-    $ ros2 launch xarm_planner xarm6_planner_realmove.launch.py robot_ip:=192.168.1.117 add_gripper:=true
-    # 通过xarm_planner_node提供的service控制（此方式每次都需要重启xarm_planner_node，即上面那个操作）
-    $ ros2 launch xarm_planner test_xarm_gripper_planner_client_joint.launch.py
-    
-    # 通过xarm_planner api控制
-    $ ros2 launch xarm_planner test_xarm_gripper_planner_api_joint.launch.py dof:=6
-    ```
+
+- ### 5.8 xarm_gazebo
+    未实现
+
