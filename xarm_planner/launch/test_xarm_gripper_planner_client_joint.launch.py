@@ -13,10 +13,10 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     xarm_planner_node_test = Node(
-        name="test_xarm_gripper_planner_client_joint",
-        package="xarm_planner",
-        executable="test_xarm_gripper_planner_client_joint",
-        output="screen",
+        name='test_xarm_gripper_planner_client_joint',
+        package='xarm_planner',
+        executable='test_xarm_gripper_planner_client_joint',
+        output='screen',
     )
     return LaunchDescription([
         xarm_planner_node_test

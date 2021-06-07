@@ -13,8 +13,9 @@ from launch.frontend import expose
 from launch.launch_description_sources import load_python_launch_file_as_module
 from launch import LaunchDescription
 from launch.actions import OpaqueFunction
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
+from launch_ros.substitutions import FindPackageShare
 
 
 def launch_setup(context, *args, **kwargs):
@@ -38,11 +39,27 @@ def launch_setup(context, *args, **kwargs):
     mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory(moveit_config_package_name), 'launch', 'lib', 'xarm_moveit_config_lib.py'))
     get_xarm_robot_description_parameters = getattr(mod, 'get_xarm_robot_description_parameters')
     robot_description_parameters = get_xarm_robot_description_parameters(
-        prefix, hw_ns.perform(context).strip('/'), limited, 
-        effort_control, velocity_control, 
-        add_gripper, add_vacuum_gripper, 
-        dof, xarm_type, ros2_control_plugin,
-        context=context,
+        xacro_urdf_file=PathJoinSubstitution([FindPackageShare('xarm_description'), 'urdf', 'xarm_device.urdf.xacro']),
+        xacro_srdf_file=PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'srdf', '{}.srdf.xacro'.format(xarm_type)]),
+        urdf_arguments={
+            'prefix': prefix,
+            'hw_ns': hw_ns.perform(context).strip('/'),
+            'limited': limited,
+            'effort_control': effort_control,
+            'velocity_control': velocity_control,
+            'add_gripper': add_gripper,
+            'add_vacuum_gripper': add_vacuum_gripper,
+            'dof': dof,
+            'ros2_control_plugin': ros2_control_plugin,
+        },
+        srdf_arguments={
+            'prefix': prefix,
+            'add_gripper': add_gripper,
+        },
+        arguments={
+            'context': context,
+            'xarm_type': xarm_type,
+        }
     )
 
     try:
@@ -52,9 +69,9 @@ def launch_setup(context, *args, **kwargs):
 
     xarm_planner_node = Node(
         name=node_name,
-        package="xarm_planner",
+        package='xarm_planner',
         executable=node_executable,
-        output="screen",
+        output='screen',
         parameters=[
             robot_description_parameters,
             {'DOF': dof},
@@ -68,9 +85,9 @@ def launch_setup(context, *args, **kwargs):
     if add_gripper.perform(context) == 'true' and use_gripper_node.perform(context) == 'true':
         xarm_gripper_planner_node = Node(
             name=node_name,
-            package="xarm_planner",
+            package='xarm_planner',
             executable='xarm_gripper_planner_node',
-            output="screen",
+            output='screen',
             parameters=[
                 robot_description_parameters,
                 {'PLANNING_GROUP': 'xarm_gripper'},

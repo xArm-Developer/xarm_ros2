@@ -37,11 +37,27 @@ def launch_setup(context, *args, **kwargs):
     mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory(moveit_config_package_name), 'launch', 'lib', 'xarm_moveit_config_lib.py'))
     get_xarm_robot_description_parameters = getattr(mod, 'get_xarm_robot_description_parameters')
     robot_description_parameters = get_xarm_robot_description_parameters(
-        prefix, hw_ns.perform(context).strip('/'), limited, 
-        effort_control, velocity_control, 
-        add_gripper, add_vacuum_gripper, 
-        dof, xarm_type, ros2_control_plugin,
-        context=context,
+        xacro_urdf_file=PathJoinSubstitution([FindPackageShare('xarm_description'), 'urdf', 'xarm_device.urdf.xacro']),
+        xacro_srdf_file=PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'srdf', '{}.srdf.xacro'.format(xarm_type)]),
+        urdf_arguments={
+            'prefix': prefix,
+            'hw_ns': hw_ns.perform(context).strip('/'),
+            'limited': limited,
+            'effort_control': effort_control,
+            'velocity_control': velocity_control,
+            'add_gripper': add_gripper,
+            'add_vacuum_gripper': add_vacuum_gripper,
+            'dof': dof,
+            'ros2_control_plugin': ros2_control_plugin,
+        },
+        srdf_arguments={
+            'prefix': prefix,
+            'add_gripper': add_gripper,
+        },
+        arguments={
+            'context': context,
+            'xarm_type': xarm_type,
+        }
     )
 
     load_yaml = getattr(mod, 'load_yaml')
@@ -87,9 +103,9 @@ def launch_setup(context, *args, **kwargs):
 
     # Start the actual move_group node/action server
     move_group_node = Node(
-        package="moveit_ros_move_group",
-        executable="move_group",
-        output="screen",
+        package='moveit_ros_move_group',
+        executable='move_group',
+        output='screen',
         parameters=[
             robot_description_parameters,
             ompl_planning_pipeline_config,
@@ -103,11 +119,11 @@ def launch_setup(context, *args, **kwargs):
     # rviz_config_file = PathJoinSubstitution([FindPackageShare(moveit_config_package_name), 'config', xarm_type, 'planner.rviz' if no_gui_ctrl.perform(context) == 'true' else 'moveit.rviz'])
     rviz_config_file = PathJoinSubstitution([FindPackageShare(moveit_config_package_name), 'rviz', 'planner.rviz' if no_gui_ctrl.perform(context) == 'true' else 'moveit.rviz'])
     rviz_node = Node(
-        package="rviz2",
-        executable="rviz2",
-        name="rviz2",
-        output="screen",
-        arguments=["-d", rviz_config_file],
+        package='rviz2',
+        executable='rviz2',
+        name='rviz2',
+        output='screen',
+        arguments=['-d', rviz_config_file],
         parameters=[
             robot_description_parameters,
             ompl_planning_pipeline_config,
@@ -120,11 +136,11 @@ def launch_setup(context, *args, **kwargs):
 
     # Static TF
     static_tf = Node(
-        package="tf2_ros",
-        executable="static_transform_publisher",
-        name="static_transform_publisher",
-        output="screen",
-        arguments=["0.0", "0.0", "0.0", "0.0", "0.0", "0.0", "world", "link_base"],
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='static_transform_publisher',
+        output='screen',
+        arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', 'world', 'link_base'],
     )
 
     return [

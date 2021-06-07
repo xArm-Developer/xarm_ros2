@@ -6,64 +6,64 @@ joint_limits:
     has_velocity_limits: true
     max_velocity: 2.14
     has_acceleration_limits: false
-    max_acceleration: 0
+    max_acceleration: 0.0
   joint2:
     has_velocity_limits: true
     max_velocity: 2.14
     has_acceleration_limits: false
-    max_acceleration: 0
+    max_acceleration: 0.0
   joint3:
     has_velocity_limits: true
     max_velocity: 2.14
     has_acceleration_limits: false
-    max_acceleration: 0
+    max_acceleration: 0.0
   joint4:
     has_velocity_limits: true
     max_velocity: 2.14
     has_acceleration_limits: false
-    max_acceleration: 0
+    max_acceleration: 0.0
   joint5:
     has_velocity_limits: true
     max_velocity: 2.14
     has_acceleration_limits: false
-    max_acceleration: 0
+    max_acceleration: 0.0
   joint6:
     has_velocity_limits: true
     max_velocity: 2.14
     has_acceleration_limits: false
-    max_acceleration: 0
+    max_acceleration: 0.0
   joint7:
     has_velocity_limits: true
     max_velocity: 2.14
     has_acceleration_limits: false
-    max_acceleration: 0
+    max_acceleration: 0.0
   drive_joint:
     has_velocity_limits: true
     max_velocity: 3.14
     has_acceleration_limits: true
-    max_acceleration: 10
+    max_acceleration: 10.0
   left_finger_joint:
     has_velocity_limits: true
     max_velocity: 3.14
     has_acceleration_limits: true
-    max_acceleration: 10
+    max_acceleration: 10.0
   left_inner_knuckle_joint:
     has_velocity_limits: true
     max_velocity: 3.14
     has_acceleration_limits: true
-    max_acceleration: 10
+    max_acceleration: 10.0
   right_finger_joint:
     has_velocity_limits: true
     max_velocity: 3.14
     has_acceleration_limits: true
-    max_acceleration: 10
+    max_acceleration: 10.0
   right_inner_knuckle_joint:
     has_velocity_limits: true
     max_velocity: 3.14
     has_acceleration_limits: true
-    max_acceleration: 10
+    max_acceleration: 10.0
   right_outer_knuckle_joint:
     has_velocity_limits: true
     max_velocity: 3.14
     has_acceleration_limits: true
-    max_acceleration: 10
+    max_acceleration: 10.0

@@ -105,6 +105,11 @@ Visualization Manager:
             Show Axes: false
             Show Trail: false
             Value: true
+          L_link7:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
           L_link_base:
             Alpha: 1
             Show Axes: false
@@ -145,6 +150,11 @@ Visualization Manager:
             Show Axes: false
             Show Trail: false
             Value: true
+          R_link7:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
           R_link_base:
             Alpha: 1
             Show Axes: false
@@ -180,7 +190,7 @@ Visualization Manager:
         Goal State Color: 250; 128; 0
         Interactive Marker Size: 0
         Joint Violation Color: 255; 0; 255
-        Planning Group: L_xarm6
+        Planning Group: L_xarm7
         Query Goal State: true
         Query Start State: false
         Show Workspace: false
@@ -232,6 +242,11 @@ Visualization Manager:
             Show Axes: false
             Show Trail: false
             Value: true
+          L_link7:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
           L_link_base:
             Alpha: 1
             Show Axes: false
@@ -268,6 +283,11 @@ Visualization Manager:
             Show Trail: false
             Value: true
           R_link6:
+            Alpha: 1
+            Show Axes: false
+            Show Trail: false
+            Value: true
+          R_link7:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -337,6 +357,11 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        L_link7:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
         L_link_base:
           Alpha: 1
           Show Axes: false
@@ -373,6 +398,11 @@ Visualization Manager:
           Show Trail: false
           Value: true
         R_link6:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        R_link7:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -438,7 +468,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 2.9959888458251953
+      Distance: 2.286684513092041
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -453,10 +483,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.05539826303720474
+      Pitch: 0.23539818823337555
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 6.193582534790039
+      Yaw: 5.1385722160339355
     Saved: ~
 Window Geometry:
   Displays:

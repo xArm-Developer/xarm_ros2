@@ -85,11 +85,11 @@ def launch_setup(context, *args, **kwargs):
 
     # joint state publisher node
     joint_state_publisher_node = Node(
-        package="joint_state_publisher",
-        executable="joint_state_publisher",
+        package='joint_state_publisher',
+        executable='joint_state_publisher',
         name='joint_state_publisher',
         output='screen',
-        parameters=[{'source_list': ['{}/joint_states'.format(hw_ns.perform(context))], 'rate': 10}],
+        parameters=[{'source_list': ['{}/joint_states'.format(hw_ns.perform(context))]}],
         remappings=[
             ('follow_joint_trajectory', '{}_traj_controller/follow_joint_trajectory'.format(xarm_type)),
         ],
@@ -111,8 +111,8 @@ def launch_setup(context, *args, **kwargs):
     )
 
     control_node = Node(
-        package="controller_manager",
-        executable="spawner.py",
+        package='controller_manager',
+        executable='spawner.py',
         output='screen',
         arguments=[
             '{}_traj_controller'.format(xarm_type),
@@ -121,12 +121,12 @@ def launch_setup(context, *args, **kwargs):
     )
 
     return [
-        xarm_driver_launch,
         robot_description_launch,
         xarm_moveit_common_launch,
         joint_state_publisher_node,
         ros2_launch,
         control_node,
+        xarm_driver_launch,
     ]
 
 def generate_launch_description():

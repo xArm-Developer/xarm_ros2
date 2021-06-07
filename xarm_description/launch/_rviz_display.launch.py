@@ -15,8 +15,8 @@ def generate_launch_description():
     # rviz2 node
     rviz2_params = PathJoinSubstitution([FindPackageShare('xarm_description'), 'rviz', 'display.rviz'])
     rviz2_node = Node(
-        package="rviz2",
-        executable="rviz2",
+        package='rviz2',
+        executable='rviz2',
         name='rviz2',
         output='screen',
         arguments=['-d', rviz2_params],
