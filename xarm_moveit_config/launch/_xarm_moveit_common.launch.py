@@ -61,6 +61,13 @@ def launch_setup(context, *args, **kwargs):
     )
 
     load_yaml = getattr(mod, 'load_yaml')
+    controllers_yaml = load_yaml(moveit_config_package_name, 'config', xarm_type, '{}.yaml'.format(controllers_name.perform(context)))
+    ompl_planning_yaml = load_yaml(moveit_config_package_name, 'config', xarm_type, 'ompl_planning.yaml')
+    kinematics_yaml = robot_description_parameters['robot_description_kinematics']
+    prefix_str = prefix.perform(context)
+    add_prefix_to_moveit_params = getattr(mod, 'add_prefix_to_moveit_params')
+    add_prefix_to_moveit_params(prefix_str, controllers_yaml, ompl_planning_yaml, kinematics_yaml)
+
     # Planning Configuration
     ompl_planning_pipeline_config = {
         'move_group': {
@@ -69,10 +76,13 @@ def launch_setup(context, *args, **kwargs):
             'start_state_max_bounds_error': 0.1,
         }
     }
-    ompl_planning_pipeline_config['move_group'].update(load_yaml(moveit_config_package_name, 'config', xarm_type, 'ompl_planning.yaml'))
+    # ompl_planning_pipeline_config['move_group'].update(load_yaml(moveit_config_package_name, 'config', xarm_type, 'ompl_planning.yaml'))
+    ompl_planning_pipeline_config['move_group'].update(ompl_planning_yaml)
+
     # Moveit controllers Configuration
     moveit_controllers = {
-        moveit_controller_manager_key.perform(context): load_yaml(moveit_config_package_name, 'config', xarm_type, '{}.yaml'.format(controllers_name.perform(context))),
+        # moveit_controller_manager_key.perform(context): load_yaml(moveit_config_package_name, 'config', xarm_type, '{}.yaml'.format(controllers_name.perform(context))),
+        moveit_controller_manager_key.perform(context): controllers_yaml,
         'moveit_controller_manager': moveit_controller_manager_value.perform(context),
     }
 

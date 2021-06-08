@@ -18,7 +18,7 @@ from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 
-def generate_ros2_controll_params(ros2_control_params_path, ros_namespace=''):
+def generate_ros2_control_params(ros2_control_params_path, ros_namespace=''):
     if ros_namespace:
         with open(ros2_control_params_path, 'r') as f:
             ros2_control_params_yaml = yaml.safe_load(f)
@@ -66,7 +66,7 @@ def launch_setup(context, *args, **kwargs):
     }
 
     # ros2 control node
-    ros2_control_params = generate_ros2_controll_params(
+    ros2_control_params = generate_ros2_control_params(
         os.path.join(get_package_share_directory('xarm_controller'), 'config', 'dual_xarm{}_controllers.yaml'.format(dof.perform(context))),
         LaunchConfiguration('ros_namespace', default='').perform(context)
     )

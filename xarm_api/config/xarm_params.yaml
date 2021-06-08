@@ -37,9 +37,15 @@ xarm_driver:
       set_gripper_enable: false
       set_tgpio_modbus_timeout: false
       set_bio_gripper_speed: false
+      set_collision_rebound: false
+      set_fence_mode: false
+      set_reduced_mode: false
+      set_self_collision_detection: false
+      set_simulation_robot: false
       motion_enable: true
       set_servo_attach: false
       set_servo_detach: false
+      set_reduced_tcp_boundary: false
       get_tgpio_modbus_baudrate: false
       set_tgpio_modbus_baudrate: false
       get_gripper_position: false
@@ -52,9 +58,12 @@ xarm_driver:
       set_joint_jerk: false
       set_joint_maxacc: false
       set_gripper_speed: false
+      set_reduced_max_tcp_speed: false
+      set_reduced_max_joint_speed: false
       set_gravity_direction: false
       set_tcp_offset: false
       set_world_offset: false
+      set_reduced_joint_range: false
       set_tcp_load: false
       set_position: true
       set_tool_position: false

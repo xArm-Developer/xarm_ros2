@@ -18,13 +18,37 @@ from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 
-def generate_ros2_controll_params(ros2_control_params_path, ros_namespace=''):
-    if ros_namespace:
+def add_prefix_to_ros2_control_params(prefix, ros2_control_params):
+    if not prefix:
+        return
+    for name in list(ros2_control_params.keys()):
+        if name == 'controller_manager':
+            continue
+        ros__parameters = ros2_control_params[name].get('ros__parameters', {})
+        joints = ros__parameters.get('joints', [])
+        constraints = ros__parameters.get('constraints', {})
+        for i, joint in enumerate(joints):
+            for j, key in enumerate(constraints.keys()):
+                if key == joint:
+                    constraints['{}{}'.format(prefix, key)] = constraints.pop(key)
+                    break
+            joints[i] = '{}{}'.format(prefix, joint)
+        new_name = '{}{}'.format(prefix, name)
+        ros2_control_params[new_name] = ros2_control_params.pop(name)
+        controller_manager_ros__parameters = ros2_control_params.get('controller_manager', {}).get('ros__parameters', {})
+        if name in controller_manager_ros__parameters:
+            controller_manager_ros__parameters[new_name] = controller_manager_ros__parameters.pop(name)
+
+
+def generate_ros2_control_params(ros2_control_params_path, ros_namespace='', prefix=''):
+    if ros_namespace or prefix:
         with open(ros2_control_params_path, 'r') as f:
             ros2_control_params_yaml = yaml.safe_load(f)
-        ros2_control_params_yaml = {
-            ros_namespace: ros2_control_params_yaml
-        }
+        add_prefix_to_ros2_control_params(prefix, ros2_control_params_yaml)
+        if ros_namespace:
+            ros2_control_params_yaml = {
+                ros_namespace: ros2_control_params_yaml
+            }
         with NamedTemporaryFile(mode='w', prefix='launch_params_', delete=False) as h:
             yaml.dump(ros2_control_params_yaml, h, default_flow_style=False)
             return h.name
@@ -64,9 +88,9 @@ def launch_setup(context, *args, **kwargs):
     }
 
     # ros2 control node
-    ros2_control_params = generate_ros2_controll_params(
+    ros2_control_params = generate_ros2_control_params(
         os.path.join(get_package_share_directory('xarm_controller'), 'config', 'xarm{}_controllers.yaml'.format(dof.perform(context))),
-        LaunchConfiguration('ros_namespace', default='').perform(context)
+        LaunchConfiguration('ros_namespace', default='').perform(context), prefix.perform(context)
     )
     ros2_control_node = Node(
         package='controller_manager',

@@ -134,6 +134,11 @@ namespace xarm_api
         rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_gripper_enable_;
         rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_tgpio_modbus_timeout_;
         rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_bio_gripper_speed_;
+        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_collision_rebound_;
+        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_fence_mode_;
+        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_reduced_mode_;
+        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_self_collision_detection_;
+        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_simulation_robot_;
         bool _set_mode(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
         bool _set_state(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
         bool _set_collision_sensitivity(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
@@ -142,6 +147,11 @@ namespace xarm_api
         bool _set_gripper_enable(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
         bool _set_tgpio_modbus_timeout(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
         bool _set_bio_gripper_speed(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+        bool _set_collision_rebound(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+        bool _set_fence_mode(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+        bool _set_reduced_mode(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+        bool _set_self_collision_detection(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+        bool _set_simulation_robot(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
 
         // SetInt16ById
         rclcpp::Service<xarm_msgs::srv::SetInt16ById>::SharedPtr service_motion_enable_;
@@ -150,6 +160,10 @@ namespace xarm_api
         bool _motion_enable(const std::shared_ptr<xarm_msgs::srv::SetInt16ById::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16ById::Response> res);
         bool _set_servo_attach(const std::shared_ptr<xarm_msgs::srv::SetInt16ById::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16ById::Response> res);
         bool _set_servo_detach(const std::shared_ptr<xarm_msgs::srv::SetInt16ById::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16ById::Response> res);
+        
+        // SetInt16List
+        rclcpp::Service<xarm_msgs::srv::SetInt16List>::SharedPtr service_set_reduced_tcp_boundary_;
+        bool _set_reduced_tcp_boundary(const std::shared_ptr<xarm_msgs::srv::SetInt16List::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16List::Response> res);
         
         // GetInt32
         rclcpp::Service<xarm_msgs::srv::GetInt32>::SharedPtr service_get_tgpio_modbus_baudrate_;
@@ -178,20 +192,26 @@ namespace xarm_api
         rclcpp::Service<xarm_msgs::srv::SetFloat32>::SharedPtr service_set_joint_jerk_;
         rclcpp::Service<xarm_msgs::srv::SetFloat32>::SharedPtr service_set_joint_maxacc_;
         rclcpp::Service<xarm_msgs::srv::SetFloat32>::SharedPtr service_set_gripper_speed_;
+        rclcpp::Service<xarm_msgs::srv::SetFloat32>::SharedPtr service_set_reduced_max_tcp_speed_;
+        rclcpp::Service<xarm_msgs::srv::SetFloat32>::SharedPtr service_set_reduced_max_joint_speed_;
         bool _set_pause_time(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
         bool _set_tcp_jerk(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
         bool _set_tcp_maxacc(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
         bool _set_joint_jerk(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
         bool _set_joint_maxacc(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
         bool _set_gripper_speed(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
+        bool _set_reduced_max_tcp_speed(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
+        bool _set_reduced_max_joint_speed(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res);
 
         // SetFloat32List
         rclcpp::Service<xarm_msgs::srv::SetFloat32List>::SharedPtr service_set_gravity_direction_;
         rclcpp::Service<xarm_msgs::srv::SetFloat32List>::SharedPtr service_set_tcp_offset_;
         rclcpp::Service<xarm_msgs::srv::SetFloat32List>::SharedPtr service_set_world_offset_;
+        rclcpp::Service<xarm_msgs::srv::SetFloat32List>::SharedPtr service_set_reduced_joint_range_;
         bool _set_gravity_direction(const std::shared_ptr<xarm_msgs::srv::SetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32List::Response> res);
         bool _set_tcp_offset(const std::shared_ptr<xarm_msgs::srv::SetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32List::Response> res);
         bool _set_world_offset(const std::shared_ptr<xarm_msgs::srv::SetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32List::Response> res);
+        bool _set_reduced_joint_range(const std::shared_ptr<xarm_msgs::srv::SetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32List::Response> res);
 
         // SetTcpLoad
         rclcpp::Service<xarm_msgs::srv::SetTcpLoad>::SharedPtr service_set_tcp_load_;

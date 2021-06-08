@@ -28,6 +28,7 @@ void XArmROSClient::init(rclcpp::Node::SharedPtr& node, std::string hw_ns)
     res_get_int16_list_ = std::make_shared<xarm_msgs::srv::GetInt16List::Response>();
     req_set_int16_ = std::make_shared<xarm_msgs::srv::SetInt16::Request>();
 	req_set_int16_by_id_ = std::make_shared<xarm_msgs::srv::SetInt16ById::Request>();
+	req_set_int16_list_ = std::make_shared<xarm_msgs::srv::SetInt16List::Request>();
 	req_get_int32_ = std::make_shared<xarm_msgs::srv::GetInt32::Request>();
 	res_get_int32_ = std::make_shared<xarm_msgs::srv::GetInt32::Response>();
 	req_set_int32_ = std::make_shared<xarm_msgs::srv::SetInt32::Request>();
@@ -95,10 +96,17 @@ void XArmROSClient::init(rclcpp::Node::SharedPtr& node, std::string hw_ns)
     client_set_gripper_enable_ = _create_client<xarm_msgs::srv::SetInt16>("set_gripper_enable");
     client_set_tgpio_modbus_timeout_ = _create_client<xarm_msgs::srv::SetInt16>("set_tgpio_modbus_timeout");
     client_set_bio_gripper_speed_ = _create_client<xarm_msgs::srv::SetInt16>("set_bio_gripper_speed");
+    client_set_collision_rebound_ = _create_client<xarm_msgs::srv::SetInt16>("set_collision_rebound");
+    client_set_fence_mode_ = _create_client<xarm_msgs::srv::SetInt16>("set_fence_mode");
+    client_set_reduced_mode_ = _create_client<xarm_msgs::srv::SetInt16>("set_reduced_mode");
+    client_set_self_collision_detection_ = _create_client<xarm_msgs::srv::SetInt16>("set_self_collision_detection");
+    client_set_simulation_robot_ = _create_client<xarm_msgs::srv::SetInt16>("set_simulation_robot");
 
     client_motion_enable_ = _create_client<xarm_msgs::srv::SetInt16ById>("motion_enable");
     client_set_servo_attach_ = _create_client<xarm_msgs::srv::SetInt16ById>("set_servo_attach");
     client_set_servo_detach_ = _create_client<xarm_msgs::srv::SetInt16ById>("set_servo_detach");
+    
+    client_set_reduced_tcp_boundary_ = _create_client<xarm_msgs::srv::SetInt16List>("set_reduced_tcp_boundary");
     
     client_get_tgpio_modbus_baudrate_ = _create_client<xarm_msgs::srv::GetInt32>("get_tgpio_modbus_baudrate");
 
@@ -116,10 +124,13 @@ void XArmROSClient::init(rclcpp::Node::SharedPtr& node, std::string hw_ns)
     client_set_joint_jerk_ = _create_client<xarm_msgs::srv::SetFloat32>("set_joint_jerk");
     client_set_joint_maxacc_ = _create_client<xarm_msgs::srv::SetFloat32>("set_joint_maxacc");
     client_set_gripper_speed_ = _create_client<xarm_msgs::srv::SetFloat32>("set_gripper_speed");
+    client_set_reduced_max_tcp_speed_ = _create_client<xarm_msgs::srv::SetFloat32>("set_reduced_max_tcp_speed");
+    client_set_reduced_max_joint_speed_ = _create_client<xarm_msgs::srv::SetFloat32>("set_reduced_max_joint_speed");
     
     client_set_gravity_direction_ = _create_client<xarm_msgs::srv::SetFloat32List>("set_gravity_direction");
     client_set_tcp_offset_ = _create_client<xarm_msgs::srv::SetFloat32List>("set_tcp_offset");
     client_set_world_offset_ = _create_client<xarm_msgs::srv::SetFloat32List>("set_world_offset");
+    client_set_reduced_joint_range_ = _create_client<xarm_msgs::srv::SetFloat32List>("set_reduced_joint_range");
 
     client_set_tcp_load_ = _create_client<xarm_msgs::srv::SetTcpLoad>("set_tcp_load");
 
@@ -394,6 +405,36 @@ int XArmROSClient::set_bio_gripper_speed(int speed)
     return _call_request(client_set_bio_gripper_speed_, req_set_int16_);
 }
 
+int XArmROSClient::set_collision_rebound(bool on)
+{
+    req_set_int16_->data = (int)on;
+    return _call_request(client_set_collision_rebound_, req_set_int16_);
+}
+
+int XArmROSClient::set_fence_mode(bool on)
+{
+    req_set_int16_->data = (int)on;
+    return _call_request(client_set_fence_mode_, req_set_int16_);
+}
+
+int XArmROSClient::set_reduced_mode(bool on)
+{
+    req_set_int16_->data = (int)on;
+    return _call_request(client_set_reduced_mode_, req_set_int16_);
+}
+
+int XArmROSClient::set_self_collision_detection(bool on)
+{
+    req_set_int16_->data = (int)on;
+    return _call_request(client_set_self_collision_detection_, req_set_int16_);
+}
+
+int XArmROSClient::set_simulation_robot(bool on)
+{
+    req_set_int16_->data = (int)on;
+    return _call_request(client_set_simulation_robot_, req_set_int16_);
+}
+
 // SetInt16ById
 int XArmROSClient::motion_enable(bool enable, int servo_id)
 {
@@ -401,15 +442,26 @@ int XArmROSClient::motion_enable(bool enable, int servo_id)
     req_set_int16_by_id_->data = (int)enable;
     return _call_request(client_motion_enable_, req_set_int16_by_id_);
 }
+
 int XArmROSClient::set_servo_attach(int servo_id)
 {
     req_set_int16_by_id_->id = servo_id;
     return _call_request(client_set_servo_attach_, req_set_int16_by_id_);
 }
+
 int XArmROSClient::set_servo_detach(int servo_id)
 {
     req_set_int16_by_id_->id = servo_id;
     return _call_request(client_set_servo_detach_, req_set_int16_by_id_);
+}
+
+// SetInt16List
+int XArmROSClient::set_reduced_tcp_boundary(const std::vector<int>& boundary)
+{
+    req_set_int16_list_->datas.resize(6);
+    // req_set_int16_list_->datas.swap(boundary);
+    req_set_int16_list_->datas.assign(boundary.begin(), boundary.end());
+    return _call_request(client_set_reduced_tcp_boundary_, req_set_int16_list_);
 }
 
 // GetInt32
@@ -502,6 +554,18 @@ int XArmROSClient::set_gripper_speed(fp32 speed)
     return _call_request(client_set_gripper_speed_, req_set_float32_);
 }
 
+int XArmROSClient::set_reduced_max_tcp_speed(fp32 speed)
+{
+    req_set_float32_->data = speed;
+    return _call_request(client_set_reduced_max_tcp_speed_, req_set_float32_);
+}
+
+int XArmROSClient::set_reduced_max_joint_speed(fp32 speed)
+{
+    req_set_float32_->data = speed;
+    return _call_request(client_set_reduced_max_joint_speed_, req_set_float32_);
+}
+
 // SetFloat32List
 int XArmROSClient::set_gravity_direction(const std::vector<fp32>& gravity_dir)
 {
@@ -526,6 +590,12 @@ int XArmROSClient::set_world_offset(const std::vector<fp32>& offset)
 {
     req_set_float32_list_->datas = offset;
     return _call_request(client_set_world_offset_, req_set_float32_list_);
+}
+
+int XArmROSClient::set_reduced_joint_range(const std::vector<fp32>& jrange)
+{
+    req_set_float32_list_->datas = jrange;
+    return _call_request(client_set_reduced_joint_range_, req_set_float32_list_);
 }
 
 // MoveCartesian

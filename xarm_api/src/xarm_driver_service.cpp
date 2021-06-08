@@ -61,12 +61,20 @@ namespace xarm_api
         service_set_gripper_enable_ = _create_service<xarm_msgs::srv::SetInt16>("set_gripper_enable", &XArmDriver::_set_gripper_enable);
         service_set_tgpio_modbus_timeout_ = _create_service<xarm_msgs::srv::SetInt16>("set_tgpio_modbus_timeout", &XArmDriver::_set_tgpio_modbus_timeout);
         service_set_bio_gripper_speed_ = _create_service<xarm_msgs::srv::SetInt16>("set_bio_gripper_speed", &XArmDriver::_set_bio_gripper_speed);
+        service_set_collision_rebound_ = _create_service<xarm_msgs::srv::SetInt16>("set_collision_rebound", &XArmDriver::_set_collision_rebound);
+        service_set_fence_mode_ = _create_service<xarm_msgs::srv::SetInt16>("set_fence_mode", &XArmDriver::_set_fence_mode);
+        service_set_reduced_mode_ = _create_service<xarm_msgs::srv::SetInt16>("set_reduced_mode", &XArmDriver::_set_reduced_mode);
+        service_set_self_collision_detection_ = _create_service<xarm_msgs::srv::SetInt16>("set_self_collision_detection", &XArmDriver::_set_self_collision_detection);
+        service_set_simulation_robot_ = _create_service<xarm_msgs::srv::SetInt16>("set_simulation_robot", &XArmDriver::_set_simulation_robot);
         
         // SetInt16ById
         service_motion_enable_= _create_service<xarm_msgs::srv::SetInt16ById>("motion_enable", &XArmDriver::_motion_enable);
         service_set_servo_attach_ = _create_service<xarm_msgs::srv::SetInt16ById>("set_servo_attach", &XArmDriver::_set_servo_attach);
         service_set_servo_detach_ = _create_service<xarm_msgs::srv::SetInt16ById>("set_servo_detach", &XArmDriver::_set_servo_detach);
         
+        // SetInt16List        
+        service_set_reduced_tcp_boundary_ = _create_service<xarm_msgs::srv::SetInt16List>("set_reduced_tcp_boundary", &XArmDriver::_set_reduced_tcp_boundary);
+
         // GetInt32
         service_get_tgpio_modbus_baudrate_ = _create_service<xarm_msgs::srv::GetInt32>("get_tgpio_modbus_baudrate", &XArmDriver::_get_tgpio_modbus_baudrate);
 
@@ -88,11 +96,14 @@ namespace xarm_api
         service_set_joint_jerk_ = _create_service<xarm_msgs::srv::SetFloat32>("set_joint_jerk", &XArmDriver::_set_joint_jerk);
         service_set_joint_maxacc_ = _create_service<xarm_msgs::srv::SetFloat32>("set_joint_maxacc", &XArmDriver::_set_joint_maxacc);
         service_set_gripper_speed_ = _create_service<xarm_msgs::srv::SetFloat32>("set_gripper_speed", &XArmDriver::_set_gripper_speed);
+        service_set_reduced_max_tcp_speed_ = _create_service<xarm_msgs::srv::SetFloat32>("set_reduced_max_tcp_speed", &XArmDriver::_set_reduced_max_tcp_speed);
+        service_set_reduced_max_joint_speed_ = _create_service<xarm_msgs::srv::SetFloat32>("set_reduced_max_joint_speed", &XArmDriver::_set_reduced_max_joint_speed);
     
         // SetFloat32List
         service_set_gravity_direction_ = _create_service<xarm_msgs::srv::SetFloat32List>("set_gravity_direction", &XArmDriver::_set_gravity_direction);
         service_set_tcp_offset_ = _create_service<xarm_msgs::srv::SetFloat32List>("set_tcp_offset", &XArmDriver::_set_tcp_offset);
         service_set_world_offset_ = _create_service<xarm_msgs::srv::SetFloat32List>("set_world_offset", &XArmDriver::_set_world_offset);
+        service_set_reduced_joint_range_ = _create_service<xarm_msgs::srv::SetFloat32List>("set_reduced_joint_range", &XArmDriver::_set_reduced_joint_range);
 
         // SetTcpLoad
         service_set_tcp_load_ = _create_service<xarm_msgs::srv::SetTcpLoad>("set_tcp_load", &XArmDriver::_set_tcp_load);
@@ -349,6 +360,41 @@ namespace xarm_api
         return res->ret >= 0; 
     }
 
+    bool XArmDriver::_set_collision_rebound(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
+    {
+        res->ret = arm->set_collision_rebound(req->data);
+        res->message = "data=" + std::to_string(req->data);
+        return res->ret >= 0; 
+    }
+
+    bool XArmDriver::_set_fence_mode(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
+    {
+        res->ret = arm->set_fence_mode(req->data);
+        res->message = "data=" + std::to_string(req->data);
+        return res->ret >= 0; 
+    }
+
+    bool XArmDriver::_set_reduced_mode(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
+    {
+        res->ret = arm->set_reduced_mode(req->data);
+        res->message = "data=" + std::to_string(req->data);
+        return res->ret >= 0; 
+    }
+
+    bool XArmDriver::_set_self_collision_detection(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
+    {
+        res->ret = arm->set_self_collision_detection(req->data);
+        res->message = "data=" + std::to_string(req->data);
+        return res->ret >= 0; 
+    }
+
+    bool XArmDriver::_set_simulation_robot(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
+    {
+        res->ret = arm->set_simulation_robot(req->data);
+        res->message = "data=" + std::to_string(req->data);
+        return res->ret >= 0; 
+    }
+
     bool XArmDriver::_motion_enable(const std::shared_ptr<xarm_msgs::srv::SetInt16ById::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16ById::Response> res)
     {
         res->ret = arm->motion_enable(req->data, req->id);
@@ -367,6 +413,25 @@ namespace xarm_api
     {
         res->ret = arm->set_servo_detach(req->id);
         res->message = "id=" + std::to_string(req->id);
+        return res->ret >= 0; 
+    }
+
+    bool XArmDriver::_set_reduced_tcp_boundary(const std::shared_ptr<xarm_msgs::srv::SetInt16List::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16List::Response> res)
+    {
+        if (req->datas.size() < 6) {
+            res->ret = PARAM_ERROR;
+            return false;
+        }
+        int boundary[6];
+        for (int i = 0; i < 6; i++) {
+            boundary[i] = req->datas[i];
+        }
+        res->ret = arm->set_reduced_tcp_boundary(boundary);
+        std::string tmp = "";
+        for (int i = 0; i < 6; i++) {
+            tmp += (i == 0 ? "" : ", ") + std::to_string(boundary[i]);
+        }
+        res->message = "datas=[ " + tmp + " ]";
         return res->ret >= 0; 
     }
 
@@ -469,6 +534,20 @@ namespace xarm_api
         return res->ret >= 0;  
     }
 
+    bool XArmDriver::_set_reduced_max_tcp_speed(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res)
+    {
+        res->ret = arm->set_reduced_max_tcp_speed(req->data);
+        res->message = "data=" + std::to_string(req->data);
+        return res->ret >= 0;  
+    }
+
+    bool XArmDriver::_set_reduced_max_joint_speed(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res)
+    {
+        res->ret = arm->set_reduced_max_joint_speed(req->data);
+        res->message = "data=" + std::to_string(req->data);
+        return res->ret >= 0;  
+    }
+
     bool XArmDriver::_set_gravity_direction(const std::shared_ptr<xarm_msgs::srv::SetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32List::Response> res)
     {
         if (req->datas.size() < 3) {
@@ -513,6 +592,25 @@ namespace xarm_api
         }
         res->message = "datas=[ " + tmp + " ]";
         return res->ret >= 0; 
+    }
+
+    bool XArmDriver::_set_reduced_joint_range(const std::shared_ptr<xarm_msgs::srv::SetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32List::Response> res)
+    {
+        if (req->datas.size() < dof_ * 2) {
+            res->ret = PARAM_ERROR;
+            return false;
+        }
+        float jrange[14] = { 0 };
+        for (int i = 0; i < std::min((int)req->datas.size(), 14); i++) {
+            jrange[i] = req->datas[i];
+        }
+        res->ret = arm->set_reduced_joint_range(jrange);
+        std::string tmp = "";
+        for (int i = 0; i < dof_ * 2; i++) {
+            tmp += (i == 0 ? "" : ", ") + std::to_string(jrange[i]);
+        }
+        res->message = "datas=[ " + tmp + " ]";
+        return res->ret >= 0;
     }
 
     bool XArmDriver::_set_tcp_load(const std::shared_ptr<xarm_msgs::srv::SetTcpLoad::Request> req, std::shared_ptr<xarm_msgs::srv::SetTcpLoad::Response> res)

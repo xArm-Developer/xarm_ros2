@@ -75,11 +75,19 @@ public:
 	int set_gripper_enable(bool enable);
 	int set_tgpio_modbus_timeout(int timeout);
 	int set_bio_gripper_speed(int speed);
+	int set_collision_rebound(bool on);
+	int set_fence_mode(bool on);
+	int set_reduced_mode(bool on);
+	int set_self_collision_detection(bool on);
+	int set_simulation_robot(bool on);
 
 	// SetInt16ById
 	int motion_enable(bool enable, int servo_id = 8);
 	int set_servo_attach(int servo_id);
 	int set_servo_detach(int servo_id);
+
+	// SetInt16List
+	int set_reduced_tcp_boundary(const std::vector<int>& boundary);
 
 	// GetInt32
 	int get_tgpio_modbus_baudrate(int *baudrate);
@@ -102,11 +110,14 @@ public:
 	int set_joint_jerk(fp32 jerk);
 	int set_joint_maxacc(fp32 maxacc);
 	int set_gripper_speed(fp32 speed);
+	int set_reduced_max_tcp_speed(fp32 speed);
+	int set_reduced_max_joint_speed(fp32 speed);
 
 	// SetFloat32List
 	int set_gravity_direction(const std::vector<fp32>& gravity_dir);
 	int set_tcp_offset(const std::vector<fp32>& offset);
 	int set_world_offset(const std::vector<fp32>& offset);
+	int set_reduced_joint_range(const std::vector<fp32>& jrange);
 
 	// SetTcpLoad
 	int set_tcp_load(fp32 weight, const std::vector<fp32>& center_of_gravity);
@@ -257,12 +268,21 @@ private:
 	rclcpp::Client<xarm_msgs::srv::SetInt16>::SharedPtr client_set_gripper_enable_;
 	rclcpp::Client<xarm_msgs::srv::SetInt16>::SharedPtr client_set_tgpio_modbus_timeout_;
 	rclcpp::Client<xarm_msgs::srv::SetInt16>::SharedPtr client_set_bio_gripper_speed_;
+	rclcpp::Client<xarm_msgs::srv::SetInt16>::SharedPtr client_set_collision_rebound_;
+	rclcpp::Client<xarm_msgs::srv::SetInt16>::SharedPtr client_set_fence_mode_;
+	rclcpp::Client<xarm_msgs::srv::SetInt16>::SharedPtr client_set_reduced_mode_;
+	rclcpp::Client<xarm_msgs::srv::SetInt16>::SharedPtr client_set_self_collision_detection_;
+	rclcpp::Client<xarm_msgs::srv::SetInt16>::SharedPtr client_set_simulation_robot_;
 	
 	// SetInt16ById
 	std::shared_ptr<xarm_msgs::srv::SetInt16ById::Request> req_set_int16_by_id_;
 	rclcpp::Client<xarm_msgs::srv::SetInt16ById>::SharedPtr client_motion_enable_;
 	rclcpp::Client<xarm_msgs::srv::SetInt16ById>::SharedPtr client_set_servo_attach_;
 	rclcpp::Client<xarm_msgs::srv::SetInt16ById>::SharedPtr client_set_servo_detach_;
+	
+	// SetInt16List
+	std::shared_ptr<xarm_msgs::srv::SetInt16List::Request> req_set_int16_list_;
+	rclcpp::Client<xarm_msgs::srv::SetInt16List>::SharedPtr client_set_reduced_tcp_boundary_;
 	
 	// GetInt32
 	std::shared_ptr<xarm_msgs::srv::GetInt32::Request> req_get_int32_;
@@ -293,12 +313,15 @@ private:
 	rclcpp::Client<xarm_msgs::srv::SetFloat32>::SharedPtr client_set_joint_jerk_;
 	rclcpp::Client<xarm_msgs::srv::SetFloat32>::SharedPtr client_set_joint_maxacc_;
 	rclcpp::Client<xarm_msgs::srv::SetFloat32>::SharedPtr client_set_gripper_speed_;
+	rclcpp::Client<xarm_msgs::srv::SetFloat32>::SharedPtr client_set_reduced_max_tcp_speed_;
+	rclcpp::Client<xarm_msgs::srv::SetFloat32>::SharedPtr client_set_reduced_max_joint_speed_;
 
 	// SetFloat32List
 	std::shared_ptr<xarm_msgs::srv::SetFloat32List::Request> req_set_float32_list_;
 	rclcpp::Client<xarm_msgs::srv::SetFloat32List>::SharedPtr client_set_gravity_direction_;
 	rclcpp::Client<xarm_msgs::srv::SetFloat32List>::SharedPtr client_set_tcp_offset_;
 	rclcpp::Client<xarm_msgs::srv::SetFloat32List>::SharedPtr client_set_world_offset_;
+	rclcpp::Client<xarm_msgs::srv::SetFloat32List>::SharedPtr client_set_reduced_joint_range_;
 
 	// SetTcpLoad
 	std::shared_ptr<xarm_msgs::srv::SetTcpLoad::Request> req_set_tcp_load_;

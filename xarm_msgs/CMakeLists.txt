@@ -71,6 +71,7 @@ set(srv_files
   ${srv_dir}/SetFloat32List.srv
   ${srv_dir}/SetInt16.srv
   ${srv_dir}/SetInt16ById.srv
+  ${srv_dir}/SetInt16List.srv
   ${srv_dir}/SetInt32.srv
   ${srv_dir}/TrajCtrl.srv
   ${srv_dir}/TrajPlay.srv

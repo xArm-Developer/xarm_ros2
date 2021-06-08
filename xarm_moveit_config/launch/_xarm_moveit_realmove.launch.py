@@ -43,6 +43,7 @@ def launch_setup(context, *args, **kwargs):
             'dof': dof,
             'hw_ns': hw_ns,
             'add_gripper': add_gripper,
+            'prefix': prefix,
         }.items(),
     )
     
@@ -91,7 +92,7 @@ def launch_setup(context, *args, **kwargs):
         output='screen',
         parameters=[{'source_list': ['{}/joint_states'.format(hw_ns.perform(context))]}],
         remappings=[
-            ('follow_joint_trajectory', '{}_traj_controller/follow_joint_trajectory'.format(xarm_type)),
+            ('follow_joint_trajectory', '{}{}_traj_controller/follow_joint_trajectory'.format(prefix.perform(context), xarm_type)),
         ],
     )
 
@@ -115,7 +116,7 @@ def launch_setup(context, *args, **kwargs):
         executable='spawner.py',
         output='screen',
         arguments=[
-            '{}_traj_controller'.format(xarm_type),
+            '{}{}_traj_controller'.format(prefix.perform(context), xarm_type),
             '--controller-manager', '{}/controller_manager'.format(ros_namespace)
         ],
     )

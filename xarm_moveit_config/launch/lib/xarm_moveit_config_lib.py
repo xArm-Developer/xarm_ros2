@@ -35,6 +35,23 @@ def load_yaml(package_name, *file_path):
         return None
 
 
+def add_prefix_to_moveit_params(prefix, controllers_yaml, ompl_planning_yaml, kinematics_yaml):
+    if not prefix:
+        return
+    for i, name in enumerate(controllers_yaml['controller_names']):
+        joints = controllers_yaml.get(name, {}).get('joints', [])
+        for j, joint in enumerate(joints):
+            joints[j] = '{}{}'.format(prefix, joint)
+        controllers_yaml['controller_names'][i] = '{}{}'.format(prefix, name)
+        if name in controllers_yaml:
+            controllers_yaml['{}{}'.format(prefix, name)] = controllers_yaml.pop(name)
+    for name in list(ompl_planning_yaml.keys()):
+        if name != 'planner_configs':
+            ompl_planning_yaml['{}{}'.format(prefix, name)] = ompl_planning_yaml.pop(name)
+    for name in list(kinematics_yaml.keys()):
+        kinematics_yaml['{}{}'.format(prefix, name)] = kinematics_yaml.pop(name)
+
+
 def get_xarm_robot_description_parameters(
     xacro_urdf_file=PathJoinSubstitution([FindPackageShare('xarm_description'), 'urdf', 'xarm_device.urdf.xacro']),
     xacro_srdf_file=PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'srdf', 'xarm7.srdf.xacro']),

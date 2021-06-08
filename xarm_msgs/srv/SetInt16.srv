@@ -7,6 +7,10 @@
 #   - set_gripper_enable
 #   - set_tgpio_modbus_timeout
 #   - set_bio_gripper_speed
+#   - set_fence_mode
+#   - set_reduced_mode
+#   - set_self_collision_detection
+#   - set_simulation_robot
 
 int16 data
 

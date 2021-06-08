@@ -38,6 +38,7 @@ def launch_setup(context, *args, **kwargs):
             'dof': dof,
             'hw_ns': hw_ns,
             'add_gripper': add_gripper,
+            'prefix': prefix,
         }.items(),
     )
 

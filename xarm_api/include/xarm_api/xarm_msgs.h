@@ -55,6 +55,7 @@
 #include <xarm_msgs/srv/set_tcp_load.hpp>
 #include <xarm_msgs/srv/set_int16.hpp>
 #include <xarm_msgs/srv/set_int16_by_id.hpp>
+#include <xarm_msgs/srv/set_int16_list.hpp>
 #include <xarm_msgs/srv/set_int32.hpp>
 #include <xarm_msgs/srv/traj_ctrl.hpp>
 #include <xarm_msgs/srv/traj_play.hpp>
