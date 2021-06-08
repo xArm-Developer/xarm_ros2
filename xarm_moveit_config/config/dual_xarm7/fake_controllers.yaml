@@ -1,10 +1,10 @@
 controller_names:
-  - fake_L_xarm7_traj_controller
-  - fake_L_xarm_gripper_controller
-  - fake_R_xarm7_traj_controller
-  - fake_R_xarm_gripper_controller
+  - L_fake_xarm7_traj_controller
+  - L_fake_xarm_gripper_controller
+  - R_fake_xarm7_traj_controller
+  - R_fake_xarm_gripper_controller
 
-fake_L_xarm7_traj_controller:
+L_fake_xarm7_traj_controller:
   joints:
     - L_joint1
     - L_joint2
@@ -14,11 +14,11 @@ fake_L_xarm7_traj_controller:
     - L_joint6
     - L_joint7
 
-fake_L_xarm_gripper_controller:
+R_fake_xarm7_traj_controller:
   joints:
     - L_drive_joint
 
-fake_R_xarm7_traj_controller:
+R_fake_xarm_gripper_controller:
   joints:
     - R_joint1
     - R_joint2
