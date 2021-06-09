@@ -12,7 +12,6 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, ThisLaunchFileDir
 
 def generate_launch_description():
-    gui = LaunchConfiguration('gui', default=False)
     prefix = LaunchConfiguration('prefix', default='')
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     limited = LaunchConfiguration('limited', default=False)
@@ -25,7 +24,6 @@ def generate_launch_description():
     xarm_rviz_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/_xarm_rviz_display.launch.py']),
         launch_arguments={
-            'gui': gui,
             'prefix': prefix,
             'hw_ns': hw_ns,
             'limited': limited,

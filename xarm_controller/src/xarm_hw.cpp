@@ -30,6 +30,13 @@ namespace xarm_control
         // RCLCPP_INFO(node_->get_logger(), "state_position: %s", pos_str.c_str());
         // RCLCPP_INFO(node_->get_logger(), "state_velocity: %s", vel_str.c_str());
 
+        if (info_.joints.size() != states->name.size()) return;
+        for (uint i = 0; i < info_.joints.size(); i++) {
+            if (info_.joints[i].name != states->name[i]) {
+                return;
+            }
+        }
+
         for (uint i = 0; i < position_states_.size(); i++) {
             position_states_[i] = states->position[i];
         }

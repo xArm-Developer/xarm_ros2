@@ -83,7 +83,7 @@
             <disable_collisions link1="${prefix}left_finger" link2="${prefix}right_inner_knuckle" reason="Never" />
             <disable_collisions link1="${prefix}left_finger" link2="${prefix}right_outer_knuckle" reason="Never" />
             <disable_collisions link1="${prefix}left_finger" link2="${prefix}xarm_gripper_base_link" reason="Never" />
-            <disable_collisions link1="${prefix}left_inner_knuckle" link2="left_outer_knuckle" reason="Never" />
+            <disable_collisions link1="${prefix}left_inner_knuckle" link2="${prefix}left_outer_knuckle" reason="Never" />
             <disable_collisions link1="${prefix}left_inner_knuckle" link2="${prefix}link3" reason="Never" />
             <disable_collisions link1="${prefix}left_inner_knuckle" link2="${prefix}link5" reason="Never" />
             <disable_collisions link1="${prefix}left_inner_knuckle" link2="${prefix}link6" reason="Never" />
@@ -111,9 +111,11 @@
         <disable_collisions link1="${prefix}link3" link2="${prefix}link6" reason="Never" />
         <disable_collisions link1="${prefix}link3" link2="${prefix}link7" reason="Never" />
         <disable_collisions link1="${prefix}link3" link2="${prefix}link_base" reason="Never" />
-        <disable_collisions link1="${prefix}link3" link2="${prefix}right_inner_knuckle" reason="Never" />
-        <disable_collisions link1="${prefix}link3" link2="${prefix}right_outer_knuckle" reason="Never" />
-        <disable_collisions link1="${prefix}link3" link2="${prefix}xarm_gripper_base_link" reason="Never" />
+        <xacro:if value="${add_gripper}">
+            <disable_collisions link1="${prefix}link3" link2="${prefix}right_inner_knuckle" reason="Never" />
+            <disable_collisions link1="${prefix}link3" link2="${prefix}right_outer_knuckle" reason="Never" />
+            <disable_collisions link1="${prefix}link3" link2="${prefix}xarm_gripper_base_link" reason="Never" />
+        </xacro:if>
         <disable_collisions link1="${prefix}link4" link2="${prefix}link5" reason="Adjacent" />
         <disable_collisions link1="${prefix}link4" link2="${prefix}link6" reason="Never" />
         <disable_collisions link1="${prefix}link4" link2="${prefix}link7" reason="Never" />

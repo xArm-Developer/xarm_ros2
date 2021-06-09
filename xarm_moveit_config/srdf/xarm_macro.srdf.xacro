@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="xarm_srdf">
+  <xacro:macro name="xarm_macro_srdf" params="prefix:='' add_gripper:='false' dof:=7"> 
+    <xacro:if value="${dof == 5}">
+      <xacro:include filename="$(find xarm_moveit_config)/srdf/_xarm5_macro.srdf.xacro" />
+      <xacro:xarm5_macro_srdf prefix="${prefix}" add_gripper="${add_gripper}" />
+    </xacro:if>
+    <xacro:if value="${dof == 6}">
+      <xacro:include filename="$(find xarm_moveit_config)/srdf/_xarm6_macro.srdf.xacro" />
+      <xacro:xarm6_macro_srdf prefix="${prefix}" add_gripper="${add_gripper}" />
+    </xacro:if>
+    <xacro:unless value="${dof == 5 or dof == 6}">
+      <xacro:include filename="$(find xarm_moveit_config)/srdf/_xarm7_macro.srdf.xacro" />
+      <xacro:xarm7_macro_srdf prefix="${prefix}" add_gripper="${add_gripper}" />
+    </xacro:unless>
+  </xacro:macro>
+</robot>

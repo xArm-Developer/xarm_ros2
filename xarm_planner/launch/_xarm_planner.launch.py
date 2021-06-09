@@ -40,7 +40,7 @@ def launch_setup(context, *args, **kwargs):
     get_xarm_robot_description_parameters = getattr(mod, 'get_xarm_robot_description_parameters')
     robot_description_parameters = get_xarm_robot_description_parameters(
         xacro_urdf_file=PathJoinSubstitution([FindPackageShare('xarm_description'), 'urdf', 'xarm_device.urdf.xacro']),
-        xacro_srdf_file=PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'srdf', '{}.srdf.xacro'.format(xarm_type)]),
+        xacro_srdf_file=PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'srdf', 'xarm.srdf.xacro']),
         urdf_arguments={
             'prefix': prefix,
             'hw_ns': hw_ns.perform(context).strip('/'),
@@ -55,13 +55,17 @@ def launch_setup(context, *args, **kwargs):
         srdf_arguments={
             'prefix': prefix,
             'add_gripper': add_gripper,
+            'dof': dof,
         },
         arguments={
             'context': context,
             'xarm_type': xarm_type,
         }
     )
-
+    kinematics_yaml = robot_description_parameters['robot_description_kinematics']
+    joint_limits_yaml = robot_description_parameters.get('robot_description_planning', None)
+    add_prefix_to_moveit_params = getattr(mod, 'add_prefix_to_moveit_params')
+    add_prefix_to_moveit_params(kinematics_yaml=kinematics_yaml, joint_limits_yaml=joint_limits_yaml, prefix=prefix.perform(context))
     try:
         xarm_planner_parameters = json.loads(node_parameters.perform(context))
     except:

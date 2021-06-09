@@ -35,32 +35,38 @@ def load_yaml(package_name, *file_path):
         return None
 
 
-def add_prefix_to_moveit_params(prefix, controllers_yaml, ompl_planning_yaml, kinematics_yaml):
+def add_prefix_to_moveit_params(controllers_yaml=None, ompl_planning_yaml=None, kinematics_yaml=None, joint_limits_yaml=None, prefix=''):
     if not prefix:
         return
-    for i, name in enumerate(controllers_yaml['controller_names']):
-        joints = controllers_yaml.get(name, {}).get('joints', [])
-        for j, joint in enumerate(joints):
-            joints[j] = '{}{}'.format(prefix, joint)
-        controllers_yaml['controller_names'][i] = '{}{}'.format(prefix, name)
-        if name in controllers_yaml:
-            controllers_yaml['{}{}'.format(prefix, name)] = controllers_yaml.pop(name)
-    for name in list(ompl_planning_yaml.keys()):
-        if name != 'planner_configs':
-            ompl_planning_yaml['{}{}'.format(prefix, name)] = ompl_planning_yaml.pop(name)
-    for name in list(kinematics_yaml.keys()):
-        kinematics_yaml['{}{}'.format(prefix, name)] = kinematics_yaml.pop(name)
+    if controllers_yaml:
+        for i, name in enumerate(controllers_yaml['controller_names']):
+            joints = controllers_yaml.get(name, {}).get('joints', [])
+            for j, joint in enumerate(joints):
+                joints[j] = '{}{}'.format(prefix, joint)
+            controllers_yaml['controller_names'][i] = '{}{}'.format(prefix, name)
+            if name in controllers_yaml:
+                controllers_yaml['{}{}'.format(prefix, name)] = controllers_yaml.pop(name)
+    if ompl_planning_yaml:
+        for name in list(ompl_planning_yaml.keys()):
+            if name != 'planner_configs':
+                ompl_planning_yaml['{}{}'.format(prefix, name)] = ompl_planning_yaml.pop(name)
+    if kinematics_yaml:
+        for name in list(kinematics_yaml.keys()):
+            kinematics_yaml['{}{}'.format(prefix, name)] = kinematics_yaml.pop(name)
+    if joint_limits_yaml:
+        for name in list(joint_limits_yaml['joint_limits']):
+            joint_limits_yaml['joint_limits']['{}{}'.format(prefix, name)] = joint_limits_yaml['joint_limits'].pop(name)
 
 
 def get_xarm_robot_description_parameters(
     xacro_urdf_file=PathJoinSubstitution([FindPackageShare('xarm_description'), 'urdf', 'xarm_device.urdf.xacro']),
-    xacro_srdf_file=PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'srdf', 'xarm7.srdf.xacro']),
+    xacro_srdf_file=PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'srdf', 'xarm.srdf.xacro']),
     urdf_arguments={},
     srdf_arguments={},
     arguments={}):
     urdf_arguments['ros2_control_plugin'] = urdf_arguments.get('ros2_control_plugin', 'xarm_control/XArmHW')
     moveit_config_package_name = 'xarm_moveit_config'
-    xarm_type = arguments['xarm_type']
+    xarm_type = arguments.get('xarm_type', None)
     # robot_description
     mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_description'), 'launch', 'lib', 'xarm_description_lib.py'))
     get_xacro_file_content = getattr(mod, 'get_xacro_file_content')
@@ -73,8 +79,6 @@ def get_xarm_robot_description_parameters(
             xacro_file=xacro_srdf_file,
             arguments=srdf_arguments
         ),
-        'robot_description_kinematics': load_yaml(
-            moveit_config_package_name, 'config', xarm_type, 'kinematics.yaml'),
-        # 'robot_description_planning': load_yaml(
-        #     moveit_config_package_name, 'config', xarm_type, 'joint_limits.yaml')
+        'robot_description_planning': load_yaml(moveit_config_package_name, 'config', xarm_type, 'joint_limits.yaml'),
+        'robot_description_kinematics': load_yaml(moveit_config_package_name, 'config', xarm_type, 'kinematics.yaml')
     }

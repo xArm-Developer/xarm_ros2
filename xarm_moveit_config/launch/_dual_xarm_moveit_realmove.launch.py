@@ -23,13 +23,19 @@ def launch_setup(context, *args, **kwargs):
     report_type = LaunchConfiguration('report_type', default='normal')
     prefix_1 = LaunchConfiguration('prefix_1', default='L_')
     prefix_2 = LaunchConfiguration('prefix_2', default='R_')
+    dof = LaunchConfiguration('dof', default=7)
+    dof_1 = LaunchConfiguration('dof_1', default=dof)
+    dof_2 = LaunchConfiguration('dof_2', default=dof)
+    add_gripper = LaunchConfiguration('add_gripper', default=False)
+    add_gripper_1 = LaunchConfiguration('add_gripper_1', default=add_gripper)
+    add_gripper_2 = LaunchConfiguration('add_gripper_2', default=add_gripper)
+    add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
+    add_vacuum_gripper_1 = LaunchConfiguration('add_vacuum_gripper_1', default=add_vacuum_gripper)
+    add_vacuum_gripper_2 = LaunchConfiguration('add_vacuum_gripper_2', default=add_vacuum_gripper)
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     limited = LaunchConfiguration('limited', default=False)
     effort_control = LaunchConfiguration('effort_control', default=False)
     velocity_control = LaunchConfiguration('velocity_control', default=False)
-    add_gripper = LaunchConfiguration('add_gripper', default=False)
-    add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
-    dof = LaunchConfiguration('dof', default=7)
     no_gui_ctrl = LaunchConfiguration('no_gui_ctrl', default=False)
 
     ros2_control_plugin = 'xarm_control/XArmHW'
@@ -74,13 +80,16 @@ def launch_setup(context, *args, **kwargs):
             arguments={
                 'prefix_1': prefix_1,
                 'prefix_2': prefix_2,
+                'dof_1': dof_1,
+                'dof_2': dof_2,
+                'add_gripper_1': add_gripper_1,
+                'add_gripper_2': add_gripper_2,
+                'add_vacuum_gripper_1': add_vacuum_gripper_1,
+                'add_vacuum_gripper_2': add_vacuum_gripper_2,
                 'hw_ns': hw_ns.perform(context).strip('/'),
                 'limited': limited,
                 'effort_control': effort_control,
                 'velocity_control': velocity_control,
-                'add_gripper': add_gripper,
-                'add_vacuum_gripper': add_vacuum_gripper,
-                'dof': dof,
                 'ros2_control_plugin': ros2_control_plugin,
             }
         )
@@ -105,13 +114,16 @@ def launch_setup(context, *args, **kwargs):
         launch_arguments={
             'prefix_1': prefix_1,
             'prefix_2': prefix_2,
+            'dof_1': dof_1,
+            'dof_2': dof_2,
+            'add_gripper_1': add_gripper_1,
+            'add_gripper_2': add_gripper_2,
+            'add_vacuum_gripper_1': add_vacuum_gripper_1,
+            'add_vacuum_gripper_2': add_vacuum_gripper_2,
             'hw_ns': hw_ns,
             'limited': limited,
             'effort_control': effort_control,
             'velocity_control': velocity_control,
-            'add_gripper': add_gripper,
-            'add_vacuum_gripper': add_vacuum_gripper,
-            'dof': dof,
             'no_gui_ctrl': no_gui_ctrl,
             'ros2_control_plugin': ros2_control_plugin,
             'controllers_name': controllers_name,
@@ -143,13 +155,16 @@ def launch_setup(context, *args, **kwargs):
         launch_arguments={
             'prefix_1': prefix_1,
             'prefix_2': prefix_2,
+            'dof_1': dof_1,
+            'dof_2': dof_2,
+            'add_gripper_1': add_gripper_1,
+            'add_gripper_2': add_gripper_2,
+            'add_vacuum_gripper_1': add_vacuum_gripper_1,
+            'add_vacuum_gripper_2': add_vacuum_gripper_2,
             'hw_ns': hw_ns,
             'limited': limited,
             'effort_control': effort_control,
             'velocity_control': velocity_control,
-            'add_gripper': add_gripper,
-            'add_vacuum_gripper': add_vacuum_gripper,
-            'dof': dof,
             'ros2_control_plugin': ros2_control_plugin,
         }.items(),
     )

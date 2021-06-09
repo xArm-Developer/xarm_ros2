@@ -3,8 +3,9 @@
   <!-- parameters -->
   <xacro:arg name="add_gripper" default="false"/>
   <xacro:arg name="prefix" default="" />
+  <xacro:arg name="dof" default="7" />
 
-  <xacro:include filename="$(find xarm_moveit_config)/srdf/_xarm5_macro.srdf.xacro" />
-  <xacro:xarm5_macro_srdf prefix="$(arg prefix)" add_gripper="$(arg add_gripper)" />
+  <xacro:include filename="$(find xarm_moveit_config)/srdf/xarm_macro.srdf.xacro" />
+  <xacro:xarm_macro_srdf prefix="$(arg prefix)" dof="$(arg dof)" add_gripper="$(arg add_gripper)" />
 
 </robot>
