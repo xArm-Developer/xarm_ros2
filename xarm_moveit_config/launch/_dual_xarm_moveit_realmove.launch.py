@@ -53,7 +53,7 @@ def launch_setup(context, *args, **kwargs):
             'report_type': report_type,
             'dof': dof_1,
             'hw_ns': hw_ns,
-            'add_gripper': add_gripper,
+            'add_gripper': add_gripper_1,
             'prefix': prefix_1,
         }.items(),
     )
@@ -65,7 +65,7 @@ def launch_setup(context, *args, **kwargs):
             'report_type': report_type,
             'dof': dof_2,
             'hw_ns': hw_ns,
-            'add_gripper': add_gripper,
+            'add_gripper': add_gripper_2,
             'prefix': prefix_2,
         }.items(),
     )
