@@ -51,7 +51,7 @@ def launch_setup(context, *args, **kwargs):
         launch_arguments={
             'robot_ip': robot1_ip,
             'report_type': report_type,
-            'dof': dof,
+            'dof': dof_1,
             'hw_ns': hw_ns,
             'add_gripper': add_gripper,
             'prefix': prefix_1,
@@ -63,7 +63,7 @@ def launch_setup(context, *args, **kwargs):
         launch_arguments={
             'robot_ip': robot2_ip,
             'report_type': report_type,
-            'dof': dof,
+            'dof': dof_2,
             'hw_ns': hw_ns,
             'add_gripper': add_gripper,
             'prefix': prefix_2,
