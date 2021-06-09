@@ -145,8 +145,8 @@ def launch_setup(context, *args, **kwargs):
             ], 
         }],
         remappings=[
-            ('follow_joint_trajectory', '{}{}_traj_controller/follow_joint_trajectory'.format(prefix_1.perform(context), xarm_type)),
-            ('follow_joint_trajectory', '{}{}_traj_controller/follow_joint_trajectory'.format(prefix_2.perform(context), xarm_type)),
+            ('follow_joint_trajectory', '{}xarm{}_traj_controller/follow_joint_trajectory'.format(prefix_1.perform(context), dof_1.perform(context))),
+            ('follow_joint_trajectory', '{}xarm{}_traj_controller/follow_joint_trajectory'.format(prefix_2.perform(context), dof_2.perform(context))),
         ],
     )
 
@@ -155,10 +155,13 @@ def launch_setup(context, *args, **kwargs):
         launch_arguments={
             'prefix_1': prefix_1,
             'prefix_2': prefix_2,
+            'dof': dof,
             'dof_1': dof_1,
             'dof_2': dof_2,
+            'add_gripper': add_gripper,
             'add_gripper_1': add_gripper_1,
             'add_gripper_2': add_gripper_2,
+            'add_vacuum_gripper': add_vacuum_gripper,
             'add_vacuum_gripper_1': add_vacuum_gripper_1,
             'add_vacuum_gripper_2': add_vacuum_gripper_2,
             'hw_ns': hw_ns,
@@ -174,7 +177,7 @@ def launch_setup(context, *args, **kwargs):
         executable='spawner.py',
         output='screen',
         arguments=[
-            '{}{}_traj_controller'.format(prefix_1.perform(context), xarm_type),
+            '{}xarm{}_traj_controller'.format(prefix_1.perform(context), dof_1.perform(context)),
             '--controller-manager', '{}/controller_manager'.format(ros_namespace)
         ],
     )
@@ -183,7 +186,7 @@ def launch_setup(context, *args, **kwargs):
         executable='spawner.py',
         output='screen',
         arguments=[
-            '{}{}_traj_controller'.format(prefix_2.perform(context), xarm_type),
+            '{}xarm{}_traj_controller'.format(prefix_2.perform(context), dof_2.perform(context)),
             '--controller-manager', '{}/controller_manager'.format(ros_namespace)
         ],
     )
