@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<robot xmlns:xacro="http://wiki.ros.org/xacro" name="xarm5_srdf">
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="xarm$(arg dof)">
   <!-- parameters -->
   <xacro:arg name="add_gripper" default="false"/>
   <xacro:arg name="prefix" default="" />
