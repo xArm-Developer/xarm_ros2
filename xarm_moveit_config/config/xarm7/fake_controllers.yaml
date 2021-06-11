@@ -1,8 +1,11 @@
 controller_names:
-  - fake_xarm7_traj_controller
-  - fake_xarm_gripper_controller
+  - xarm7_traj_controller
+  - xarm_gripper
 
-fake_xarm7_traj_controller:
+xarm7_traj_controller:
+  action_ns: follow_joint_trajectory
+  type: FollowJointTrajectory
+  default: true
   joints:
     - joint1
     - joint2
@@ -12,6 +15,9 @@ fake_xarm7_traj_controller:
     - joint6
     - joint7
 
-fake_xarm_gripper_controller:
+xarm_gripper:
+  action_ns: follow_joint_trajectory
+  type: FollowJointTrajectory
+  default: true
   joints:
     - drive_joint

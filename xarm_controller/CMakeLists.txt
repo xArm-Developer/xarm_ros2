@@ -68,7 +68,30 @@ target_link_libraries(xarm_hw
   ${ament_LIBRARIES}
 )
 
+add_library(
+  fake_xarm_hw
+  SHARED
+  src/fake_xarm_hw.cpp
+)
+target_include_directories(
+  fake_xarm_hw
+  PRIVATE
+  include
+)
+ament_target_dependencies(
+  fake_xarm_hw
+  hardware_interface
+  pluginlib
+  rclcpp
+  std_msgs
+  sensor_msgs
+)
+target_link_libraries(fake_xarm_hw 
+  ${ament_LIBRARIES}
+)
+
 pluginlib_export_plugin_description_file(hardware_interface xarm_hw_plugin.xml)
+pluginlib_export_plugin_description_file(hardware_interface fake_xarm_hw_plugin.xml)
 
 install(
   DIRECTORY include/
@@ -76,7 +99,7 @@ install(
 )
 
 install(
-  TARGETS xarm_hw
+  TARGETS xarm_hw fake_xarm_hw
   DESTINATION lib
 )
 
@@ -88,6 +111,7 @@ install(DIRECTORY
 
 ament_export_include_directories(include)
 ament_export_libraries(xarm_hw)
+ament_export_libraries(fake_xarm_hw)
 ament_export_dependencies(
   hardware_interface
   pluginlib

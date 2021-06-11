@@ -28,7 +28,7 @@
     
     <xacro:if value="${add_gripper}">
       <xacro:include filename="$(find xarm_description)/urdf/gripper/xarm_gripper_model.xacro" />
-      <xacro:load_gripper prefix="${prefix}" attach_to="${prefix}link_eef" effort_control="${effort_control}" velocity_control="${velocity_control}" />
+      <xacro:load_gripper prefix="${prefix}" attach_to="${prefix}link_eef" effort_control="${effort_control}" velocity_control="${velocity_control}" ros2_control_plugin="${ros2_control_plugin}" />
     </xacro:if>
 
     <xacro:if value="${add_vacuum_gripper}">

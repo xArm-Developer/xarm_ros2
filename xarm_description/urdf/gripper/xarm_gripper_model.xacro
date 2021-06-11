@@ -6,13 +6,16 @@
   <xacro:include filename="$(find xarm_description)/urdf/common/common.gazebo.xacro" />
 
   <!-- xarm_gripper -->
+  <xacro:include filename="$(find xarm_description)/urdf/gripper/xarm_gripper.ros2_control.xacro" />
   <xacro:include filename="$(find xarm_description)/urdf/gripper/xarm_gripper.urdf.xacro" />
   <xacro:include filename="$(find xarm_description)/urdf/gripper/xarm_gripper.transmission.xacro" />
   <xacro:include filename="$(find xarm_description)/urdf/gripper/xarm_gripper.gazebo.xacro" />
 
-  <xacro:macro name="load_gripper" params="prefix:='' attach_to:='' ns:='xarm' xyz:='0 0 0' rpy:='0 0 0' effort_control:='false' velocity_control:='false' ">
+  <xacro:macro name="load_gripper" params="prefix:='' attach_to:='' ns:='xarm' xyz:='0 0 0' rpy:='0 0 0' effort_control:='false' velocity_control:='false' ros2_control_plugin:='xarm_control/FakeXArmHW' ">
     <!-- gazebo plugin -->
     <!-- <xacro:gazebo_ros_control_plugin namespace="${ns}"/> -->
+
+    <xacro:xarm_gripper_ros2_control prefix="${prefix}" ros2_control_plugin="${ros2_control_plugin}" />
 
     <xacro:xarm_gripper_urdf prefix="${prefix}" attach_to="${attach_to}" xyz="${xyz}" rpy="${rpy}" />
 

@@ -25,10 +25,12 @@ def launch_setup(context, *args, **kwargs):
     dof = LaunchConfiguration('dof', default=7)
     no_gui_ctrl = LaunchConfiguration('no_gui_ctrl', default=False)
 
-    ros2_control_plugin = 'fake_components/GenericSystem'
+    ros2_control_plugin = 'xarm_control/FakeXArmHW'
     controllers_name = 'fake_controllers'
-    moveit_controller_manager_key = 'moveit_fake_controller_manager'
-    moveit_controller_manager_value = 'moveit_fake_controller_manager/MoveItFakeControllerManager'
+    moveit_controller_manager_key = 'moveit_simple_controller_manager'
+    moveit_controller_manager_value = 'moveit_simple_controller_manager/MoveItSimpleControllerManager'
+    xarm_type = 'xarm{}'.format(dof.perform(context))
+    ros_namespace = LaunchConfiguration('ros_namespace', default='').perform(context)
     
     # robot description launch
     robot_description_launch = IncludeLaunchDescription(
@@ -73,15 +75,50 @@ def launch_setup(context, *args, **kwargs):
         executable='joint_state_publisher',
         name='joint_state_publisher',
         output='screen',
-        parameters=[{'source_list': ['fake_controller_joint_states']}],
+        parameters=[{'source_list': ['joint_states']}],
+        remappings=[
+            ('follow_joint_trajectory', '{}{}_traj_controller/follow_joint_trajectory'.format(prefix.perform(context), xarm_type)),
+            ('follow_joint_trajectory', '{}xarm_gripper/follow_joint_trajectory'.format(prefix.perform(context))),
+        ],
     )
 
+    ros2_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_controller'), 'launch', '_ros2_control.launch.py'])),
+        launch_arguments={
+            'prefix': prefix,
+            'hw_ns': hw_ns,
+            'limited': limited,
+            'effort_control': effort_control,
+            'velocity_control': velocity_control,
+            'add_gripper': add_gripper,
+            'add_vacuum_gripper': add_vacuum_gripper,
+            'dof': dof,
+            'ros2_control_plugin': ros2_control_plugin,
+        }.items(),
+    )
+
+    # Load controllers
+    load_controllers = []
+    for controller in [
+        '{}{}_traj_controller'.format(prefix.perform(context), xarm_type),
+        '{}xarm_gripper'.format(prefix.perform(context)),
+    ]:
+        load_controllers.append(Node(
+            package='controller_manager',
+            executable='spawner.py',
+            output='screen',
+            arguments=[
+                controller,
+                '--controller-manager', '{}/controller_manager'.format(ros_namespace)
+            ],
+        ))
 
     return [
         robot_description_launch,
         xarm_moveit_common_launch,
-        joint_state_publisher_node
-    ]
+        joint_state_publisher_node,
+        ros2_launch,
+    ] + load_controllers
 
 def generate_launch_description():
     return LaunchDescription([
