@@ -1,4 +1,4 @@
-# xarm_ros说明
+# xarm_ros2说明
 
 ## 1. 简介
 
@@ -29,7 +29,7 @@
     ```bash
     $ cd ~/dev_ws/src
     # 注意需要--recursive参数，否则不会下载源码包的子模块源码
-    $ git clone git@192.168.1.19:vinman/xarm_ros2.git --recursive
+    $ git clone https://github.com/xArm-Developer/xarm_ros2.git --recursive
     ```
 
 - ### 4.3 升级xarm_ros2源码包
@@ -61,12 +61,14 @@
 
 
 ## 5. 模块说明
-__注意1： 运行xarm_ros2中的程序或启动脚本之前请先source当前工作区环境__
+__注意1： 如果当前局域网有多人使用ros2，为避免相互间发生干扰，请设置一下[ROS_DOMAIN_ID](https://docs.ros.org/en/ros2_documentation/foxy/Concepts/About-Domain-ID.html)__
+
+__注意2： 运行xarm_ros2中的程序或启动脚本之前请先source当前工作区环境__
 ```bash
 $ cd ~/dev_ws/
 $ source install/setup.bash
 ```
-__注意2： 以下启动说明以6轴为例，5轴和7轴的用法只需找到对应的启动文件或指定对应的参数__
+__注意3： 以下启动说明以6轴为例，5轴和7轴的用法只需找到对应的启动文件或指定对应的参数__
 
 - ### 5.1 xarm_description
     此模块包含机械臂的描述文件，通过以下启动脚本可以在rviz中显示对应的机械臂模型
@@ -88,16 +90,23 @@ __注意2： 以下启动说明以6轴为例，5轴和7轴的用法只需找到�
     此模块是针对xarm_sdk封装，提供对应的ros service和ros topic，整个xarm_ros2是通过使用此模块的service和topic来和机械臂的通信的
     所有service和topic默认都处于xarm/空间下(除非指定了hw_ns参数)，即joint_states的完整名字为xarm/joint_states
     
-    - __services__: 所有提供的service的名字和SDK中的API名字是对应的，但是否创建对应的服务是根据xarm_api/config/xarm_params.yaml的services来决定的，只有当services下对应的service的值为true时才会创建对应的service
-        motion_enable:
-        set_mode:
-        set_state: 
-        ...
+    - __services__: 所有提供的service的名字和SDK中的API名字是对应的，但是否创建对应的服务是根据```xarm_api/config/xarm_params.yaml```的services来决定的，只有当services下对应的service的值为```true```时才会创建对应的service。  
 
-    - __topics__:
-        __joint_states__: 格式为 __sensor_msgs::msg::JointState__
-        __xarm_states__: 格式为 __xarm_msgs::msg::RobotMsg__
-        __xarm_cgpio_states__: 格式为 __xarm_msgs::msg::CIOState__
+        ```
+        services:
+            motion_enable: true
+            set_mode: true
+            set_state: true
+            clean_conf: false
+            ...
+        ```
+
+    - __topics__:  
+
+        __joint_states__: 格式为 __sensor_msgs::msg::JointState__  
+        __xarm_states__: 格式为 __xarm_msgs::msg::RobotMsg__  
+        __xarm_cgpio_states__: 格式为 __xarm_msgs::msg::CIOState__  
+
     
     - 启动与测试
         ```bash
@@ -124,35 +133,40 @@ __注意2： 以下启动说明以6轴为例，5轴和7轴的用法只需找到�
 - ### 5.6 xarm_moveit_config
     此模块提供了通过moveit来控制机械臂的功能
 
-    - 【虚拟】启动moveit并在rviz显示, 控制机械臂
+    - 【虚拟】启动moveit并在rviz显示, 控制机械臂  
+
         ```bash
         $ cd ~/dev_ws/
         # add_gripper为true时会加载xarm夹爪的模型
         $ ros2 launch xarm_moveit_config xarm6_moveit_fake.launch.py [add_gripper:=true]
         ```
     
-    - 【真机】启动moveit并在rviz显示, 控制机械臂
+    - 【真机】启动moveit并在rviz显示, 控制机械臂  
+
         ```bash
         $ cd ~/dev_ws/
         # add_gripper为true时会加载xarm夹爪的模型
         $ ros2 launch xarm_moveit_config xarm6_moveit_realmove.launch.py robot_ip:=192.168.1.117 [add_gripper:=true]
         ```
     
-    - 【虚拟x2】启动两个moveit(包括rviz)，分别控制两台机械臂
+    - 【虚拟x2】启动两个moveit(包括rviz)，分别控制两台机械臂  
+
         ```bash
         $ cd ~/dev_ws/
         # add_gripper为true时会加载xarm夹爪的模型
         $ ros2 launch xarm_moveit_config two_xarm6_moveit_fake.launch.py [add_gripper:=true]
         ```
     
-    - 【真机x2】启动两个moveit(包括rviz)，分别控制两台机械臂
+    - 【真机x2】启动两个moveit(包括rviz)，分别控制两台机械臂  
+
         ```bash
         $ cd ~/dev_ws/
         # add_gripper为true时会加载xarm夹爪的模型
         $ ros2 launch xarm_moveit_config two_xarm6_moveit_realmove.launch.py robot1_ip:=192.168.1.117 robot2_ip:=192.168.1.203 [add_gripper:=true]
         ```
     
-    - 【Dual虚拟】启动moveit并在rviz显示, 控制两台机械臂
+    - 【Dual虚拟】启动moveit并在rviz显示, 控制两台机械臂  
+
         ```bash
         $ cd ~/dev_ws/
         # add_gripper为true时会加载xarm夹爪的模型
@@ -163,7 +177,8 @@ __注意2： 以下启动说明以6轴为例，5轴和7轴的用法只需找到�
         $ ros2 launch xarm_moveit_config dual_xarm6_moveit_fake.launch.py [add_gripper:=true]
         ```
     
-    - 【Dual真机】启动moveit并在rviz显示, 控制两台机械臂
+    - 【Dual真机】启动moveit并在rviz显示, 控制两台机械臂   
+    
         ```bash
         $ cd ~/dev_ws/
         # robot1_ip表示左臂控制的IP地址
