@@ -1,9 +1,10 @@
 # xarm_ros2
 
+For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
+
 ## 1. Introduction
 
-&ensp;&ensp;&ensp;&ensp;This repository contains simulation models, and corresponding motion planning and controlling demos of the xArm series from UFACTORY. Developing environment: Ubuntu 20.04 + ROS Foxy.
-
+&ensp;&ensp;&ensp;&ensp;This repository contains simulation models, and corresponding motion planning and controlling demos of the xArm series from UFACTORY. Developing environment: Ubuntu 20.04 + ROS Foxy.  
 
 ## 2. Update History    
 - moveit dual arm control (under single rviz GUI), each arm can be separately configured（e.g. DOF, add_gripper, etc）
@@ -15,8 +16,10 @@
 
 - ### 3.2 Install [Moveit2](https://moveit.ros.org/install-moveit2/source/)
 
+- ### 3.3 Install [ros_control]
 
-## 4. How to use
+
+## 4. How To Use
 
 - ### 4.1 Create a workspace
     ```bash
@@ -219,5 +222,5 @@ __Reminder 3： All following instructions will base on xArm6，please use prope
 
 
 - ### 5.8 xarm_gazebo
-    Unimplemented
+    Not yet implemented.
 
