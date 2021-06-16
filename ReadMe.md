@@ -16,8 +16,6 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 
 - ### 3.2 Install [Moveit2](https://moveit.ros.org/install-moveit2/source/)
 
-- ### 3.3 Install [ros_control]
-
 
 ## 4. How To Use
 
@@ -85,7 +83,7 @@ __Reminder 3： All following instructions will base on xArm6，please use prope
     ```
 
 - ### 5.2 xarm_msgs
-    This package contains all interface definitions for xarm_ros2, please check the instructions in the files before using them.
+    This package contains all interface definitions for xarm_ros2, please check the instructions in the files before using them. [REAEME](./xarm_msgs/ReadMe.md)
 
 - ### 5.3 xarm_sdk
     This package serves as a submodule of this project，the corresponding git repository is: [xArm-CPLUS-SDK](https://github.com/xArm-Developer/xArm-CPLUS-SDK.git), for interfacing with real xArms, please refer to the documentation in "xArm-CPLUS-SDK" if interested.

@@ -81,7 +81,7 @@ __注意3： 以下启动说明以6轴为例，5轴和7轴的用法只需找到�
     ```
 
 - ### 5.2 xarm_msgs
-    此模块包含整个xarm_ros2所使用到的服务和主题通信格式，使用时请查阅每个文件里的说明
+    此模块包含整个xarm_ros2所使用到的服务和主题通信格式，使用时请查阅每个文件里的说明. [REAEME](./xarm_msgs/ReadMe.md)
 
 - ### 5.3 xarm_sdk
     此模块是作为子模块存在的，子模块仓库为[xArm-CPLUS-SDK](https://github.com/xArm-Developer/xArm-CPLUS-SDK.git), 作为控制机械臂的SDK，如需使用请参阅xArm-CPLUS-SDK的文档说明
