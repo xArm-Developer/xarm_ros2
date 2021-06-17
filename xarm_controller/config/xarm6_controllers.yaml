@@ -16,6 +16,7 @@ xarm6_traj_controller:
   ros__parameters:
     command_interfaces:
       - position
+      - velocity
     state_interfaces:
       - position
       - velocity
@@ -28,7 +29,7 @@ xarm6_traj_controller:
       - joint6
     constraints:
       goal_time: 0.5
-      stopped_velocity_tolerance: 0.05
+      stopped_velocity_tolerance: 0.0
       joint1: {trajectory: 1, goal: 0.01}
       joint2: {trajectory: 1, goal: 0.01}
       joint3: {trajectory: 1, goal: 0.01}

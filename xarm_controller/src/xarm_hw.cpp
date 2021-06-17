@@ -70,6 +70,7 @@ namespace xarm_control
     {
         info_ = info;
         initial_write_ = true;
+        velocity_control_ = false;
         curr_state_ = 4;
         curr_mode_ = 0;
         curr_err_ = 0;
@@ -82,6 +83,8 @@ namespace xarm_control
         velocity_cmds_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
         position_cmds_float_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
         prev_position_cmds_float_.resize(info_.joints.size());
+        velocity_cmds_float_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
+        prev_velocity_cmds_float_.resize(info_.joints.size());
 
         for (const hardware_interface::ComponentInfo & joint : info_.joints) {
             bool has_pos_cmd_interface = false;
@@ -152,8 +155,13 @@ namespace xarm_control
             hw_ns = it->second;
         }
 
+        auto it2 = info_.hardware_parameters.find("velocity_control");
+        if (it2 != info_.hardware_parameters.end()) {
+            velocity_control_ = (it2->second == "True" || it2->second == "true");
+        }
+
         // node_ = rclcpp::Node::make_shared("xarm_hw");
-        RCLCPP_INFO(node_->get_logger(), "hw_ns: %s", hw_ns.c_str());
+        RCLCPP_INFO(node_->get_logger(), "hw_ns: %s, velocity_control: %d", hw_ns.c_str(), velocity_control_);
         joint_state_sub_ = node_->create_subscription<sensor_msgs::msg::JointState>(hw_ns + "/joint_states", 100, std::bind(&XArmHW::_joint_states_callback, this, std::placeholders::_1));
         xarm_state_sub_ = node_->create_subscription<xarm_msgs::msg::RobotMsg>(hw_ns + "/xarm_states", 100, std::bind(&XArmHW::_xarm_states_callback, this, std::placeholders::_1));
         // trajectory_execution_event_sub_ = node_->create_subscription<std_msgs::msg::String>("trajectory_execution_event", 100, std::bind(&XArmHW::_receive_event, this, std::placeholders::_1));
@@ -167,7 +175,10 @@ namespace xarm_control
         client_node_ = rclcpp::Node::make_shared("xarm_ros_client");
         xarm_client_.init(client_node_, hw_ns);
         xarm_client_.motion_enable(true);
-        xarm_client_.set_mode(1);
+        if (velocity_control_)
+            xarm_client_.set_mode(4);
+        else
+            xarm_client_.set_mode(1);
         xarm_client_.set_state(0);
 
         rclcpp::sleep_for(std::chrono::seconds(1));
@@ -211,9 +222,8 @@ namespace xarm_control
         return hardware_interface::return_type::OK;
     }
 
-    bool XArmHW::_check_cmds_is_change(std::vector<float> prev, std::vector<float> cur)
+    bool XArmHW::_check_cmds_is_change(std::vector<float> prev, std::vector<float> cur, double threshold)
     {
-        double threshold = 0.0001;
         for (int i = 0; i < cur.size(); i++) {
             if (std::abs(cur[i] - prev[i]) > threshold) return true;
         }
@@ -225,24 +235,42 @@ namespace xarm_control
         if (initial_write_) {
             return hardware_interface::return_type::OK;
         }
-        // return hardware_interface::return_type::OK;
         // std::string pos_str = "[ ";
+        // std::string vel_str = "[ ";
         // for (int i = 0; i < position_cmds_.size(); i++) { 
         //     pos_str += std::to_string(position_cmds_[i]); 
         //     pos_str += " ";
+        //     vel_str += std::to_string(velocity_cmds_[i]); 
+        //     vel_str += " ";
         // }
         // pos_str += "]";
-        // RCLCPP_INFO(node_->get_logger(), "positon: %s", pos_str.c_str());
+        // vel_str += "]";
+        // RCLCPP_INFO(node_->get_logger(), "positon: %s, velocity: %s", pos_str.c_str(), vel_str.c_str());
 
-        for (int i = 0; i < position_cmds_.size(); i++) { 
-            position_cmds_float_[i] = (float)position_cmds_[i];
+        if (velocity_control_) {
+            for (int i = 0; i < velocity_cmds_.size(); i++) { 
+                velocity_cmds_float_[i] = (float)velocity_cmds_[i];
+            }
+            // RCLCPP_INFO(node_->get_logger(), "velocity: %s", vel_str.c_str());
+            int ret = xarm_client_.vc_set_joint_velocity(velocity_cmds_float_);
+            if (ret != 0) {
+                RCLCPP_WARN(node_->get_logger(), "vc_set_joint_velocity, ret= %d", ret);
+            }
         }
-
-        if (_check_cmds_is_change(prev_position_cmds_float_, position_cmds_float_)) {
-            int ret = xarm_client_.set_servo_angle_j(position_cmds_float_);
-            if (ret == 0) {
-                for (int i = 0; i < prev_position_cmds_float_.size(); i++) { 
-                    prev_position_cmds_float_[i] = (float)position_cmds_float_[i];
+        else {
+            for (int i = 0; i < position_cmds_.size(); i++) { 
+                position_cmds_float_[i] = (float)position_cmds_[i];
+            }
+            if (_check_cmds_is_change(prev_position_cmds_float_, position_cmds_float_)) {
+                // RCLCPP_INFO(node_->get_logger(), "positon: %s", pos_str.c_str());
+                int ret = xarm_client_.set_servo_angle_j(position_cmds_float_);
+                if (ret != 0) {
+                    RCLCPP_WARN(node_->get_logger(), "set_servo_angle_j, ret= %d", ret);
+                }
+                if (ret == 0) {
+                    for (int i = 0; i < prev_position_cmds_float_.size(); i++) { 
+                        prev_position_cmds_float_[i] = (float)position_cmds_float_[i];
+                    }
                 }
             }
         }
