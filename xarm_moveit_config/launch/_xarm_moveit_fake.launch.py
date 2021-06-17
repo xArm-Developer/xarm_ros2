@@ -78,7 +78,7 @@ def launch_setup(context, *args, **kwargs):
         parameters=[{'source_list': ['joint_states']}],
         remappings=[
             ('follow_joint_trajectory', '{}{}_traj_controller/follow_joint_trajectory'.format(prefix.perform(context), xarm_type)),
-            ('follow_joint_trajectory', '{}xarm_gripper/follow_joint_trajectory'.format(prefix.perform(context))),
+            ('follow_joint_trajectory', '{}xarm_gripper_traj_controller/follow_joint_trajectory'.format(prefix.perform(context))),
         ],
     )
 
@@ -101,7 +101,7 @@ def launch_setup(context, *args, **kwargs):
     load_controllers = []
     for controller in [
         '{}{}_traj_controller'.format(prefix.perform(context), xarm_type),
-        '{}xarm_gripper'.format(prefix.perform(context)),
+        '{}xarm_gripper_traj_controller'.format(prefix.perform(context)),
     ]:
         load_controllers.append(Node(
             package='controller_manager',

@@ -116,8 +116,8 @@ def launch_setup(context, *args, **kwargs):
         remappings=[
             ('follow_joint_trajectory', '{}xarm{}_traj_controller/follow_joint_trajectory'.format(prefix_1.perform(context), dof_1.perform(context))),
             ('follow_joint_trajectory', '{}xarm{}_traj_controller/follow_joint_trajectory'.format(prefix_2.perform(context), dof_2.perform(context))),
-            ('follow_joint_trajectory', '{}xarm_gripper/follow_joint_trajectory'.format(prefix_1.perform(context))),
-            ('follow_joint_trajectory', '{}xarm_gripper/follow_joint_trajectory'.format(prefix_2.perform(context))),
+            ('follow_joint_trajectory', '{}xarm_gripper_traj_controller/follow_joint_trajectory'.format(prefix_1.perform(context))),
+            ('follow_joint_trajectory', '{}xarm_gripper_traj_controller/follow_joint_trajectory'.format(prefix_2.perform(context))),
         ],
     )
 
@@ -148,8 +148,8 @@ def launch_setup(context, *args, **kwargs):
     for controller in [
         '{}xarm{}_traj_controller'.format(prefix_1.perform(context), dof_1.perform(context)),
         '{}xarm{}_traj_controller'.format(prefix_2.perform(context), dof_2.perform(context)),
-        '{}xarm_gripper'.format(prefix_1.perform(context)),
-        '{}xarm_gripper'.format(prefix_2.perform(context)),
+        '{}xarm_gripper_traj_controller'.format(prefix_1.perform(context)),
+        '{}xarm_gripper_traj_controller'.format(prefix_2.perform(context)),
     ]:
         load_controllers.append(Node(
             package='controller_manager',

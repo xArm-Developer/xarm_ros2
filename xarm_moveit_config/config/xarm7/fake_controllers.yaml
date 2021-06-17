@@ -1,6 +1,6 @@
 controller_names:
   - xarm7_traj_controller
-  - xarm_gripper
+  - xarm_gripper_traj_controller
 
 xarm7_traj_controller:
   action_ns: follow_joint_trajectory
@@ -15,7 +15,7 @@ xarm7_traj_controller:
     - joint6
     - joint7
 
-xarm_gripper:
+xarm_gripper_traj_controller:
   action_ns: follow_joint_trajectory
   type: FollowJointTrajectory
   default: true

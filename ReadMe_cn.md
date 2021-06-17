@@ -45,7 +45,7 @@
     # 记得先source已安装的ros foxy环境
     $ cd ~/dev_ws/src/
     $ rosdep update
-    $ rosdep install --from-paths . --ignore-src --rosdistro 
+    $ rosdep install --from-paths . --ignore-src --rosdistro $ROS_DISTRO
     ```
 
 - ### 4.5 编译xarm_ros2
