@@ -47,8 +47,8 @@
         xyz="0 0 0"
         rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="package://xarm_description/meshes/xarm7/visual/link_base.STL" />
+        <!-- <mesh filename="package://xarm_description/meshes/xarm7/visual/link_base.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/xarm7/visual/link_base.STL"/>
       </geometry>
       <material name="${prefix}White" />
     </visual>
@@ -57,8 +57,8 @@
         xyz="0 0 0"
         rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="package://xarm_description/meshes/xarm7/visual/link_base.STL" />
+        <!-- <mesh filename="package://xarm_description/meshes/xarm7/visual/link_base.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/xarm7/visual/link_base.STL"/>
       </geometry>
     </collision>
   </link>
@@ -83,8 +83,8 @@
         xyz="0 0 0"
         rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="package://xarm_description/meshes/xarm7/visual/link1.STL" />
+        <!-- <mesh filename="package://xarm_description/meshes/xarm7/visual/link1.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/xarm7/visual/link1.STL"/>
       </geometry>
       <material name="${prefix}White" />
     </visual>
@@ -93,8 +93,8 @@
         xyz="0 0 0"
         rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="package://xarm_description/meshes/xarm7/visual/link1.STL" />
+        <!-- <mesh filename="package://xarm_description/meshes/xarm7/visual/link1.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/xarm7/visual/link1.STL"/>
       </geometry>
     </collision>
   </link>
@@ -140,8 +140,8 @@
         xyz="0 0 0"
         rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="package://xarm_description/meshes/xarm7/visual/link2.STL" />
+        <!-- <mesh filename="package://xarm_description/meshes/xarm7/visual/link2.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/xarm7/visual/link2.STL"/>
       </geometry>
       <material name="${prefix}White" />
     </visual>
@@ -150,8 +150,8 @@
         xyz="0 0 0"
         rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="package://xarm_description/meshes/xarm7/visual/link2.STL" />
+        <!-- <mesh filename="package://xarm_description/meshes/xarm7/visual/link2.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/xarm7/visual/link2.STL"/>
       </geometry>
     </collision>
   </link>
@@ -197,8 +197,8 @@
         xyz="0 0 0"
         rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="package://xarm_description/meshes/xarm7/visual/link3.STL" />
+        <!-- <mesh filename="package://xarm_description/meshes/xarm7/visual/link3.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/xarm7/visual/link3.STL"/>
       </geometry>
       <material name="${prefix}White" />
     </visual>
@@ -207,8 +207,8 @@
         xyz="0 0 0"
         rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="package://xarm_description/meshes/xarm7/visual/link3.STL" />
+        <!-- <mesh filename="package://xarm_description/meshes/xarm7/visual/link3.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/xarm7/visual/link3.STL"/>
       </geometry>
     </collision>
   </link>
@@ -254,8 +254,8 @@
         xyz="0 0 0"
         rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="package://xarm_description/meshes/xarm7/visual/link4.STL" />
+        <!-- <mesh filename="package://xarm_description/meshes/xarm7/visual/link4.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/xarm7/visual/link4.STL"/>
       </geometry>
       <material name="${prefix}White" />
     </visual>
@@ -264,8 +264,8 @@
         xyz="0 0 0"
         rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="package://xarm_description/meshes/xarm7/visual/link4.STL" />
+        <!-- <mesh filename="package://xarm_description/meshes/xarm7/visual/link4.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/xarm7/visual/link4.STL"/>
       </geometry>
     </collision>
   </link>
@@ -311,8 +311,8 @@
         xyz="0 0 0"
         rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="package://xarm_description/meshes/xarm7/visual/link5.STL" />
+        <!-- <mesh filename="package://xarm_description/meshes/xarm7/visual/link5.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/xarm7/visual/link5.STL"/>
       </geometry>
       <material name="${prefix}White" />
     </visual>
@@ -321,8 +321,8 @@
         xyz="0 0 0"
         rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="package://xarm_description/meshes/xarm7/visual/link5.STL" />
+        <!-- <mesh filename="package://xarm_description/meshes/xarm7/visual/link5.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/xarm7/visual/link5.STL"/>
       </geometry>
     </collision>
   </link>
@@ -368,8 +368,8 @@
         xyz="0 0 0"
         rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="package://xarm_description/meshes/xarm7/visual/link6.STL" />
+        <!-- <mesh filename="package://xarm_description/meshes/xarm7/visual/link6.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/xarm7/visual/link6.STL"/>
       </geometry>
       <material name="${prefix}White" />
     </visual>
@@ -378,8 +378,8 @@
         xyz="0 0 0"
         rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="package://xarm_description/meshes/xarm7/visual/link6.STL" />
+        <!-- <mesh filename="package://xarm_description/meshes/xarm7/visual/link6.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/xarm7/visual/link6.STL"/>
       </geometry>
     </collision>
   </link>
@@ -425,8 +425,8 @@
         xyz="0 0 0"
         rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="package://xarm_description/meshes/xarm7/visual/link7.STL" />
+        <!-- <mesh filename="package://xarm_description/meshes/xarm7/visual/link7.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/xarm7/visual/link7.STL"/>
       </geometry>
       <material name="${prefix}Silver" />
     </visual>
@@ -435,8 +435,8 @@
         xyz="0 0 0"
         rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="package://xarm_description/meshes/xarm7/visual/link7.STL" />
+        <!-- <mesh filename="package://xarm_description/meshes/xarm7/visual/link7.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/xarm7/visual/link7.STL"/>
       </geometry>
     </collision>
   </link>

@@ -32,8 +32,8 @@
         xyz="0 0 0"
         rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="package://xarm_description/meshes/vacuum_gripper/visual/vacuum_gripper.STL" />
+        <!-- <mesh filename="package://xarm_description/meshes/vacuum_gripper/visual/vacuum_gripper.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/vacuum_gripper/visual/vacuum_gripper.STL"/>
       </geometry>
       <material name="White">
         <color rgba="1.0 1.0 1.0 1.0"/>
@@ -44,8 +44,8 @@
         xyz="0 0 0"
         rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="package://xarm_description/meshes/vacuum_gripper/collision/vacuum_gripper.STL" />
+        <!-- <mesh filename="package://xarm_description/meshes/vacuum_gripper/collision/vacuum_gripper.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/vacuum_gripper/collision/vacuum_gripper.STL"/>
       </geometry>
     </collision>
   </link>

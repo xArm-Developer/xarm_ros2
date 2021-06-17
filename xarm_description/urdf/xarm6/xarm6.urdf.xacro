@@ -27,14 +27,16 @@
     <link name="${prefix}link_base">
       <visual>
         <geometry>
-          <mesh filename="package://xarm_description/meshes/xarm6/visual/base.stl"/>
+          <!-- <mesh filename="package://xarm_description/meshes/xarm6/visual/base.stl"/> -->
+          <mesh filename="file:///$(find xarm_description)/meshes/xarm6/visual/base.stl"/>
         </geometry>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <material name="${prefix}White" />
       </visual>
       <collision>
         <geometry>
-          <mesh filename="package://xarm_description/meshes/xarm6/visual/base.stl"/>
+          <!-- <mesh filename="package://xarm_description/meshes/xarm6/visual/base.stl"/> -->
+          <mesh filename="file:///$(find xarm_description)/meshes/xarm6/visual/base.stl"/>
         </geometry>
         <origin xyz="0 0 0" rpy="0 0 0"/>
       </collision>
@@ -54,14 +56,16 @@
     <link name="${prefix}link1">
       <visual>
         <geometry>
-          <mesh filename="package://xarm_description/meshes/xarm6/visual/link1.stl"/>
+          <!-- <mesh filename="package://xarm_description/meshes/xarm6/visual/link1.stl"/> -->
+          <mesh filename="file:///$(find xarm_description)/meshes/xarm6/visual/link1.stl"/>
         </geometry>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <material name="${prefix}White" />
       </visual>
       <collision>
         <geometry>
-          <mesh filename="package://xarm_description/meshes/xarm6/visual/link1.stl"/>
+          <!-- <mesh filename="package://xarm_description/meshes/xarm6/visual/link1.stl"/> -->
+          <mesh filename="file:///$(find xarm_description)/meshes/xarm6/visual/link1.stl"/>
         </geometry>
         <origin xyz="0 0 0" rpy="0 0 0"/>
       </collision>
@@ -94,14 +98,16 @@
     <link name="${prefix}link2">
       <visual>
         <geometry>
-          <mesh filename="package://xarm_description/meshes/xarm6/visual/link2.stl"/>
+          <!-- <mesh filename="package://xarm_description/meshes/xarm6/visual/link2.stl"/> -->
+          <mesh filename="file:///$(find xarm_description)/meshes/xarm6/visual/link2.stl"/>
         </geometry>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <material name="${prefix}White" />
       </visual>
       <collision>
         <geometry>
-          <mesh filename="package://xarm_description/meshes/xarm6/visual/link2.stl"/>
+          <!-- <mesh filename="package://xarm_description/meshes/xarm6/visual/link2.stl"/> -->
+          <mesh filename="file:///$(find xarm_description)/meshes/xarm6/visual/link2.stl"/>
         </geometry>
         <origin xyz="0 0 0" rpy="0 0 0"/>
       </collision>
@@ -137,14 +143,16 @@
     <link name="${prefix}link3">
       <visual>
         <geometry>
-          <mesh filename="package://xarm_description/meshes/xarm6/visual/link3.stl"/>
+          <!-- <mesh filename="package://xarm_description/meshes/xarm6/visual/link3.stl"/> -->
+          <mesh filename="file:///$(find xarm_description)/meshes/xarm6/visual/link3.stl"/>
         </geometry>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <material name="${prefix}White" />
       </visual>
       <collision>
         <geometry>
-          <mesh filename="package://xarm_description/meshes/xarm6/visual/link3.stl"/>
+          <!-- <mesh filename="package://xarm_description/meshes/xarm6/visual/link3.stl"/> -->
+          <mesh filename="file:///$(find xarm_description)/meshes/xarm6/visual/link3.stl"/>
         </geometry>
         <origin xyz="0 0 0" rpy="0 0 0"/>
       </collision>
@@ -180,14 +188,16 @@
     <link name="${prefix}link4">
       <visual>
         <geometry>
-          <mesh filename="package://xarm_description/meshes/xarm6/visual/link4.stl"/>
+          <!-- <mesh filename="package://xarm_description/meshes/xarm6/visual/link4.stl"/> -->
+          <mesh filename="file:///$(find xarm_description)/meshes/xarm6/visual/link4.stl"/>
         </geometry>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <material name="${prefix}White" />
       </visual>
       <collision>
         <geometry>
-          <mesh filename="package://xarm_description/meshes/xarm6/visual/link4.stl"/>
+          <!-- <mesh filename="package://xarm_description/meshes/xarm6/visual/link4.stl"/> -->
+          <mesh filename="file:///$(find xarm_description)/meshes/xarm6/visual/link4.stl"/>
         </geometry>
         <origin xyz="0 0 0" rpy="0 0 0"/>
       </collision>
@@ -220,14 +230,16 @@
     <link name="${prefix}link5">
       <visual>
         <geometry>
-          <mesh filename="package://xarm_description/meshes/xarm6/visual/link5.stl"/>
+          <!-- <mesh filename="package://xarm_description/meshes/xarm6/visual/link5.stl"/> -->
+          <mesh filename="file:///$(find xarm_description)/meshes/xarm6/visual/link5.stl"/>
         </geometry>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <material name="${prefix}White" />
       </visual>
       <collision>
         <geometry>
-          <mesh filename="package://xarm_description/meshes/xarm6/visual/link5.stl"/>
+          <!-- <mesh filename="package://xarm_description/meshes/xarm6/visual/link5.stl"/> -->
+          <mesh filename="file:///$(find xarm_description)/meshes/xarm6/visual/link5.stl"/>
         </geometry>
         <origin xyz="0 0 0" rpy="0 0 0"/>
       </collision>
@@ -263,14 +275,16 @@
     <link name="${prefix}link6">
       <visual>
         <geometry>
-          <mesh filename="package://xarm_description/meshes/xarm6/visual/link6.stl"/>
+          <!-- <mesh filename="package://xarm_description/meshes/xarm6/visual/link6.stl"/> -->
+          <mesh filename="file:///$(find xarm_description)/meshes/xarm6/visual/link6.stl"/>
         </geometry>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <material name="${prefix}Silver" />
       </visual>
       <collision>
         <geometry>
-          <mesh filename="package://xarm_description/meshes/xarm6/visual/link6.stl"/>
+          <!-- <mesh filename="package://xarm_description/meshes/xarm6/visual/link6.stl"/> -->
+          <mesh filename="file:///$(find xarm_description)/meshes/xarm6/visual/link6.stl"/>
         </geometry>
         <origin xyz="0 0 0" rpy="0 0 0"/>
       </collision>
