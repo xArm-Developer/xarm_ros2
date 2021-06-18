@@ -217,5 +217,18 @@ __注意3： 以下启动说明以6轴为例，5轴和7轴的用法只需找到�
 
 
 - ### 5.8 xarm_gazebo
-    未实现
+    此模块用于在gazobo上对xarm进行仿真
+    注意：可能需要源码安装[gazebo_ros2_control](https://github.com/ros-simulation/gazebo_ros2_control.git)，并source所安装的gazebo_ros2_control环境
+    
+    - 单独测试xarm在gazebo上的显示
+        ```bash
+        $ cd ~/dev_ws/
+        $ ros2 launch xarm_gazebo xarm6_beside_table_gazebo.launch.py
+        ```
+
+    - 联合moveit+gazebo进行控制
+        ```bash
+        $ cd ~/dev_ws/
+        $ ros2 launch xarm_moveit_config xarm6_moveit_gazebo.launch.py
+        ```
 
