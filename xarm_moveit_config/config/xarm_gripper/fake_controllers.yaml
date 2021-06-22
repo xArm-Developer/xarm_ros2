@@ -1,0 +1,9 @@
+controller_names:
+  - xarm_gripper_traj_controller
+
+xarm_gripper_traj_controller:
+  action_ns: follow_joint_trajectory
+  type: FollowJointTrajectory
+  default: true
+  joints:
+    - drive_joint

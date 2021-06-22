@@ -1,12 +1,14 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
 
-  <xacro:macro name="gazebo_ros_control_plugin" params="prefix:='' dof:=7">
+  <xacro:macro name="gazebo_ros_control_plugin" params="prefix:='' ros2_control_params:=''">
 
     <gazebo>
       <plugin filename="libgazebo_ros2_control.so" name="gazebo_ros2_control">
         <robot_sim_type>gazebo_ros2_control/GazeboSystem</robot_sim_type>
-        <parameters>$(find xarm_controller)/config/xarm${dof}_controllers.yaml</parameters>
+        <xacro:if value="${ros2_control_params != ''}">
+          <parameters>${ros2_control_params}</parameters>
+        </xacro:if>
       </plugin>
     </gazebo>
 

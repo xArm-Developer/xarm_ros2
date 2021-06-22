@@ -7,8 +7,6 @@
 # Author: Vinman <vinman.wen@ufactory.cc> <vinman.cub@gmail.com>
 
 import os
-import yaml
-from tempfile import NamedTemporaryFile
 from ament_index_python import get_package_share_directory
 from launch.launch_description_sources import load_python_launch_file_as_module
 from launch import LaunchDescription
@@ -16,43 +14,6 @@ from launch.actions import OpaqueFunction
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
-
-
-def add_prefix_to_ros2_control_params(prefix, ros2_control_params):
-    if not prefix:
-        return
-    for name in list(ros2_control_params.keys()):
-        if name == 'controller_manager':
-            continue
-        ros__parameters = ros2_control_params[name].get('ros__parameters', {})
-        joints = ros__parameters.get('joints', [])
-        constraints = ros__parameters.get('constraints', {})
-        for i, joint in enumerate(joints):
-            for j, key in enumerate(constraints.keys()):
-                if key == joint:
-                    constraints['{}{}'.format(prefix, key)] = constraints.pop(key)
-                    break
-            joints[i] = '{}{}'.format(prefix, joint)
-        new_name = '{}{}'.format(prefix, name)
-        ros2_control_params[new_name] = ros2_control_params.pop(name)
-        controller_manager_ros__parameters = ros2_control_params.get('controller_manager', {}).get('ros__parameters', {})
-        if name in controller_manager_ros__parameters:
-            controller_manager_ros__parameters[new_name] = controller_manager_ros__parameters.pop(name)
-
-
-def generate_ros2_control_params(ros2_control_params_path, ros_namespace='', prefix=''):
-    if ros_namespace or prefix:
-        with open(ros2_control_params_path, 'r') as f:
-            ros2_control_params_yaml = yaml.safe_load(f)
-        add_prefix_to_ros2_control_params(prefix, ros2_control_params_yaml)
-        if ros_namespace:
-            ros2_control_params_yaml = {
-                ros_namespace: ros2_control_params_yaml
-            }
-        with NamedTemporaryFile(mode='w', prefix='launch_params_', delete=False) as h:
-            yaml.dump(ros2_control_params_yaml, h, default_flow_style=False)
-            return h.name
-    return ros2_control_params_path
 
 
 def launch_setup(context, *args, **kwargs):
@@ -88,9 +49,13 @@ def launch_setup(context, *args, **kwargs):
     }
 
     # ros2 control node
-    ros2_control_params = generate_ros2_control_params(
+    mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_controller'), 'launch', 'lib', 'xarm_controller_lib.py'))
+    generate_ros2_control_params_temp_file = getattr(mod, 'generate_ros2_control_params_temp_file')
+    ros2_control_params = generate_ros2_control_params_temp_file(
         os.path.join(get_package_share_directory('xarm_controller'), 'config', 'xarm{}_controllers.yaml'.format(dof.perform(context))),
-        LaunchConfiguration('ros_namespace', default='').perform(context), prefix.perform(context)
+        prefix=prefix.perform(context), 
+        add_gripper=add_gripper.perform(context) in ('True', 'true'),
+        ros_namespace=LaunchConfiguration('ros_namespace', default='').perform(context)
     )
     ros2_control_node = Node(
         package='controller_manager',

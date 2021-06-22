@@ -8,10 +8,6 @@ controller_manager:
     xarm7_traj_controller:
       type: joint_trajectory_controller/JointTrajectoryController
     
-    # only for fake control
-    xarm_gripper_traj_controller:
-      type: joint_trajectory_controller/JointTrajectoryController
-
 xarm7_traj_controller:
   ros__parameters:
     command_interfaces:
@@ -40,15 +36,3 @@ xarm7_traj_controller:
     interface_name: position
     state_publish_rate: 25.0
     action_monitor_rate: 10.0
-
-# only for fake control
-xarm_gripper_traj_controller:
-  ros__parameters:
-    command_interfaces:
-      - position
-    state_interfaces:
-      - position
-      - velocity
-    joints:
-      - drive_joint
-    interface_name: position

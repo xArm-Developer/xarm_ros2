@@ -86,7 +86,7 @@ def launch_setup(context, *args, **kwargs):
     nodes = [
         xarm_planner_node
     ]
-    if add_gripper.perform(context) == 'true' and use_gripper_node.perform(context) == 'true':
+    if add_gripper.perform(context) in ('True', 'true') and use_gripper_node.perform(context) in ('True', 'true'):
         xarm_gripper_planner_node = Node(
             name=node_name,
             package='xarm_planner',

@@ -66,6 +66,21 @@ def launch_setup(context, *args, **kwargs):
     ompl_planning_yaml = load_yaml(moveit_config_package_name, 'config', xarm_type, 'ompl_planning.yaml')
     kinematics_yaml = robot_description_parameters['robot_description_kinematics']
     joint_limits_yaml = robot_description_parameters.get('robot_description_planning', None)
+
+    if add_gripper.perform(context) in ('True', 'true'):
+        gripper_controllers_yaml = load_yaml(moveit_config_package_name, 'config', 'xarm_gripper', '{}.yaml'.format(controllers_name.perform(context)))
+        gripper_ompl_planning_yaml = load_yaml(moveit_config_package_name, 'config', 'xarm_gripper', 'ompl_planning.yaml')
+        gripper_joint_limits_yaml = load_yaml(moveit_config_package_name, 'config', 'xarm_gripper', 'joint_limits.yaml')
+
+        for name in gripper_controllers_yaml['controller_names']:
+            if name in gripper_controllers_yaml:
+                if name not in controllers_yaml['controller_names']:
+                    controllers_yaml['controller_names'].append(name)
+                controllers_yaml[name] = gripper_controllers_yaml[name]
+        ompl_planning_yaml.update(gripper_ompl_planning_yaml)
+        if joint_limits_yaml:
+            joint_limits_yaml['joint_limits'].update(gripper_joint_limits_yaml['joint_limits'])
+
     add_prefix_to_moveit_params = getattr(mod, 'add_prefix_to_moveit_params')
     add_prefix_to_moveit_params(
         controllers_yaml=controllers_yaml, ompl_planning_yaml=ompl_planning_yaml, 
@@ -97,6 +112,10 @@ def launch_setup(context, *args, **kwargs):
         'trajectory_execution.execution_duration_monitoring': False
     }
 
+    plan_execution = {
+        'plan_execution.record_trajectory_state_frequency': 10.0,
+    }
+
     planning_scene_monitor_parameters = {
         'publish_planning_scene': True,
         'publish_geometry_updates': True,
@@ -122,6 +141,7 @@ def launch_setup(context, *args, **kwargs):
             robot_description_parameters,
             ompl_planning_pipeline_config,
             trajectory_execution,
+            plan_execution,
             moveit_controllers,
             planning_scene_monitor_parameters,
         ],

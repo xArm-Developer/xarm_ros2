@@ -87,6 +87,41 @@ def launch_setup(context, *args, **kwargs):
     ompl_planning_yaml_2 = load_yaml(moveit_config_package_name, 'config', xarm_type, 'ompl_planning.yaml')
     kinematics_yaml_2 = load_yaml(moveit_config_package_name, 'config', xarm_type, 'kinematics.yaml')
     joint_limits_yaml_2 = load_yaml(moveit_config_package_name, 'config', xarm_type, 'joint_limits.yaml')
+    
+        
+    if add_gripper_1.perform(context) in ('True', 'true'):
+        gripper_controllers_yaml_1 = load_yaml(moveit_config_package_name, 'config', 'xarm_gripper', '{}.yaml'.format(controllers_name.perform(context)))
+        gripper_ompl_planning_yaml_1 = load_yaml(moveit_config_package_name, 'config', 'xarm_gripper', 'ompl_planning.yaml')
+        # gripper_kinematics_yaml_1 = load_yaml(moveit_config_package_name, 'config', 'xarm_gripper', 'kinematics.yaml')
+        gripper_joint_limits_yaml_1 = load_yaml(moveit_config_package_name, 'config', 'xarm_gripper', 'joint_limits.yaml')
+
+        for name in gripper_controllers_yaml_1['controller_names']:
+            if name not in gripper_controllers_yaml_1:
+                continue
+            if name not in controllers_yaml_1['controller_names']:
+                controllers_yaml_1['controller_names'].append(name)
+            controllers_yaml_1[name] = gripper_controllers_yaml_1[name]
+        ompl_planning_yaml_1.update(gripper_ompl_planning_yaml_1)
+        # kinematics_yaml_1.update(gripper_kinematics_yaml_1)
+        if joint_limits_yaml_1:
+            joint_limits_yaml_1['joint_limits'].update(gripper_joint_limits_yaml_1['joint_limits'])
+    
+    if add_gripper_2.perform(context) in ('True', 'true'):
+        gripper_controllers_yaml_2 = load_yaml(moveit_config_package_name, 'config', 'xarm_gripper', '{}.yaml'.format(controllers_name.perform(context)))
+        gripper_ompl_planning_yaml_2 = load_yaml(moveit_config_package_name, 'config', 'xarm_gripper', 'ompl_planning.yaml')
+        gripper_joint_limits_yaml_2 = load_yaml(moveit_config_package_name, 'config', 'xarm_gripper', 'joint_limits.yaml')
+
+        for name in gripper_controllers_yaml_2['controller_names']:
+            if name not in gripper_controllers_yaml_2:
+                continue
+            if name not in controllers_yaml_2['controller_names']:
+                controllers_yaml_2['controller_names'].append(name)
+            controllers_yaml_2[name] = gripper_controllers_yaml_2[name]
+        ompl_planning_yaml_2.update(gripper_ompl_planning_yaml_2)
+        if joint_limits_yaml_2:
+            joint_limits_yaml_2['joint_limits'].update(gripper_joint_limits_yaml_2['joint_limits'])
+        
+
     add_prefix_to_moveit_params = getattr(mod, 'add_prefix_to_moveit_params')
     add_prefix_to_moveit_params(
         controllers_yaml=controllers_yaml_1, ompl_planning_yaml=ompl_planning_yaml_1, 
@@ -136,6 +171,10 @@ def launch_setup(context, *args, **kwargs):
         'trajectory_execution.allowed_start_tolerance': 0.01,
         'trajectory_execution.execution_duration_monitoring': False
     }
+    
+    plan_execution = {
+        'plan_execution.record_trajectory_state_frequency': 10.0,
+    }
 
     planning_scene_monitor_parameters = {
         'publish_planning_scene': True,
@@ -162,6 +201,7 @@ def launch_setup(context, *args, **kwargs):
             robot_description_parameters,
             ompl_planning_pipeline_config,
             trajectory_execution,
+            plan_execution,
             moveit_controllers,
             planning_scene_monitor_parameters,
         ],
@@ -192,7 +232,7 @@ def launch_setup(context, *args, **kwargs):
         executable='static_transform_publisher',
         name='static_transform_publisher',
         output='screen',
-        arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', 'world', 'link_base'],
+        arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', 'ground', 'link_base'],
     )
 
     return [

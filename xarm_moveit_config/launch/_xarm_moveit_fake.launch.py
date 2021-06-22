@@ -69,6 +69,15 @@ def launch_setup(context, *args, **kwargs):
         }.items(),
     )
 
+    remappings = [
+        ('follow_joint_trajectory', '{}{}_traj_controller/follow_joint_trajectory'.format(prefix.perform(context), xarm_type)),
+    ]
+    controllers = ['{}{}_traj_controller'.format(prefix.perform(context), xarm_type)]
+    if add_gripper.perform(context) in ('True', 'true'):
+        remappings.append(
+            ('follow_joint_trajectory', '{}xarm_gripper_traj_controller/follow_joint_trajectory'.format(prefix.perform(context)))
+        )
+        controllers.append('{}xarm_gripper_traj_controller'.format(prefix.perform(context)))
     # joint state publisher node
     joint_state_publisher_node = Node(
         package='joint_state_publisher',
@@ -76,10 +85,7 @@ def launch_setup(context, *args, **kwargs):
         name='joint_state_publisher',
         output='screen',
         parameters=[{'source_list': ['joint_states']}],
-        remappings=[
-            ('follow_joint_trajectory', '{}{}_traj_controller/follow_joint_trajectory'.format(prefix.perform(context), xarm_type)),
-            ('follow_joint_trajectory', '{}xarm_gripper_traj_controller/follow_joint_trajectory'.format(prefix.perform(context))),
-        ],
+        remappings=remappings,
     )
 
     ros2_launch = IncludeLaunchDescription(
@@ -99,10 +105,7 @@ def launch_setup(context, *args, **kwargs):
 
     # Load controllers
     load_controllers = []
-    for controller in [
-        '{}{}_traj_controller'.format(prefix.perform(context), xarm_type),
-        '{}xarm_gripper_traj_controller'.format(prefix.perform(context)),
-    ]:
+    for controller in controllers:
         load_controllers.append(Node(
             package='controller_manager',
             executable='spawner.py',

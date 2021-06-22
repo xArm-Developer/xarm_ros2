@@ -9,12 +9,18 @@
   <xacro:arg name="add_vacuum_gripper" default="false"/>
   <xacro:arg name="dof" default="7"/>
   <xacro:arg name="ros2_control_plugin" default="xarm_control/XArmHW"/>
+  <xacro:arg name="ros2_control_params" default="$(find xarm_controller)/config/xarm$(arg dof)_controllers.yaml"/>
 
+  <!-- gazebo_plugin -->
+  <xacro:include filename="$(find xarm_description)/urdf/common/common.gazebo.xacro" />
+  <xacro:gazebo_ros_control_plugin ros2_control_params="$(arg ros2_control_params)"/>
+  
   <!-- load xarm device -->
   <xacro:include filename="$(find xarm_description)/urdf/xarm_device_macro.xacro" />
   <xacro:xarm_device prefix="$(arg prefix)" namespace="$(arg hw_ns)" limited="$(arg limited)" 
     effort_control="$(arg effort_control)" velocity_control="$(arg velocity_control)"
     add_gripper="$(arg add_gripper)" add_vacuum_gripper="$(arg add_vacuum_gripper)" dof="$(arg dof)"
-    ros2_control_plugin="$(arg ros2_control_plugin)"/>
+    ros2_control_plugin="$(arg ros2_control_plugin)" 
+    load_gazebo_plugin="false" ros2_control_params="$(arg ros2_control_params)"/>
 
 </robot>

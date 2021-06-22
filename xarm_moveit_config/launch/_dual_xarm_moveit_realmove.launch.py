@@ -42,7 +42,6 @@ def launch_setup(context, *args, **kwargs):
     controllers_name = 'controllers'
     moveit_controller_manager_key = 'moveit_simple_controller_manager'
     moveit_controller_manager_value = 'moveit_simple_controller_manager/MoveItSimpleControllerManager'
-    xarm_type = 'xarm{}'.format(dof.perform(context))
     ros_namespace = LaunchConfiguration('ros_namespace', default='').perform(context)
 
     # xarm driver launch
@@ -172,35 +171,30 @@ def launch_setup(context, *args, **kwargs):
         }.items(),
     )
 
-    control_node_1 = Node(
-        package='controller_manager',
-        executable='spawner.py',
-        output='screen',
-        arguments=[
-            '{}xarm{}_traj_controller'.format(prefix_1.perform(context), dof_1.perform(context)),
-            '--controller-manager', '{}/controller_manager'.format(ros_namespace)
-        ],
-    )
-    control_node_2 = Node(
-        package='controller_manager',
-        executable='spawner.py',
-        output='screen',
-        arguments=[
-            '{}xarm{}_traj_controller'.format(prefix_2.perform(context), dof_2.perform(context)),
-            '--controller-manager', '{}/controller_manager'.format(ros_namespace)
-        ],
-    )
+    # Load controllers
+    load_controllers = []
+    for controller in [
+        '{}xarm{}_traj_controller'.format(prefix_1.perform(context), dof_1.perform(context)),
+        '{}xarm{}_traj_controller'.format(prefix_2.perform(context), dof_2.perform(context)),
+    ]:
+        load_controllers.append(Node(
+            package='controller_manager',
+            executable='spawner.py',
+            output='screen',
+            arguments=[
+                controller,
+                '--controller-manager', '{}/controller_manager'.format(ros_namespace)
+            ],
+        ))
 
     return [
         robot_state_publisher_node,
         xarm_moveit_common_launch,
         joint_state_publisher_node,
         ros2_launch,
-        control_node_1,
-        control_node_2,
         xarm_driver_launch_1,
         xarm_driver_launch_2,
-    ]
+    ] + load_controllers
 
 def generate_launch_description():
     return LaunchDescription([
