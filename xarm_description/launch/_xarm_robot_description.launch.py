@@ -31,6 +31,7 @@ def launch_setup(context, *args, **kwargs):
     xacro_file = LaunchConfiguration('xacro_file', default=PathJoinSubstitution([FindPackageShare('xarm_description'), 'urdf', 'xarm_device.urdf.xacro']))
 
     # robot_description
+    # xarm_description/launch/lib/xarm_description_lib.py
     mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_description'), 'launch', 'lib', 'xarm_description_lib.py'))
     get_xacro_file_content = getattr(mod, 'get_xacro_file_content')
     robot_description = {

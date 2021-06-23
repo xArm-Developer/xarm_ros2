@@ -73,6 +73,7 @@ def launch_setup(context, *args, **kwargs):
         LaunchConfiguration('ros_namespace', default='').perform(context)
     )
     
+    # xarm driver node
     xarm_driver_node = Node(
         # namespace=hw_ns,
         package='xarm_api',
@@ -96,6 +97,7 @@ def launch_setup(context, *args, **kwargs):
     return [
         xarm_driver_node
     ]
+
 
 def generate_launch_description():
     return LaunchDescription([

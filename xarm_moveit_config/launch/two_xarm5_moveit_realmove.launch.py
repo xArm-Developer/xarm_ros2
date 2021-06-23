@@ -28,6 +28,9 @@ def generate_launch_description():
 
     dof = 5
     hw_ns = 'xarm'
+
+    # xarm moveit realmove launch
+    # xarm_moveit_config/launch/_xarm_moveit_realmove.launch.py
     xarm_moveit_realmove_launch_1 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_xarm_moveit_realmove.launch.py'])),
         launch_arguments={
@@ -45,6 +48,9 @@ def generate_launch_description():
             'ros_namespace': ns1
         }.items(),
     )
+
+    # xarm moveit realmove launch
+    # xarm_moveit_config/launch/_xarm_moveit_realmove.launch.py
     xarm_moveit_realmove_launch_2 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_xarm_moveit_realmove.launch.py'])),
         launch_arguments={

@@ -26,4 +26,6 @@ def generate_launch_description():
         ]
     )
     
-    return LaunchDescription([rviz2_node])
+    return LaunchDescription([
+        rviz2_node
+    ])

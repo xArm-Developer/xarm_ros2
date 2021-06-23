@@ -30,6 +30,7 @@ def launch_setup(context, *args, **kwargs):
     # joint_states_remapping = LaunchConfiguration('joint_states_remapping', default=PathJoinSubstitution([hw_ns, 'joint_states']))
     
     # xarm driver launch
+    # xarm_api/launch/_xarm_driver.launch.py
     xarm_driver_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_api'), 'launch', '_xarm_driver.launch.py'])),
         launch_arguments={
@@ -43,6 +44,7 @@ def launch_setup(context, *args, **kwargs):
     )
 
     # xarm robot joint launch
+    # xarm_description/launch/_xarm_robot_joint.launch.py
     xarm_robot_joint_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_description'), 'launch', '_xarm_robot_joint.launch.py'])),
         launch_arguments={
@@ -60,6 +62,7 @@ def launch_setup(context, *args, **kwargs):
     )
 
     # ros2 control launch
+    # xarm_controller/launch/_ros2_control.launch.py
     ros2_control_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_controller'), 'launch', '_ros2_control.launch.py'])),
         launch_arguments={
@@ -74,11 +77,13 @@ def launch_setup(context, *args, **kwargs):
             'ros2_control_plugin': ros2_control_plugin,
         }.items(),
     )
+    
     return [
         xarm_driver_launch,
         xarm_robot_joint_launch,
         ros2_control_launch
     ]
+
 
 def generate_launch_description():
     return LaunchDescription([

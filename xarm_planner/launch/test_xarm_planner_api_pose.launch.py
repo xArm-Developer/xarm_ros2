@@ -31,6 +31,9 @@ def launch_setup(context, *args, **kwargs):
 
     node_executable = 'test_xarm_planner_api_pose'
     node_parameters = {}
+
+    # xarm planner launch
+    # xarm_planner/launch/_xarm_planner.launch.py
     xarm_planner_node_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_planner'), 'launch', '_xarm_planner.launch.py'])),
         launch_arguments={

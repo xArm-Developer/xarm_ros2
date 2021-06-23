@@ -25,6 +25,8 @@ def generate_launch_description():
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     
+    # xarm control rviz launch
+    # xarm_controller/launch/_xarm_ros2_control.launch.py
     xarm_control_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_controller'), 'launch', '_xarm_ros2_control.launch.py'])),
         launch_arguments={
@@ -42,8 +44,12 @@ def generate_launch_description():
     )
 
     # rviz2 display launch
+    # xarm_description/launch/_rviz_display.launch.py
     rviz2_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_description'), 'launch', '_rviz_display.launch.py'])),
     )
 
-    return LaunchDescription([xarm_control_launch, rviz2_launch])
+    return LaunchDescription([
+        xarm_control_launch, 
+        rviz2_launch
+    ])

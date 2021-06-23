@@ -42,6 +42,8 @@ def generate_launch_description():
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     add_gripper = LaunchConfiguration('add_gripper', default=False)
 
+    # xarm driver launch
+    # xarm_api/launch/_xarm_driver.launch.py
     xarm_driver_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/_xarm_driver.launch.py']),
         launch_arguments={
@@ -52,5 +54,5 @@ def generate_launch_description():
             'add_gripper': add_gripper,
         }.items(),
     )
-    return LaunchDescription(declared_arguments + [xarm_driver_launch])
 
+    return LaunchDescription(declared_arguments + [xarm_driver_launch])

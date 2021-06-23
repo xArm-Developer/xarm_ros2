@@ -28,7 +28,19 @@ def launch_setup(context, *args, **kwargs):
     ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='xarm_control/XArmHW')
     xacro_file = LaunchConfiguration('xacro_file', default=PathJoinSubstitution([FindPackageShare('xarm_description'), 'urdf', 'xarm_device.urdf.xacro']))
 
+    # ros2 control params
+    # xarm_controller/launch/lib/xarm_controller_lib.py
+    mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_controller'), 'launch', 'lib', 'xarm_controller_lib.py'))
+    generate_ros2_control_params_temp_file = getattr(mod, 'generate_ros2_control_params_temp_file')
+    ros2_control_params = generate_ros2_control_params_temp_file(
+        os.path.join(get_package_share_directory('xarm_controller'), 'config', 'xarm{}_controllers.yaml'.format(dof.perform(context))),
+        prefix=prefix.perform(context), 
+        add_gripper=add_gripper.perform(context) in ('True', 'true'),
+        ros_namespace=LaunchConfiguration('ros_namespace', default='').perform(context)
+    )
+
     # robot_description
+    # xarm_description/launch/lib/xarm_description_lib.py
     mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_description'), 'launch', 'lib', 'xarm_description_lib.py'))
     get_xacro_file_content = getattr(mod, 'get_xacro_file_content')
     robot_description = {
@@ -44,19 +56,12 @@ def launch_setup(context, *args, **kwargs):
                 'add_vacuum_gripper': add_vacuum_gripper,
                 'dof': dof,
                 'ros2_control_plugin': ros2_control_plugin,
+                'ros2_control_params': ros2_control_params,
             }
         )
     }
 
     # ros2 control node
-    mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_controller'), 'launch', 'lib', 'xarm_controller_lib.py'))
-    generate_ros2_control_params_temp_file = getattr(mod, 'generate_ros2_control_params_temp_file')
-    ros2_control_params = generate_ros2_control_params_temp_file(
-        os.path.join(get_package_share_directory('xarm_controller'), 'config', 'xarm{}_controllers.yaml'.format(dof.perform(context))),
-        prefix=prefix.perform(context), 
-        add_gripper=add_gripper.perform(context) in ('True', 'true'),
-        ros_namespace=LaunchConfiguration('ros_namespace', default='').perform(context)
-    )
     ros2_control_node = Node(
         package='controller_manager',
         executable='ros2_control_node',
@@ -66,7 +71,10 @@ def launch_setup(context, *args, **kwargs):
         ],
         output='screen',
     )
-    return [ros2_control_node]
+
+    return [
+        ros2_control_node
+    ]
 
 
 def generate_launch_description():

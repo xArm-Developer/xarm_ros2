@@ -30,6 +30,7 @@ def launch_setup(context, *args, **kwargs):
     moveit_controller_manager_value = 'moveit_simple_controller_manager/MoveItSimpleControllerManager'
 
     # xarm moveit common launch
+    # xarm_moveit_config/launch/_xarm_moveit_common.launch.py
     xarm_moveit_common_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_xarm_moveit_common.launch.py'])),
         launch_arguments={
@@ -49,6 +50,8 @@ def launch_setup(context, *args, **kwargs):
         }.items(),
     )
 
+    # xarm gazebo launch
+    # xarm_gazebo/launch/_xarm_beside_table_gazebo.launch.py
     gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_gazebo'), 'launch', '_xarm_beside_table_gazebo.launch.py'])),
         launch_arguments={
@@ -68,6 +71,7 @@ def launch_setup(context, *args, **kwargs):
         gazebo_launch,
         xarm_moveit_common_launch,
     ]
+
 
 def generate_launch_description():
     return LaunchDescription([

@@ -20,7 +20,8 @@ def generate_launch_description():
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     
-    # xarm rviz launch
+    # xarm gazebo launch
+    # xarm_gazebo/launch/_xarm_beside_table_gazebo.launch.py
     xarm_gazobo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/_xarm_beside_table_gazebo.launch.py']),
         launch_arguments={
@@ -34,4 +35,7 @@ def generate_launch_description():
             'dof': '7',
         }.items(),
     )
-    return LaunchDescription([xarm_gazobo_launch])
+    
+    return LaunchDescription([
+        xarm_gazobo_launch
+    ])

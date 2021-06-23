@@ -23,6 +23,9 @@ def generate_launch_description():
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
 
     dof = 5
+
+    # xarm moveit fake launch
+    # xarm_moveit_config/launch/_xarm_moveit_fake.launch.py
     xarm_moveit_fake_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_xarm_moveit_fake.launch.py'])),
         launch_arguments={
@@ -38,6 +41,8 @@ def generate_launch_description():
         }.items(),
     )
 
+    # xarm planner launch
+    # xarm_planner/launch/_xarm_planner.launch.py
     xarm_planner_node_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_planner'), 'launch', '_xarm_planner.launch.py'])),
         launch_arguments={

@@ -32,6 +32,8 @@ def launch_setup(context, *args, **kwargs):
     
     ros_namespace = LaunchConfiguration('ros_namespace', default='').perform(context)
 
+    # ros2 control params
+    # xarm_controller/launch/lib/xarm_controller_lib.py
     mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_controller'), 'launch', 'lib', 'xarm_controller_lib.py'))
     generate_ros2_control_params_temp_file = getattr(mod, 'generate_ros2_control_params_temp_file')
     ros2_control_params = generate_ros2_control_params_temp_file(
@@ -43,6 +45,7 @@ def launch_setup(context, *args, **kwargs):
     )
 
     # robot_description
+    # xarm_description/launch/lib/xarm_description_lib.py
     mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_description'), 'launch', 'lib', 'xarm_description_lib.py'))
     get_xacro_file_content = getattr(mod, 'get_xacro_file_content')
     robot_description = {
@@ -76,6 +79,7 @@ def launch_setup(context, *args, **kwargs):
     )
 
     # gazebo launch
+    # gazebo_ros/launch/gazebo.launch.py
     xarm_gazebo_world = PathJoinSubstitution([FindPackageShare('xarm_gazebo'), 'worlds', 'table.world'])
     gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('gazebo_ros'), 'launch', 'gazebo.launch.py'])),

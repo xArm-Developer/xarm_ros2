@@ -42,6 +42,7 @@ def launch_setup(context, *args, **kwargs):
     ros_namespace = LaunchConfiguration('ros_namespace', default='').perform(context)
     
     # robot_description
+    # xarm_description/launch/lib/xarm_description_lib.py
     xacro_file = PathJoinSubstitution([FindPackageShare('xarm_description'), 'urdf', 'dual_xarm_device.urdf.xacro'])
     mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_description'), 'launch', 'lib', 'xarm_description_lib.py'))
     get_xacro_file_content = getattr(mod, 'get_xacro_file_content')
@@ -80,6 +81,7 @@ def launch_setup(context, *args, **kwargs):
     )
 
     # xarm moveit common launch
+    # xarm_moveit_config/launch/_dual_xarm_moveit_common.launch.py
     xarm_moveit_common_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_dual_xarm_moveit_common.launch.py'])),
         launch_arguments={
@@ -131,7 +133,9 @@ def launch_setup(context, *args, **kwargs):
         remappings=remappings,
     )
 
-    ros2_launch = IncludeLaunchDescription(
+    # ros2 control launch
+    # xarm_controller/launch/_dual_ros2_control.launch.py
+    ros2_control_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_controller'), 'launch', '_dual_ros2_control.launch.py'])),
         launch_arguments={
             'prefix_1': prefix_1,
@@ -171,7 +175,7 @@ def launch_setup(context, *args, **kwargs):
         robot_state_publisher_node,
         xarm_moveit_common_launch,
         joint_state_publisher_node,
-        ros2_launch,
+        ros2_control_launch,
     ] + load_controllers
 
 

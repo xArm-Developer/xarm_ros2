@@ -25,6 +25,9 @@ def generate_launch_description():
 
     hw_ns = 'xarm'
     dof = 7
+
+    # xarm moveit fake launch
+    # xarm_moveit_config/launch/_xarm_moveit_fake.launch.py
     xarm_moveit_fake_launch_1 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_xarm_moveit_fake.launch.py'])),
         launch_arguments={
@@ -40,6 +43,9 @@ def generate_launch_description():
             'ros_namespace': ns1
         }.items(),
     )
+
+    # xarm moveit fake launch
+    # xarm_moveit_config/launch/_xarm_moveit_fake.launch.py
     xarm_moveit_fake_launch_2 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_xarm_moveit_fake.launch.py'])),
         launch_arguments={

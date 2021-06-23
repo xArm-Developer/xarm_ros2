@@ -27,6 +27,9 @@ def generate_launch_description():
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
 
     hw_ns = 'xarm'
+
+    # xarm control rviz launch
+    # xarm_controller/launch/xarm7_control_rviz_display.launch.py
     xarm_control_rviz_launch_1 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_controller'), 'launch', 'xarm7_control_rviz_display.launch.py'])),
         launch_arguments={
@@ -42,6 +45,9 @@ def generate_launch_description():
             'ros_namespace': ns1
         }.items(),
     )
+
+    # xarm control rviz launch
+    # xarm_controller/launch/xarm7_control_rviz_display.launch.py
     xarm_control_rviz_launch_2 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_controller'), 'launch', 'xarm7_control_rviz_display.launch.py'])),
         launch_arguments={
@@ -57,6 +63,7 @@ def generate_launch_description():
             'ros_namespace': ns2
         }.items(),
     )
+    
     return LaunchDescription([
         xarm_control_rviz_launch_1, 
         xarm_control_rviz_launch_2,

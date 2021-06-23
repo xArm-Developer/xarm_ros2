@@ -24,6 +24,8 @@ def generate_launch_description():
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
 
+    # xarm moveit realmove launch
+    # xarm_moveit_config/launch/_dual_xarm_moveit_realmove.launch.py
     xarm_moveit_realmove_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_dual_xarm_moveit_realmove.launch.py'])),
         launch_arguments={

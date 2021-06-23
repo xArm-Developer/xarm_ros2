@@ -22,7 +22,9 @@ def generate_launch_description():
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
 
-    xarm_moveit_fake_launch = IncludeLaunchDescription(
+    # xarm moveit gazebo launch
+    # xarm_moveit_config/launch/_xarm_moveit_gazobo.launch.py
+    xarm_moveit_gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_xarm_moveit_gazobo.launch.py'])),
         launch_arguments={
             'prefix': prefix,
@@ -38,5 +40,5 @@ def generate_launch_description():
     )
     
     return LaunchDescription([
-        xarm_moveit_fake_launch
+        xarm_moveit_gazebo_launch
     ])

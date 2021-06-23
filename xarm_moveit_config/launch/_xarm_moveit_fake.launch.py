@@ -33,6 +33,7 @@ def launch_setup(context, *args, **kwargs):
     ros_namespace = LaunchConfiguration('ros_namespace', default='').perform(context)
     
     # robot description launch
+    # xarm_description/launch/_xarm_robot_description.launch.py
     robot_description_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_description'), 'launch', '_xarm_robot_description.launch.py'])),
         launch_arguments={
@@ -50,6 +51,7 @@ def launch_setup(context, *args, **kwargs):
     )
 
     # xarm moveit common launch
+    # xarm_moveit_config/launch/_xarm_moveit_common.launch.py
     xarm_moveit_common_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_xarm_moveit_common.launch.py'])),
         launch_arguments={
@@ -88,7 +90,9 @@ def launch_setup(context, *args, **kwargs):
         remappings=remappings,
     )
 
-    ros2_launch = IncludeLaunchDescription(
+    # ros2 control launch
+    # xarm_controller/launch/_ros2_control.launch.py
+    ros2_control_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_controller'), 'launch', '_ros2_control.launch.py'])),
         launch_arguments={
             'prefix': prefix,
@@ -120,8 +124,9 @@ def launch_setup(context, *args, **kwargs):
         robot_description_launch,
         xarm_moveit_common_launch,
         joint_state_publisher_node,
-        ros2_launch,
+        ros2_control_launch,
     ] + load_controllers
+
 
 def generate_launch_description():
     return LaunchDescription([

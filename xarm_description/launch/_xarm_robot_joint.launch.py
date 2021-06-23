@@ -27,6 +27,7 @@ def launch_setup(context, *args, **kwargs):
     joint_states_remapping = LaunchConfiguration('joint_states_remapping', default='joint_states')
 
     # robot description launch
+    # xarm_description/launch/_xarm_robot_description.launch.py
     robot_description_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_description'), 'launch', '_xarm_robot_description.launch.py'])),
         launch_arguments={
@@ -56,6 +57,7 @@ def launch_setup(context, *args, **kwargs):
         robot_description_launch,
         joint_state_publisher_node,
     ]
+
 
 def generate_launch_description():
     return LaunchDescription([

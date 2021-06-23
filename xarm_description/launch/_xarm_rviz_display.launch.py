@@ -24,6 +24,7 @@ def generate_launch_description():
     dof = LaunchConfiguration('dof', default=7)
     
     # xarm robot joint launch
+    # xarm_description/launch/_xarm_robot_joint.launch.py
     xarm_robot_joint_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/_xarm_robot_joint.launch.py']),
         launch_arguments={
@@ -39,8 +40,12 @@ def generate_launch_description():
     )
 
     # rviz2 display launch
+    # xarm_description/launch/_rviz_display.launch.py
     rviz2_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/_rviz_display.launch.py']),
     )
     
-    return LaunchDescription([xarm_robot_joint_launch, rviz2_launch])
+    return LaunchDescription([
+        xarm_robot_joint_launch,
+        rviz2_launch
+    ])
