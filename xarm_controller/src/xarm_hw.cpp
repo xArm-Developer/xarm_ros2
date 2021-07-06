@@ -81,10 +81,8 @@ namespace xarm_control
         velocity_states_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
         position_cmds_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
         velocity_cmds_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
-        position_cmds_float_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
-        prev_position_cmds_float_.resize(info_.joints.size());
-        velocity_cmds_float_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
-        prev_velocity_cmds_float_.resize(info_.joints.size());
+        cmds_float_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
+        prev_cmds_float_.resize(info_.joints.size());
 
         for (const hardware_interface::ComponentInfo & joint : info_.joints) {
             bool has_pos_cmd_interface = false;
@@ -249,27 +247,29 @@ namespace xarm_control
 
         if (velocity_control_) {
             for (int i = 0; i < velocity_cmds_.size(); i++) { 
-                velocity_cmds_float_[i] = (float)velocity_cmds_[i];
+                cmds_float_[i] = (float)velocity_cmds_[i];
             }
             // RCLCPP_INFO(node_->get_logger(), "velocity: %s", vel_str.c_str());
-            int ret = xarm_client_.vc_set_joint_velocity(velocity_cmds_float_);
+            int ret = xarm_client_.vc_set_joint_velocity(cmds_float_);
             if (ret != 0) {
                 RCLCPP_WARN(node_->get_logger(), "vc_set_joint_velocity, ret= %d", ret);
             }
         }
         else {
             for (int i = 0; i < position_cmds_.size(); i++) { 
-                position_cmds_float_[i] = (float)position_cmds_[i];
+                cmds_float_[i] = (float)position_cmds_[i];
             }
-            if (_check_cmds_is_change(prev_position_cmds_float_, position_cmds_float_)) {
+            cur_time_ = node_->get_clock()->now();
+            if (cur_time_.seconds() - last_time_.seconds() > 1 || _check_cmds_is_change(prev_cmds_float_, cmds_float_)) {
                 // RCLCPP_INFO(node_->get_logger(), "positon: %s", pos_str.c_str());
-                int ret = xarm_client_.set_servo_angle_j(position_cmds_float_);
+                int ret = xarm_client_.set_servo_angle_j(cmds_float_);
                 if (ret != 0) {
                     RCLCPP_WARN(node_->get_logger(), "set_servo_angle_j, ret= %d", ret);
                 }
                 if (ret == 0) {
-                    for (int i = 0; i < prev_position_cmds_float_.size(); i++) { 
-                        prev_position_cmds_float_[i] = (float)position_cmds_float_[i];
+                    last_time_ = cur_time_;
+                    for (int i = 0; i < prev_cmds_float_.size(); i++) { 
+                        prev_cmds_float_[i] = (float)cmds_float_[i];
                     }
                 }
             }

@@ -64,10 +64,8 @@ namespace xarm_control
 		int curr_err_;
         bool initial_write_;
         bool velocity_control_;
-        std::vector<float> position_cmds_float_;
-        std::vector<float> prev_position_cmds_float_;
-        std::vector<float> velocity_cmds_float_;
-        std::vector<float> prev_velocity_cmds_float_;
+        std::vector<float> prev_cmds_float_;
+        std::vector<float> cmds_float_;
         std::vector<double> position_cmds_;
         std::vector<double> velocity_cmds_;
         std::vector<double> position_states_;
@@ -76,6 +74,9 @@ namespace xarm_control
         std::shared_ptr<rclcpp::Node> node_;
         std::shared_ptr<rclcpp::Node> client_node_;
         xarm_api::XArmROSClient xarm_client_;
+
+        rclcpp::Time cur_time_;
+        rclcpp::Time last_time_;
 
         rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr joint_state_sub_;
         rclcpp::Subscription<xarm_msgs::msg::RobotMsg>::SharedPtr xarm_state_sub_;
