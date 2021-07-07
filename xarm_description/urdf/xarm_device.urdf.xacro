@@ -11,6 +11,19 @@
   <xacro:arg name="ros2_control_plugin" default="xarm_control/XArmHW"/>
   <xacro:arg name="ros2_control_params" default="$(find xarm_controller)/config/xarm$(arg dof)_controllers.yaml"/>
 
+  <xacro:arg name="add_other_geometry" default="false"/>
+  <xacro:arg name="geometry_type" default="box"/>
+  <xacro:arg name="geometry_mass" default="0.1"/>
+  <xacro:arg name="geometry_height" default="0.1"/>
+  <xacro:arg name="geometry_radius" default="0.1"/>
+  <xacro:arg name="geometry_length" default="0.1"/>
+  <xacro:arg name="geometry_width" default="0.1"/>
+  <xacro:arg name="geometry_mesh_filename" default=""/>
+  <xacro:arg name="geometry_mesh_origin_xyz" default="0 0 0"/>
+  <xacro:arg name="geometry_mesh_origin_rpy" default="0 0 0"/>
+  <xacro:arg name="geometry_mesh_tcp_xyz" default="0 0 0"/>
+  <xacro:arg name="geometry_mesh_tcp_rpy" default="0 0 0"/>
+
   <!-- gazebo_plugin -->
   <xacro:include filename="$(find xarm_description)/urdf/common/common.gazebo.xacro" />
   <xacro:gazebo_ros_control_plugin ros2_control_params="$(arg ros2_control_params)"/>
@@ -21,6 +34,13 @@
     effort_control="$(arg effort_control)" velocity_control="$(arg velocity_control)"
     add_gripper="$(arg add_gripper)" add_vacuum_gripper="$(arg add_vacuum_gripper)" dof="$(arg dof)"
     ros2_control_plugin="$(arg ros2_control_plugin)" 
-    load_gazebo_plugin="false" ros2_control_params="$(arg ros2_control_params)"/>
+    load_gazebo_plugin="false" ros2_control_params="$(arg ros2_control_params)"
+    add_other_geometry="$(arg add_other_geometry)" 
+    geometry_type="$(arg geometry_type)" geometry_mass="$(arg geometry_mass)"
+    geometry_height="$(arg geometry_height)" geometry_radius="$(arg geometry_radius)"
+    geometry_length="$(arg geometry_length)" geometry_width="$(arg geometry_width)"
+    geometry_mesh_filename="$(arg geometry_mesh_filename)"
+    geometry_mesh_origin_xyz="$(arg geometry_mesh_origin_xyz)" geometry_mesh_origin_rpy="$(arg geometry_mesh_origin_rpy)"
+    geometry_mesh_tcp_xyz="$(arg geometry_mesh_tcp_xyz)" geometry_mesh_tcp_rpy="$(arg geometry_mesh_tcp_rpy)"/>
 
 </robot>

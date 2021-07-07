@@ -30,6 +30,19 @@ def launch_setup(context, *args, **kwargs):
     joint_states_remapping = LaunchConfiguration('joint_states_remapping', default='joint_states')
     xacro_file = LaunchConfiguration('xacro_file', default=PathJoinSubstitution([FindPackageShare('xarm_description'), 'urdf', 'xarm_device.urdf.xacro']))
 
+    add_other_geometry = LaunchConfiguration('add_other_geometry', default=False)
+    geometry_type = LaunchConfiguration('geometry_type', default='box')
+    geometry_mass = LaunchConfiguration('geometry_mass', default=0.1)
+    geometry_height = LaunchConfiguration('geometry_height', default=0.1)
+    geometry_radius = LaunchConfiguration('geometry_radius', default=0.1)
+    geometry_length = LaunchConfiguration('geometry_length', default=0.1)
+    geometry_width = LaunchConfiguration('geometry_width', default=0.1)
+    geometry_mesh_filename = LaunchConfiguration('geometry_mesh_filename', default='')
+    geometry_mesh_origin_xyz = LaunchConfiguration('geometry_mesh_origin_xyz', default='"0 0 0"')
+    geometry_mesh_origin_rpy = LaunchConfiguration('geometry_mesh_origin_rpy', default='"0 0 0"')
+    geometry_mesh_tcp_xyz = LaunchConfiguration('geometry_mesh_tcp_xyz', default='"0 0 0"')
+    geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
+
     # robot_description
     # xarm_description/launch/lib/xarm_description_lib.py
     mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_description'), 'launch', 'lib', 'xarm_description_lib.py'))
@@ -47,6 +60,18 @@ def launch_setup(context, *args, **kwargs):
                 'add_vacuum_gripper': add_vacuum_gripper,
                 'dof': dof,
                 'ros2_control_plugin': ros2_control_plugin,
+                'add_other_geometry': add_other_geometry,
+                'geometry_type': geometry_type,
+                'geometry_mass': geometry_mass,
+                'geometry_height': geometry_height,
+                'geometry_radius': geometry_radius,
+                'geometry_length': geometry_length,
+                'geometry_width': geometry_width,
+                'geometry_mesh_filename': geometry_mesh_filename,
+                'geometry_mesh_origin_xyz': geometry_mesh_origin_xyz,
+                'geometry_mesh_origin_rpy': geometry_mesh_origin_rpy,
+                'geometry_mesh_tcp_xyz': geometry_mesh_tcp_xyz,
+                'geometry_mesh_tcp_rpy': geometry_mesh_tcp_rpy,
             }
         )
     }

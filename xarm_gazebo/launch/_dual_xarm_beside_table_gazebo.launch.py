@@ -37,6 +37,54 @@ def launch_setup(context, *args, **kwargs):
     velocity_control = LaunchConfiguration('velocity_control', default=False)
     ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='gazebo_ros2_control/GazeboSystem')
     
+    add_other_geometry = LaunchConfiguration('add_other_geometry', default=False)
+    add_other_geometry_1 = LaunchConfiguration('add_other_geometry_1', default=add_other_geometry)
+    add_other_geometry_2 = LaunchConfiguration('add_other_geometry_2', default=add_other_geometry)
+
+    geometry_type = LaunchConfiguration('geometry_type', default='box')
+    geometry_type_1 = LaunchConfiguration('geometry_type_1', default=geometry_type)
+    geometry_type_2 = LaunchConfiguration('geometry_type_2', default=geometry_type)
+
+    geometry_mass = LaunchConfiguration('geometry_mass', default=0.1)
+    geometry_mass_1 = LaunchConfiguration('geometry_mass_1', default=geometry_mass)
+    geometry_mass_2 = LaunchConfiguration('geometry_mass_2', default=geometry_mass)
+
+    geometry_height = LaunchConfiguration('geometry_height', default=0.1)
+    geometry_height_1 = LaunchConfiguration('geometry_height_1', default=geometry_height)
+    geometry_height_2 = LaunchConfiguration('geometry_height_2', default=geometry_height)
+
+    geometry_radius = LaunchConfiguration('geometry_radius', default=0.1)
+    geometry_radius_1 = LaunchConfiguration('geometry_radius_1', default=geometry_radius)
+    geometry_radius_2 = LaunchConfiguration('geometry_radius_2', default=geometry_radius)
+    
+    geometry_length = LaunchConfiguration('geometry_length', default=0.1)
+    geometry_length_1 = LaunchConfiguration('geometry_length_1', default=geometry_length)
+    geometry_length_2 = LaunchConfiguration('geometry_length_2', default=geometry_length)
+
+    geometry_width = LaunchConfiguration('geometry_width', default=0.1)
+    geometry_width_1 = LaunchConfiguration('geometry_width_1', default=geometry_width)
+    geometry_width_2 = LaunchConfiguration('geometry_width_2', default=geometry_width)
+
+    geometry_mesh_filename = LaunchConfiguration('geometry_mesh_filename', default='')
+    geometry_mesh_filename_1 = LaunchConfiguration('geometry_mesh_filename_1', default=geometry_mesh_filename)
+    geometry_mesh_filename_2 = LaunchConfiguration('geometry_mesh_filename_2', default=geometry_mesh_filename)
+    
+    geometry_mesh_origin_xyz = LaunchConfiguration('geometry_mesh_origin_xyz', default='"0 0 0"')
+    geometry_mesh_origin_xyz_1 = LaunchConfiguration('geometry_mesh_origin_xyz_1', default=geometry_mesh_origin_xyz)
+    geometry_mesh_origin_xyz_2 = LaunchConfiguration('geometry_mesh_origin_xyz_2', default=geometry_mesh_origin_xyz)
+    
+    geometry_mesh_origin_rpy = LaunchConfiguration('geometry_mesh_origin_rpy', default='"0 0 0"')
+    geometry_mesh_origin_rpy_1 = LaunchConfiguration('geometry_mesh_origin_rpy_1', default=geometry_mesh_origin_rpy)
+    geometry_mesh_origin_rpy_2 = LaunchConfiguration('geometry_mesh_origin_rpy_2', default=geometry_mesh_origin_rpy)
+    
+    geometry_mesh_tcp_xyz = LaunchConfiguration('geometry_mesh_tcp_xyz', default='"0 0 0"')
+    geometry_mesh_tcp_xyz_1 = LaunchConfiguration('geometry_mesh_tcp_xyz_1', default=geometry_mesh_tcp_xyz)
+    geometry_mesh_tcp_xyz_2 = LaunchConfiguration('geometry_mesh_tcp_xyz_2', default=geometry_mesh_tcp_xyz)
+    
+    geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
+    geometry_mesh_tcp_rpy_1 = LaunchConfiguration('geometry_mesh_tcp_rpy_1', default=geometry_mesh_tcp_rpy)
+    geometry_mesh_tcp_rpy_2 = LaunchConfiguration('geometry_mesh_tcp_rpy_2', default=geometry_mesh_tcp_rpy)
+
     ros_namespace = LaunchConfiguration('ros_namespace', default='').perform(context)
 
     # ros2 control params
@@ -76,6 +124,30 @@ def launch_setup(context, *args, **kwargs):
                 'velocity_control': velocity_control,
                 'ros2_control_plugin': ros2_control_plugin,
                 'ros2_control_params': ros2_control_params,
+                'add_other_geometry_1': add_other_geometry_1,
+                'add_other_geometry_2': add_other_geometry_2,
+                'geometry_type_1': geometry_type_1,
+                'geometry_type_2': geometry_type_2,
+                'geometry_mass_1': geometry_mass_1,
+                'geometry_mass_2': geometry_mass_2,
+                'geometry_height_1': geometry_height_1,
+                'geometry_height_2': geometry_height_2,
+                'geometry_radius_1': geometry_radius_1,
+                'geometry_radius_2': geometry_radius_2,
+                'geometry_length_1': geometry_length_1,
+                'geometry_length_2': geometry_length_2,
+                'geometry_width_1': geometry_width_1,
+                'geometry_width_2': geometry_width_2,
+                'geometry_mesh_filename_1': geometry_mesh_filename_1,
+                'geometry_mesh_filename_2': geometry_mesh_filename_2,
+                'geometry_mesh_origin_xyz_1': geometry_mesh_origin_xyz_1,
+                'geometry_mesh_origin_xyz_2': geometry_mesh_origin_xyz_2,
+                'geometry_mesh_origin_rpy_1': geometry_mesh_origin_rpy_1,
+                'geometry_mesh_origin_rpy_2': geometry_mesh_origin_rpy_2,
+                'geometry_mesh_tcp_xyz_1': geometry_mesh_tcp_xyz_1,
+                'geometry_mesh_tcp_xyz_2': geometry_mesh_tcp_xyz_2,
+                'geometry_mesh_tcp_rpy_1': geometry_mesh_tcp_rpy_1,
+                'geometry_mesh_tcp_rpy_2': geometry_mesh_tcp_rpy_2,
             }
         ),
     }

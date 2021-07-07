@@ -27,11 +27,24 @@ def launch_setup(context, *args, **kwargs):
     velocity_control = LaunchConfiguration('velocity_control', default=False)
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
-    ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='fake_components/GenericSystem')
+    ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='xarm_control/FakeXArmHW')
     node_executable = LaunchConfiguration('node_executable', default='xarm_planner_node')
     node_name = LaunchConfiguration('node_name', default=node_executable)
     node_parameters = LaunchConfiguration('node_parameters', default={})
     use_gripper_node = LaunchConfiguration('use_gripper_node', default=add_gripper)
+
+    add_other_geometry = LaunchConfiguration('add_other_geometry', default=False)
+    geometry_type = LaunchConfiguration('geometry_type', default='box')
+    geometry_mass = LaunchConfiguration('geometry_mass', default=0.1)
+    geometry_height = LaunchConfiguration('geometry_height', default=0.1)
+    geometry_radius = LaunchConfiguration('geometry_radius', default=0.1)
+    geometry_length = LaunchConfiguration('geometry_length', default=0.1)
+    geometry_width = LaunchConfiguration('geometry_width', default=0.1)
+    geometry_mesh_filename = LaunchConfiguration('geometry_mesh_filename', default='')
+    geometry_mesh_origin_xyz = LaunchConfiguration('geometry_mesh_origin_xyz', default='"0 0 0"')
+    geometry_mesh_origin_rpy = LaunchConfiguration('geometry_mesh_origin_rpy', default='"0 0 0"')
+    geometry_mesh_tcp_xyz = LaunchConfiguration('geometry_mesh_tcp_xyz', default='"0 0 0"')
+    geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
 
     moveit_config_package_name = 'xarm_moveit_config'
     xarm_type = 'xarm{}'.format(dof.perform(context))
@@ -53,11 +66,24 @@ def launch_setup(context, *args, **kwargs):
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': dof,
             'ros2_control_plugin': ros2_control_plugin,
+            'add_other_geometry': add_other_geometry,
+            'geometry_type': geometry_type,
+            'geometry_mass': geometry_mass,
+            'geometry_height': geometry_height,
+            'geometry_radius': geometry_radius,
+            'geometry_length': geometry_length,
+            'geometry_width': geometry_width,
+            'geometry_mesh_filename': geometry_mesh_filename,
+            'geometry_mesh_origin_xyz': geometry_mesh_origin_xyz,
+            'geometry_mesh_origin_rpy': geometry_mesh_origin_rpy,
+            'geometry_mesh_tcp_xyz': geometry_mesh_tcp_xyz,
+            'geometry_mesh_tcp_rpy': geometry_mesh_tcp_rpy,
         },
         srdf_arguments={
             'prefix': prefix,
-            'add_gripper': add_gripper,
             'dof': dof,
+            'add_gripper': add_gripper,
+            'add_other_geometry': add_other_geometry,
         },
         arguments={
             'context': context,

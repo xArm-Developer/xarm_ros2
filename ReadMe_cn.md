@@ -5,8 +5,9 @@
 &ensp;&ensp;&ensp;&ensp;此代码库包含xArm模型文件以及相关的控制、规划等示例开发包。开发及测试使用的环境为 Ubuntu 20.04 + ROS Foxy。
 
 
-## 2. 更新记录    
-- moveit双臂控制(同一rviz显示)可以为每一只手臂指定不同参数（如轴数，是否加载夹爪）
+## 2. 更新记录
+- 新增xarm_gazebo以支持gazebo，并和moveit关联
+- 支持加载其它模型到机械臂末端
 
 
 ## 3. 准备工作
@@ -232,3 +233,77 @@ __注意3： 以下启动说明以6轴为例，5轴和7轴的用法只需找到�
         $ ros2 launch xarm_moveit_config xarm6_moveit_gazebo.launch.py
         ```
 
+
+## 6. 主要启动参数说明
+- __robot_ip__
+    机械臂IP地址，控制真机时需要
+- __report_type__, 默认normal
+    上报类型，支持normal/rich/dev
+    不同上报类型的上报数据和上报频率不一样
+- __dof__, 默认为7
+    机械臂轴数，如非必须参数一般不需要指定
+    对于双臂启动脚本(dual_开头的)，可以通过以下参数分别指定
+    - __dof_1__
+    - __dof_2__
+- __velocity_control__, 默认为false
+    是否使用速度控制
+- __add_gripper__, 默认为false
+    是否添加机械爪xarm_gripper，优先级高于参数add_vacuum_gripper
+    对于双臂启动脚本(dual_开头的)，可以通过以下参数分别指定
+    - __add_gripper_1__
+    - __add_gripper_2__
+- __add_vacuum_gripper__, 默认为false
+    是否添加吸泵xarm_vacuum_gripper，设置为true的前提必须要设置参数add_gripper为false
+    对于双臂启动脚本(dual_开头的)，可以通过以下参数分别指定
+    - __add_vacuum_gripper_1__
+    - __add_vacuum_gripper_2__
+- __add_other_geometry__, 默认为false
+    是否添加其它几何模型到末端，设置为true的前提必须设置参数add_gripper和add_other_geometry为false
+    
+    - __geometry_type__, 默认为box, 仅仅在add_other_geometry为true时有效
+        要添加的几何模型的类型，支持box/cylinder/sphere/mesh
+    - __geometry_mass__, 单位(kg)，默认0.1
+        几何模型质量
+    - __geometry_height__, 单位(米)，默认0.1
+        几何模型高度，geometry_type为box/cylinder/sphere有效
+    - __geometry_radius__, 单位(米)，默认0.1
+        几何模型半径，geometry_type为cylinder/sphere有效
+    - __geometry_length__, 单位(米)，默认0.1
+        几何模型长度，geometry_type为box有效
+    - __geometry_width__, 单位(米)，默认0.1
+        几何模型宽度，geometry_type为box有效。
+    - __geometry_mesh_filename__,
+        几何模型的文件名，geometry_type为mesh有效
+        该文件需要存放于xarm_description/meshes/other/目录下面
+    - __geometry_mesh_origin_xyz__, 默认"0 0 0"
+    - __geometry_mesh_origin_rpy__, 默认"0 0 0"
+        几何模型的参考系相对于末端的参考系
+    - __geometry_mesh_tcp_xyz__, 默认"0 0 0"
+    - __geometry_mesh_tcp_rpy__, 默认"0 0 0"
+        几何模型相对于末端的偏移
+
+    对于双臂启动脚本(dual_开头的)，可以通过以下参数分别指定
+    - __add_other_geometry_1__
+    - __add_other_geometry_2__
+    - __geometry_type_1__
+    - __geometry_type_2__
+    - __geometry_mass_1__
+    - __geometry_mass_2__
+    - __geometry_height_1__
+    - __geometry_height_2__
+    - __geometry_radius_1__,
+    - __geometry_radius_2__,
+    - __geometry_length_1__
+    - __geometry_length_2__
+    - __geometry_width_1__
+    - __geometry_width_2__
+    - __geometry_mesh_filename_1__
+    - __geometry_mesh_filename_2__
+    - __geometry_mesh_origin_xyz_1__
+    - __geometry_mesh_origin_xyz_2__
+    - __geometry_mesh_origin_rpy_1__ 
+    - __geometry_mesh_origin_rpy_2__ 
+    - __geometry_mesh_tcp_xyz_1__
+    - __geometry_mesh_tcp_xyz_2__
+    - __geometry_mesh_tcp_rpy_1__
+    - __geometry_mesh_tcp_rpy_2__

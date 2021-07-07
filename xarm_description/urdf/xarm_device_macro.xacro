@@ -2,7 +2,16 @@
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="xarm_device">
   <xacro:macro name="xarm_device" params="prefix:='' namespace:='xarm' limited:='false' effort_control:='false' 
     velocity_control:='false' add_gripper:='false' add_vacuum_gripper:='false' dof:=7 ros2_control_plugin:='xarm_control/XArmHW'
-    attach_to:='world' xyz:='0 0 0' rpy:='0 0 0' ros2_control_params:='' load_gazebo_plugin:='false' "> 
+    attach_to:='world' xyz:='0 0 0' rpy:='0 0 0' ros2_control_params:='' load_gazebo_plugin:='false' 
+    add_other_geometry:='false' 
+    geometry_type:='box' geometry_mass:='0.1' 
+    geometry_radius:='0.1' geometry_height:='0.1' 
+    geometry_length:='0.1' geometry_width:='0.1'
+    geometry_mesh_filename:=''
+    geometry_mesh_origin_xyz:='0 0 0'
+    geometry_mesh_origin_rpy:='0 0 0'
+    geometry_mesh_tcp_xyz:='0 0 0'
+    geometry_mesh_tcp_rpy:='0 0 0' "> 
     
     <xacro:if value="${dof == 5}">
       <xacro:include filename="$(find xarm_description)/urdf/xarm5/xarm5_robot_macro.xacro" />
@@ -39,9 +48,22 @@
         load_gazebo_plugin="${load_gazebo_plugin}" />
     </xacro:if>
 
-    <xacro:if value="${add_vacuum_gripper}">
+    <xacro:if value="${not add_gripper and add_vacuum_gripper}">
       <xacro:include filename="$(find xarm_description)/urdf/vacuum_gripper/xarm_vacuum_gripper.urdf.xacro" />
       <xacro:xarm_vacuum_gripper_urdf prefix="${prefix}" attach_to="${prefix}link_eef" effort_control="${effort_control}" velocity_control="${velocity_control}" />
     </xacro:if>
+
+    <xacro:if value="${not add_gripper and not add_vacuum_gripper and add_other_geometry}">
+      <xacro:include filename="$(find xarm_description)/urdf/other/other_geometry.urdf.xacro" />
+      <xacro:other_geometry prefix="${prefix}" attach_to="${prefix}link_eef"
+        geometry_type="${geometry_type}" geometry_mass="${geometry_mass}" 
+        geometry_height="${geometry_height}" geometry_radius="${geometry_radius}"
+        geometry_length="${geometry_length}" geometry_width="${geometry_width}"
+        geometry_mesh_filename="${geometry_mesh_filename}" 
+        geometry_mesh_origin_xyz="${geometry_mesh_origin_xyz}" geometry_mesh_origin_rpy="${geometry_mesh_origin_rpy}"
+        geometry_mesh_tcp_xyz="${geometry_mesh_tcp_xyz}" geometry_mesh_tcp_rpy="${geometry_mesh_tcp_rpy}"
+      />
+    </xacro:if>
+
   </xacro:macro>
 </robot>
