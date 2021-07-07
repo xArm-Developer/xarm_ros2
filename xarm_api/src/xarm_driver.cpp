@@ -10,7 +10,6 @@
 #define CMD_HEARTBEAT_SEC 30 // 30s
 
 #define DEBUG_MODE 1
-#define PARAM_ERROR 998
 
 #define BIND_CLS_CB(func) std::bind(func, this, std::placeholders::_1, std::placeholders::_2)
 #define BIND_CLS_CB_1(func) std::bind(func, this, std::placeholders::_1)

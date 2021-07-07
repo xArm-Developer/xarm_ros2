@@ -6,7 +6,7 @@
  ============================================================================*/
 #include "xarm_api/xarm_driver.h"
 
-#define PARAM_ERROR 998
+#define PARAM_ERROR 997
 #define BIND_CLS_CB(func) std::bind(func, this, std::placeholders::_1, std::placeholders::_2)
 
 namespace xarm_api
