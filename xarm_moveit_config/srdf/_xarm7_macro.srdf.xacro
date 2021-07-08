@@ -136,7 +136,7 @@
       <!-- <group name="${prefix}vacuum_gripper">
         <joint name="${prefix}vacuum_gripper_fix" />
       </group> -->
-      <end_effector name="${prefix}vacuum_gripper" parent_link="${prefix}link_tcp" group="${prefix}vacuum_gripper" />
+      <!-- <end_effector name="${prefix}vacuum_gripper" parent_link="${prefix}link_tcp" group="${prefix}vacuum_gripper" /> -->
       <passive_joint name="${prefix}vacuum_gripper_fix" />
       <disable_collisions link1="${prefix}link3" link2="${prefix}xarm_vacuum_gripper_link" reason="Never" />
       <disable_collisions link1="${prefix}link6" link2="${prefix}xarm_vacuum_gripper_link" reason="Never" />
@@ -148,7 +148,7 @@
       <!-- <group name="${prefix}other_geometry">
         <joint name="${prefix}other_geometry_fix" />
       </group> -->
-      <end_effector name="${prefix}other_geometry" parent_link="${prefix}link_tcp" group="${prefix}other_geometry" />
+      <!-- <end_effector name="${prefix}other_geometry" parent_link="${prefix}link_tcp" group="${prefix}other_geometry" /> -->
       <passive_joint name="${prefix}other_geometry_fix" />
       <disable_collisions link1="${prefix}link3" link2="${prefix}other_geometry_link" reason="Never" />
       <disable_collisions link1="${prefix}link6" link2="${prefix}other_geometry_link" reason="Never" />
