@@ -16,6 +16,7 @@
 
 - ### 3.2 安装 [Moveit2](https://moveit.ros.org/install-moveit2/source/)
 
+- ### 3.3 安装 [gazebo_ros_pkgs](http://gazebosim.org/tutorials?tut=ros2_installing&cat=connect_ros)  
 
 ## 4. 使用说明
 
@@ -57,7 +58,7 @@
     $ colcon build
     
     # 编译单个包
-    # $ colcon build --packages-select xarm_api
+    $ colcon build --packages-select xarm_api
     ```
 
 
@@ -127,8 +128,7 @@ __注意3： 以下启动说明以6轴为例，5轴和7轴的用法只需找到�
     # add_gripper为true时会加载xarm夹爪的模型
     $ ros2 launch xarm6_control_rviz_display.launch.py robot_ip:=192.168.1.117 [add_gripper:=true]
     # 启动两个rviz窗口对应两台机械臂
-    
-    # $ ros2 launch two_xarm6_control_rviz_display.launch.py robot1_ip:=192.168.1.117 robot2_ip:=192.168.1.203
+    $ ros2 launch two_xarm6_control_rviz_display.launch.py robot1_ip:=192.168.1.117 robot2_ip:=192.168.1.203
     ```
 
 - ### 5.6 xarm_moveit_config
@@ -218,16 +218,18 @@ __注意3： 以下启动说明以6轴为例，5轴和7轴的用法只需找到�
 
 
 - ### 5.8 xarm_gazebo
-    此模块用于在gazobo上对xarm进行仿真
-    注意：可能需要源码安装[gazebo_ros2_control](https://github.com/ros-simulation/gazebo_ros2_control.git)，并source所安装的gazebo_ros2_control环境
+    此模块用于在gazobo上对xarm进行仿真。  
+    注意：  
+    (1) 可能需要源码安装[gazebo_ros2_control](https://github.com/ros-simulation/gazebo_ros2_control.git)，并source所安装的gazebo_ros2_control环境。  
+    (2) [minic_joint_plugin](https://github.com/roboticsgroup/roboticsgroup_upatras_gazebo_plugins)是基于ROS1开发，因此Gazebo中目前无法使用这个插件导致基于并联结构的xArm Gripper机械爪无法正常仿真。  
     
-    - 单独测试xarm在gazebo上的显示
+    - 单独测试xarm在gazebo上的显示：
         ```bash
         $ cd ~/dev_ws/
         $ ros2 launch xarm_gazebo xarm6_beside_table_gazebo.launch.py
         ```
 
-    - 联合moveit+gazebo进行控制
+    - 联合moveit+gazebo进行控制：
         ```bash
         $ cd ~/dev_ws/
         $ ros2 launch xarm_moveit_config xarm6_moveit_gazebo.launch.py
@@ -236,53 +238,58 @@ __注意3： 以下启动说明以6轴为例，5轴和7轴的用法只需找到�
 
 ## 6. 主要启动参数说明
 - __robot_ip__
-    机械臂IP地址，控制真机时需要
-- __report_type__, 默认normal
-    上报类型，支持normal/rich/dev
-    不同上报类型的上报数据和上报频率不一样
-- __dof__, 默认为7
-    机械臂轴数，如非必须参数一般不需要指定
-    对于双臂启动脚本(dual_开头的)，可以通过以下参数分别指定
+    机械臂IP地址，控制真机时需要。  
+- __report_type__, 默认normal。  
+    上报类型，支持normal/rich/dev，  
+    不同上报类型的上报数据和上报频率不一样。  
+- __dof__, 默认为7。
+    机械臂轴数，如非必须参数一般不需要指定。  
+    对于双臂启动脚本(dual_开头的)，可以通过以下参数分别指定：
     - __dof_1__
     - __dof_2__
-- __velocity_control__, 默认为false
-    是否使用速度控制
-- __add_gripper__, 默认为false
-    是否添加机械爪xarm_gripper，优先级高于参数add_vacuum_gripper
-    对于双臂启动脚本(dual_开头的)，可以通过以下参数分别指定
+- __velocity_control__, 默认为false。  
+    是否使用速度控制。  
+- __add_gripper__, 默认为false。  
+    是否添加UF机械爪xarm_gripper，优先级高于参数```add_vacuum_gripper```。
+    对于双臂启动脚本(dual_开头的)，可以通过以下参数分别指定：  
     - __add_gripper_1__
     - __add_gripper_2__
-- __add_vacuum_gripper__, 默认为false
-    是否添加吸泵xarm_vacuum_gripper，设置为true的前提必须要设置参数add_gripper为false
-    对于双臂启动脚本(dual_开头的)，可以通过以下参数分别指定
+- __add_vacuum_gripper__, 默认为false。  
+    是否添加UF吸泵xarm_vacuum_gripper，设置为true的前提必须要设置参数```add_gripper```为```false```
+    对于双臂启动脚本(dual_开头的)，可以通过以下参数分别指定：  
     - __add_vacuum_gripper_1__
     - __add_vacuum_gripper_2__
-- __add_other_geometry__, 默认为false
-    是否添加其它几何模型到末端，设置为true的前提必须设置参数add_gripper和add_other_geometry为false
+- __add_other_geometry__, 默认为false。  
+    是否添加其它几何模型到末端，设置为true的前提:参数```add_gripper```和```add_vacuum_gripper```必须为```false```  
     
-    - __geometry_type__, 默认为box, 仅仅在add_other_geometry为true时有效
-        要添加的几何模型的类型，支持box/cylinder/sphere/mesh
-    - __geometry_mass__, 单位(kg)，默认0.1
-        几何模型质量
-    - __geometry_height__, 单位(米)，默认0.1
-        几何模型高度，geometry_type为box/cylinder/sphere有效
-    - __geometry_radius__, 单位(米)，默认0.1
-        几何模型半径，geometry_type为cylinder/sphere有效
-    - __geometry_length__, 单位(米)，默认0.1
-        几何模型长度，geometry_type为box有效
-    - __geometry_width__, 单位(米)，默认0.1
+    - __geometry_type__, 默认为box, 仅仅在```add_other_geometry=true```时有效。
+        要添加的几何模型的类型，支持box/cylinder/sphere/mesh。
+    - __geometry_mass__, 单位(kg)，默认0.1。  
+        几何模型质量。
+    - __geometry_height__, 单位(米)，默认0.1。  
+        几何模型高度，geometry_type为box/cylinder/sphere有效。
+    - __geometry_radius__, 单位(米)，默认0.1。  
+        几何模型半径，geometry_type为cylinder/sphere有效。
+    - __geometry_length__, 单位(米)，默认0.1。
+        几何模型长度，geometry_type为box有效。
+    - __geometry_width__, 单位(米)，默认0.1。
         几何模型宽度，geometry_type为box有效。
     - __geometry_mesh_filename__,
-        几何模型的文件名，geometry_type为mesh有效
-        该文件需要存放于xarm_description/meshes/other/目录下面
+        几何模型的文件名，geometry_type为mesh有效, ***该文件需要存放于```xarm_description/meshes/other/```目录下面***，这样就不需要在文件名里指定文件目录了。  
     - __geometry_mesh_origin_xyz__, 默认"0 0 0"
     - __geometry_mesh_origin_rpy__, 默认"0 0 0"
-        几何模型的参考系相对于末端的参考系
+        几何模型的基准参考系相对于xArm末端法兰的参考系，geometry_type为
+        ```mesh```有效。使用时注意引号: geometry_mesh_origin_xyz:='"0.05 0.0 0.0"'.  
     - __geometry_mesh_tcp_xyz__, 默认"0 0 0"
     - __geometry_mesh_tcp_rpy__, 默认"0 0 0"
-        几何模型相对于末端的偏移
+        几何模型末端(TCP)相对于几何模型基准参考系的偏移，geometry_type为```mesh```有效。使用时注意引号: geometry_mesh_tcp_rpy:='"0.0 0.0 1.5708"'.  
+    - __添加自定义末端工具(圆柱体)示例__  
+    
+        ```bash
+        $ ros2 launch xarm_gazebo xarm6_beside_table_gazebo.launch.py add_other_geometry:=true geometry_type:=cylinder geometry_height:=0.075 geometry_radius:=0.045
+        ```
 
-    对于双臂启动脚本(dual_开头的)，可以通过以下参数分别指定
+    对于双臂启动脚本(dual_开头的)，可以通过以下参数分别指定:
     - __add_other_geometry_1__
     - __add_other_geometry_2__
     - __geometry_type_1__
