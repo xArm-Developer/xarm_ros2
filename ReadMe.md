@@ -8,6 +8,8 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 
 ## 2. Update History    
 - moveit dual arm control (under single rviz GUI), each arm can be separately configured（e.g. DOF, add_gripper, etc）
+- add support for Gazebo simulation, can be controlled by moveit.
+- support adding customized tool model.  
 
 
 ## 3. Preparation
@@ -16,6 +18,7 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 
 - ### 3.2 Install [Moveit2](https://moveit.ros.org/install-moveit2/source/)
 
+- ### 3.3 Install [gazebo_ros_pkgs](http://gazebosim.org/tutorials?tut=ros2_installing&cat=connect_ros)  
 
 ## 4. How To Use
 
@@ -57,7 +60,7 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
     $ colcon build
     
     # build selected packages
-    # $ colcon build --packages-select xarm_api
+    $ colcon build --packages-select xarm_api
     ```
 
 
@@ -66,11 +69,13 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 __Reminder 1: If there are multiple people using ros2 in the current LAN, in order to avoid mutual interference, please set [ROS_DOMAIN_ID](https://docs.ros.org/en/ros2_documentation/foxy/Concepts/About-Domain-ID.html)__
 
 __Reminder 2： Remember to source the environment setup script before running any applications in xarm_ros2__
+
 ```bash
 $ cd ~/dev_ws/
 $ source install/setup.bash
 ```
 __Reminder 3： All following instructions will base on xArm6，please use proper parameters or filenames for xArm5 or xArm7__
+
 
 - ### 5.1 xarm_description
     This package contains robot description files and 3D models of xArm. Models can be displayed in RViz by the following launch file:
@@ -82,8 +87,8 @@ __Reminder 3： All following instructions will base on xArm6，please use prope
     $ ros2 launch xarm_description xarm6_rviz_display.launch.py [add_gripper:=true] [add_vacuum_gripper:=true]
     ```
 
-- ### 5.2 xarm_msgs
-    This package contains all interface definitions for xarm_ros2, please check the instructions in the files before using them. [REAEME](./xarm_msgs/ReadMe.md)
+- ### 5.2 xarm_msgs  
+    This package contains all interface definitions for xarm_ros2, please check the instructions in the files before using them. [README](./xarm_msgs/ReadMe.md)
 
 - ### 5.3 xarm_sdk
     This package serves as a submodule of this project，the corresponding git repository is: [xArm-CPLUS-SDK](https://github.com/xArm-Developer/xArm-CPLUS-SDK.git), for interfacing with real xArms, please refer to the documentation in "xArm-CPLUS-SDK" if interested.
@@ -100,6 +105,7 @@ __Reminder 3： All following instructions will base on xArm6，please use prope
             clean_conf: false
             ...
         ```
+
     - __topics__:  
 
         __joint_states__: is of type __sensor_msgs::msg::JointState__  
@@ -128,8 +134,7 @@ __Reminder 3： All following instructions will base on xArm6，please use prope
     # set 'add_gripper=true' to attach xArm gripper model
     $ ros2 launch xarm6_control_rviz_display.launch.py robot_ip:=192.168.1.117 [add_gripper:=true]
     # open up two rviz windows for two separated arms at the same time
-    
-    # $ ros2 launch two_xarm6_control_rviz_display.launch.py robot1_ip:=192.168.1.117 robot2_ip:=192.168.1.203
+    $ ros2 launch two_xarm6_control_rviz_display.launch.py robot1_ip:=192.168.1.117 robot2_ip:=192.168.1.203
     ```
 
 - ### 5.6 xarm_moveit_config
@@ -220,5 +225,99 @@ __Reminder 3： All following instructions will base on xArm6，please use prope
 
 
 - ### 5.8 xarm_gazebo
-    Not yet implemented.
+    This package is for supporting xArm simulation with Gazobo.  
+    ***Notice:***  
+    (1) Installation of [gazebo_ros2_control](https://github.com/ros-simulation/gazebo_ros2_control.git) from source may be needed, as well as setting up environment variables of gazebo_ros2_control.  
+    (2) [minic_joint_plugin](https://github.com/roboticsgroup/roboticsgroup_upatras_gazebo_plugins) was developed for ROS1, so it may not work here to support xArm Gripper (with parallel structure) simulation in Gazebo.  
+    
+    - Testing xarm on gazebo independently:
+        ```bash
+        $ cd ~/dev_ws/
+        $ ros2 launch xarm_gazebo xarm6_beside_table_gazebo.launch.py
+        ```
 
+    - Simulation with moveit+gazebo (xArm controlled by moveit).
+        ```bash
+        $ cd ~/dev_ws/
+        $ ros2 launch xarm_moveit_config xarm6_moveit_gazebo.launch.py
+        ```
+
+
+## 6. Instruction on major launch arguments
+- __robot_ip__,
+    IP address of xArm, needed when controlling real hardware.
+- __report_type__, default: normal. 
+    Data report type, supported types are: normal/rich/dev, 
+    different types will report with different data contents and frequency.
+- __dof__, default: 7. 
+    Degree of freedom (DOF) of robot arm，no need to specify explicitly unless necessary.
+    For dual arm launch files(with ```dual_``` prefix), DOF can be specified through:
+    - __dof_1__
+    - __dof_2__
+- __velocity_control__, default: false. 
+    Whether to control with velocity interface. (Otherwise, use position interface)
+- __add_gripper__, default: false. 
+    Whether to include UFACTORY gripper in the model，it has higher priority than the argument ```add_vacuum_gripper```.
+    For dual arm launch files(with ```dual_``` prefix), it can be specified through:
+    - __add_gripper_1__
+    - __add_gripper_2__
+- __add_vacuum_gripper__, default: false. 
+    Whether to include UFACTRORY vacuum gripper in the model，```add_gripper``` must be false in order to set vacuum gripper to be true.
+    For dual arm launch files(with ```dual_``` prefix), it can be specified through:
+    - __add_vacuum_gripper_1__
+    - __add_vacuum_gripper_2__
+- __add_other_geometry__, default: false. 
+    Whether to add other geometric model as end-tool, ```add_gripper``` and ```add_vacuum_gripper``` has to be false in order to set it to be true.
+    
+    - __geometry_type__, default: box, effective when ```add_other_geometry=true```.  
+        geometry type to be added as end-tool，valid types: box/cylinder/sphere/mesh.  
+    - __geometry_mass__, unit: kg，default value: 0.1  
+        model mass.
+    - __geometry_height__, unit: m，default value: 0.1  
+        specifying geometry hight，effective when geometry_type=box/cylinder/sphere.  
+    - __geometry_radius__, unit: m，default value: 0.1  
+        specifying geometry radius, effective when geometry_type=cylinder/sphere.  
+    - __geometry_length__, unit: m，default value: 0.1  
+        specifying geometry length, effective when geometry_type=box.  
+    - __geometry_width__, unit: m，default value: 0.1  
+        specifying geometry width,effective when geometry_type=box.  
+    - __geometry_mesh_filename__,
+        filename of the specified mesh model，effective when geometry_type=mesh.  
+        ***This file needs to be put in ```xarm_description/meshes/other/``` folder.*** Such that full directory will not be needed in filename specification.  
+    - __geometry_mesh_origin_xyz__, default: "0 0 0"  
+    - __geometry_mesh_origin_rpy__, default: "0 0 0"  
+        transformation from end-flange coordinate frame to geometry model origin coordinate frame, effective when ```geometry_type=mesh```. Example: geometry_mesh_origin_xyz:='"0.05 0.0 0.0"'.  
+    - __geometry_mesh_tcp_xyz__, default: "0 0 0"  
+    - __geometry_mesh_tcp_rpy__, default: "0 0 0"  
+        transformation from geometry model origin frame to geometry model tip ("Tool Center Point") frame, effective when ```geometry_type=mesh```. Example: geometry_mesh_tcp_rpy:='"0.0 0.0 1.5708"'.  
+    - __Example of adding customized end tool (Cylinder):__  
+
+        ```bash
+        $ ros2 launch xarm_gazebo xarm6_beside_table_gazebo.launch.py add_other_geometry:=true geometry_type:=cylinder geometry_height:=0.075 geometry_radius:=0.045
+        ```
+
+    For dual arm launch files(with ```dual_``` prefix), here are the total arguments that can be configured:  
+    - __add_other_geometry_1__
+    - __add_other_geometry_2__
+    - __geometry_type_1__
+    - __geometry_type_2__
+    - __geometry_mass_1__
+    - __geometry_mass_2__
+    - __geometry_height_1__
+    - __geometry_height_2__
+    - __geometry_radius_1__,
+    - __geometry_radius_2__,
+    - __geometry_length_1__
+    - __geometry_length_2__
+    - __geometry_width_1__
+    - __geometry_width_2__
+    - __geometry_mesh_filename_1__
+    - __geometry_mesh_filename_2__
+    - __geometry_mesh_origin_xyz_1__
+    - __geometry_mesh_origin_xyz_2__
+    - __geometry_mesh_origin_rpy_1__ 
+    - __geometry_mesh_origin_rpy_2__ 
+    - __geometry_mesh_tcp_xyz_1__
+    - __geometry_mesh_tcp_xyz_2__
+    - __geometry_mesh_tcp_rpy_1__
+    - __geometry_mesh_tcp_rpy_2__
