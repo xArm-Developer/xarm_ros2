@@ -17,6 +17,10 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(control_toolbox REQUIRED)
+find_package(gazebo REQUIRED)
+
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
@@ -32,15 +36,38 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
+include_directories(
+  include
+  ${ament_INCLUDE_DIRS}
+  ${GAZEBO_INCLUDE_DIRS}
+)
+
+link_directories(${GAZEBO_LIBRARY_DIRS})
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GAZEBO_CXX_FLAGS}")
+
+add_library(gazebo_ros2_mimic_joint_plugin SHARED src/mimic_joint_plugin.cpp)
+ament_target_dependencies(gazebo_ros2_mimic_joint_plugin
+  control_toolbox
+)
+target_link_libraries(gazebo_ros2_mimic_joint_plugin ${ament_LIBRARIES} ${GAZEBO_LIBRARIES})
+
+install(
+  DIRECTORY include/
+  DESTINATION include
+)
+
+install(TARGETS
+  gazebo_ros2_mimic_joint_plugin
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
+
 install(DIRECTORY
   worlds
   launch
   DESTINATION share/${PROJECT_NAME}/
 )
-
-# install(DIRECTORY
-#   scripts/
-#   DESTINATION lib/${PROJECT_NAME}/
-# )
 
 ament_package()
