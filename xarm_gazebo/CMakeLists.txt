@@ -45,11 +45,11 @@ include_directories(
 link_directories(${GAZEBO_LIBRARY_DIRS})
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GAZEBO_CXX_FLAGS}")
 
-add_library(gazebo_ros2_mimic_joint_plugin SHARED src/mimic_joint_plugin.cpp)
-ament_target_dependencies(gazebo_ros2_mimic_joint_plugin
+add_library(gazebo_mimic_joint_plugin SHARED src/mimic_joint_plugin.cpp)
+ament_target_dependencies(gazebo_mimic_joint_plugin
   control_toolbox
 )
-target_link_libraries(gazebo_ros2_mimic_joint_plugin ${ament_LIBRARIES} ${GAZEBO_LIBRARIES})
+target_link_libraries(gazebo_mimic_joint_plugin ${ament_LIBRARIES} ${GAZEBO_LIBRARIES})
 
 install(
   DIRECTORY include/
@@ -57,7 +57,7 @@ install(
 )
 
 install(TARGETS
-  gazebo_ros2_mimic_joint_plugin
+gazebo_mimic_joint_plugin
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin

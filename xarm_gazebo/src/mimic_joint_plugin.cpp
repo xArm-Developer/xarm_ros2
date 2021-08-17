@@ -29,7 +29,7 @@ namespace gazebo {
     model_nh_ = gazebo_ros::Node::Get(sdf);
 
     RCLCPP_INFO(
-      model_nh_->get_logger(), "Starting gazebo_ros2_mimic_joint plugin in namespace: %s, name: %s",
+      model_nh_->get_logger(), "Starting GazeboMimicJointPlugin in namespace: %s, name: %s",
       model_nh_->get_namespace(), model_nh_->get_name());
 
     // Error message if the model couldn't be found
@@ -43,7 +43,7 @@ namespace gazebo {
       RCLCPP_FATAL_STREAM(
         model_nh_->get_logger(),
         "A ROS node for Gazebo has not been initialized, unable to load plugin. " <<
-          "Load the Gazebo system plugin 'libgazebo_ros_api_plugin.so' in the gazebo_ros package)");
+          "Load the Gazebo system plugin 'libgazebo_ros2_mimic_joint_plugin.so' in the gazebo_ros package)");
       return;
     }
 
@@ -123,7 +123,7 @@ namespace gazebo {
         boost::bind(&GazeboMimicJointPlugin::OnUpdate, this));
 
     // Output some confirmation
-    RCLCPP_INFO_STREAM(model_nh_->get_logger(), "MimicJointPlugin loaded! Joint: \"" << joint_name_ << "\", Mimic joint: \"" << mimic_joint_name_ << "\""
+    RCLCPP_INFO_STREAM(model_nh_->get_logger(), "GazeboMimicJointPlugin loaded! Joint: \"" << joint_name_ << "\", Mimic joint: \"" << mimic_joint_name_ << "\""
                                                           << ", Multiplier: " << multiplier_ << ", Offset: " << offset_
                                                           << ", MaxEffort: " << max_effort_ << ", Sensitiveness: " << sensitiveness_);
   }
