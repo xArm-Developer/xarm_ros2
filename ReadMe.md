@@ -16,9 +16,11 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 
 - ### 3.1 Install [ROS Foxy](https://docs.ros.org/en/foxy/Installation.html) 
 
-- ### 3.2 Install [Moveit2](https://moveit.ros.org/install-moveit2/source/)
+- ### 3.2 Install [Moveit2](https://moveit.ros.org/install-moveit2/source/)  
 
-- ### 3.3 Install [gazebo_ros_pkgs](http://gazebosim.org/tutorials?tut=ros2_installing&cat=connect_ros)  
+- ### 3.3 Install [ros2_control, ros2_controllers](https://ros-controls.github.io/control.ros.org/getting_started.html)  
+
+- ### 3.4 Install [gazebo_ros_pkgs](http://gazebosim.org/tutorials?tut=ros2_installing&cat=connect_ros)  
 
 ## 4. How To Use
 
@@ -228,7 +230,7 @@ __Reminder 3： All following instructions will base on xArm6，please use prope
     This package is for supporting xArm simulation with Gazobo.  
     ***Notice:***  
     (1) Installation of [gazebo_ros2_control](https://github.com/ros-simulation/gazebo_ros2_control.git) from source may be needed, as well as setting up environment variables of gazebo_ros2_control.  
-    (2) [minic_joint_plugin](https://github.com/roboticsgroup/roboticsgroup_upatras_gazebo_plugins) was developed for ROS1, so it may not work here to support xArm Gripper (with parallel structure) simulation in Gazebo.  
+    (2) [minic_joint_plugin](https://github.com/roboticsgroup/roboticsgroup_upatras_gazebo_plugins) was developed for ROS1, we have modified a version for ROS2 compatibility and it is already integrated in this package for xArm Gripper simulation.  
     
     - Testing xarm on gazebo independently:
         ```bash
