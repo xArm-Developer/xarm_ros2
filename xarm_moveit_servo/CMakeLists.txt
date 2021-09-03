@@ -56,16 +56,23 @@ include_directories(
   ${ament_INCLUDE_DIRS}
 )
 
-add_library(xarm_joystick SHARED src/xarm_joystick.cpp)
-ament_target_dependencies(xarm_joystick ${THIS_PACKAGE_INCLUDE_DEPENDS})
-rclcpp_components_register_nodes(xarm_joystick "xarm_moveit_servo::JoyToServoPub")
+add_library(xarm_joystick_input SHARED src/xarm_joystick_input.cpp)
+ament_target_dependencies(xarm_joystick_input ${THIS_PACKAGE_INCLUDE_DEPENDS})
+rclcpp_components_register_nodes(xarm_joystick_input "xarm_moveit_servo::JoyToServoPub")
+
+add_executable(xarm_keyboard_input
+  src/xarm_keyboard_input.cpp
+)
+ament_target_dependencies(xarm_keyboard_input ${THIS_PACKAGE_INCLUDE_DEPENDS})
+
 
 install(TARGETS
-  xarm_joystick
+  xarm_joystick_input
+  xarm_keyboard_input
   EXPORT export_${PROJECT_NAME}
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
-  RUNTIME DESTINATION bin
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
   INCLUDES DESTINATION include
 )
 

@@ -5,33 +5,63 @@
  * Author: Vinman <vinman.cub@gmail.com>
  ============================================================================*/
 
-#ifndef __XARM_JOY_STICK_H__
-#define __XARM_JOY_STICK_H__
+#ifndef __XARM_KEYBOARD_INPUT_H__
+#define __XARM_KEYBOARD_INPUT_H__
 
+#include <termios.h>
 #include <rclcpp/rclcpp.hpp>
-#include <sensor_msgs/msg/joy.hpp>
 #include <geometry_msgs/msg/twist_stamped.hpp>
 #include <control_msgs/msg/joint_jog.hpp>
 #include <std_srvs/srv/trigger.hpp>
 #include <moveit_msgs/msg/planning_scene.hpp>
 
 
-namespace xarm_moveit_servo
-{
-
-class JoyToServoPub : public rclcpp::Node
+class KeyboardReader
 {
 public:
-    JoyToServoPub(const rclcpp::NodeOptions& options);
+    KeyboardReader() : k_fd_(0)
+    {
+        tcgetattr(k_fd_, &k_old_termios_);
+        struct termios k_termios;
+        memcpy(&k_termios, &k_old_termios_, sizeof(struct termios));
+        k_termios.c_lflag &= ~(ICANON | ECHO);
+        // Setting a new line, then end of file
+        k_termios.c_cc[VEOL] = 1;
+        k_termios.c_cc[VEOF] = 2;
+        // k_termios.c_ispeed = 30;
+        // k_termios.c_ospeed = 30;
+        tcsetattr(k_fd_, TCSANOW, &k_termios);
+    }
+    void readOne(char *c)
+    {
+        int rc = read(k_fd_, c, 1);
+        if (rc < 0)
+        {
+            throw std::runtime_error("keyboard read failed");
+        }
+    }
+    void shutdown()
+    {
+        tcsetattr(k_fd_, TCSANOW, &k_old_termios_);
+    } 
+
+private:
+    int k_fd_;
+    struct termios k_old_termios_;
+};
+
+
+class KeyboardServoPub
+{
+public:
+    KeyboardServoPub(rclcpp::Node::SharedPtr& node);
+    void keyLoop();
+
 private:
     template <typename T>
     void declareOrGetParam(T& output_value, const std::string& param_name, const T default_value = T{});
-    bool convertJoyToCmd(const std::vector<float>& axes, const std::vector<int>& buttons,
-                     std::unique_ptr<geometry_msgs::msg::TwistStamped>& twist,
-                     std::unique_ptr<control_msgs::msg::JointJog>& joint);
-    void joyCB(const sensor_msgs::msg::Joy::SharedPtr msg);
+    void spin();
 
-    rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr joy_sub_;
     rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr twist_pub_;
     rclcpp::Publisher<control_msgs::msg::JointJog>::SharedPtr joint_pub_;
     rclcpp::Publisher<moveit_msgs::msg::PlanningScene>::SharedPtr collision_pub_;
@@ -39,9 +69,7 @@ private:
 
     int dof_;
     int ros_queue_size_;
-    bool is_initialized_;
 
-    std::string joy_topic_;
     std::string cartesian_command_in_topic_;
     std::string joint_command_in_topic_;
 
@@ -49,8 +77,11 @@ private:
     std::string ee_frame_name_;
 
     std::string planning_frame_;
+
+    double joint_vel_cmd_;
+
+    rclcpp::Node::SharedPtr node_;
 };
-}
 
 
-#endif // __XARM_JOY_STICK_H__
+#endif // __XARM_KEYBOARD_INPUT_H__

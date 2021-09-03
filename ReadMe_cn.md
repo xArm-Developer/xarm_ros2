@@ -8,6 +8,7 @@
 ## 2. 更新记录
 - 新增xarm_gazebo以支持gazebo，并和moveit关联
 - 支持加载其它模型到机械臂末端
+- 新增xarm_moveit_servo支持xbox手柄/SpaceMouse/键盘控制
 
 
 ## 3. 准备工作
@@ -235,6 +236,54 @@ __注意3： 以下启动说明以6轴为例，5轴和7轴的用法只需找到�
         ```bash
         $ cd ~/dev_ws/
         $ ros2 launch xarm_moveit_config xarm6_moveit_gazebo.launch.py
+        ```
+
+- ### 5.9 xarm_moveit_servo
+    此模块用于通过外部输入来控制机械臂。
+    - 通过 __XBOX360__ 手柄控制
+        - 左摇杆控制TCP的X和Y
+        - 右摇杆控制TCP的ROLL和PITCH
+        - [前面]左右两个触发器控制TCP的Z
+        - [前面]左右两个缓冲器控制TCP的YAW
+        - 十字键控制关节1和关节2的转动
+        - 按键X和按键B控制最后一个关节的转动
+        - 按键Y和按键A控制倒数第二个关节的转动
+
+        ```bash
+        $ cd ~/dev_ws/
+        # XBOX Wired -> joystick_type=1
+        # XBOX Wireless -> joystick_type=2
+        # 控制虚拟机械臂
+        $ ros2 launch xarm_moveit_servo xarm_moveit_servo_fake.launch.py joystick_type:=1
+
+        # 控制真实机械臂
+        # ros2 launch xarm_moveit_servo xarm_moveit_servo_realmove.launch.py robot_ip:=192.168.1.123 dof:=5 joystick_type:=1
+        ```
+
+    - 通过六维鼠标 __3Dconnexion SpaceMouse Wireless__ 来控制
+        - 六维鼠标的六个维度对应控制TCP的X/Y/Z/ROLL/PITCH/YAW
+        - 左边按键按下时单独控制TCP的XYZ
+        - 右边按键按下时单独控制TCP的ROLL/PITCH/YAW
+
+        ```bash
+        $ cd ~/dev_ws/
+        # 控制虚拟机械臂
+        $ ros2 launch xarm_moveit_servo xarm_moveit_servo_fake.launch.py joystick_type:=3
+
+        # 控制真实机械臂
+        # ros2 launch xarm_moveit_servo xarm_moveit_servo_realmove.launch.py robot_ip:=192.168.1.123 dof:=5 joystick_type:=3
+        ```
+    - 通过 __键盘输入__ 控制
+        ```bash
+        $ cd ~/dev_ws/
+        # 控制虚拟机械臂
+        $ ros2 launch xarm_moveit_servo xarm_moveit_servo_fake.launch.py
+
+        # 控制真实机械臂
+        # ros2 launch xarm_moveit_servo xarm_moveit_servo_realmove.launch.py robot_ip:=192.168.1.123 dof:=5
+
+        # 运行键盘输入节点
+        $ ros2 run xarm_moveit_servo xarm_keyboard_input
         ```
 
 

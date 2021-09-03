@@ -16,7 +16,7 @@ namespace xarm_control
     }
 
     void XArmHW::_joint_states_callback(const sensor_msgs::msg::JointState::SharedPtr states)
-    {    
+    {
         // std::string pos_str = "[ ";
         // std::string vel_str = "[ ";
         // for (int i = 0; i < states->position.size(); i++) { 

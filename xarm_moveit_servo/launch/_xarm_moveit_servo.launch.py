@@ -29,6 +29,11 @@ def launch_setup(context, *args, **kwargs):
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='xarm_control/FakeXArmHW')
+    
+    # 1: xbox360 wired
+    # 2: xbox360 wireless
+    # 3: spacemouse wireless
+    joystick_type = LaunchConfiguration('joystick_type', default=1)
 
     add_other_geometry = LaunchConfiguration('add_other_geometry', default=False)
     geometry_type = LaunchConfiguration('geometry_type', default='box')
@@ -193,7 +198,11 @@ def launch_setup(context, *args, **kwargs):
                 name='joy_to_servo_node',
                 parameters=[
                     servo_params,
-                    {'dof': dof, 'ros_queue_size': 10},
+                    {
+                        'dof': dof, 
+                        'ros_queue_size': 10,
+                        'joystick_type': joystick_type,
+                    },
                 ],
                 extra_arguments=[{'use_intra_process_comms': True}],
             ),

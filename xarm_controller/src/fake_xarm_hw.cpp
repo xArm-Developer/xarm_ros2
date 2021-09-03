@@ -125,6 +125,18 @@ namespace xarm_control
 
     hardware_interface::return_type FakeXArmHW::write()
     {
+        // std::string pos_str = "[ ";
+        // std::string vel_str = "[ ";
+        // for (int i = 0; i < position_cmds_.size(); i++) { 
+        //     pos_str += std::to_string(position_cmds_[i]); 
+        //     pos_str += " ";
+        //     vel_str += std::to_string(velocity_cmds_[i]); 
+        //     vel_str += " ";
+        // }
+        // pos_str += "]";
+        // vel_str += "]";
+        // RCLCPP_INFO(node_->get_logger(), "positon: %s, velocity: %s", pos_str.c_str(), vel_str.c_str());
+
         for (int i = 0; i < position_cmds_.size(); i++) { 
             position_states_[i] = position_cmds_[i];
             joint_state_msg_.position[i] = position_cmds_[i];
