@@ -147,8 +147,8 @@ public:
 	int move_gohome(bool wait = false, fp32 timeout = NO_TIMEOUT);
 
 	// MoveVelocity
-	int vc_set_joint_velocity(const std::vector<fp32>& speeds, bool is_sync = true);
-	int vc_set_cartesian_velocity(const std::vector<fp32>& speeds, bool is_tool_coord = false);
+	int vc_set_joint_velocity(const std::vector<fp32>& speeds, bool is_sync = true, float duration = -1);
+	int vc_set_cartesian_velocity(const std::vector<fp32>& speeds, bool is_tool_coord = false, float duration = -1);
 
 	// GetDigitalIO
 	int get_tgpio_digital(std::vector<int>& digitals);

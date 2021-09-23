@@ -738,17 +738,19 @@ int XArmROSClient::move_gohome(bool wait, fp32 timeout)
 }
 
 // MoveVelocity
-int XArmROSClient::vc_set_joint_velocity(const std::vector<fp32>& speeds, bool is_sync)
+int XArmROSClient::vc_set_joint_velocity(const std::vector<fp32>& speeds, bool is_sync, float duration)
 {
     req_move_velocity_->speeds = speeds;
     req_move_velocity_->is_sync = is_sync;
+    req_move_velocity_->duration = duration;
     return _call_request(client_vc_set_joint_velocity_, req_move_velocity_);
 }
 
-int XArmROSClient::vc_set_cartesian_velocity(const std::vector<fp32>& speeds, bool is_tool_coord)
+int XArmROSClient::vc_set_cartesian_velocity(const std::vector<fp32>& speeds, bool is_tool_coord, float duration)
 {
     req_move_velocity_->speeds = speeds;
     req_move_velocity_->is_tool_coord = is_tool_coord;
+    req_move_velocity_->duration = duration;
     return _call_request(client_vc_set_cartesian_velocity_, req_move_velocity_);
 }
 

@@ -732,7 +732,7 @@ namespace xarm_api
         for (int i = 0; i < std::min((int)req->speeds.size(), 7); i++) {
             speeds[i] = req->speeds[i];
         }
-        res->ret = arm->vc_set_joint_velocity(speeds, req->is_sync);
+        res->ret = arm->vc_set_joint_velocity(speeds, req->is_sync, req->duration);
         return res->ret >= 0;
     }
 
@@ -742,7 +742,7 @@ namespace xarm_api
             res->ret = PARAM_ERROR;
             return false;
         }
-        res->ret = arm->vc_set_cartesian_velocity(&req->speeds[0], req->is_tool_coord);
+        res->ret = arm->vc_set_cartesian_velocity(&req->speeds[0], req->is_tool_coord, req->duration);
         return res->ret >= 0;
     }
 

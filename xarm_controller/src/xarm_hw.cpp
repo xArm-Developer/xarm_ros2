@@ -8,6 +8,8 @@
 
 #include "xarm_controller/xarm_hw.h"
 
+#define VELO_DURATION 1
+
 namespace xarm_control
 {
     void XArmHW::_receive_event(const std_msgs::msg::String::SharedPtr event)
@@ -250,7 +252,7 @@ namespace xarm_control
                 cmds_float_[i] = (float)velocity_cmds_[i];
             }
             // RCLCPP_INFO(node_->get_logger(), "velocity: %s", vel_str.c_str());
-            int ret = xarm_client_.vc_set_joint_velocity(cmds_float_);
+            int ret = xarm_client_.vc_set_joint_velocity(cmds_float_, true, VELO_DURATION);
             if (ret != 0) {
                 RCLCPP_WARN(node_->get_logger(), "vc_set_joint_velocity, ret= %d", ret);
             }
