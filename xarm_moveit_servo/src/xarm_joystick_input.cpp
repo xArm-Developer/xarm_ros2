@@ -75,7 +75,7 @@ enum SPACEMOUSE_WIRELESS_BUTTON
 
 JoyToServoPub::JoyToServoPub(const rclcpp::NodeOptions& options)
   : Node("joy_to_twist_publisher", options), 
-    dof_(7), ros_queue_size_(10), joystick_type_(JOYSTICK_XBOX360_WIRED), is_initialized_(false),
+    dof_(7), ros_queue_size_(10), joystick_type_(JOYSTICK_XBOX360_WIRED), initialized_status_(10),
     joy_topic_("/joy"),
     cartesian_command_in_topic_("/servo_server/delta_twist_cmds"), 
     joint_command_in_topic_("/servo_server/delta_joint_cmds"), 
@@ -249,9 +249,31 @@ bool JoyToServoPub::_convert_spacemouse_wireless_joy_to_cmd(const std::vector<fl
 
 void JoyToServoPub::_joy_callback(const sensor_msgs::msg::Joy::SharedPtr msg)
 {
+
+    // std::string axes_str = "[ ";
+    // for (int i = 0; i < msg->axes.size(); i++) { 
+    //     axes_str += std::to_string(msg->axes[i]); 
+    //     axes_str += " ";
+    // }
+    // axes_str += "]";
+    // RCLCPP_INFO(this->get_logger(), "axes_str: %s", axes_str.c_str());
+    // return;
+
     // Create the messages we might publish
     auto twist_msg = std::make_unique<geometry_msgs::msg::TwistStamped>();
     auto joint_msg = std::make_unique<control_msgs::msg::JointJog>();
+
+    if (dof_ == 7 && initialized_status_) {
+        initialized_status_ -= 1;
+        joint_msg->joint_names.push_back("joint1");
+        joint_msg->velocities.push_back(initialized_status_ > 0 ? 0.01 : 0);
+
+        joint_msg->header.stamp = this->now();
+        joint_msg->header.frame_id = "joint1";
+        joint_pub_->publish(std::move(joint_msg));
+
+        return;
+    }
 
     bool pub_twist = false;
 
@@ -272,7 +294,7 @@ void JoyToServoPub::_joy_callback(const sensor_msgs::msg::Joy::SharedPtr msg)
     }
     if (pub_twist) {
         // publish the TwistStamped
-        _filter_twist_msg(twist_msg, 0.1);
+        _filter_twist_msg(twist_msg, 0.2);
         // RCLCPP_INFO(this->get_logger(), "linear=[%f, %f, %f], angular=[%f, %f, %f]", 
         //     twist_msg->twist.linear.x, twist_msg->twist.linear.y, twist_msg->twist.linear.z,
         //     twist_msg->twist.angular.x, twist_msg->twist.angular.y, twist_msg->twist.angular.z);

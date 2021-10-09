@@ -45,7 +45,7 @@ private:
     int dof_;
     int ros_queue_size_;
     int joystick_type_;
-    bool is_initialized_;
+    int initialized_status_;
 
     std::string joy_topic_;
     std::string cartesian_command_in_topic_;
