@@ -7,7 +7,7 @@ controller_manager:
 
     xarm7_traj_controller:
       type: joint_trajectory_controller/JointTrajectoryController
-    
+
 xarm7_traj_controller:
   ros__parameters:
     command_interfaces:
