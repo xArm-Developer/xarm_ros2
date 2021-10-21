@@ -243,6 +243,54 @@ __Reminder 3： All following instructions will base on xArm6，please use prope
         $ cd ~/dev_ws/
         $ ros2 launch xarm_moveit_config xarm6_moveit_gazebo.launch.py
         ```
+- ### 5.9 xarm_moveit_servo
+    This package serves as a demo for jogging xArm with devices such as joystick, through [moveit_servo](http://moveit2_tutorials.picknik.ai/doc/realtime_servo/realtime_servo_tutorial.html). 
+    - Controlling with __XBOX360__ joystick:
+        - left stick for X and Y direction.  
+        - right stick for ROLL and PITCH adjustment.  
+        - left and right trigger (LT/RT) for Z direction.  
+        - left and right bumper (LB/RB) for YAW adjustment.  
+        - D-PAD for controlling joint1 and joint2.  
+        - buttons X and B for controlling last joint.  
+        - buttons Y and A for controlling second last joint.  
+
+        ```bash
+        $ cd ~/dev_ws/
+        # XBOX Wired -> joystick_type=1
+        # XBOX Wireless -> joystick_type=2
+        # For controlling simulated xArm:
+        $ ros2 launch xarm_moveit_servo xarm_moveit_servo_fake.launch.py joystick_type:=1
+
+        # For controlling real xArm: (use xArm 5 as example)
+        # ros2 launch xarm_moveit_servo xarm_moveit_servo_realmove.launch.py robot_ip:=192.168.1.123 dof:=5 joystick_type:=1
+        ```
+
+    - Controlling with __3Dconnexion SpaceMouse Wireless__:
+        - 6 DOFs of the mouse are mapped for controlling X/Y/Z/ROLL/PITCH/YAW  
+        - Left button clicked for just X/Y/Z adjustment  
+        - Right button clicked for just ROLL/PITCH/YAW adjustment  
+
+        ```bash
+        $ cd ~/dev_ws/
+        # For controlling simulated xArm:
+        $ ros2 launch xarm_moveit_servo xarm_moveit_servo_fake.launch.py joystick_type:=3
+
+        # For controlling real xArm: (use xArm 5 as example)
+        # ros2 launch xarm_moveit_servo xarm_moveit_servo_realmove.launch.py robot_ip:=192.168.1.123 dof:=5 joystick_type:=3
+        ```
+    
+    - Controlling with __PC keyboard__:
+        ```bash
+        $ cd ~/dev_ws/
+        # For controlling simulated xArm:
+        $ ros2 launch xarm_moveit_servo xarm_moveit_servo_fake.launch.py
+
+        # For controlling real xArm: (use xArm 5 as example)
+        # ros2 launch xarm_moveit_servo xarm_moveit_servo_realmove.launch.py robot_ip:=192.168.1.123 dof:=5
+
+        # Running keyboad input node:
+        $ ros2 run xarm_moveit_servo xarm_keyboard_input
+        ```
 
 
 ## 6. Instruction on major launch arguments
