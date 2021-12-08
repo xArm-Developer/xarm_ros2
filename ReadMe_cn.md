@@ -95,7 +95,7 @@ __注意3： 以下启动说明以6轴为例，5轴和7轴的用法只需找到�
     此模块是针对xarm_sdk封装，提供对应的ros service和ros topic，整个xarm_ros2是通过使用此模块的service和topic来和机械臂的通信的
     所有service和topic默认都处于xarm/空间下(除非指定了hw_ns参数)，即joint_states的完整名字为xarm/joint_states
     
-    - __services__: 所有提供的service的名字和SDK中的API名字是对应的，但是否创建对应的服务是根据```xarm_api/config/xarm_params.yaml```的services来决定的，只有当services下对应的service的值为```true```时才会创建对应的service。  
+    - __services__: 所有提供的service的名字和SDK中的API名字是对应的，但是否创建对应的服务是根据```xarm_api/config/xarm_params.yaml```和```xarm_api/config/xarm_user_params.yaml```的services来决定的，只有当services下对应的service的值为```true```时才会创建对应的service，如果需要自定义参数，请创建```xarm_api/config/xarm_user_params.yaml```文件来修改，格式参照```xarm_api/config/xarm_params.yaml```。
 
         ```
         services:

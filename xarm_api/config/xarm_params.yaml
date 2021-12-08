@@ -1,3 +1,5 @@
+# Please do not modify this file, this configuration is the default configuration
+# if you need to modify, please modify xarm_user_params.yaml
 xarm_driver:
   ros__parameters:
     DOF: 7

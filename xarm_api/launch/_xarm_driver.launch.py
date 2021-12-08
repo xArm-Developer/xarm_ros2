@@ -16,17 +16,38 @@ from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
 
-def generate_xarm_params(xarm_params_path, ros_namespace=''):
-    if ros_namespace:
-        with open(xarm_params_path, 'r') as f:
+def merge_dict(dict1, dict2):
+    for k, v in dict1.items():
+        try:
+            if k not in dict2:
+                continue
+            if isinstance(v, dict):
+                merge_dict(v, dict2[k])
+            else:
+                dict1[k] = dict2[k]
+        except Exception as e:
+            pass
+
+
+def generate_xarm_params(xarm_default_params_path, xarm_user_params_path=None, ros_namespace=''):
+    if not os.path.exists(xarm_user_params_path):
+        xarm_user_params_path = None
+    if ros_namespace or (xarm_user_params_path is not None and xarm_default_params_path != xarm_user_params_path):
+        with open(xarm_default_params_path, 'r') as f:
             ros2_control_params_yaml = yaml.safe_load(f)
-        xarm_params_yaml = {
-            ros_namespace: ros2_control_params_yaml
-        }
+        with open(xarm_user_params_path, 'r') as f:
+            ros2_control_user_params_yaml = yaml.safe_load(f)
+        merge_dict(ros2_control_params_yaml, ros2_control_user_params_yaml)
+        if ros_namespace:
+            xarm_params_yaml = {
+                ros_namespace: ros2_control_params_yaml
+            }
+        else:
+            xarm_params_yaml = ros2_control_params_yaml
         with NamedTemporaryFile(mode='w', prefix='launch_params_', delete=False) as h:
             yaml.dump(xarm_params_yaml, h, default_flow_style=False)
             return h.name
-    return xarm_params_path
+    return xarm_default_params_path
 
 
 def launch_setup(context, *args, **kwargs):
@@ -70,6 +91,7 @@ def launch_setup(context, *args, **kwargs):
     
     xarm_params = generate_xarm_params(
         os.path.join(get_package_share_directory('xarm_api'), 'config', 'xarm_params.yaml'),
+        os.path.join(get_package_share_directory('xarm_api'), 'config', 'xarm_user_params.yaml'),
         LaunchConfiguration('ros_namespace', default='').perform(context)
     )
     

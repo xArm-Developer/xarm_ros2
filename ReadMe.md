@@ -98,7 +98,7 @@ __Reminder 3： All following instructions will base on xArm6，please use prope
 - ### 5.4 xarm_api
     This package is a ros wrapper of "xarm_sdk"，functions are implemented as ros service or ros topic，communications with real xArm in "xarm_ros2" are based on the services and topics provided in this part. All the services and topics are under xarm/ namespace by default(unless 'hw_ns' parameter is specified)，e.g. full name for "joint_states" is actually "xarm/joint_states".  
     
-    - __services__: the name of provided services are the same with the corresponding function in SDK, however, whether to activate the service is up to the configuration under the "services" domain in ```xarm_api/config/xarm_params.yaml```. The defined service can only be activated at initialization if that service is configured to ```true```.  
+    - __services__: the name of provided services are the same with the corresponding function in SDK, however, whether to activate the service is up to the configuration under the "services" domain in ```xarm_api/config/xarm_params.yaml``` and ```xarm_api/config/xarm_user_params.yaml```. The defined service can only be activated at initialization if that service is configured to ```true```. If you need to customize the parameters, please create a file ```xarm_api/config/xarm_user_params.yaml``` to modify, the format, refer to ```xarm_api/config/xarm_params.yaml```.
         ```
         services:
             motion_enable: true
