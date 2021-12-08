@@ -188,108 +188,108 @@ namespace xarm_api
     bool XArmDriver::_clean_error(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res) 
     {
         res->ret = arm->clean_error();
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_clean_warn(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res)
     {
         res->ret = arm->clean_warn();
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_clean_conf(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res)
     {
         res->ret = arm->clean_conf();
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_save_conf(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res)
     {
         res->ret = arm->save_conf();
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_reload_dynamics(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res)
     {
         res->ret = arm->reload_dynamics();
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_set_counter_reset(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res)
     {
         res->ret = arm->set_counter_reset();
-        return res->ret >= 0;
+        return true;
     }
     bool XArmDriver::_set_counter_increase(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res)
     {
         res->ret = arm->set_counter_increase();
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_clean_gripper_error(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res)
     {
         res->ret = arm->clean_gripper_error();
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_clean_bio_gripper_error(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res)
     {
         res->ret = arm->clean_bio_gripper_error();
-        return res->ret >= 0;
+        return true;
     }
     
     bool XArmDriver::_start_record_trajectory(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res)
     {
         res->ret = arm->start_record_trajectory();
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_stop_record_trajectory(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res)
     {
         res->ret = arm->stop_record_trajectory();
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_get_state(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res)
     {
         res->ret = arm->get_state((int *)&res->data);
         res->message = "data=" + std::to_string(res->data);
-        return res->ret >= 0;
+        return true;
     }
     
     bool XArmDriver::_get_cmdnum(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res)
     {
         res->ret = arm->get_cmdnum((int *)&res->data);
         res->message = "data=" + std::to_string(res->data);
-        return res->ret >= 0; 
+        return true; 
     }
 
     bool XArmDriver::_get_vacuum_gripper(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res)
     {
         res->ret = arm->get_vacuum_gripper((int *)&res->data);
         res->message = "data=" + std::to_string(res->data);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_get_gripper_err_code(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res)
     {
         res->ret = arm->get_gripper_err_code((int *)&res->data);
         res->message = "data=" + std::to_string(res->data);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_get_bio_gripper_status(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res)
     {
         res->ret = arm->get_bio_gripper_status((int *)&res->data);
         res->message = "data=" + std::to_string(res->data);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_get_bio_gripper_error(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res)
     {
         res->ret = arm->get_bio_gripper_error((int *)&res->data);
         res->message = "data=" + std::to_string(res->data);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_get_err_warn_code(const std::shared_ptr<xarm_msgs::srv::GetInt16List::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16List::Response> res)
@@ -300,7 +300,7 @@ namespace xarm_api
         res->datas[0] = err_warn[0];
         res->datas[1]= err_warn[1];
         res->message = "datas=[ " + std::to_string(res->datas[0]) + ", " + std::to_string(res->datas[1]) + " ]";
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_set_mode(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
@@ -309,118 +309,118 @@ namespace xarm_api
         sleep_milliseconds(10);
         res->ret = arm->set_mode(req->data);
         res->message = "data=" + std::to_string(req->data);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_set_state(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
     {
         res->ret = arm->set_state(req->data);
         res->message = "data=" + std::to_string(req->data);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_set_collision_sensitivity(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
     {
         res->ret = arm->set_collision_sensitivity(req->data);
         res->message = "data=" + std::to_string(req->data);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_set_teach_sensitivity(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
     {
         res->ret = arm->set_teach_sensitivity(req->data);
         res->message = "data=" + std::to_string(req->data);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_set_gripper_mode(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
     {
         res->ret = arm->set_gripper_mode(req->data);
         res->message = "data=" + std::to_string(req->data);
-        return res->ret >= 0; 
+        return true; 
     }
     bool XArmDriver::_set_gripper_enable(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
     {
         res->ret = arm->set_gripper_enable(req->data);
         res->message = "data=" + std::to_string(req->data);
-        return res->ret >= 0; 
+        return true; 
     }
 
     bool XArmDriver::_set_tgpio_modbus_timeout(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
     {
         res->ret = arm->set_tgpio_modbus_timeout(req->data);
         res->message = "data=" + std::to_string(req->data);
-        return res->ret >= 0;  
+        return true;  
     }
 
     bool XArmDriver::_set_bio_gripper_speed(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
     {
         res->ret = arm->set_bio_gripper_speed(req->data);
         res->message = "data=" + std::to_string(req->data);
-        return res->ret >= 0; 
+        return true; 
     }
 
     bool XArmDriver::_set_collision_rebound(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
     {
         res->ret = arm->set_collision_rebound(req->data);
         res->message = "data=" + std::to_string(req->data);
-        return res->ret >= 0; 
+        return true; 
     }
 
     bool XArmDriver::_set_fence_mode(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
     {
         res->ret = arm->set_fence_mode(req->data);
         res->message = "data=" + std::to_string(req->data);
-        return res->ret >= 0; 
+        return true; 
     }
 
     bool XArmDriver::_set_reduced_mode(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
     {
         res->ret = arm->set_reduced_mode(req->data);
         res->message = "data=" + std::to_string(req->data);
-        return res->ret >= 0; 
+        return true; 
     }
 
     bool XArmDriver::_set_self_collision_detection(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
     {
         res->ret = arm->set_self_collision_detection(req->data);
         res->message = "data=" + std::to_string(req->data);
-        return res->ret >= 0; 
+        return true; 
     }
 
     bool XArmDriver::_set_simulation_robot(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
     {
         res->ret = arm->set_simulation_robot(req->data);
         res->message = "data=" + std::to_string(req->data);
-        return res->ret >= 0; 
+        return true; 
     }
 
     bool XArmDriver::_motion_enable(const std::shared_ptr<xarm_msgs::srv::SetInt16ById::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16ById::Response> res)
     {
         res->ret = arm->motion_enable(req->data, req->id);
         res->message = "id=" + std::to_string(req->id) + ", data=" + std::to_string(req->data);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_set_servo_attach(const std::shared_ptr<xarm_msgs::srv::SetInt16ById::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16ById::Response> res)
     {
         res->ret = arm->set_servo_attach(req->id);
         res->message = "id=" + std::to_string(req->id);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_set_servo_detach(const std::shared_ptr<xarm_msgs::srv::SetInt16ById::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16ById::Response> res)
     {
         res->ret = arm->set_servo_detach(req->id);
         res->message = "id=" + std::to_string(req->id);
-        return res->ret >= 0; 
+        return true; 
     }
 
     bool XArmDriver::_set_reduced_tcp_boundary(const std::shared_ptr<xarm_msgs::srv::SetInt16List::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16List::Response> res)
     {
         if (req->datas.size() < 6) {
             res->ret = PARAM_ERROR;
-            return false;
+            return true;
         }
         int boundary[6];
         for (int i = 0; i < 6; i++) {
@@ -432,28 +432,28 @@ namespace xarm_api
             tmp += (i == 0 ? "" : ", ") + std::to_string(boundary[i]);
         }
         res->message = "datas=[ " + tmp + " ]";
-        return res->ret >= 0; 
+        return true; 
     }
 
     bool XArmDriver::_get_tgpio_modbus_baudrate(const std::shared_ptr<xarm_msgs::srv::GetInt32::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt32::Response> res)
     {
         res->ret = arm->get_tgpio_modbus_baudrate(&res->data);
         res->message = "data=" + std::to_string(res->data);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_set_tgpio_modbus_baudrate(const std::shared_ptr<xarm_msgs::srv::SetInt32::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt32::Response> res)
     {
         res->ret = arm->set_tgpio_modbus_baudrate(req->data);
         res->message = "data=" + std::to_string(req->data);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_get_gripper_position(const std::shared_ptr<xarm_msgs::srv::GetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::GetFloat32::Response> res)
     {
         res->ret = arm->get_gripper_position(&res->data);
         res->message = "data=" + std::to_string(res->data);
-        return res->ret >= 0; 
+        return true; 
     }
 
     bool XArmDriver::_get_position(const std::shared_ptr<xarm_msgs::srv::GetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::GetFloat32List::Response> res)
@@ -465,7 +465,7 @@ namespace xarm_api
             tmp += (i == 0 ? "" : ", ") + std::to_string(res->datas[i]);
         }
         res->message = "datas=[ " + tmp + " ]";
-        return res->ret >= 0; 
+        return true; 
     }
 
     bool XArmDriver::_get_servo_angle(const std::shared_ptr<xarm_msgs::srv::GetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::GetFloat32List::Response> res)
@@ -477,7 +477,7 @@ namespace xarm_api
             tmp += (i == 0 ? "" : ", ") + std::to_string(res->datas[i]);
         }
         res->message = "datas=[ " + tmp + " ]";
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_get_position_aa(const std::shared_ptr<xarm_msgs::srv::GetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::GetFloat32List::Response> res)
@@ -489,70 +489,70 @@ namespace xarm_api
             tmp += (i == 0 ? "" : ", ") + std::to_string(res->datas[i]);
         }
         res->message = "datas=[ " + tmp + " ]";
-        return res->ret >= 0; 
+        return true; 
     }
 
     bool XArmDriver::_set_pause_time(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res)
     {
         res->ret = arm->set_pause_time(req->data);
         res->message = "data=" + std::to_string(req->data);
-        return res->ret >= 0; 
+        return true; 
     }
 
     bool XArmDriver::_set_tcp_jerk(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res)
     {
         res->ret = arm->set_tcp_jerk(req->data);
         res->message = "data=" + std::to_string(req->data);
-        return res->ret >= 0; 
+        return true; 
     }
 
     bool XArmDriver::_set_tcp_maxacc(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res)
     {
         res->ret = arm->set_tcp_maxacc(req->data);
         res->message = "data=" + std::to_string(req->data);
-        return res->ret >= 0;  
+        return true;  
     }
 
     bool XArmDriver::_set_joint_jerk(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res)
     {
         res->ret = arm->set_joint_jerk(req->data);
         res->message = "data=" + std::to_string(req->data);
-        return res->ret >= 0;  
+        return true;  
     }
 
     bool XArmDriver::_set_joint_maxacc(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res)
     {
         res->ret = arm->set_joint_maxacc(req->data);
         res->message = "data=" + std::to_string(req->data);
-        return res->ret >= 0;  
+        return true;  
     }
 
     bool XArmDriver::_set_gripper_speed(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res)
     {
         res->ret = arm->set_gripper_speed(req->data);
         res->message = "data=" + std::to_string(req->data);
-        return res->ret >= 0;  
+        return true;  
     }
 
     bool XArmDriver::_set_reduced_max_tcp_speed(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res)
     {
         res->ret = arm->set_reduced_max_tcp_speed(req->data);
         res->message = "data=" + std::to_string(req->data);
-        return res->ret >= 0;  
+        return true;  
     }
 
     bool XArmDriver::_set_reduced_max_joint_speed(const std::shared_ptr<xarm_msgs::srv::SetFloat32::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32::Response> res)
     {
         res->ret = arm->set_reduced_max_joint_speed(req->data);
         res->message = "data=" + std::to_string(req->data);
-        return res->ret >= 0;  
+        return true;  
     }
 
     bool XArmDriver::_set_gravity_direction(const std::shared_ptr<xarm_msgs::srv::SetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32List::Response> res)
     {
         if (req->datas.size() < 3) {
             res->ret = PARAM_ERROR;
-            return false;
+            return true;
         }
             
         res->ret = arm->set_gravity_direction(&req->datas[0]);
@@ -561,14 +561,14 @@ namespace xarm_api
             tmp += (i == 0 ? "" : ", ") + std::to_string(req->datas[i]);
         }
         res->message = "datas=[ " + tmp + " ]";
-        return res->ret >= 0; 
+        return true; 
     }
 
     bool XArmDriver::_set_tcp_offset(const std::shared_ptr<xarm_msgs::srv::SetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32List::Response> res)
     {
         if (req->datas.size() < 6) {
             res->ret = PARAM_ERROR;
-            return false;
+            return true;
         }
         res->ret = arm->set_tcp_offset(&req->datas[0]);
         std::string tmp = "";
@@ -576,14 +576,14 @@ namespace xarm_api
             tmp += (i == 0 ? "" : ", ") + std::to_string(req->datas[i]);
         }
         res->message = "datas=[ " + tmp + " ]";
-        return res->ret >= 0; 
+        return true; 
     }
 
     bool XArmDriver::_set_world_offset(const std::shared_ptr<xarm_msgs::srv::SetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32List::Response> res)
     {
         if (req->datas.size() < 6) {
             res->ret = PARAM_ERROR;
-            return false;
+            return true;
         }
         res->ret = arm->set_world_offset(&req->datas[0]);
         std::string tmp = "";
@@ -591,14 +591,14 @@ namespace xarm_api
             tmp += (i == 0 ? "" : ", ") + std::to_string(req->datas[i]);
         }
         res->message = "datas=[ " + tmp + " ]";
-        return res->ret >= 0; 
+        return true; 
     }
 
     bool XArmDriver::_set_reduced_joint_range(const std::shared_ptr<xarm_msgs::srv::SetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::SetFloat32List::Response> res)
     {
         if (req->datas.size() < dof_ * 2) {
             res->ret = PARAM_ERROR;
-            return false;
+            return true;
         }
         float jrange[14] = { 0 };
         for (int i = 0; i < std::min((int)req->datas.size(), 14); i++) {
@@ -610,14 +610,14 @@ namespace xarm_api
             tmp += (i == 0 ? "" : ", ") + std::to_string(jrange[i]);
         }
         res->message = "datas=[ " + tmp + " ]";
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_set_tcp_load(const std::shared_ptr<xarm_msgs::srv::SetTcpLoad::Request> req, std::shared_ptr<xarm_msgs::srv::SetTcpLoad::Response> res)
     {
         if (req->center_of_gravity.size() < 3) {
             res->ret = PARAM_ERROR;
-            return false;
+            return true;
         }
         res->ret = arm->set_tcp_load(req->weight, &req->center_of_gravity[0]);
         std::string tmp = "";
@@ -625,125 +625,125 @@ namespace xarm_api
             tmp += (i == 0 ? "" : ", ") + std::to_string(req->center_of_gravity[i]);
         }
         res->message = "weight=" + std::to_string(req->weight) + ", center_of_gravity=[ " + tmp + " ]";
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_set_position(const std::shared_ptr<xarm_msgs::srv::MoveCartesian::Request> req, std::shared_ptr<xarm_msgs::srv::MoveCartesian::Response> res)
     {
         if (req->pose.size() < 6) {
             res->ret = PARAM_ERROR;
-            return false;
+            return true;
         }
         res->ret = arm->set_position(&req->pose[0], req->radius, req->speed, req->acc, req->mvtime, req->wait, req->timeout);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_set_tool_position(const std::shared_ptr<xarm_msgs::srv::MoveCartesian::Request> req, std::shared_ptr<xarm_msgs::srv::MoveCartesian::Response> res)
     {
         if (req->pose.size() < 6) {
             res->ret = PARAM_ERROR;
-            return false;
+            return true;
         }
         res->ret = arm->set_tool_position(&req->pose[0], req->speed, req->acc, req->mvtime, req->wait, req->timeout);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_set_position_aa(const std::shared_ptr<xarm_msgs::srv::MoveCartesian::Request> req, std::shared_ptr<xarm_msgs::srv::MoveCartesian::Response> res)
     {
         if (req->pose.size() < 6) {
             res->ret = PARAM_ERROR;
-            return false;
+            return true;
         }
         res->ret = arm->set_position_aa(&req->pose[0], req->speed, req->acc, req->mvtime, req->is_tool_coord, req->relative, req->wait, req->timeout);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_set_servo_cartesian(const std::shared_ptr<xarm_msgs::srv::MoveCartesian::Request> req, std::shared_ptr<xarm_msgs::srv::MoveCartesian::Response> res)
     {
         if (req->pose.size() < 6) {
             res->ret = PARAM_ERROR;
-            return false;
+            return true;
         }
         res->ret = arm->set_servo_cartesian(&req->pose[0], req->speed, req->acc, req->mvtime, req->is_tool_coord);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_set_servo_cartesian_aa(const std::shared_ptr<xarm_msgs::srv::MoveCartesian::Request> req, std::shared_ptr<xarm_msgs::srv::MoveCartesian::Response> res)
     {
         if (req->pose.size() < 6) {
             res->ret = PARAM_ERROR;
-            return false;
+            return true;
         }
         res->ret = arm->set_servo_cartesian_aa(&req->pose[0], req->speed, req->acc, req->is_tool_coord, req->relative);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_set_servo_angle(const std::shared_ptr<xarm_msgs::srv::MoveJoint::Request> req, std::shared_ptr<xarm_msgs::srv::MoveJoint::Response> res)
     {
         if (req->angles.size() < dof_) {
             res->ret = PARAM_ERROR;
-            return false;
+            return true;
         }
         float angles[7] = { 0 };
         for (int i = 0; i < std::min((int)req->angles.size(), 7); i++) {
             angles[i] = req->angles[i];
         }
         res->ret = arm->set_servo_angle(angles, req->speed, req->acc, req->mvtime, req->wait, req->timeout, req->radius);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_set_servo_angle_j(const std::shared_ptr<xarm_msgs::srv::MoveJoint::Request> req, std::shared_ptr<xarm_msgs::srv::MoveJoint::Response> res)
     {
         if (req->angles.size() < dof_) {
             res->ret = PARAM_ERROR;
-            return false;
+            return true;
         }
         float angles[7] = { 0 };
         for (int i = 0; i < std::min((int)req->angles.size(), 7); i++) {
             angles[i] = req->angles[i];
         }
         res->ret = arm->set_servo_angle_j(angles, req->speed, req->acc, req->mvtime);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_move_circle(const std::shared_ptr<xarm_msgs::srv::MoveCircle::Request> req, std::shared_ptr<xarm_msgs::srv::MoveCircle::Response> res)
     {
         if (req->pose1.size() < 6 || req->pose2.size() < 6) {
             res->ret = PARAM_ERROR;
-            return false;
+            return true;
         }
         res->ret = arm->move_circle(&req->pose1[0], &req->pose2[0], req->percent, req->speed, req->acc, req->mvtime, req->wait, req->timeout);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_move_gohome(const std::shared_ptr<xarm_msgs::srv::MoveHome::Request> req, std::shared_ptr<xarm_msgs::srv::MoveHome::Response> res)
     {
         res->ret = arm->move_gohome(req->speed, req->acc, req->mvtime, req->wait, req->timeout);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_vc_set_joint_velocity(const std::shared_ptr<xarm_msgs::srv::MoveVelocity::Request> req, std::shared_ptr<xarm_msgs::srv::MoveVelocity::Response> res)
     {
         if (req->speeds.size() < dof_) {
             res->ret = PARAM_ERROR;
-            return false;
+            return true;
         }
         float speeds[7] = { 0 };
         for (int i = 0; i < std::min((int)req->speeds.size(), 7); i++) {
             speeds[i] = req->speeds[i];
         }
         res->ret = arm->vc_set_joint_velocity(speeds, req->is_sync, req->duration);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_vc_set_cartesian_velocity(const std::shared_ptr<xarm_msgs::srv::MoveVelocity::Request> req, std::shared_ptr<xarm_msgs::srv::MoveVelocity::Response> res)
     {
         if (req->speeds.size() < 6) {
             res->ret = PARAM_ERROR;
-            return false;
+            return true;
         }
         res->ret = arm->vc_set_cartesian_velocity(&req->speeds[0], req->is_tool_coord, req->duration);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_get_tgpio_digital(const std::shared_ptr<xarm_msgs::srv::GetDigitalIO::Request> req, std::shared_ptr<xarm_msgs::srv::GetDigitalIO::Response> res)
@@ -751,7 +751,7 @@ namespace xarm_api
         res->digitals.resize(2);
         res->ret = arm->get_tgpio_digital((int*)&res->digitals[0], (int*)&res->digitals[1]);
         res->message = "digitals=[ " + std::to_string(res->digitals[0]) + ", " + std::to_string(res->digitals[1]) + " ]";
-        return res->ret >= 0;  
+        return true;  
     }
 
     bool XArmDriver::_get_cgpio_digital(const std::shared_ptr<xarm_msgs::srv::GetDigitalIO::Request> req, std::shared_ptr<xarm_msgs::srv::GetDigitalIO::Response> res)
@@ -769,170 +769,170 @@ namespace xarm_api
             tmp += (i == 0 ? "" : ", ") + std::to_string(res->digitals[i]);
         }
         res->message = "digitals=[ " + tmp + " ]";
-        return res->ret >= 0; 
+        return true; 
     }
 
     bool XArmDriver::_get_tgpio_analog(const std::shared_ptr<xarm_msgs::srv::GetAnalogIO::Request> req, std::shared_ptr<xarm_msgs::srv::GetAnalogIO::Response> res)
     {
         res->ret = arm->get_tgpio_analog(req->ionum, &res->data);
         res->message = "ionum=" + std::to_string(req->ionum) + ", data= " + std::to_string(res->data);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_get_cgpio_analog(const std::shared_ptr<xarm_msgs::srv::GetAnalogIO::Request> req, std::shared_ptr<xarm_msgs::srv::GetAnalogIO::Response> res)
     {
         res->ret = arm->get_cgpio_analog(req->ionum, &res->data);
         res->message = "ionum=" + std::to_string(req->ionum) + ", data= " + std::to_string(res->data);
-        return res->ret >= 0; 
+        return true; 
     }
 
     bool XArmDriver::_set_tgpio_digital(const std::shared_ptr<xarm_msgs::srv::SetDigitalIO::Request> req, std::shared_ptr<xarm_msgs::srv::SetDigitalIO::Response> res)
     {
         res->ret = arm->set_tgpio_digital(req->ionum, req->value, req->delay_sec);
         res->message = "ionum=" + std::to_string(req->ionum) + ", value= " + std::to_string(req->value) + ", delay_sec=" + std::to_string(req->delay_sec);
-        return res->ret >= 0; 
+        return true; 
     }
 
     bool XArmDriver::_set_cgpio_digital(const std::shared_ptr<xarm_msgs::srv::SetDigitalIO::Request> req, std::shared_ptr<xarm_msgs::srv::SetDigitalIO::Response> res)
     {
         res->ret = arm->set_cgpio_digital(req->ionum, req->value, req->delay_sec);
         res->message = "ionum=" + std::to_string(req->ionum) + ", value= " + std::to_string(req->value) + ", delay_sec=" + std::to_string(req->delay_sec);
-        return res->ret >= 0; 
+        return true; 
     }
 
     bool XArmDriver::_set_tgpio_digital_with_xyz(const std::shared_ptr<xarm_msgs::srv::SetDigitalIO::Request> req, std::shared_ptr<xarm_msgs::srv::SetDigitalIO::Response> res)
     {
         res->ret = arm->set_tgpio_digital_with_xyz(req->ionum, req->value, &req->xyz[0], req->tol_r);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_set_cgpio_digital_with_xyz(const std::shared_ptr<xarm_msgs::srv::SetDigitalIO::Request> req, std::shared_ptr<xarm_msgs::srv::SetDigitalIO::Response> res)
     {
         res->ret = arm->set_cgpio_digital_with_xyz(req->ionum, req->value, &req->xyz[0], req->tol_r);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_set_cgpio_analog(const std::shared_ptr<xarm_msgs::srv::SetAnalogIO::Request> req, std::shared_ptr<xarm_msgs::srv::SetAnalogIO::Response> res)
     {
         res->ret = arm->set_cgpio_analog(req->ionum, req->value);
         res->message = "ionum=" + std::to_string(req->ionum) + ", value= " + std::to_string(req->value);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_set_cgpio_analog_with_xyz(const std::shared_ptr<xarm_msgs::srv::SetAnalogIO::Request> req, std::shared_ptr<xarm_msgs::srv::SetAnalogIO::Response> res)
     {
         res->ret = arm->set_cgpio_analog_with_xyz(req->ionum, req->value, &req->xyz[0], req->tol_r);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_set_vacuum_gripper(const std::shared_ptr<xarm_msgs::srv::VacuumGripperCtrl::Request> req, std::shared_ptr<xarm_msgs::srv::VacuumGripperCtrl::Response> res)
     {
         res->ret = arm->set_vacuum_gripper(req->on, req->wait, req->timeout, req->delay_sec);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_set_gripper_position(const std::shared_ptr<xarm_msgs::srv::GripperMove::Request> req, std::shared_ptr<xarm_msgs::srv::GripperMove::Response> res)
     {
         res->ret = arm->set_gripper_position(req->pos, req->wait, req->timeout);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_set_bio_gripper_enable(const std::shared_ptr<xarm_msgs::srv::BioGripperEnable::Request> req, std::shared_ptr<xarm_msgs::srv::BioGripperEnable::Response> res)
     {
         res->ret = arm->set_bio_gripper_enable(req->enable, req->wait, req->timeout);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_open_bio_gripper(const std::shared_ptr<xarm_msgs::srv::BioGripperCtrl::Request> req, std::shared_ptr<xarm_msgs::srv::BioGripperCtrl::Response> res)
     {
         res->ret = arm->open_bio_gripper(req->speed, req->wait, req->timeout);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_close_bio_gripper(const std::shared_ptr<xarm_msgs::srv::BioGripperCtrl::Request> req, std::shared_ptr<xarm_msgs::srv::BioGripperCtrl::Response> res)        
     {
         res->ret = arm->close_bio_gripper(req->speed, req->wait, req->timeout);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_robotiq_reset(const std::shared_ptr<xarm_msgs::srv::RobotiqReset::Request> req, std::shared_ptr<xarm_msgs::srv::RobotiqReset::Response> res)
     {
         res->ret_data.resize(6);
         res->ret = arm->robotiq_reset(&res->ret_data[0]);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_robotiq_set_activate(const std::shared_ptr<xarm_msgs::srv::RobotiqActivate::Request> req, std::shared_ptr<xarm_msgs::srv::RobotiqActivate::Response> res)
     {
         res->ret_data.resize(6);
         res->ret = arm->robotiq_set_activate(req->wait, req->timeout, &res->ret_data[0]);
-        return res->ret >= 0; 
+        return true; 
     }
 
     bool XArmDriver::_robotiq_set_position(const std::shared_ptr<xarm_msgs::srv::RobotiqMove::Request> req, std::shared_ptr<xarm_msgs::srv::RobotiqMove::Response> res)
     {
         res->ret_data.resize(6);
         res->ret = arm->robotiq_set_position(req->pos, req->speed, req->force, req->wait, req->timeout, &res->ret_data[0]);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_robotiq_open(const std::shared_ptr<xarm_msgs::srv::RobotiqMove::Request> req, std::shared_ptr<xarm_msgs::srv::RobotiqMove::Response> res)
     {
         res->ret_data.resize(6);
         res->ret = arm->robotiq_open(req->speed, req->force, req->wait, req->timeout, &res->ret_data[0]);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_robotiq_close(const std::shared_ptr<xarm_msgs::srv::RobotiqMove::Request> req, std::shared_ptr<xarm_msgs::srv::RobotiqMove::Response> res)
     {
         res->ret_data.resize(6);
         res->ret = arm->robotiq_close(req->speed, req->force, req->wait, req->timeout, &res->ret_data[0]);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_robotiq_get_status(const std::shared_ptr<xarm_msgs::srv::RobotiqGetStatus::Request> req, std::shared_ptr<xarm_msgs::srv::RobotiqGetStatus::Response> res)
     {
         res->ret_data.resize(9);
         res->ret = arm->robotiq_get_status(&res->ret_data[0], req->number_of_registers);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_getset_tgpio_modbus_data(const std::shared_ptr<xarm_msgs::srv::GetSetModbusData::Request> req, std::shared_ptr<xarm_msgs::srv::GetSetModbusData::Response> res)
     {
         res->ret_data.resize(req->ret_length);
         res->ret = arm->getset_tgpio_modbus_data(&req->modbus_data[0], req->modbus_length, &res->ret_data[0], req->ret_length);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_save_record_trajectory(const std::shared_ptr<xarm_msgs::srv::TrajCtrl::Request> req, std::shared_ptr<xarm_msgs::srv::TrajCtrl::Response> res)
     {
         if (req->filename.size() > 80 || req->filename.size() <= 0) {
             res->ret = PARAM_ERROR;
-            return false;
+            return true;
         }
         char filename[81]={0};
         req->filename.copy(filename, req->filename.size(), 0);
         res->ret = arm->save_record_trajectory(filename, req->timeout);
-        return res->ret >= 0;
+        return true;
     }
 
     bool XArmDriver::_load_trajectory(const std::shared_ptr<xarm_msgs::srv::TrajCtrl::Request> req, std::shared_ptr<xarm_msgs::srv::TrajCtrl::Response> res)
     {
         if (req->filename.size() > 80 || req->filename.size() <= 0) {
             res->ret = PARAM_ERROR;
-            return false;
+            return true;
         }
         char filename[81]={0};
         req->filename.copy(filename, req->filename.size(), 0);
         res->ret = arm->load_trajectory(filename, req->timeout);
-        return res->ret >= 0; 
+        return true; 
     }
 
     bool XArmDriver::_playback_trajectory(const std::shared_ptr<xarm_msgs::srv::TrajPlay::Request> req, std::shared_ptr<xarm_msgs::srv::TrajPlay::Response> res)
     {
         if (req->filename.size() > 80) {
             res->ret = PARAM_ERROR;
-            return false;
+            return true;
         }
         char *filename = NULL;
         if (req->filename.size() != 0) {
@@ -941,6 +941,6 @@ namespace xarm_api
             filename = file_name;
         }        
         res->ret = arm->playback_trajectory(req->times, filename, req->wait, req->double_speed);
-        return res->ret >= 0; 
+        return true; 
     }
 }
