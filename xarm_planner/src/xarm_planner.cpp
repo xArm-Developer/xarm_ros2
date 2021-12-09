@@ -16,10 +16,18 @@ const double maxV_scale_factor = 0.3;
 XArmPlanner::XArmPlanner(const rclcpp::Node::SharedPtr& node, const std::string& group_name)
     : node_(node)
 {
+    init(group_name);
+}
+
+XArmPlanner::XArmPlanner(const std::string& group_name)
+{
+    node_ = rclcpp::Node::make_shared("xarm_planner_move_group_node");
+    init(group_name);
+}
+
+void XArmPlanner::init(const std::string& group_name) 
+{
     move_group_ = std::make_shared<moveit::planning_interface::MoveGroupInterface>(node_, group_name);
-    // rclcpp::executors::SingleThreadedExecutor executor;
-    // executor.add_node(node_);
-    // std::thread([&executor]() { executor.spin(); }).detach();
     RCLCPP_INFO(node_->get_logger(), "Planning frame: %s", move_group_->getPlanningFrame().c_str());
     RCLCPP_INFO(node_->get_logger(), "End effector link: %s", move_group_->getEndEffectorLink().c_str());
     RCLCPP_INFO(node_->get_logger(), "Available Planning Groups:");

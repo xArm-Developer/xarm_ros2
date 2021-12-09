@@ -31,6 +31,7 @@ namespace xarm_planner
     {
     public:
         XArmPlanner(const rclcpp::Node::SharedPtr& node, const std::string& group_name);
+        XArmPlanner(const std::string& group_name);
         ~XArmPlanner() {};
 
         bool planJointTarget(const std::vector<double>& joint_target);
@@ -40,6 +41,8 @@ namespace xarm_planner
 
         bool executePath(bool wait = true);
     private:
+        void init(const std::string& group_name);
+
         rclcpp::Node::SharedPtr node_;
         std::shared_ptr<moveit::planning_interface::MoveGroupInterface> move_group_;
         moveit::planning_interface::MoveGroupInterface::Plan xarm_plan_;

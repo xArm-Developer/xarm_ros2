@@ -44,7 +44,7 @@ XArmPlannerRunner::XArmPlannerRunner(rclcpp::Node::SharedPtr& node)
 
     RCLCPP_INFO(node_->get_logger(), "namespace: %s, group_name: %s", node->get_namespace(), group_name.c_str());
 
-    xarm_planner_ = std::make_shared<xarm_planner::XArmPlanner>(node_, group_name);
+    xarm_planner_ = std::make_shared<xarm_planner::XArmPlanner>(group_name);
 
     exec_plan_server_ = node_->create_service<xarm_msgs::srv::PlanExec>("xarm_gripper_exec_plan", BIND_CLS_CB(&XArmPlannerRunner::exec_plan_cb));
     joint_plan_server_ = node_->create_service<xarm_msgs::srv::PlanJoint>("xarm_gripper_joint_plan", BIND_CLS_CB(&XArmPlannerRunner::do_joint_plan));

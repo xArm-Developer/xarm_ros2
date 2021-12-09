@@ -53,7 +53,9 @@ int call_request(std::shared_ptr<ServiceT> client, SharedRequest req)
 int main(int argc, char** argv)
 {	
     rclcpp::init(argc, argv);
-    node = rclcpp::Node::make_shared("test_xarm_planner_node_pose");
+    rclcpp::NodeOptions node_options;
+    node_options.automatically_declare_parameters_from_overrides(true);    
+    node = rclcpp::Node::make_shared("test_xarm_planner_node_pose", node_options);
     RCLCPP_INFO(node->get_logger(), "test_xarm_planner_node_pose start");
     signal(SIGINT, exit_sig_handler);
 
