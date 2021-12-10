@@ -139,6 +139,7 @@ namespace xarm_api
         rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_reduced_mode_;
         rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_self_collision_detection_;
         rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_simulation_robot_;
+        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_baud_checkset_enable_;
         bool _set_mode(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
         bool _set_state(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
         bool _set_collision_sensitivity(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
@@ -152,6 +153,7 @@ namespace xarm_api
         bool _set_reduced_mode(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
         bool _set_self_collision_detection(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
         bool _set_simulation_robot(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+        bool _set_baud_checkset_enable(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
 
         // SetInt16ById
         rclcpp::Service<xarm_msgs::srv::SetInt16ById>::SharedPtr service_motion_enable_;
@@ -169,9 +171,17 @@ namespace xarm_api
         rclcpp::Service<xarm_msgs::srv::GetInt32>::SharedPtr service_get_tgpio_modbus_baudrate_;
         bool _get_tgpio_modbus_baudrate(const std::shared_ptr<xarm_msgs::srv::GetInt32::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt32::Response> res);
 
+        // GetInt32ByType
+        rclcpp::Service<xarm_msgs::srv::GetInt32ByType>::SharedPtr service_get_checkset_default_baud_;
+        bool _get_checkset_default_baud(const std::shared_ptr<xarm_msgs::srv::GetInt32ByType::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt32ByType::Response> res);
+
         // SetInt32
         rclcpp::Service<xarm_msgs::srv::SetInt32>::SharedPtr service_set_tgpio_modbus_baudrate_;
         bool _set_tgpio_modbus_baudrate(const std::shared_ptr<xarm_msgs::srv::SetInt32::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt32::Response> res);
+
+        // SetInt32ByType
+        rclcpp::Service<xarm_msgs::srv::SetInt32ByType>::SharedPtr service_set_checkset_default_baud_;
+        bool _set_checkset_default_baud(const std::shared_ptr<xarm_msgs::srv::SetInt32ByType::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt32ByType::Response> res);
 
         // GetFloat32
         rclcpp::Service<xarm_msgs::srv::GetFloat32>::SharedPtr service_get_gripper_position_;
@@ -327,7 +337,7 @@ namespace xarm_api
         
         // TrajPlay
         rclcpp::Service<xarm_msgs::srv::TrajPlay>::SharedPtr service_playback_trajectory_;
-        bool _playback_trajectory(const std::shared_ptr<xarm_msgs::srv::TrajPlay::Request> req, std::shared_ptr<xarm_msgs::srv::TrajPlay::Response> res);    
+        bool _playback_trajectory(const std::shared_ptr<xarm_msgs::srv::TrajPlay::Request> req, std::shared_ptr<xarm_msgs::srv::TrajPlay::Response> res);
     };
 }
 

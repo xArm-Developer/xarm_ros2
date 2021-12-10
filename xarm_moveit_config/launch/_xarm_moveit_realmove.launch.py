@@ -40,6 +40,9 @@ def launch_setup(context, *args, **kwargs):
     geometry_mesh_tcp_xyz = LaunchConfiguration('geometry_mesh_tcp_xyz', default='"0 0 0"')
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
 
+    baud_checkset = LaunchConfiguration('baud_checkset', default=True)
+    default_gripper_baud = LaunchConfiguration('default_gripper_baud', default=2000000)
+
     ros2_control_plugin = 'xarm_control/XArmHW'
     controllers_name = 'controllers'
     moveit_controller_manager_key = 'moveit_simple_controller_manager'
@@ -58,6 +61,8 @@ def launch_setup(context, *args, **kwargs):
             'hw_ns': hw_ns,
             'add_gripper': add_gripper,
             'prefix': prefix,
+            'baud_checkset': baud_checkset,
+            'default_gripper_baud': default_gripper_baud,
         }.items(),
     )
     

@@ -66,6 +66,7 @@ namespace xarm_api
         service_set_reduced_mode_ = _create_service<xarm_msgs::srv::SetInt16>("set_reduced_mode", &XArmDriver::_set_reduced_mode);
         service_set_self_collision_detection_ = _create_service<xarm_msgs::srv::SetInt16>("set_self_collision_detection", &XArmDriver::_set_self_collision_detection);
         service_set_simulation_robot_ = _create_service<xarm_msgs::srv::SetInt16>("set_simulation_robot", &XArmDriver::_set_simulation_robot);
+        service_set_baud_checkset_enable_ = _create_service<xarm_msgs::srv::SetInt16>("set_baud_checkset_enable", &XArmDriver::_set_baud_checkset_enable);
         
         // SetInt16ById
         service_motion_enable_= _create_service<xarm_msgs::srv::SetInt16ById>("motion_enable", &XArmDriver::_motion_enable);
@@ -78,9 +79,15 @@ namespace xarm_api
         // GetInt32
         service_get_tgpio_modbus_baudrate_ = _create_service<xarm_msgs::srv::GetInt32>("get_tgpio_modbus_baudrate", &XArmDriver::_get_tgpio_modbus_baudrate);
 
+        // GetInt32ByType
+        service_get_checkset_default_baud_ = _create_service<xarm_msgs::srv::GetInt32ByType>("get_checkset_default_baud", &XArmDriver::_get_checkset_default_baud);
+
         // SetInt32
         service_set_tgpio_modbus_baudrate_ = _create_service<xarm_msgs::srv::SetInt32>("set_tgpio_modbus_baudrate", &XArmDriver::_set_tgpio_modbus_baudrate);
         
+        // SetInt32ByType
+        service_set_checkset_default_baud_ = _create_service<xarm_msgs::srv::SetInt32ByType>("set_checkset_default_baud", &XArmDriver::_set_checkset_default_baud);
+
         // GetFloat32
         service_get_gripper_position_ = _create_service<xarm_msgs::srv::GetFloat32>("get_gripper_position", &XArmDriver::_get_gripper_position);
     
@@ -395,6 +402,13 @@ namespace xarm_api
         return true; 
     }
 
+    bool XArmDriver::_set_baud_checkset_enable(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
+    {
+        res->ret = arm->set_baud_checkset_enable(req->data);
+        res->message = "data=" + std::to_string(req->data);
+        return true; 
+    }
+
     bool XArmDriver::_motion_enable(const std::shared_ptr<xarm_msgs::srv::SetInt16ById::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16ById::Response> res)
     {
         res->ret = arm->motion_enable(req->data, req->id);
@@ -413,6 +427,13 @@ namespace xarm_api
     {
         res->ret = arm->set_servo_detach(req->id);
         res->message = "id=" + std::to_string(req->id);
+        return true; 
+    }
+
+    bool XArmDriver::_set_checkset_default_baud(const std::shared_ptr<xarm_msgs::srv::SetInt32ByType::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt32ByType::Response> res)
+    {
+        res->ret = arm->set_checkset_default_baud(req->type, req->data);
+        res->message = "type=" + std::to_string(req->type) + ", data=" + std::to_string(req->data);
         return true; 
     }
 
@@ -438,6 +459,13 @@ namespace xarm_api
     bool XArmDriver::_get_tgpio_modbus_baudrate(const std::shared_ptr<xarm_msgs::srv::GetInt32::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt32::Response> res)
     {
         res->ret = arm->get_tgpio_modbus_baudrate(&res->data);
+        res->message = "data=" + std::to_string(res->data);
+        return true;
+    }
+
+    bool XArmDriver::_get_checkset_default_baud(const std::shared_ptr<xarm_msgs::srv::GetInt32ByType::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt32ByType::Response> res)
+    {
+        res->ret = arm->get_checkset_default_baud(req->type, &res->data);
         res->message = "data=" + std::to_string(res->data);
         return true;
     }

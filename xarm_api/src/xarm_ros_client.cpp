@@ -31,7 +31,10 @@ void XArmROSClient::init(rclcpp::Node::SharedPtr& node, std::string hw_ns)
 	req_set_int16_list_ = std::make_shared<xarm_msgs::srv::SetInt16List::Request>();
 	req_get_int32_ = std::make_shared<xarm_msgs::srv::GetInt32::Request>();
 	res_get_int32_ = std::make_shared<xarm_msgs::srv::GetInt32::Response>();
+    req_get_int32_by_type_ = std::make_shared<xarm_msgs::srv::GetInt32ByType::Request>();
+	res_get_int32_by_type_ = std::make_shared<xarm_msgs::srv::GetInt32ByType::Response>();
 	req_set_int32_ = std::make_shared<xarm_msgs::srv::SetInt32::Request>();
+	req_set_int32_by_type_ = std::make_shared<xarm_msgs::srv::SetInt32ByType::Request>();
 	req_get_float32_ = std::make_shared<xarm_msgs::srv::GetFloat32::Request>();
 	res_get_float32_ = std::make_shared<xarm_msgs::srv::GetFloat32::Response>();
 	req_get_float32_list_ = std::make_shared<xarm_msgs::srv::GetFloat32List::Request>();
@@ -101,6 +104,7 @@ void XArmROSClient::init(rclcpp::Node::SharedPtr& node, std::string hw_ns)
     client_set_reduced_mode_ = _create_client<xarm_msgs::srv::SetInt16>("set_reduced_mode");
     client_set_self_collision_detection_ = _create_client<xarm_msgs::srv::SetInt16>("set_self_collision_detection");
     client_set_simulation_robot_ = _create_client<xarm_msgs::srv::SetInt16>("set_simulation_robot");
+    client_set_baud_checkset_enable_ = _create_client<xarm_msgs::srv::SetInt16>("set_baud_checkset_enable");
 
     client_motion_enable_ = _create_client<xarm_msgs::srv::SetInt16ById>("motion_enable");
     client_set_servo_attach_ = _create_client<xarm_msgs::srv::SetInt16ById>("set_servo_attach");
@@ -109,8 +113,12 @@ void XArmROSClient::init(rclcpp::Node::SharedPtr& node, std::string hw_ns)
     client_set_reduced_tcp_boundary_ = _create_client<xarm_msgs::srv::SetInt16List>("set_reduced_tcp_boundary");
     
     client_get_tgpio_modbus_baudrate_ = _create_client<xarm_msgs::srv::GetInt32>("get_tgpio_modbus_baudrate");
+    
+    client_get_checkset_default_baud_ = _create_client<xarm_msgs::srv::GetInt32ByType>("get_checkset_default_baud");
 
     client_set_tgpio_modbus_baudrate_ = _create_client<xarm_msgs::srv::SetInt32>("set_tgpio_modbus_baudrate");
+
+    client_set_checkset_default_baud_ = _create_client<xarm_msgs::srv::SetInt32ByType>("set_checkset_default_baud");
     
     client_get_gripper_position_ = _create_client<xarm_msgs::srv::GetFloat32>("get_gripper_position");
     
@@ -435,6 +443,12 @@ int XArmROSClient::set_simulation_robot(bool on)
     return _call_request(client_set_simulation_robot_, req_set_int16_);
 }
 
+int XArmROSClient::set_baud_checkset_enable(bool enable)
+{
+    req_set_int16_->data = (int)enable;
+    return _call_request(client_set_baud_checkset_enable_, req_set_int16_);
+}
+
 // SetInt16ById
 int XArmROSClient::motion_enable(bool enable, int servo_id)
 {
@@ -455,6 +469,14 @@ int XArmROSClient::set_servo_detach(int servo_id)
     return _call_request(client_set_servo_detach_, req_set_int16_by_id_);
 }
 
+// SetInt32ByType
+int XArmROSClient::set_checkset_default_baud(int type, int baud)
+{
+    req_set_int32_by_type_->type = type;
+    req_set_int32_by_type_->data = baud;
+    return _call_request(client_set_checkset_default_baud_, req_set_int32_by_type_);
+}
+
 // SetInt16List
 int XArmROSClient::set_reduced_tcp_boundary(const std::vector<int>& boundary)
 {
@@ -469,6 +491,15 @@ int XArmROSClient::get_tgpio_modbus_baudrate(int *baudrate)
 {
     int ret = _call_request(client_get_tgpio_modbus_baudrate_, req_get_int32_, res_get_int32_);
     *baudrate = res_get_int32_->data;
+    return ret;
+}
+
+// GetInt32ByType
+int XArmROSClient::get_checkset_default_baud(int type, int *baud)
+{
+    req_get_int32_by_type_->type = type;
+    int ret = _call_request(client_get_checkset_default_baud_, req_get_int32_by_type_, res_get_int32_by_type_);
+    *baud = res_get_int32_by_type_->data;
     return ret;
 }
 

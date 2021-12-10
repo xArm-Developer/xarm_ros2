@@ -11,6 +11,7 @@
 #   - set_reduced_mode
 #   - set_self_collision_detection
 #   - set_simulation_robot
+#   - set_baud_checkset_enable
 
 int16 data
 

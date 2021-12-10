@@ -24,6 +24,8 @@ def generate_launch_description():
     velocity_control = LaunchConfiguration('velocity_control', default=False)
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
+    baud_checkset = LaunchConfiguration('baud_checkset', default=True)
+    default_gripper_baud = LaunchConfiguration('default_gripper_baud', default=2000000)
 
     # xarm moveit servo launch
     # xarm_moveit_servo/launch/_xarm_moveit_servo.launch.py
@@ -53,6 +55,8 @@ def generate_launch_description():
             'hw_ns': hw_ns,
             'add_gripper': add_gripper,
             'prefix': prefix,
+            'baud_checkset': baud_checkset,
+            'default_gripper_baud': default_gripper_baud,
         }.items(),
     )
     

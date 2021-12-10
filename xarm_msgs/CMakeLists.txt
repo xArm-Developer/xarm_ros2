@@ -54,6 +54,7 @@ set(srv_files
   ${srv_dir}/GetInt16.srv
   ${srv_dir}/GetInt16List.srv
   ${srv_dir}/GetInt32.srv
+  ${srv_dir}/GetInt32ByType.srv
   ${srv_dir}/GetSetModbusData.srv
   ${srv_dir}/GripperMove.srv
   ${srv_dir}/MoveCartesian.srv
@@ -73,6 +74,7 @@ set(srv_files
   ${srv_dir}/SetInt16ById.srv
   ${srv_dir}/SetInt16List.srv
   ${srv_dir}/SetInt32.srv
+  ${srv_dir}/SetInt32ByType.srv
   ${srv_dir}/TrajCtrl.srv
   ${srv_dir}/TrajPlay.srv
   ${srv_dir}/VacuumGripperCtrl.srv

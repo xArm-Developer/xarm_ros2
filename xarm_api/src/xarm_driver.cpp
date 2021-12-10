@@ -72,6 +72,13 @@ namespace xarm_api
         hw_node_ = node->create_sub_node(hw_ns);
         node_->get_parameter_or("dof", dof_, 7);
         node_->get_parameter_or("report_type", report_type_, std::string("normal"));
+
+        bool baud_checkset = true;
+        int default_gripper_baud = 2000000;
+        node_->get_parameter_or("baud_checkset", baud_checkset, true);
+        node_->get_parameter_or("default_gripper_baud", default_gripper_baud, 2000000);
+        
+        RCLCPP_INFO(node_->get_logger(), "baud_checkset: %d, default_gripper_baud: %d", baud_checkset, default_gripper_baud);
         
         arm = new XArmAPI(
             server_ip, 
@@ -89,6 +96,8 @@ namespace xarm_api
             DEBUG_MODE, // debug
             report_type_ // report_type
         );
+        arm->set_baud_checkset_enable(baud_checkset);
+        arm->set_checkset_default_baud(1, default_gripper_baud);
         arm->release_connect_changed_callback(true);
         arm->release_report_data_callback(true);
         // arm->register_connect_changed_callback(std::bind(&XArmDriver::_report_connect_changed_callback, this, std::placeholders::_1, std::placeholders::_2));

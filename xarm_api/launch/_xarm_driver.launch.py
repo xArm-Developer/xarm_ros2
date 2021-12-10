@@ -88,6 +88,8 @@ def launch_setup(context, *args, **kwargs):
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     prefix = LaunchConfiguration('prefix', default='')
+    baud_checkset = LaunchConfiguration('baud_checkset', default=True)
+    default_gripper_baud = LaunchConfiguration('default_gripper_baud', default=2000000)
     
     xarm_params = generate_xarm_params(
         os.path.join(get_package_share_directory('xarm_api'), 'config', 'xarm_params.yaml'),
@@ -112,6 +114,8 @@ def launch_setup(context, *args, **kwargs):
                 'add_gripper': add_gripper,
                 'hw_ns': hw_ns.perform(context).strip('/'),
                 'prefix': prefix.perform(context).strip('/'),
+                'baud_checkset': baud_checkset,
+                'default_gripper_baud': default_gripper_baud,
             },
         ]
     )

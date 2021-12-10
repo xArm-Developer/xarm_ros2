@@ -44,12 +44,15 @@ xarm_driver:
       set_reduced_mode: false
       set_self_collision_detection: false
       set_simulation_robot: false
+      set_baud_checkset_enable: false
       motion_enable: true
       set_servo_attach: false
       set_servo_detach: false
       set_reduced_tcp_boundary: false
       get_tgpio_modbus_baudrate: false
       set_tgpio_modbus_baudrate: false
+      get_checkset_default_baud: false
+      set_checkset_default_baud: false
       get_gripper_position: false
       get_position: false
       get_servo_angle: false

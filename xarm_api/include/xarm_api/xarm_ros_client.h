@@ -80,6 +80,7 @@ public:
 	int set_reduced_mode(bool on);
 	int set_self_collision_detection(bool on);
 	int set_simulation_robot(bool on);
+	int set_baud_checkset_enable(bool enable);
 
 	// SetInt16ById
 	int motion_enable(bool enable, int servo_id = 8);
@@ -92,8 +93,14 @@ public:
 	// GetInt32
 	int get_tgpio_modbus_baudrate(int *baudrate);
 
+	// GetInt32ByType
+	int get_checkset_default_baud(int type, int *baud);
+
 	// SetInt32
 	int set_tgpio_modbus_baudrate(int baudrate);
+
+	// SetInt32ByType
+	int set_checkset_default_baud(int type, int baud);
 
 	// GetFloat32
 	int get_gripper_position(fp32 *pos);
@@ -273,6 +280,7 @@ private:
 	rclcpp::Client<xarm_msgs::srv::SetInt16>::SharedPtr client_set_reduced_mode_;
 	rclcpp::Client<xarm_msgs::srv::SetInt16>::SharedPtr client_set_self_collision_detection_;
 	rclcpp::Client<xarm_msgs::srv::SetInt16>::SharedPtr client_set_simulation_robot_;
+	rclcpp::Client<xarm_msgs::srv::SetInt16>::SharedPtr client_set_baud_checkset_enable_;
 	
 	// SetInt16ById
 	std::shared_ptr<xarm_msgs::srv::SetInt16ById::Request> req_set_int16_by_id_;
@@ -288,10 +296,19 @@ private:
 	std::shared_ptr<xarm_msgs::srv::GetInt32::Request> req_get_int32_;
 	std::shared_ptr<xarm_msgs::srv::GetInt32::Response> res_get_int32_;
 	rclcpp::Client<xarm_msgs::srv::GetInt32>::SharedPtr client_get_tgpio_modbus_baudrate_;
+
+	// GetInt32ByType
+	std::shared_ptr<xarm_msgs::srv::GetInt32ByType::Request> req_get_int32_by_type_;
+	std::shared_ptr<xarm_msgs::srv::GetInt32ByType::Response> res_get_int32_by_type_;
+	rclcpp::Client<xarm_msgs::srv::GetInt32ByType>::SharedPtr client_get_checkset_default_baud_;
 	
 	// SetInt32
 	std::shared_ptr<xarm_msgs::srv::SetInt32::Request> req_set_int32_;
 	rclcpp::Client<xarm_msgs::srv::SetInt32>::SharedPtr client_set_tgpio_modbus_baudrate_;
+
+	// SetInt32ByType
+	std::shared_ptr<xarm_msgs::srv::SetInt32ByType::Request> req_set_int32_by_type_;
+	rclcpp::Client<xarm_msgs::srv::SetInt32ByType>::SharedPtr client_set_checkset_default_baud_;
 
 	// GetFloat32
 	std::shared_ptr<xarm_msgs::srv::GetFloat32::Request> req_get_float32_;

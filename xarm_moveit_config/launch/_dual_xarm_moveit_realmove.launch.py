@@ -86,6 +86,13 @@ def launch_setup(context, *args, **kwargs):
     geometry_mesh_tcp_rpy_1 = LaunchConfiguration('geometry_mesh_tcp_rpy_1', default=geometry_mesh_tcp_rpy)
     geometry_mesh_tcp_rpy_2 = LaunchConfiguration('geometry_mesh_tcp_rpy_2', default=geometry_mesh_tcp_rpy)
 
+    baud_checkset = LaunchConfiguration('baud_checkset', default=True)
+    baud_checkset_1 = LaunchConfiguration('baud_checkset', default=baud_checkset)
+    baud_checkset_2 = LaunchConfiguration('baud_checkset', default=baud_checkset)
+    default_gripper_baud = LaunchConfiguration('default_gripper_baud', default=2000000)
+    default_gripper_baud_1 = LaunchConfiguration('default_gripper_baud', default=default_gripper_baud)
+    default_gripper_baud_2 = LaunchConfiguration('default_gripper_baud', default=default_gripper_baud)
+
     ros2_control_plugin = 'xarm_control/XArmHW'
     controllers_name = 'controllers'
     moveit_controller_manager_key = 'moveit_simple_controller_manager'
@@ -103,6 +110,8 @@ def launch_setup(context, *args, **kwargs):
             'hw_ns': hw_ns,
             'add_gripper': add_gripper_1,
             'prefix': prefix_1,
+            'baud_checkset': baud_checkset_1,
+            'default_gripper_baud': default_gripper_baud_1,
         }.items(),
     )
     # xarm driver launch
@@ -116,6 +125,8 @@ def launch_setup(context, *args, **kwargs):
             'hw_ns': hw_ns,
             'add_gripper': add_gripper_2,
             'prefix': prefix_2,
+            'baud_checkset': baud_checkset_2,
+            'default_gripper_baud': default_gripper_baud_2,
         }.items(),
     )
 
