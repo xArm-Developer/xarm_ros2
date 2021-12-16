@@ -243,8 +243,12 @@ namespace xarm_api
         float cur_pos = 0;
         int err = 0;
         ret = arm->get_gripper_err_code(&err);
-        if (err != 0) {
-            goal_handle->canceled(gripper_result_);
+        if (ret != 0 || err != 0) {
+            try {
+                goal_handle->canceled(gripper_result_);
+            } catch (std::exception &e) {
+                RCLCPP_ERROR(node_->get_logger(), "goal_handle canceled exception, ex=%s", e.what());    
+            }
             RCLCPP_ERROR(node_->get_logger(), "get_gripper_err_code, ret=%d, err=%d", ret, err);
             return;
         }
@@ -254,7 +258,11 @@ namespace xarm_api
         ret = arm->set_gripper_mode(0);
         if (ret != 0) {
             gripper_result_->position = _gripper_pos_convert(cur_pos);
-            goal_handle->canceled(gripper_result_);
+            try {
+                goal_handle->canceled(gripper_result_);
+            } catch (std::exception &e) {
+                RCLCPP_ERROR(node_->get_logger(), "goal_handle canceled exception, ex=%s", e.what()); 
+            }
             ret = arm->get_gripper_err_code(&err);
             RCLCPP_WARN(node_->get_logger(), "set_gripper_mode, ret=%d, err=%d, cur_pos=%f", ret, err, cur_pos);
             return;
@@ -262,7 +270,11 @@ namespace xarm_api
         ret = arm->set_gripper_enable(true);
         if (ret != 0) {
             gripper_result_->position = _gripper_pos_convert(cur_pos);
-            goal_handle->canceled(gripper_result_);
+            try {
+                goal_handle->canceled(gripper_result_);
+            } catch (std::exception &e) {
+                RCLCPP_ERROR(node_->get_logger(), "goal_handle canceled exception, ex=%s", e.what()); 
+            }
             ret = arm->get_gripper_err_code(&err);
             RCLCPP_WARN(node_->get_logger(), "set_gripper_enable, ret=%d, err=%d, cur_pos=%f", ret, err, cur_pos);
             return;
@@ -270,7 +282,11 @@ namespace xarm_api
         ret = arm->set_gripper_speed(gripper_speed_);
         if (ret != 0) {
             gripper_result_->position = _gripper_pos_convert(cur_pos);
-            goal_handle->canceled(gripper_result_);
+            try {
+                goal_handle->canceled(gripper_result_);
+            } catch (std::exception &e) {
+                RCLCPP_ERROR(node_->get_logger(), "goal_handle canceled exception, ex=%s", e.what()); 
+            }
             ret = arm->get_gripper_err_code(&err);
             RCLCPP_WARN(node_->get_logger(), "set_gripper_speed, ret=%d, err=%d, cur_pos=%f", ret, err, cur_pos);
             return;
@@ -299,7 +315,11 @@ namespace xarm_api
                         cnt += 1;
                         if (cnt >= gripper_threshold_times_ && fabs(target_pos - cur_pos) < 15) {
                             gripper_result_->position = _gripper_pos_convert(cur_pos);
-                            goal_handle->succeed(gripper_result_);
+                            try {
+                                goal_handle->succeed(gripper_result_);
+                            } catch (std::exception &e) {
+                                RCLCPP_ERROR(node_->get_logger(), "goal_handle succeed exception, ex=%s", e.what()); 
+                            }
                             is_succeed = true;
                         }
                     }
@@ -309,7 +329,11 @@ namespace xarm_api
                     }
                 }
                 gripper_feedback_->position = _gripper_pos_convert(cur_pos);
-                goal_handle->publish_feedback(gripper_feedback_);
+                try {
+                    goal_handle->publish_feedback(gripper_feedback_);
+                } catch (std::exception &e) {
+                    RCLCPP_ERROR(node_->get_logger(), "goal_handle publish_feedback exception, ex=%s", e.what());
+                }
                 _pub_gripper_joint_states(cur_pos);
             }
             // if (goal_handle->is_canceling()) {
@@ -323,7 +347,11 @@ namespace xarm_api
         RCLCPP_INFO(node_->get_logger(), "move finish, cur_pos=%f", cur_pos);
         if (rclcpp::ok() && !is_succeed) {
             gripper_result_->position = _gripper_pos_convert(cur_pos);
-            goal_handle->succeed(gripper_result_);
+            try {
+                goal_handle->succeed(gripper_result_);
+            } catch (std::exception &e) {
+                RCLCPP_ERROR(node_->get_logger(), "goal_handle succeed exception, ex=%s", e.what());
+            }
             RCLCPP_INFO(node_->get_logger(), "Goal succeeded");
         }
     }
