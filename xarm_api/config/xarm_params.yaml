@@ -55,7 +55,7 @@ xarm_driver:
       set_checkset_default_baud: false
       get_gripper_position: false
       get_position: false
-      get_servo_angle: false
+      get_servo_angle: true
       get_position_aa: false
       set_pause_time: false
       set_tcp_jerk: false
