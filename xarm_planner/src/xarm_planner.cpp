@@ -91,7 +91,7 @@ bool XArmPlanner::executePath(bool wait)
         code =  move_group_->asyncExecute(xarm_plan_);
     bool success = (code == moveit::planning_interface::MoveItErrorCode::SUCCESS);
     if (!success)
-        RCLCPP_ERROR(node_->get_logger(), "executePath: execute failed, wait=%d, MoveItErrorCode=%d", wait, code);
+        RCLCPP_ERROR(node_->get_logger(), "executePath: execute failed, wait=%d, MoveItErrorCode=%d", wait, code.val);
     return success;
 }
 }

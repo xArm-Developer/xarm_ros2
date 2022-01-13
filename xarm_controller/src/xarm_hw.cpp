@@ -96,8 +96,11 @@ namespace xarm_control
         curr_err_ = states->err;
     }
 
-    hardware_interface::return_type XArmHW::configure(const hardware_interface::HardwareInfo & info)
+    CallbackReturn XArmHW::on_init(const hardware_interface::HardwareInfo& info)
     {
+        if (hardware_interface::SystemInterface::on_init(info) != CallbackReturn::SUCCESS) {
+            return CallbackReturn::ERROR;
+        }
         info_ = info;
         velocity_control_ = false;
         curr_state_ = 4;
@@ -136,10 +139,10 @@ namespace xarm_control
                 }
             }
             if (!has_pos_cmd_interface) {
-                RCLCPP_ERROR(node_->get_logger(), "[ns: %s] Joint '%s' has %d command interfaces found, but not found %s command interface",
+                RCLCPP_ERROR(node_->get_logger(), "[ns: %s] Joint '%s' has %ld command interfaces found, but not found %s command interface",
                     node_->get_namespace(), joint.name.c_str(), joint.command_interfaces.size(), hardware_interface::HW_IF_POSITION
                 );
-                return hardware_interface::return_type::ERROR;
+                return CallbackReturn::ERROR;
             }
 
             bool has_pos_state_interface = false;
@@ -150,16 +153,15 @@ namespace xarm_control
                 }
             }
             if (!has_pos_state_interface) {
-                RCLCPP_ERROR(node_->get_logger(), "[ns: %s] Joint '%s' has %d state interfaces found, but not found %s state interface",
+                RCLCPP_ERROR(node_->get_logger(), "[ns: %s] Joint '%s' has %ld state interfaces found, but not found %s state interface",
                     node_->get_namespace(), joint.name.c_str(), joint.state_interfaces.size(), hardware_interface::HW_IF_POSITION
                 );
-                return hardware_interface::return_type::ERROR;
+                return CallbackReturn::ERROR;
             }
         }
 
-        RCLCPP_INFO(node_->get_logger(), "[ns:%s] System Sucessfully configured!", node_->get_namespace());
-        status_ = hardware_interface::status::CONFIGURED;
-        return hardware_interface::return_type::OK;
+        RCLCPP_INFO(node_->get_logger(), "[ns:%s] System Sucessfully inited!", node_->get_namespace());
+        return CallbackReturn::SUCCESS;
     }
 
     std::vector<hardware_interface::StateInterface> XArmHW::export_state_interfaces()
@@ -188,7 +190,7 @@ namespace xarm_control
         return command_interfaces;
     }
 
-    hardware_interface::return_type XArmHW::start()
+    CallbackReturn XArmHW::on_activate(const rclcpp_lifecycle::State& previous_state)
     {
         hw_ns_ = "xarm";
         auto it = info_.hardware_parameters.find("hw_ns");
@@ -247,39 +249,19 @@ namespace xarm_control
                 velocity_cmds_[i] = velocity_states_[i];
             }
         }
-
-        status_ = hardware_interface::status::STARTED;
         
-        RCLCPP_INFO(node_->get_logger(), "[ns: %s] System Sucessfully started!", node_->get_namespace());
-        return hardware_interface::return_type::OK;
+        RCLCPP_INFO(node_->get_logger(), "[ns: %s] System Sucessfully activated!", node_->get_namespace());
+        return CallbackReturn::SUCCESS;
     }
 
-    hardware_interface::return_type XArmHW::stop()
+    CallbackReturn XArmHW::on_deactivate(const rclcpp_lifecycle::State& previous_state)
     {
         RCLCPP_INFO(node_->get_logger(), "[ns: %s] Stopping ...please wait...", node_->get_namespace());
-        status_ = hardware_interface::status::STOPPED;
 
         xarm_client_.set_mode(0);
 
-        RCLCPP_INFO(node_->get_logger(), "[ns: %s] System sucessfully stopped!", node_->get_namespace());
-        return hardware_interface::return_type::OK;
-    }
-
-    void XArmHW::_reload_controller(void) {
-        int ret = _call_request(client_list_controller_, req_list_controller_, res_list_controller_);
-        if (ret == 0 && res_list_controller_->controller.size() > 0) {
-            req_switch_controller_->start_controllers.resize(res_list_controller_->controller.size());
-            req_switch_controller_->stop_controllers.resize(res_list_controller_->controller.size());
-            for (uint i = 0; i < res_list_controller_->controller.size(); i++) {
-                req_switch_controller_->start_controllers[i] = res_list_controller_->controller[i].name;
-                req_switch_controller_->stop_controllers[i] = res_list_controller_->controller[i].name;
-            }
-            req_switch_controller_->strictness = controller_manager_msgs::srv::SwitchController::Request::BEST_EFFORT;
-            _call_request(client_switch_controller_, req_switch_controller_, res_switch_controller_);
-        }
-        if (ret == 0) {
-            reload_controller_ = false;
-        }
+        RCLCPP_INFO(node_->get_logger(), "[ns: %s] System sucessfully deactivated!", node_->get_namespace());
+        return CallbackReturn::SUCCESS;
     }
 
     hardware_interface::return_type XArmHW::read()
@@ -379,6 +361,23 @@ namespace xarm_control
         }
 
         return hardware_interface::return_type::OK;
+    }
+
+    void XArmHW::_reload_controller(void) {
+        int ret = _call_request(client_list_controller_, req_list_controller_, res_list_controller_);
+        if (ret == 0 && res_list_controller_->controller.size() > 0) {
+            req_switch_controller_->start_controllers.resize(res_list_controller_->controller.size());
+            req_switch_controller_->stop_controllers.resize(res_list_controller_->controller.size());
+            for (uint i = 0; i < res_list_controller_->controller.size(); i++) {
+                req_switch_controller_->start_controllers[i] = res_list_controller_->controller[i].name;
+                req_switch_controller_->stop_controllers[i] = res_list_controller_->controller[i].name;
+            }
+            req_switch_controller_->strictness = controller_manager_msgs::srv::SwitchController::Request::BEST_EFFORT;
+            _call_request(client_switch_controller_, req_switch_controller_, res_switch_controller_);
+        }
+        if (ret == 0) {
+            reload_controller_ = false;
+        }
     }
 
     bool XArmHW::_check_cmds_is_change(std::vector<float> prev, std::vector<float> cur, double threshold)

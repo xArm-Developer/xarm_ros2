@@ -12,8 +12,11 @@ namespace xarm_control
 {
     static const rclcpp::Logger LOGGER = rclcpp::get_logger("fake_xarm_hw");
 
-    hardware_interface::return_type FakeXArmHW::configure(const hardware_interface::HardwareInfo & info)
+    CallbackReturn FakeXArmHW::on_init(const hardware_interface::HardwareInfo& info)
     {
+        if (hardware_interface::SystemInterface::on_init(info) != CallbackReturn::SUCCESS) {
+            return CallbackReturn::ERROR;
+        }
         info_ = info;
 
         node_ = rclcpp::Node::make_shared("fake_xarm_hw");
@@ -46,10 +49,10 @@ namespace xarm_control
                 }
             }
             if (!has_pos_cmd_interface) {
-                RCLCPP_ERROR(LOGGER, "Joint '%s' has %d command interfaces found, but not found %s command interface",
+                RCLCPP_ERROR(LOGGER, "Joint '%s' has %ld command interfaces found, but not found %s command interface",
                     joint.name.c_str(), joint.command_interfaces.size(), hardware_interface::HW_IF_POSITION
                 );
-                return hardware_interface::return_type::ERROR;
+                return CallbackReturn::ERROR;
             }
 
             bool has_pos_state_interface = false;
@@ -60,16 +63,15 @@ namespace xarm_control
                 }
             }
             if (!has_pos_state_interface) {
-                RCLCPP_ERROR(LOGGER, "Joint '%s' has %d state interfaces found, but not found %s state interface",
+                RCLCPP_ERROR(LOGGER, "Joint '%s' has %ld state interfaces found, but not found %s state interface",
                     joint.name.c_str(), joint.state_interfaces.size(), hardware_interface::HW_IF_POSITION
                 );
-                return hardware_interface::return_type::ERROR;
+                return CallbackReturn::ERROR;
             }
         }
 
-        RCLCPP_INFO(LOGGER, "System Sucessfully configured!");
-        status_ = hardware_interface::status::CONFIGURED;
-        return hardware_interface::return_type::OK;
+        RCLCPP_INFO(LOGGER, "System Sucessfully inited!");
+        return CallbackReturn::SUCCESS;
     }
 
     std::vector<hardware_interface::StateInterface> FakeXArmHW::export_state_interfaces()
@@ -98,22 +100,18 @@ namespace xarm_control
         return command_interfaces;
     }
 
-    hardware_interface::return_type FakeXArmHW::start()
+    CallbackReturn FakeXArmHW::on_activate(const rclcpp_lifecycle::State& previous_state)
     {
-        status_ = hardware_interface::status::STARTED;
-        
-        RCLCPP_INFO(LOGGER, "System Sucessfully started!");
-        return hardware_interface::return_type::OK;
+        RCLCPP_INFO(LOGGER, "System Sucessfully activated!");
+        return CallbackReturn::SUCCESS;
     }
 
-    hardware_interface::return_type FakeXArmHW::stop()
+    CallbackReturn FakeXArmHW::on_deactivate(const rclcpp_lifecycle::State& previous_state)
     {
         RCLCPP_INFO(LOGGER, "Stopping ...please wait...");
-        status_ = hardware_interface::status::STOPPED;
 
-
-        RCLCPP_INFO(LOGGER, "System sucessfully stopped!");
-        return hardware_interface::return_type::OK;
+        RCLCPP_INFO(LOGGER, "System sucessfully deactivated!");
+        return CallbackReturn::SUCCESS;
     }
 
     hardware_interface::return_type FakeXArmHW::read()
