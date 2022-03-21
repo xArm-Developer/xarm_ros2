@@ -130,7 +130,7 @@ def launch_setup(context, *args, **kwargs):
 
     # Load controllers
     controllers = [
-        'joint_state_controller',
+        'joint_state_broadcaster',
         '{}xarm{}_traj_controller'.format(prefix.perform(context), dof.perform(context)),
     ]
     if add_gripper.perform(context) in ('True', 'true'):

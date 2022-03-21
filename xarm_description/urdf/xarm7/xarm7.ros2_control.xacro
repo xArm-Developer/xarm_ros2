@@ -20,7 +20,7 @@
       <joint name="${prefix}joint1">
         <command_interface name="position">
           <param name="min">${joint1_lower_limit}</param>
-          <param name="max">${joint1_lower_limit}</param>
+          <param name="max">${joint1_upper_limit}</param>
         </command_interface>
         <command_interface name="velocity">
           <param name="min">-3.14</param>
@@ -33,7 +33,7 @@
       <joint name="${prefix}joint2">
         <command_interface name="position">
           <param name="min">${joint2_lower_limit}</param>
-          <param name="max">${joint2_lower_limit}</param>
+          <param name="max">${joint2_upper_limit}</param>
         </command_interface>
         <command_interface name="velocity">
           <param name="min">-3.14</param>
@@ -46,7 +46,7 @@
       <joint name="${prefix}joint3">
         <command_interface name="position">
           <param name="min">${joint3_lower_limit}</param>
-          <param name="max">${joint3_lower_limit}</param>
+          <param name="max">${joint3_upper_limit}</param>
         </command_interface>
         <command_interface name="velocity">
           <param name="min">-3.14</param>
@@ -59,7 +59,7 @@
       <joint name="${prefix}joint4">
         <command_interface name="position">
           <param name="min">${joint4_lower_limit}</param>
-          <param name="max">${joint4_lower_limit}</param>
+          <param name="max">${joint4_upper_limit}</param>
         </command_interface>
         <command_interface name="velocity">
           <param name="min">-3.14</param>
@@ -72,7 +72,7 @@
       <joint name="${prefix}joint5">
         <command_interface name="position">
           <param name="min">${joint5_lower_limit}</param>
-          <param name="max">${joint5_lower_limit}</param>
+          <param name="max">${joint5_upper_limit}</param>
         </command_interface>
         <command_interface name="velocity">
           <param name="min">-3.14</param>
@@ -85,7 +85,7 @@
       <joint name="${prefix}joint6">
         <command_interface name="position">
           <param name="min">${joint6_lower_limit}</param>
-          <param name="max">${joint6_lower_limit}</param>
+          <param name="max">${joint6_upper_limit}</param>
         </command_interface>
         <command_interface name="velocity">
           <param name="min">-3.14</param>
@@ -98,7 +98,7 @@
       <joint name="${prefix}joint7">
         <command_interface name="position">
           <param name="min">${joint7_lower_limit}</param>
-          <param name="max">${joint7_lower_limit}</param>
+          <param name="max">${joint7_upper_limit}</param>
         </command_interface>
         <command_interface name="velocity">
           <param name="min">-3.14</param>

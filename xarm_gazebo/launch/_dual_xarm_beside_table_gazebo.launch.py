@@ -192,7 +192,7 @@ def launch_setup(context, *args, **kwargs):
 
     # Load controllers
     controllers = [
-        'joint_state_controller',
+        'joint_state_broadcaster',
         '{}xarm{}_traj_controller'.format(prefix_1.perform(context), dof_1.perform(context)),
         '{}xarm{}_traj_controller'.format(prefix_2.perform(context), dof_2.perform(context)),
     ]
