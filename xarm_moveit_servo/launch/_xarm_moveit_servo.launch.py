@@ -100,7 +100,7 @@ def launch_setup(context, *args, **kwargs):
     xarm_traj_controller = '{}{}_traj_controller'.format(prefix.perform(context), xarm_type)
     servo_yaml['command_out_topic'] = '/{}/joint_trajectory'.format(xarm_traj_controller)
     servo_params = {"moveit_servo": servo_yaml}
-    controllers = ['joint_state_controller', xarm_traj_controller]
+    controllers = ['joint_state_broadcaster', xarm_traj_controller]
     if add_gripper.perform(context) in ('True', 'true'):
         controllers.append('{}xarm_gripper_traj_controller'.format(prefix.perform(context)))
 
