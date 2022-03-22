@@ -57,21 +57,90 @@ namespace xarm_api
     void XArmDriver::_report_data_callback(XArmReportData *report_data_ptr)
     {
         // RCLCPP_INFO(node_->get_logger(), "[1] state: %d, error_code: %d", report_data_ptr->state, report_data_ptr->err);
-        curr_state_ = report_data_ptr->state;
-        curr_err_ = report_data_ptr->err;
+        curr_state = report_data_ptr->state;
+        curr_err = report_data_ptr->err;
+        curr_mode = report_data_ptr->mode;
+        curr_cmdnum = report_data_ptr->cmdnum;
+
+        rclcpp::Time now_ = node_->get_clock()->now();
+        joint_state_msg_.header.stamp = now_;
+        for(int i = 0; i < dof_; i++)
+        {
+            joint_state_msg_.position[i] = (double)report_data_ptr->angle[i];
+            joint_state_msg_.velocity[i] = (double)report_data_ptr->rt_joint_spds[i];
+            joint_state_msg_.effort[i] = (double)report_data_ptr->tau[i];
+        }
+        pub_joint_state(joint_state_msg_);
+
+        xarm_state_msg_.state = report_data_ptr->state;
+        xarm_state_msg_.mode = report_data_ptr->mode;
+        xarm_state_msg_.cmdnum = report_data_ptr->cmdnum;
+        xarm_state_msg_.err = report_data_ptr->err;
+        xarm_state_msg_.warn = report_data_ptr->war;
+        xarm_state_msg_.mt_brake = report_data_ptr->mt_brake;
+        xarm_state_msg_.mt_able = report_data_ptr->mt_able;
+
+        for(int i = 0; i < dof_; i++)
+        {
+            xarm_state_msg_.angle[i] = (double)report_data_ptr->angle[i];
+        }
+        for(int i = 0; i < 6; i++)
+        {
+            xarm_state_msg_.pose[i] = report_data_ptr->pose[i];
+            xarm_state_msg_.offset[i] = report_data_ptr->tcp_offset[i];
+        }
+        xarm_state_msg_.header.stamp = now_;
+        pub_robot_msg(xarm_state_msg_);
+
+        if (report_data_ptr->total_num >= 417) {
+            cgpio_state_msg_.header.stamp = now_;
+            cgpio_state_msg_.state = report_data_ptr->cgpio_state;
+            cgpio_state_msg_.code = report_data_ptr->cgpio_code;
+            cgpio_state_msg_.input_digitals[0] = report_data_ptr->cgpio_input_digitals[0];
+            cgpio_state_msg_.input_digitals[1] = report_data_ptr->cgpio_input_digitals[1];
+            cgpio_state_msg_.output_digitals[0] = report_data_ptr->cgpio_output_digitals[0];
+            cgpio_state_msg_.output_digitals[1] = report_data_ptr->cgpio_output_digitals[1];
+
+            cgpio_state_msg_.input_analogs[0] = report_data_ptr->cgpio_input_analogs[0];
+            cgpio_state_msg_.input_analogs[1] = report_data_ptr->cgpio_input_analogs[1];
+            cgpio_state_msg_.output_analogs[0] = report_data_ptr->cgpio_output_analogs[0];
+            cgpio_state_msg_.output_analogs[1] = report_data_ptr->cgpio_output_analogs[1];
+
+            for (int i = 0; i < 16; ++i) {
+                cgpio_state_msg_.input_conf[i] = report_data_ptr->cgpio_input_conf[i];
+                cgpio_state_msg_.output_conf[i] = report_data_ptr->cgpio_output_conf[i];
+            }
+            pub_cgpio_state(cgpio_state_msg_);
+        }
     }
 
     void XArmDriver::init(rclcpp::Node::SharedPtr& node, std::string &server_ip)
     {
+        curr_err = 0;
+        curr_state = 4;
+        curr_mode = 0;
+        curr_cmdnum = 0;
+        arm = NULL;
+
         node_ = node;
         std::string prefix = "";
         node_->get_parameter_or("prefix", prefix, std::string(""));
         std::string hw_ns;
         node_->get_parameter_or("hw_ns", hw_ns, std::string("xarm"));
-        hw_ns = prefix + hw_ns;
+        // hw_ns = prefix + hw_ns;
         hw_node_ = node->create_sub_node(hw_ns);
         node_->get_parameter_or("dof", dof_, 7);
         node_->get_parameter_or("report_type", report_type_, std::string("normal"));
+
+        node_->get_parameter_or("joint_names", joint_names_, 
+        std::vector<std::string>({"joint1", "joint2", "joint3", "joint4", "joint5", "joint6", "joint7"}));
+        if (prefix != "") {
+            for (int i = 0; i < joint_names_.size(); i++) {
+                joint_names_[i] = prefix + joint_names_[i];
+            }
+        }
+
+        RCLCPP_INFO(node_->get_logger(), "robot_ip=%s, report_type=%s, dof=%d", server_ip.c_str(), report_type_.c_str(), dof_);
 
         bool baud_checkset = true;
         int default_gripper_baud = 2000000;
@@ -80,10 +149,12 @@ namespace xarm_api
         
         RCLCPP_INFO(node_->get_logger(), "baud_checkset: %d, default_gripper_baud: %d", baud_checkset, default_gripper_baud);
         
+        _init_publisher();
+
         arm = new XArmAPI(
             server_ip, 
             true, // is_radian
-            false, // do_not_open
+            true, // do_not_open
             true, // check_tcp_limit
             true, // check_joint_limit
             true, // check_cmdnum_limit
@@ -100,9 +171,9 @@ namespace xarm_api
         arm->set_checkset_default_baud(1, default_gripper_baud);
         arm->release_connect_changed_callback(true);
         arm->release_report_data_callback(true);
-        // arm->register_connect_changed_callback(std::bind(&XArmDriver::_report_connect_changed_callback, this, std::placeholders::_1, std::placeholders::_2));
+        arm->register_connect_changed_callback(std::bind(&XArmDriver::_report_connect_changed_callback, this, std::placeholders::_1, std::placeholders::_2));
         arm->register_report_data_callback(std::bind(&XArmDriver::_report_data_callback, this, std::placeholders::_1));
-        // arm->connect();
+        arm->connect();
 
         int err_warn[2] = {0};
         int ret = arm->get_err_warn_code(err_warn);
@@ -129,19 +200,29 @@ namespace xarm_api
             }
         }
 
-        _init_publisher();
         _init_service();
         _init_gripper();
     }
 
-    void XArmDriver::_init_publisher()
+    void XArmDriver::_init_publisher(void)
     {
+        joint_state_msg_.header.frame_id = "joint-state data";
+        joint_state_msg_.name.resize(dof_);
+        joint_state_msg_.position.resize(dof_);
+        joint_state_msg_.velocity.resize(dof_, 0);
+        joint_state_msg_.effort.resize(dof_, 0);
+        for(int i = 0; i < dof_; i++)
+        {
+            joint_state_msg_.name[i] = joint_names_[i];
+        }
+        xarm_state_msg_.angle.resize(dof_);
+
         joint_state_pub_ = hw_node_->create_publisher<sensor_msgs::msg::JointState>("joint_states", 10);
         robot_state_pub_ = hw_node_->create_publisher<xarm_msgs::msg::RobotMsg>("xarm_states", 10);
         cgpio_state_pub_ = hw_node_->create_publisher<xarm_msgs::msg::CIOState>("xarm_cgpio_states", 10);
     }
 
-    void XArmDriver::_init_gripper()
+    void XArmDriver::_init_gripper(void)
     {
         node_->get_parameter_or("xarm_gripper.speed", gripper_speed_, 2000);  // 机械爪速度
         node_->get_parameter_or("xarm_gripper.max_pos", gripper_max_pos_, 850); // 机械爪最大值，用来转换
@@ -358,8 +439,6 @@ namespace xarm_api
 
     void XArmDriver::pub_robot_msg(xarm_msgs::msg::RobotMsg &rm_msg)
     {
-        curr_err_ = rm_msg.err;
-        curr_state_ = rm_msg.state;
         robot_state_pub_->publish(rm_msg);
     }
     
@@ -371,5 +450,9 @@ namespace xarm_api
     void XArmDriver::pub_cgpio_state(xarm_msgs::msg::CIOState &cio_msg)
     {
         cgpio_state_pub_->publish(cio_msg);
+    }
+
+    bool XArmDriver::is_connected(void) {
+        return arm == NULL ? false : arm->is_connected();
     }
 }

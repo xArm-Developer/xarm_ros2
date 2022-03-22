@@ -24,7 +24,7 @@ namespace xarm_api
         return NULL;
     }
 
-    void XArmDriver::_init_service()
+    void XArmDriver::_init_service(void)
     {
         node_->get_parameter_or("services.debug", service_debug_, false);
 

@@ -52,15 +52,23 @@ include_directories(
 
 set(dependencies "rclcpp" "rclcpp_action" "std_msgs" "sensor_msgs" "control_msgs" "xarm_msgs")
 
-add_executable(xarm_driver_node
-  src/xarm_driver_node.cpp
+add_library(xarm_ros_driver SHARED
   src/xarm_driver.cpp
   src/xarm_driver_service.cpp
+)
+ament_target_dependencies(xarm_ros_driver ${dependencies})
+target_link_libraries(xarm_ros_driver 
+  ${xarm_sdk_LIBRARIES}
+  ${ament_LIBRARIES}
+)
+
+add_executable(xarm_driver_node
+  src/xarm_driver_node.cpp
 )
 
 ament_target_dependencies(xarm_driver_node ${dependencies})
 target_link_libraries(xarm_driver_node 
-  ${xarm_sdk_LIBRARIES}
+  xarm_ros_driver
   ${ament_LIBRARIES}
 )
 
@@ -101,7 +109,7 @@ install(
 )
 
 install(
-  TARGETS xarm_ros_client
+  TARGETS xarm_ros_driver xarm_ros_client
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
