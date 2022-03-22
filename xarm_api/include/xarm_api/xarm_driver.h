@@ -31,6 +31,8 @@ namespace xarm_api
         void pub_joint_state(sensor_msgs::msg::JointState &js_msg);
         void pub_cgpio_state(xarm_msgs::msg::CIOState &cio_msg);
 
+        bool is_connected(void);
+
         rclcpp::Logger get_logger() { return node_->get_logger(); }
 
     private:
@@ -38,7 +40,7 @@ namespace xarm_api
         void _report_data_callback(XArmReportData *report_data_ptr);
         bool _get_wait_param(void);
 
-        void _init_gripper();
+        void _init_gripper(void);
         inline float _gripper_pos_convert(float pos, bool reversed = false);
         rclcpp_action::GoalResponse _handle_gripper_action_goal(const rclcpp_action::GoalUUID & uuid, std::shared_ptr<const control_msgs::action::GripperCommand::Goal> goal);
         rclcpp_action::CancelResponse _handle_gripper_action_cancel(const std::shared_ptr<rclcpp_action::ServerGoalHandle<control_msgs::action::GripperCommand>> goal_handle);
@@ -49,20 +51,26 @@ namespace xarm_api
         template<typename ServiceT, typename CallbackT>
     	typename rclcpp::Service<ServiceT>::SharedPtr _create_service(const std::string & service_name, CallbackT && callback);
 
-        void _init_service();
-        void _init_publisher();
+        void _init_publisher(void);
+        void _init_service(void);
 
     public:
         XArmAPI *arm;
+        int curr_state;
+        int curr_err;
+        int curr_cmdnum;
+        int curr_mode;
 
     private:
-        std::string report_type_;
-        int dof_;
-        int curr_state_;
-        int curr_err_;
-
         rclcpp::Node::SharedPtr node_;
         rclcpp::Node::SharedPtr hw_node_;
+
+        int dof_;
+        std::string report_type_;
+        std::vector<std::string> joint_names_;
+        sensor_msgs::msg::JointState joint_state_msg_;
+        xarm_msgs::msg::RobotMsg xarm_state_msg_;
+        xarm_msgs::msg::CIOState cgpio_state_msg_;
 
         rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr joint_state_pub_;
         rclcpp::Publisher<xarm_msgs::msg::RobotMsg>::SharedPtr robot_state_pub_;
