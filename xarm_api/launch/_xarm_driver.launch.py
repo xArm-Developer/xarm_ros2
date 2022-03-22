@@ -11,9 +11,11 @@ import yaml
 from tempfile import NamedTemporaryFile
 from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import OpaqueFunction, DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration
+from launch.actions import OpaqueFunction, DeclareLaunchArgument, IncludeLaunchDescription
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
+from launch_ros.substitutions import FindPackageShare
 
 
 def merge_dict(dict1, dict2):
@@ -87,9 +89,12 @@ def launch_setup(context, *args, **kwargs):
     dof = LaunchConfiguration('dof', default=7)
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     add_gripper = LaunchConfiguration('add_gripper', default=False)
+    add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     prefix = LaunchConfiguration('prefix', default='')
     baud_checkset = LaunchConfiguration('baud_checkset', default=True)
     default_gripper_baud = LaunchConfiguration('default_gripper_baud', default=2000000)
+    
+    show_rviz = LaunchConfiguration('show_rviz', default=False)
     
     xarm_params = generate_xarm_params(
         os.path.join(get_package_share_directory('xarm_api'), 'config', 'xarm_params.yaml'),
@@ -120,9 +125,24 @@ def launch_setup(context, *args, **kwargs):
         ]
     )
 
-    return [
+    nodes = [
         xarm_driver_node
     ]
+    if show_rviz.perform(context) == 'true':
+        # xarm rviz launch
+        # xarm_description/launch/_xarm_rviz_display.launch.py
+        xarm_rviz_launch = IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_description'), 'launch', '_xarm_rviz_display.launch.py'])),
+            launch_arguments={
+                'prefix': prefix,
+                'hw_ns': hw_ns,
+                'add_gripper': add_gripper,
+                'add_vacuum_gripper': add_vacuum_gripper,
+                'dof': dof,
+            }.items(),
+        )
+        nodes.append(xarm_rviz_launch)
+    return nodes
 
 
 def generate_launch_description():

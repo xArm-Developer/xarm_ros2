@@ -41,6 +41,8 @@ def generate_launch_description():
     report_type = LaunchConfiguration('report_type', default='normal')
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     add_gripper = LaunchConfiguration('add_gripper', default=False)
+    add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
+    show_rviz = LaunchConfiguration('show_rviz', default=False)
 
     # xarm driver launch
     # xarm_api/launch/_xarm_driver.launch.py
@@ -52,6 +54,8 @@ def generate_launch_description():
             'dof': '5',
             'hw_ns': hw_ns,
             'add_gripper': add_gripper,
+            'add_vacuum_gripper': add_vacuum_gripper,
+            'show_rviz': show_rviz,
         }.items(),
     )
 
