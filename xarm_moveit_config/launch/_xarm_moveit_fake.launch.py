@@ -23,6 +23,7 @@ def launch_setup(context, *args, **kwargs):
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     dof = LaunchConfiguration('dof', default=7)
+    robot_type = LaunchConfiguration('robot_type', default='xarm')
     no_gui_ctrl = LaunchConfiguration('no_gui_ctrl', default=False)
 
     add_other_geometry = LaunchConfiguration('add_other_geometry', default=False)
@@ -42,7 +43,7 @@ def launch_setup(context, *args, **kwargs):
     controllers_name = 'fake_controllers'
     moveit_controller_manager_key = 'moveit_simple_controller_manager'
     moveit_controller_manager_value = 'moveit_simple_controller_manager/MoveItSimpleControllerManager'
-    xarm_type = 'xarm{}'.format(dof.perform(context))
+    xarm_type = '{}{}'.format(robot_type.perform(context), dof.perform(context))
     ros_namespace = LaunchConfiguration('ros_namespace', default='').perform(context)
     
     # robot description launch
@@ -58,6 +59,7 @@ def launch_setup(context, *args, **kwargs):
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': dof,
+            'robot_type': robot_type,
             'ros2_control_plugin': ros2_control_plugin,
             'joint_states_remapping': 'joint_states',
             'add_other_geometry': add_other_geometry,
@@ -88,6 +90,7 @@ def launch_setup(context, *args, **kwargs):
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': dof,
+            'robot_type': robot_type,
             'no_gui_ctrl': no_gui_ctrl,
             'ros2_control_plugin': ros2_control_plugin,
             'controllers_name': controllers_name,
@@ -140,6 +143,7 @@ def launch_setup(context, *args, **kwargs):
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': dof,
+            'robot_type': robot_type,
             'ros2_control_plugin': ros2_control_plugin,
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,

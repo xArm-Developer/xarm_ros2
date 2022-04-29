@@ -22,6 +22,7 @@ def launch_setup(context, *args, **kwargs):
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     dof = LaunchConfiguration('dof', default=7)
+    robot_type = LaunchConfiguration('robot_type', default='xarm')
     no_gui_ctrl = LaunchConfiguration('no_gui_ctrl', default=False)
 
     add_other_geometry = LaunchConfiguration('add_other_geometry', default=False)
@@ -55,6 +56,7 @@ def launch_setup(context, *args, **kwargs):
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': dof,
+            'robot_type': robot_type,
             'no_gui_ctrl': no_gui_ctrl,
             'ros2_control_plugin': ros2_control_plugin,
             'controllers_name': controllers_name,
@@ -88,6 +90,7 @@ def launch_setup(context, *args, **kwargs):
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': dof,
+            'robot_type': robot_type,
             'ros2_control_plugin': ros2_control_plugin,
         }.items(),
     )
