@@ -46,8 +46,10 @@ def launch_setup(context, *args, **kwargs):
     geometry_mesh_tcp_xyz = LaunchConfiguration('geometry_mesh_tcp_xyz', default='"0 0 0"')
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
 
+    robot_type = LaunchConfiguration('robot_type', default='xarm')
+
     moveit_config_package_name = 'xarm_moveit_config'
-    xarm_type = 'xarm{}'.format(dof.perform(context))
+    xarm_type = '{}{}'.format(robot_type.perform(context), dof.perform(context))
 
     # robot_description_parameters
     # xarm_moveit_config/launch/lib/xarm_moveit_config_lib.py
@@ -65,6 +67,7 @@ def launch_setup(context, *args, **kwargs):
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': dof,
+            'robot_type': robot_type,
             'ros2_control_plugin': ros2_control_plugin,
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,
@@ -82,6 +85,7 @@ def launch_setup(context, *args, **kwargs):
         srdf_arguments={
             'prefix': prefix,
             'dof': dof,
+            'robot_type': robot_type,
             'add_gripper': add_gripper,
             'add_other_geometry': add_other_geometry,
         },
