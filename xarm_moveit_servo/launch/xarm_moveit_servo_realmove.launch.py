@@ -26,6 +26,7 @@ def generate_launch_description():
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     baud_checkset = LaunchConfiguration('baud_checkset', default=True)
     default_gripper_baud = LaunchConfiguration('default_gripper_baud', default=2000000)
+    robot_type = LaunchConfiguration('robot_type', default='xarm')
 
     # xarm moveit servo launch
     # xarm_moveit_servo/launch/_xarm_moveit_servo.launch.py
@@ -40,6 +41,7 @@ def generate_launch_description():
             'velocity_control': velocity_control,
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
+            'robot_type': robot_type,
             'ros2_control_plugin': 'xarm_control/XArmHW',
         }.items(),
     )

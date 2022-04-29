@@ -22,6 +22,7 @@ def generate_launch_description():
     velocity_control = LaunchConfiguration('velocity_control', default=False)
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
+    robot_type = LaunchConfiguration('robot_type', default='xarm')
 
     # xarm moveit servo launch
     # xarm_moveit_servo/launch/_xarm_moveit_servo.launch.py
@@ -36,6 +37,7 @@ def generate_launch_description():
             'velocity_control': velocity_control,
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
+            'robot_type': robot_type,
         }.items(),
     )
     
