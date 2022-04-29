@@ -22,6 +22,9 @@ def launch_setup(context, *args, **kwargs):
     dof = LaunchConfiguration('dof', default=7)
     dof_1 = LaunchConfiguration('dof_1', default=dof)
     dof_2 = LaunchConfiguration('dof_2', default=dof)
+    robot_type = LaunchConfiguration('robot_type', default='xarm')
+    robot_type_1 = LaunchConfiguration('robot_type_1', default=robot_type)
+    robot_type_2 = LaunchConfiguration('robot_type_2', default=robot_type)
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_gripper_1 = LaunchConfiguration('add_gripper_1', default=add_gripper)
     add_gripper_2 = LaunchConfiguration('add_gripper_2', default=add_gripper)
@@ -87,8 +90,8 @@ def launch_setup(context, *args, **kwargs):
     mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_controller'), 'launch', 'lib', 'xarm_controller_lib.py'))
     generate_dual_ros2_control_params_temp_file = getattr(mod, 'generate_dual_ros2_control_params_temp_file')
     ros2_control_params = generate_dual_ros2_control_params_temp_file(
-        os.path.join(get_package_share_directory('xarm_controller'), 'config', 'xarm{}_controllers.yaml'.format(dof_1.perform(context))),
-        os.path.join(get_package_share_directory('xarm_controller'), 'config', 'xarm{}_controllers.yaml'.format(dof_2.perform(context))),
+        os.path.join(get_package_share_directory('xarm_controller'), 'config', '{}{}_controllers.yaml'.format(robot_type_1.perform(context), dof_1.perform(context))),
+        os.path.join(get_package_share_directory('xarm_controller'), 'config', '{}{}_controllers.yaml'.format(robot_type_2.perform(context), dof_2.perform(context))),
         prefix_1=prefix_1.perform(context), 
         prefix_2=prefix_2.perform(context), 
         add_gripper_1=add_gripper_1.perform(context) in ('True', 'true'),
@@ -109,6 +112,8 @@ def launch_setup(context, *args, **kwargs):
                 'prefix_2': prefix_2,
                 'dof_1': dof_1,
                 'dof_2': dof_2,
+                'robot_type_1': robot_type_1,
+                'robot_type_2': robot_type_2,
                 'add_gripper_1': add_gripper_1,
                 'add_gripper_2': add_gripper_2,
                 'add_vacuum_gripper_1': add_vacuum_gripper_1,
