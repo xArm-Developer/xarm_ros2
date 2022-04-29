@@ -23,6 +23,7 @@ def launch_setup(context, *args, **kwargs):
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     dof = LaunchConfiguration('dof', default=7)
+    robot_type = LaunchConfiguration('robot_type', default='xarm')
     ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='xarm_control/XArmHW')
     joint_states_remapping = LaunchConfiguration('joint_states_remapping', default='joint_states')
 
@@ -52,6 +53,7 @@ def launch_setup(context, *args, **kwargs):
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': dof,
+            'robot_type': robot_type,
             'ros2_control_plugin': ros2_control_plugin,
             'joint_states_remapping': joint_states_remapping,
             'add_other_geometry': add_other_geometry,

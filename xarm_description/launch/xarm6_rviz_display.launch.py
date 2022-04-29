@@ -19,7 +19,8 @@ def generate_launch_description():
     velocity_control = LaunchConfiguration('velocity_control', default=False)
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
-    
+    robot_type = LaunchConfiguration('robot_type', default='xarm')
+
     # xarm rviz launch
     # xarm_description/launch/_xarm_rviz_display.launch.py
     xarm_rviz_launch = IncludeLaunchDescription(
@@ -33,6 +34,7 @@ def generate_launch_description():
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': '6',
+            'robot_type': robot_type,
         }.items(),
     )
 
