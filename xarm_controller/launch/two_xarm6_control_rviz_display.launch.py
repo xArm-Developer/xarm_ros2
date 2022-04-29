@@ -16,6 +16,7 @@ from launch_ros.substitutions import FindPackageShare
 def generate_launch_description():
     robot1_ip = LaunchConfiguration('robot1_ip')
     robot2_ip = LaunchConfiguration('robot2_ip')
+    robot_type = LaunchConfiguration('robot_type', default='xarm')
     ns1 = LaunchConfiguration('ns1', default='left')
     ns2 = LaunchConfiguration('ns2', default='right')
     report_type = LaunchConfiguration('report_type', default='normal')
@@ -47,6 +48,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_controller'), 'launch', 'xarm6_control_rviz_display.launch.py'])),
         launch_arguments={
             'robot_ip': robot1_ip,
+            'robot_type': robot_type,
             'report_type': report_type,
             'prefix': prefix,
             'hw_ns': hw_ns,
@@ -77,6 +79,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_controller'), 'launch', 'xarm6_control_rviz_display.launch.py'])),
         launch_arguments={
             'robot_ip': robot2_ip,
+            'robot_type': robot_type,
             'report_type': report_type,
             'prefix': prefix,
             'hw_ns': hw_ns,

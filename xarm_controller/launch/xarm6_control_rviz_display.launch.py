@@ -15,6 +15,7 @@ from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
     robot_ip = LaunchConfiguration('robot_ip')
+    robot_type = LaunchConfiguration('robot_type', default='xarm')
     report_type = LaunchConfiguration('report_type', default='normal')
     
     prefix = LaunchConfiguration('prefix', default='')
@@ -53,6 +54,7 @@ def generate_launch_description():
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': '6',
+            'robot_type': robot_type,
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,
             'geometry_mass': geometry_mass,
