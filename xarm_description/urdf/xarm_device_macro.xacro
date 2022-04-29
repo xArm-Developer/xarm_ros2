@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="xarm_device">
   <xacro:macro name="xarm_device" params="prefix:='' namespace:='xarm' limited:='false' effort_control:='false' 
-    velocity_control:='false' add_gripper:='false' add_vacuum_gripper:='false' dof:=7 ros2_control_plugin:='xarm_control/XArmHW'
+    velocity_control:='false' add_gripper:='false' add_vacuum_gripper:='false' dof:=7 robot_type:='xarm' ros2_control_plugin:='xarm_control/XArmHW'
     attach_to:='world' xyz:='0 0 0' rpy:='0 0 0' ros2_control_params:='' load_gazebo_plugin:='false' 
     add_other_geometry:='false' 
     geometry_type:='box' geometry_mass:='0.1' 
@@ -23,13 +23,24 @@
         load_gazebo_plugin="${load_gazebo_plugin}" />
     </xacro:if>
     <xacro:if value="${dof == 6}">
-      <xacro:include filename="$(find xarm_description)/urdf/xarm6/xarm6_robot_macro.xacro" />
-      <xacro:xarm6_robot prefix="${prefix}" namespace="${namespace}" limited="${limited}" 
-        effort_control="${effort_control}" velocity_control="${velocity_control}" 
-        ros2_control_plugin="${ros2_control_plugin}" 
-        attach_to="${attach_to}" xyz="${xyz}" rpy="${rpy}"
-        ros2_control_params="${ros2_control_params}"
-        load_gazebo_plugin="${load_gazebo_plugin}" />
+      <xacro:if value="${robot_type == 'lite'}">
+        <xacro:include filename="$(find xarm_description)/urdf/lite6/lite6_robot_macro.xacro" />
+        <xacro:lite6_robot prefix="${prefix}" namespace="${namespace}" limited="${limited}" 
+          effort_control="${effort_control}" velocity_control="${velocity_control}" 
+          ros2_control_plugin="${ros2_control_plugin}" 
+          attach_to="${attach_to}" xyz="${xyz}" rpy="${rpy}"
+          ros2_control_params="${ros2_control_params}"
+          load_gazebo_plugin="${load_gazebo_plugin}" />
+      </xacro:if>
+      <xacro:unless value="${robot_type == 'lite'}">
+        <xacro:include filename="$(find xarm_description)/urdf/xarm6/xarm6_robot_macro.xacro" />
+        <xacro:xarm6_robot prefix="${prefix}" namespace="${namespace}" limited="${limited}" 
+          effort_control="${effort_control}" velocity_control="${velocity_control}" 
+          ros2_control_plugin="${ros2_control_plugin}" 
+          attach_to="${attach_to}" xyz="${xyz}" rpy="${rpy}"
+          ros2_control_params="${ros2_control_params}"
+          load_gazebo_plugin="${load_gazebo_plugin}" />
+      </xacro:unless>
     </xacro:if>
     <xacro:unless value="${dof == 5 or dof == 6}">
       <xacro:include filename="$(find xarm_description)/urdf/xarm7/xarm7_robot_macro.xacro" />
