@@ -34,6 +34,8 @@ def generate_launch_description():
     geometry_mesh_tcp_xyz = LaunchConfiguration('geometry_mesh_tcp_xyz', default='"0 0 0"')
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
 
+    robot_type = LaunchConfiguration('robot_type', default='xarm')
+
     # xarm moveit fake launch
     # xarm_moveit_config/launch/_dual_xarm_moveit_fake.launch.py
     xarm_moveit_fake_launch = IncludeLaunchDescription(
@@ -46,6 +48,7 @@ def generate_launch_description():
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': '6',
+            'robot_type': robot_type,
             'no_gui_ctrl': 'false',
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,

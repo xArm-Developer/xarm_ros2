@@ -22,6 +22,9 @@ def launch_setup(context, *args, **kwargs):
     dof = LaunchConfiguration('dof', default=7)
     dof_1 = LaunchConfiguration('dof_1', default=dof)
     dof_2 = LaunchConfiguration('dof_2', default=dof)
+    robot_type = LaunchConfiguration('robot_type', default='xarm')
+    robot_type_1 = LaunchConfiguration('robot_type_1', default=robot_type)
+    robot_type_2 = LaunchConfiguration('robot_type_2', default=robot_type)
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_gripper_1 = LaunchConfiguration('add_gripper_1', default=add_gripper)
     add_gripper_2 = LaunchConfiguration('add_gripper_2', default=add_gripper)
@@ -87,7 +90,7 @@ def launch_setup(context, *args, **kwargs):
     geometry_mesh_tcp_rpy_2 = LaunchConfiguration('geometry_mesh_tcp_rpy_2', default=geometry_mesh_tcp_rpy)
 
     moveit_config_package_name = 'xarm_moveit_config'
-    xarm_type = 'xarm{}'.format(dof_1.perform(context)) 
+    xarm_type = '{}{}'.format(robot_type_1.perform(context), dof_1.perform(context)) 
 
     # robot_description_parameters
     # xarm_moveit_config/launch/lib/xarm_moveit_config_lib.py
@@ -101,6 +104,8 @@ def launch_setup(context, *args, **kwargs):
             'prefix_2': prefix_2,
             'dof_1': dof_1,
             'dof_2': dof_2,
+            'robot_type_1': robot_type_1,
+            'robot_type_2': robot_type_2,
             'add_gripper_1': add_gripper_1,
             'add_gripper_2': add_gripper_2,
             'add_vacuum_gripper_1': add_vacuum_gripper_1,
@@ -140,6 +145,8 @@ def launch_setup(context, *args, **kwargs):
             'prefix_2': prefix_2,
             'dof_1': dof_1,
             'dof_2': dof_2,
+            'robot_type_1': robot_type_1,
+            'robot_type_2': robot_type_2,
             'add_gripper_1': add_gripper_1,
             'add_gripper_2': add_gripper_2,
             'add_other_geometry_1': add_other_geometry_1,
@@ -158,7 +165,7 @@ def launch_setup(context, *args, **kwargs):
     kinematics_yaml_1 = load_yaml(moveit_config_package_name, 'config', xarm_type, 'kinematics.yaml')
     joint_limits_yaml_1 = load_yaml(moveit_config_package_name, 'config', xarm_type, 'joint_limits.yaml')
     
-    xarm_type = 'xarm{}'.format(dof_2.perform(context))
+    xarm_type = '{}{}'.format(robot_type_2.perform(context), dof_2.perform(context)) 
     controllers_yaml_2 = load_yaml(moveit_config_package_name, 'config', xarm_type, '{}.yaml'.format(controllers_name.perform(context)))
     ompl_planning_yaml_2 = load_yaml(moveit_config_package_name, 'config', xarm_type, 'ompl_planning.yaml')
     kinematics_yaml_2 = load_yaml(moveit_config_package_name, 'config', xarm_type, 'kinematics.yaml')

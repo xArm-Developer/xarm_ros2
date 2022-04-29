@@ -28,6 +28,7 @@ def launch_setup(context, *args, **kwargs):
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     dof = LaunchConfiguration('dof', default=7)
+    robot_type = LaunchConfiguration('robot_type', default='xarm')
     ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='gazebo_ros2_control/GazeboSystem')
     
     add_other_geometry = LaunchConfiguration('add_other_geometry', default=False)
@@ -50,7 +51,7 @@ def launch_setup(context, *args, **kwargs):
     mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_controller'), 'launch', 'lib', 'xarm_controller_lib.py'))
     generate_ros2_control_params_temp_file = getattr(mod, 'generate_ros2_control_params_temp_file')
     ros2_control_params = generate_ros2_control_params_temp_file(
-        os.path.join(get_package_share_directory('xarm_controller'), 'config', 'xarm{}_controllers.yaml'.format(dof.perform(context))),
+        os.path.join(get_package_share_directory('xarm_controller'), 'config', '{}{}_controllers.yaml'.format(robot_type.perform(context), dof.perform(context))),
         prefix=prefix.perform(context), 
         add_gripper=add_gripper.perform(context) in ('True', 'true'),
         ros_namespace=LaunchConfiguration('ros_namespace', default='').perform(context),
@@ -67,6 +68,7 @@ def launch_setup(context, *args, **kwargs):
             arguments={
                 'prefix': prefix,
                 'dof': dof,
+                'robot_type': robot_type,
                 'add_gripper': add_gripper,
                 'add_vacuum_gripper': add_vacuum_gripper,
                 'hw_ns': hw_ns.perform(context).strip('/'),
@@ -120,7 +122,7 @@ def launch_setup(context, *args, **kwargs):
         output='screen',
         arguments=[
             '-topic', 'robot_description',
-            '-entity', 'xarm{}'.format(dof.perform(context)),
+            '-entity', '{}{}'.format(robot_type.perform(context), dof.perform(context)),
             '-x', '-0.2',
             '-y', '-0.5',
             '-z', '1.021',
@@ -131,7 +133,7 @@ def launch_setup(context, *args, **kwargs):
     # Load controllers
     controllers = [
         'joint_state_broadcaster',
-        '{}xarm{}_traj_controller'.format(prefix.perform(context), dof.perform(context)),
+        '{}{}{}_traj_controller'.format(prefix.perform(context), robot_type.perform(context), dof.perform(context)),
     ]
     if add_gripper.perform(context) in ('True', 'true'):
         controllers.append('{}xarm_gripper_traj_controller'.format(prefix.perform(context)))
