@@ -164,7 +164,7 @@ def launch_setup(context, *args, **kwargs):
 
     control_node = Node(
         package='controller_manager',
-        executable='spawner.py',
+        executable='spawner',
         output='screen',
         arguments=[
             '{}{}_traj_controller'.format(prefix.perform(context), xarm_type),

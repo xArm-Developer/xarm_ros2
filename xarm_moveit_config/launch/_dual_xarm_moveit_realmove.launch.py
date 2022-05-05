@@ -325,7 +325,7 @@ def launch_setup(context, *args, **kwargs):
     ]:
         load_controllers.append(Node(
             package='controller_manager',
-            executable='spawner.py',
+            executable='spawner',
             output='screen',
             arguments=[
                 controller,
