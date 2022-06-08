@@ -32,8 +32,7 @@
         xyz="0 0 0"
         rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="package://xarm_description/meshes/lite6/visual/gripper_lite.stl" />
+        <mesh filename="file:///$(find xarm_description)/meshes/lite6/visual/gripper_lite.stl"/>
       </geometry>
       <material name="White">
         <color rgba="1.0 1.0 1.0 1.0"/>
@@ -44,8 +43,7 @@
         xyz="0 0 0"
         rpy="0 0 0" />
       <geometry>
-        <mesh
-          filename="package://xarm_description/meshes/lite6/collision/gripper_lite.stl" />
+        <mesh filename="file:///$(find xarm_description)/meshes/lite6/collision/gripper_lite.stl"/>
       </geometry>
     </collision>
   </link>
