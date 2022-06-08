@@ -178,7 +178,7 @@ namespace xarm_api
         int err_warn[2] = {0};
         int ret = arm->get_err_warn_code(err_warn);
         if (err_warn[0] != 0) {
-            RCLCPP_WARN(node_->get_logger(), "xArmErrorCode: %d", err_warn[0]);
+            RCLCPP_WARN(node_->get_logger(), "UFACTORY ErrorCode: C%d: [ %s ]", err_warn[0], uf_controller_error_interpreter(err_warn[0]).c_str());
         }
         
         std::thread th(cmd_heart_beat, this);
@@ -455,4 +455,5 @@ namespace xarm_api
     bool XArmDriver::is_connected(void) {
         return arm == NULL ? false : arm->is_connected();
     }
+
 }

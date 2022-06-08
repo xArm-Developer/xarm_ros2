@@ -3,7 +3,7 @@ project(xarm_api)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
-  set(CMAKE_C_STANDARD 99)
+  set(CMAKE_C_STANDARD 14)
 endif()
 
 # Default to C++14

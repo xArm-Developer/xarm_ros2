@@ -402,7 +402,7 @@ namespace xarm_control
         static int last_err = curr_err_;
         if (curr_err_ != 0) {
             if (last_err != curr_err_) {
-                RCLCPP_ERROR(node_->get_logger(), "[ns: %s, hw_ns: %s] xArm Error detected! Code: %d", node_->get_namespace(), hw_ns_.c_str(), curr_err_);
+                RCLCPP_ERROR(node_->get_logger(), "[ns: %s, hw_ns: %s] UFACTORY Error detected! Code C%d -> [ %s ] ", node_->get_namespace(), hw_ns_.c_str(), curr_err_, uf_controller_error_interpreter(curr_err_).c_str());
             }
         }
         last_err = curr_err_;
