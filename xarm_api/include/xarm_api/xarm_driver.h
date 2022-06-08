@@ -30,7 +30,7 @@ namespace xarm_api
         void pub_robot_msg(xarm_msgs::msg::RobotMsg &rm_msg);
         void pub_joint_state(sensor_msgs::msg::JointState &js_msg);
         void pub_cgpio_state(xarm_msgs::msg::CIOState &cio_msg);
-
+        
         bool is_connected(void);
 
         rclcpp::Logger get_logger() { return node_->get_logger(); }
