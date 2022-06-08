@@ -31,14 +31,27 @@ def merge_dict(dict1, dict2):
             pass
 
 
+def load_yaml(path):
+    if os.path.exists(path):
+        try:
+            with open(path, 'r') as file:
+                return yaml.safe_load(file)
+        except Exception as e:
+            print('load {} error, {}'.format(path, e))
+    return {}
+
+
 def generate_xarm_params(xarm_default_params_path, xarm_user_params_path=None, ros_namespace=''):
     if not os.path.exists(xarm_user_params_path):
         xarm_user_params_path = None
     if ros_namespace or (xarm_user_params_path is not None and xarm_default_params_path != xarm_user_params_path):
-        with open(xarm_default_params_path, 'r') as f:
-            ros2_control_params_yaml = yaml.safe_load(f)
-        with open(xarm_user_params_path, 'r') as f:
-            ros2_control_user_params_yaml = yaml.safe_load(f)
+        ros2_control_params_yaml = load_yaml(xarm_default_params_path)
+        ros2_control_user_params_yaml = load_yaml(xarm_user_params_path)
+        # change xarm_driver to ufactory_driver
+        if 'xarm_driver' in ros2_control_params_yaml and 'ufactory_driver' not in ros2_control_params_yaml:
+            ros2_control_params_yaml['ufactory_driver'] = ros2_control_params_yaml.pop('xarm_driver')
+        if 'xarm_driver' in ros2_control_user_params_yaml and 'ufactory_driver' not in ros2_control_user_params_yaml:
+            ros2_control_user_params_yaml['ufactory_driver'] = ros2_control_user_params_yaml.pop('xarm_driver')
         merge_dict(ros2_control_params_yaml, ros2_control_user_params_yaml)
         if ros_namespace:
             xarm_params_yaml = {
@@ -106,7 +119,7 @@ def launch_setup(context, *args, **kwargs):
     xarm_driver_node = Node(
         # namespace=hw_ns,
         package='xarm_api',
-        name='xarm_driver',
+        name='ufactory_driver',
         executable='xarm_driver_node',
         output='screen',
         emulate_tty=True,
