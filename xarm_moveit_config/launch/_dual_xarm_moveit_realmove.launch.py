@@ -115,6 +115,7 @@ def launch_setup(context, *args, **kwargs):
             'prefix': prefix_1,
             'baud_checkset': baud_checkset_1,
             'default_gripper_baud': default_gripper_baud_1,
+            'robot_type': robot_type_1,
         }.items(),
     )
     # xarm driver launch
@@ -130,6 +131,7 @@ def launch_setup(context, *args, **kwargs):
             'prefix': prefix_2,
             'baud_checkset': baud_checkset_2,
             'default_gripper_baud': default_gripper_baud_2,
+            'robot_type': robot_type_2,
         }.items(),
     )
 

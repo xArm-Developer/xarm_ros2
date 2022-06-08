@@ -56,6 +56,7 @@ def generate_launch_description():
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'show_rviz': show_rviz,
+            'robot_type': 'lite',
         }.items(),
     )
 
