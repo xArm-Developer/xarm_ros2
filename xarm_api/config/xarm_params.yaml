@@ -1,6 +1,6 @@
 # Please do not modify this file, this configuration is the default configuration
 # if you need to modify, please modify xarm_user_params.yaml
-xarm_driver:
+ufactory_driver:
   ros__parameters:
     joint_names: ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6', 'joint7']
     xarm_gripper:

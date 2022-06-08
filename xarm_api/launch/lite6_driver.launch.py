@@ -32,7 +32,7 @@ def generate_launch_description():
         DeclareLaunchArgument(
             'hw_ns',
             default_value='ufactory',
-            description='The namespace of xarm_driver, default is xarm.',
+            description='The namespace of ufactory_driver, default is ufactory.',
         )
     )
 
