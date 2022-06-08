@@ -149,6 +149,8 @@ def launch_setup(context, *args, **kwargs):
             'robot_type_2': robot_type_2,
             'add_gripper_1': add_gripper_1,
             'add_gripper_2': add_gripper_2,
+            'add_vacuum_gripper_1': add_vacuum_gripper_1,
+            'add_vacuum_gripper_2': add_vacuum_gripper_2,
             'add_other_geometry_1': add_other_geometry_1,
             'add_other_geometry_2': add_other_geometry_2,
         },

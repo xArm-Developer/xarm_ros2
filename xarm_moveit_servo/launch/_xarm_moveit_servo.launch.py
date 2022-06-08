@@ -90,6 +90,7 @@ def launch_setup(context, *args, **kwargs):
             'dof': dof,
             'robot_type': robot_type,
             'add_gripper': add_gripper,
+            'add_vacuum_gripper': add_vacuum_gripper,
             'add_other_geometry': add_other_geometry,
         },
         arguments={
