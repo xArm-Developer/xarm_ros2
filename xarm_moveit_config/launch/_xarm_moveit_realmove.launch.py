@@ -64,6 +64,7 @@ def launch_setup(context, *args, **kwargs):
             'prefix': prefix,
             'baud_checkset': baud_checkset,
             'default_gripper_baud': default_gripper_baud,
+            'robot_type': robot_type,
         }.items(),
     )
     

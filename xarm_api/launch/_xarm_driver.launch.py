@@ -108,6 +108,7 @@ def launch_setup(context, *args, **kwargs):
     default_gripper_baud = LaunchConfiguration('default_gripper_baud', default=2000000)
     
     show_rviz = LaunchConfiguration('show_rviz', default=False)
+    robot_type = LaunchConfiguration('robot_type', default='xarm')
     
     xarm_params = generate_xarm_params(
         os.path.join(get_package_share_directory('xarm_api'), 'config', 'xarm_params.yaml'),
@@ -129,7 +130,7 @@ def launch_setup(context, *args, **kwargs):
                 'robot_ip': robot_ip,
                 'report_type': report_type,
                 'dof': dof,
-                'add_gripper': add_gripper,
+                'add_gripper': add_gripper if robot_type.perform(context) == 'xarm' else False,
                 'hw_ns': hw_ns.perform(context).strip('/'),
                 'prefix': prefix.perform(context).strip('/'),
                 'baud_checkset': baud_checkset,
