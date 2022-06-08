@@ -20,7 +20,7 @@ def generate_launch_description():
     ns1 = LaunchConfiguration('ns1', default='left')
     ns2 = LaunchConfiguration('ns2', default='right')
     prefix = LaunchConfiguration('prefix', default='')
-    limited = LaunchConfiguration('limited', default=False)
+    limited = LaunchConfiguration('limited', default=True)
     effort_control = LaunchConfiguration('effort_control', default=False)
     velocity_control = LaunchConfiguration('velocity_control', default=False)
     add_gripper = LaunchConfiguration('add_gripper', default=False)

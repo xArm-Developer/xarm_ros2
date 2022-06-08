@@ -33,7 +33,7 @@ def launch_setup(context, *args, **kwargs):
     add_vacuum_gripper_1 = LaunchConfiguration('add_vacuum_gripper_1', default=add_vacuum_gripper)
     add_vacuum_gripper_2 = LaunchConfiguration('add_vacuum_gripper_2', default=add_vacuum_gripper)
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
-    limited = LaunchConfiguration('limited', default=False)
+    limited = LaunchConfiguration('limited', default=True)
     effort_control = LaunchConfiguration('effort_control', default=False)
     velocity_control = LaunchConfiguration('velocity_control', default=False)
     no_gui_ctrl = LaunchConfiguration('no_gui_ctrl', default=False)
