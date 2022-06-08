@@ -20,7 +20,7 @@ def generate_launch_description():
         executable='test_xarm_planner_client_joint',
         output='screen',
         parameters=[
-            {'DOF': dof},
+            {'dof': dof},
         ],
     )
     return LaunchDescription([

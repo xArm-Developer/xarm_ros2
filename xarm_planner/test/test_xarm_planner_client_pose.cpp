@@ -60,7 +60,7 @@ int main(int argc, char** argv)
     signal(SIGINT, exit_sig_handler);
 
     int dof;
-    node->get_parameter_or("DOF", dof, 7);
+    node->get_parameter_or("dof", dof, 7);
     RCLCPP_INFO(node->get_logger(), "namespace: %s, dof: %d", node->get_namespace(), dof);
 
     rclcpp::Client<xarm_msgs::srv::PlanPose>::SharedPtr pose_plan_client_ = node->create_client<xarm_msgs::srv::PlanPose>("xarm_pose_plan");

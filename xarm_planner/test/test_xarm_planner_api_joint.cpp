@@ -24,7 +24,7 @@ int main(int argc, char** argv)
     signal(SIGINT, exit_sig_handler);
 
     int dof;
-    node->get_parameter_or("DOF", dof, 7);
+    node->get_parameter_or("dof", dof, 7);
     std::string group_name = "xarm" + std::to_string(dof);
 
     RCLCPP_INFO(node->get_logger(), "namespace: %s, group_name: %s", node->get_namespace(), group_name.c_str());
