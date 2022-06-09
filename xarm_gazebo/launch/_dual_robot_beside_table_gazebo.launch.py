@@ -91,8 +91,8 @@ def launch_setup(context, *args, **kwargs):
     ros_namespace = LaunchConfiguration('ros_namespace', default='').perform(context)
 
     # ros2 control params
-    # xarm_controller/launch/lib/xarm_controller_lib.py
-    mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_controller'), 'launch', 'lib', 'xarm_controller_lib.py'))
+    # xarm_controller/launch/lib/robot_controller_lib.py
+    mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_controller'), 'launch', 'lib', 'robot_controller_lib.py'))
     generate_dual_ros2_control_params_temp_file = getattr(mod, 'generate_dual_ros2_control_params_temp_file')
     ros2_control_params = generate_dual_ros2_control_params_temp_file(
         os.path.join(get_package_share_directory('xarm_controller'), 'config', '{}{}_controllers.yaml'.format(robot_type_1.perform(context), dof_1.perform(context))),
@@ -106,8 +106,8 @@ def launch_setup(context, *args, **kwargs):
     )
 
     # robot_description
-    # xarm_description/launch/lib/xarm_description_lib.py
-    mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_description'), 'launch', 'lib', 'xarm_description_lib.py'))
+    # xarm_description/launch/lib/robot_description_lib.py
+    mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_description'), 'launch', 'lib', 'robot_description_lib.py'))
     get_xacro_file_content = getattr(mod, 'get_xacro_file_content')
     robot_description = {
         'robot_description': get_xacro_file_content(

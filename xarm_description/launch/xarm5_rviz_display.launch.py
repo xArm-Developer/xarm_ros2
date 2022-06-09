@@ -20,10 +20,10 @@ def generate_launch_description():
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     
-    # xarm rviz launch
-    # xarm_description/launch/_xarm_rviz_display.launch.py
-    xarm_rviz_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/_xarm_rviz_display.launch.py']),
+    # robot rviz launch
+    # xarm_description/launch/_robot_rviz_display.launch.py
+    robot_rviz_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/_robot_rviz_display.launch.py']),
         launch_arguments={
             'prefix': prefix,
             'hw_ns': hw_ns,
@@ -33,9 +33,10 @@ def generate_launch_description():
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': '5',
+            'robot_type': 'xarm',
         }.items(),
     )
 
     return LaunchDescription([
-        xarm_rviz_launch
+        robot_rviz_launch
     ])

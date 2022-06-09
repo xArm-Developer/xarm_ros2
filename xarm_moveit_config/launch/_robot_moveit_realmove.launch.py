@@ -15,6 +15,8 @@ from launch_ros.actions import Node
 
 
 def launch_setup(context, *args, **kwargs):
+    robot_ip = LaunchConfiguration('robot_ip')
+    report_type = LaunchConfiguration('report_type', default='normal')
     prefix = LaunchConfiguration('prefix', default='')
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     limited = LaunchConfiguration('limited', default=True)
@@ -39,17 +41,37 @@ def launch_setup(context, *args, **kwargs):
     geometry_mesh_tcp_xyz = LaunchConfiguration('geometry_mesh_tcp_xyz', default='"0 0 0"')
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
 
-    ros2_control_plugin = 'xarm_control/FakeXArmHW'
-    controllers_name = 'fake_controllers'
+    baud_checkset = LaunchConfiguration('baud_checkset', default=True)
+    default_gripper_baud = LaunchConfiguration('default_gripper_baud', default=2000000)
+
+    ros2_control_plugin = 'xarm_control/XArmHW'
+    controllers_name = 'controllers'
     moveit_controller_manager_key = 'moveit_simple_controller_manager'
     moveit_controller_manager_value = 'moveit_simple_controller_manager/MoveItSimpleControllerManager'
     xarm_type = '{}{}'.format(robot_type.perform(context), dof.perform(context))
     ros_namespace = LaunchConfiguration('ros_namespace', default='').perform(context)
+
+    # robot driver launch
+    # xarm_api/launch/_robot_driver.launch.py
+    robot_driver_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_api'), 'launch', '_robot_driver.launch.py'])),
+        launch_arguments={
+            'robot_ip': robot_ip,
+            'report_type': report_type,
+            'dof': dof,
+            'hw_ns': hw_ns,
+            'add_gripper': add_gripper,
+            'prefix': prefix,
+            'baud_checkset': baud_checkset,
+            'default_gripper_baud': default_gripper_baud,
+            'robot_type': robot_type,
+        }.items(),
+    )
     
     # robot description launch
-    # xarm_description/launch/_xarm_robot_description.launch.py
+    # xarm_description/launch/_robot_description.launch.py
     robot_description_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_description'), 'launch', '_xarm_robot_description.launch.py'])),
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_description'), 'launch', '_robot_description.launch.py'])),
         launch_arguments={
             'prefix': prefix,
             'hw_ns': hw_ns,
@@ -61,7 +83,7 @@ def launch_setup(context, *args, **kwargs):
             'dof': dof,
             'robot_type': robot_type,
             'ros2_control_plugin': ros2_control_plugin,
-            'joint_states_remapping': 'joint_states',
+            'joint_states_remapping': PathJoinSubstitution(['/', ros_namespace, hw_ns, 'joint_states']),
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,
             'geometry_mass': geometry_mass,
@@ -77,10 +99,10 @@ def launch_setup(context, *args, **kwargs):
         }.items(),
     )
 
-    # xarm moveit common launch
-    # xarm_moveit_config/launch/_xarm_moveit_common.launch.py
-    xarm_moveit_common_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_xarm_moveit_common.launch.py'])),
+    # robot moveit common launch
+    # xarm_moveit_config/launch/_robot_moveit_common.launch.py
+    robot_moveit_common_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_robot_moveit_common.launch.py'])),
         launch_arguments={
             'prefix': prefix,
             'hw_ns': hw_ns,
@@ -111,23 +133,16 @@ def launch_setup(context, *args, **kwargs):
         }.items(),
     )
 
-    remappings = [
-        ('follow_joint_trajectory', '{}{}_traj_controller/follow_joint_trajectory'.format(prefix.perform(context), xarm_type)),
-    ]
-    controllers = ['{}{}_traj_controller'.format(prefix.perform(context), xarm_type)]
-    if add_gripper.perform(context) in ('True', 'true'):
-        remappings.append(
-            ('follow_joint_trajectory', '{}xarm_gripper_traj_controller/follow_joint_trajectory'.format(prefix.perform(context)))
-        )
-        controllers.append('{}xarm_gripper_traj_controller'.format(prefix.perform(context)))
     # joint state publisher node
     joint_state_publisher_node = Node(
         package='joint_state_publisher',
         executable='joint_state_publisher',
         name='joint_state_publisher',
         output='screen',
-        parameters=[{'source_list': ['joint_states']}],
-        remappings=remappings,
+        parameters=[{'source_list': ['{}/joint_states'.format(hw_ns.perform(context))]}],
+        remappings=[
+            ('follow_joint_trajectory', '{}{}_traj_controller/follow_joint_trajectory'.format(prefix.perform(context), xarm_type)),
+        ],
     )
 
     # ros2 control launch
@@ -145,40 +160,27 @@ def launch_setup(context, *args, **kwargs):
             'dof': dof,
             'robot_type': robot_type,
             'ros2_control_plugin': ros2_control_plugin,
-            'add_other_geometry': add_other_geometry,
-            'geometry_type': geometry_type,
-            'geometry_mass': geometry_mass,
-            'geometry_height': geometry_height,
-            'geometry_radius': geometry_radius,
-            'geometry_length': geometry_length,
-            'geometry_width': geometry_width,
-            'geometry_mesh_filename': geometry_mesh_filename,
-            'geometry_mesh_origin_xyz': geometry_mesh_origin_xyz,
-            'geometry_mesh_origin_rpy': geometry_mesh_origin_rpy,
-            'geometry_mesh_tcp_xyz': geometry_mesh_tcp_xyz,
-            'geometry_mesh_tcp_rpy': geometry_mesh_tcp_rpy,
         }.items(),
     )
 
-    # Load controllers
-    load_controllers = []
-    for controller in controllers:
-        load_controllers.append(Node(
-            package='controller_manager',
-            executable='spawner.py',
-            output='screen',
-            arguments=[
-                controller,
-                '--controller-manager', '{}/controller_manager'.format(ros_namespace)
-            ],
-        ))
+    control_node = Node(
+        package='controller_manager',
+        executable='spawner.py',
+        output='screen',
+        arguments=[
+            '{}{}_traj_controller'.format(prefix.perform(context), xarm_type),
+            '--controller-manager', '{}/controller_manager'.format(ros_namespace)
+        ],
+    )
 
     return [
         robot_description_launch,
-        xarm_moveit_common_launch,
+        robot_moveit_common_launch,
         joint_state_publisher_node,
         ros2_control_launch,
-    ] + load_controllers
+        control_node,
+        robot_driver_launch,
+    ]
 
 
 def generate_launch_description():

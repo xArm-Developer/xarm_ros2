@@ -6,21 +6,15 @@
 #
 # Author: Vinman <vinman.wen@ufactory.cc> <vinman.cub@gmail.com>
 
-import os
-from ament_index_python import get_package_share_directory
-from launch.launch_description_sources import load_python_launch_file_as_module
 from launch import LaunchDescription
-from launch.actions import OpaqueFunction, IncludeLaunchDescription
+from launch.actions import OpaqueFunction, IncludeLaunchDescription, DeclareLaunchArgument
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
-from launch_ros.actions import ComposableNodeContainer
-from launch_ros.descriptions import ComposableNode
 from launch_ros.actions import Node
 
 
 def launch_setup(context, *args, **kwargs):
-    dof = LaunchConfiguration('dof', default=7)
     prefix = LaunchConfiguration('prefix', default='')
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     limited = LaunchConfiguration('limited', default=True)
@@ -28,12 +22,9 @@ def launch_setup(context, *args, **kwargs):
     velocity_control = LaunchConfiguration('velocity_control', default=False)
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
-    ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='xarm_control/FakeXArmHW')
-    
-    # 1: xbox360 wired
-    # 2: xbox360 wireless
-    # 3: spacemouse wireless
-    joystick_type = LaunchConfiguration('joystick_type', default=1)
+    dof = LaunchConfiguration('dof', default=7)
+    robot_type = LaunchConfiguration('robot_type', default='xarm')
+    no_gui_ctrl = LaunchConfiguration('no_gui_ctrl', default=False)
 
     add_other_geometry = LaunchConfiguration('add_other_geometry', default=False)
     geometry_type = LaunchConfiguration('geometry_type', default='box')
@@ -48,22 +39,20 @@ def launch_setup(context, *args, **kwargs):
     geometry_mesh_tcp_xyz = LaunchConfiguration('geometry_mesh_tcp_xyz', default='"0 0 0"')
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
 
-    robot_type = LaunchConfiguration('robot_type', default='xarm')
-
-    moveit_config_package_name = 'xarm_moveit_config'
+    ros2_control_plugin = 'xarm_control/FakeXArmHW'
+    controllers_name = 'fake_controllers'
+    moveit_controller_manager_key = 'moveit_simple_controller_manager'
+    moveit_controller_manager_value = 'moveit_simple_controller_manager/MoveItSimpleControllerManager'
     xarm_type = '{}{}'.format(robot_type.perform(context), dof.perform(context))
     ros_namespace = LaunchConfiguration('ros_namespace', default='').perform(context)
-
-    # robot_description_parameters
-    # xarm_moveit_config/launch/lib/xarm_moveit_config_lib.py
-    mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory(moveit_config_package_name), 'launch', 'lib', 'xarm_moveit_config_lib.py'))
-    get_xarm_robot_description_parameters = getattr(mod, 'get_xarm_robot_description_parameters')
-    robot_description_parameters = get_xarm_robot_description_parameters(
-        xacro_urdf_file=PathJoinSubstitution([FindPackageShare('xarm_description'), 'urdf', 'xarm_device.urdf.xacro']),
-        xacro_srdf_file=PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'srdf', 'xarm.srdf.xacro']),
-        urdf_arguments={
+    
+    # robot description launch
+    # xarm_description/launch/_robot_description.launch.py
+    robot_description_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_description'), 'launch', '_robot_description.launch.py'])),
+        launch_arguments={
             'prefix': prefix,
-            'hw_ns': hw_ns.perform(context).strip('/'),
+            'hw_ns': hw_ns,
             'limited': limited,
             'effort_control': effort_control,
             'velocity_control': velocity_control,
@@ -72,6 +61,7 @@ def launch_setup(context, *args, **kwargs):
             'dof': dof,
             'robot_type': robot_type,
             'ros2_control_plugin': ros2_control_plugin,
+            'joint_states_remapping': 'joint_states',
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,
             'geometry_mass': geometry_mass,
@@ -84,46 +74,60 @@ def launch_setup(context, *args, **kwargs):
             'geometry_mesh_origin_rpy': geometry_mesh_origin_rpy,
             'geometry_mesh_tcp_xyz': geometry_mesh_tcp_xyz,
             'geometry_mesh_tcp_rpy': geometry_mesh_tcp_rpy,
-        },
-        srdf_arguments={
-            'prefix': prefix,
-            'dof': dof,
-            'robot_type': robot_type,
-            'add_gripper': add_gripper,
-            'add_vacuum_gripper': add_vacuum_gripper,
-            'add_other_geometry': add_other_geometry,
-        },
-        arguments={
-            'context': context,
-            'xarm_type': xarm_type,
-        }
+        }.items(),
     )
 
-    load_yaml = getattr(mod, 'load_yaml')
-    servo_yaml = load_yaml('xarm_moveit_servo', "config/xarm_moveit_servo_config.yaml")
-    servo_yaml['move_group_name'] = xarm_type
-    xarm_traj_controller = '{}{}_traj_controller'.format(prefix.perform(context), xarm_type)
-    servo_yaml['command_out_topic'] = '/{}/joint_trajectory'.format(xarm_traj_controller)
-    servo_params = {"moveit_servo": servo_yaml}
-    controllers = ['joint_state_broadcaster', xarm_traj_controller]
-    if add_gripper.perform(context) in ('True', 'true'):
-        controllers.append('{}xarm_gripper_traj_controller'.format(prefix.perform(context)))
+    # robot moveit common launch
+    # xarm_moveit_config/launch/_robot_moveit_common.launch.py
+    robot_moveit_common_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_robot_moveit_common.launch.py'])),
+        launch_arguments={
+            'prefix': prefix,
+            'hw_ns': hw_ns,
+            'limited': limited,
+            'effort_control': effort_control,
+            'velocity_control': velocity_control,
+            'add_gripper': add_gripper,
+            'add_vacuum_gripper': add_vacuum_gripper,
+            'dof': dof,
+            'robot_type': robot_type,
+            'no_gui_ctrl': no_gui_ctrl,
+            'ros2_control_plugin': ros2_control_plugin,
+            'controllers_name': controllers_name,
+            'moveit_controller_manager_key': moveit_controller_manager_key,
+            'moveit_controller_manager_value': moveit_controller_manager_value,
+            'add_other_geometry': add_other_geometry,
+            'geometry_type': geometry_type,
+            'geometry_mass': geometry_mass,
+            'geometry_height': geometry_height,
+            'geometry_radius': geometry_radius,
+            'geometry_length': geometry_length,
+            'geometry_width': geometry_width,
+            'geometry_mesh_filename': geometry_mesh_filename,
+            'geometry_mesh_origin_xyz': geometry_mesh_origin_xyz,
+            'geometry_mesh_origin_rpy': geometry_mesh_origin_rpy,
+            'geometry_mesh_tcp_xyz': geometry_mesh_tcp_xyz,
+            'geometry_mesh_tcp_rpy': geometry_mesh_tcp_rpy,
+        }.items(),
+    )
 
-    # rviz_config_file = PathJoinSubstitution([FindPackageShare(moveit_config_package_name), 'rviz', 'moveit.rviz'])
-    rviz_config_file = PathJoinSubstitution([FindPackageShare('xarm_moveit_servo'), 'rviz', 'servo.rviz'])
-    rviz_node = Node(
-        package='rviz2',
-        executable='rviz2',
-        name='rviz2',
+    remappings = [
+        ('follow_joint_trajectory', '{}{}_traj_controller/follow_joint_trajectory'.format(prefix.perform(context), xarm_type)),
+    ]
+    controllers = ['{}{}_traj_controller'.format(prefix.perform(context), xarm_type)]
+    if add_gripper.perform(context) in ('True', 'true'):
+        remappings.append(
+            ('follow_joint_trajectory', '{}xarm_gripper_traj_controller/follow_joint_trajectory'.format(prefix.perform(context)))
+        )
+        controllers.append('{}xarm_gripper_traj_controller'.format(prefix.perform(context)))
+    # joint state publisher node
+    joint_state_publisher_node = Node(
+        package='joint_state_publisher',
+        executable='joint_state_publisher',
+        name='joint_state_publisher',
         output='screen',
-        arguments=['-d', rviz_config_file],
-        parameters=[
-            robot_description_parameters,
-        ],
-        remappings=[
-            ('/tf', 'tf'),
-            ('/tf_static', 'tf_static'),
-        ]
+        parameters=[{'source_list': ['joint_states']}],
+        remappings=remappings,
     )
 
     # ros2 control launch
@@ -169,66 +173,11 @@ def launch_setup(context, *args, **kwargs):
             ],
         ))
 
-    # Launch as much as possible in components
-    container = ComposableNodeContainer(
-        name='xarm_moveit_servo_container',
-        namespace='/',
-        package='rclcpp_components',
-        executable='component_container',
-        composable_node_descriptions=[
-            ComposableNode(
-                package='robot_state_publisher',
-                plugin='robot_state_publisher::RobotStatePublisher',
-                name='robot_state_publisher',
-                parameters=[robot_description_parameters],
-            ),
-            ComposableNode(
-                package='tf2_ros',
-                plugin='tf2_ros::StaticTransformBroadcasterNode',
-                name='static_tf2_broadcaster',
-                parameters=[{'child_frame_id': 'link_base', 'frame_id': 'world'}],
-            ),
-            ComposableNode(
-                package='moveit_servo',
-                plugin='moveit_servo::ServoServer',
-                name='servo_server',
-                parameters=[
-                    servo_params,
-                    robot_description_parameters,
-                ],
-                extra_arguments=[{'use_intra_process_comms': True}],
-            ),
-            ComposableNode(
-                package='xarm_moveit_servo',
-                plugin='xarm_moveit_servo::JoyToServoPub',
-                name='joy_to_servo_node',
-                parameters=[
-                    servo_params,
-                    {
-                        'dof': dof, 
-                        'ros_queue_size': 10,
-                        'joystick_type': joystick_type,
-                    },
-                ],
-                extra_arguments=[{'use_intra_process_comms': True}],
-            ),
-            ComposableNode(
-                package='joy',
-                plugin='joy::Joy',
-                name='joy_node',
-                parameters=[
-                    # {'autorepeat_rate': 50.0},
-                ],
-                extra_arguments=[{'use_intra_process_comms': True}],
-            ),
-        ],
-        output='screen',
-    )
-
     return [
-        rviz_node,
+        robot_description_launch,
+        robot_moveit_common_launch,
+        joint_state_publisher_node,
         ros2_control_launch,
-        container,
     ] + load_controllers
 
 

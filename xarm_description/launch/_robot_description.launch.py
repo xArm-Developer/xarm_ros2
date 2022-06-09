@@ -45,8 +45,8 @@ def launch_setup(context, *args, **kwargs):
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
 
     # robot_description
-    # xarm_description/launch/lib/xarm_description_lib.py
-    mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_description'), 'launch', 'lib', 'xarm_description_lib.py'))
+    # xarm_description/launch/lib/robot_description_lib.py
+    mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_description'), 'launch', 'lib', 'robot_description_lib.py'))
     get_xacro_file_content = getattr(mod, 'get_xacro_file_content')
     robot_description = {
         'robot_description': get_xacro_file_content(

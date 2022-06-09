@@ -7,13 +7,14 @@
 # Author: Vinman <vinman.wen@ufactory.cc> <vinman.cub@gmail.com>
 
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
+from launch.actions import OpaqueFunction, IncludeLaunchDescription, DeclareLaunchArgument
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, ThisLaunchFileDir, PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
-def generate_launch_description():
+
+def launch_setup(context, *args, **kwargs):
     prefix = LaunchConfiguration('prefix', default='')
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     limited = LaunchConfiguration('limited', default=False)
@@ -23,6 +24,8 @@ def generate_launch_description():
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     dof = LaunchConfiguration('dof', default=7)
     robot_type = LaunchConfiguration('robot_type', default='xarm')
+    ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='xarm_control/XArmHW')
+    joint_states_remapping = LaunchConfiguration('joint_states_remapping', default='joint_states')
 
     add_other_geometry = LaunchConfiguration('add_other_geometry', default=False)
     geometry_type = LaunchConfiguration('geometry_type', default='box')
@@ -36,11 +39,11 @@ def generate_launch_description():
     geometry_mesh_origin_rpy = LaunchConfiguration('geometry_mesh_origin_rpy', default='"0 0 0"')
     geometry_mesh_tcp_xyz = LaunchConfiguration('geometry_mesh_tcp_xyz', default='"0 0 0"')
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
-    
-    # xarm robot joint launch
-    # xarm_description/launch/_xarm_robot_joint.launch.py
-    xarm_robot_joint_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/_xarm_robot_joint.launch.py']),
+
+    # robot description launch
+    # xarm_description/launch/_robot_description.launch.py
+    robot_description_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_description'), 'launch', '_robot_description.launch.py'])),
         launch_arguments={
             'prefix': prefix,
             'hw_ns': hw_ns,
@@ -51,6 +54,8 @@ def generate_launch_description():
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': dof,
             'robot_type': robot_type,
+            'ros2_control_plugin': ros2_control_plugin,
+            'joint_states_remapping': joint_states_remapping,
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,
             'geometry_mass': geometry_mass,
@@ -66,13 +71,22 @@ def generate_launch_description():
         }.items(),
     )
 
-    # rviz2 display launch
-    # xarm_description/launch/_rviz_display.launch.py
-    rviz2_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/_rviz_display.launch.py']),
+    # joint state publisher node
+    joint_state_publisher_node = Node(
+        package='joint_state_publisher',
+        executable='joint_state_publisher',
+        name='joint_state_publisher',
+        output='screen',
+        parameters=[{'source_list': ['{}{}/joint_states'.format(prefix.perform(context), hw_ns.perform(context))]}],
     )
-    
+
+    return [
+        robot_description_launch,
+        joint_state_publisher_node,
+    ]
+
+
+def generate_launch_description():
     return LaunchDescription([
-        xarm_robot_joint_launch,
-        rviz2_launch
+        OpaqueFunction(function=launch_setup)
     ])

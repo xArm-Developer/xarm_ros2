@@ -15,7 +15,6 @@ from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
     robot_ip = LaunchConfiguration('robot_ip')
-    robot_type = LaunchConfiguration('robot_type', default='xarm')
     report_type = LaunchConfiguration('report_type', default='normal')
     
     prefix = LaunchConfiguration('prefix', default='')
@@ -39,10 +38,10 @@ def generate_launch_description():
     geometry_mesh_tcp_xyz = LaunchConfiguration('geometry_mesh_tcp_xyz', default='"0 0 0"')
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
     
-    # xarm control launch
-    # xarm_controller/launch/_xarm_ros2_control.launch.py
-    xarm_control_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_controller'), 'launch', '_xarm_ros2_control.launch.py'])),
+    # robot ros2 control launch
+    # xarm_controller/launch/_robot_ros2_control.launch.py
+    robot_ros2_control_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_controller'), 'launch', '_robot_ros2_control.launch.py'])),
         launch_arguments={
             'robot_ip': robot_ip,
             'report_type': report_type,
@@ -54,7 +53,7 @@ def generate_launch_description():
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': '6',
-            'robot_type': robot_type,
+            'robot_type': 'xarm',
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,
             'geometry_mass': geometry_mass,
@@ -77,6 +76,6 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        xarm_control_launch,
+        robot_ros2_control_launch,
         rviz2_launch
     ])

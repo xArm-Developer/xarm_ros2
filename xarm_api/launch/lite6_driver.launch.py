@@ -44,10 +44,10 @@ def generate_launch_description():
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     show_rviz = LaunchConfiguration('show_rviz', default=False)
 
-    # xarm driver launch
-    # xarm_api/launch/_xarm_driver.launch.py
-    xarm_driver_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/_xarm_driver.launch.py']),
+    # robot driver launch
+    # xarm_api/launch/_robot_driver.launch.py
+    robot_driver_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/_robot_driver.launch.py']),
         launch_arguments={
             'robot_ip': robot_ip,
             'report_type': report_type,
@@ -60,4 +60,4 @@ def generate_launch_description():
         }.items(),
     )
 
-    return LaunchDescription(declared_arguments + [xarm_driver_launch])
+    return LaunchDescription(declared_arguments + [robot_driver_launch])

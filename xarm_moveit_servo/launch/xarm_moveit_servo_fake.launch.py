@@ -24,10 +24,10 @@ def generate_launch_description():
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     robot_type = LaunchConfiguration('robot_type', default='xarm')
 
-    # xarm moveit servo launch
-    # xarm_moveit_servo/launch/_xarm_moveit_servo.launch.py
-    xarm_moveit_servo_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_servo'), 'launch', '_xarm_moveit_servo.launch.py'])),
+    # robot moveit servo launch
+    # xarm_moveit_servo/launch/_robot_moveit_servo.launch.py
+    robot_moveit_servo_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_servo'), 'launch', '_robot_moveit_servo.launch.py'])),
         launch_arguments={
             'dof': dof,
             'prefix': prefix,
@@ -42,5 +42,5 @@ def generate_launch_description():
     )
     
     return LaunchDescription([
-        xarm_moveit_servo_launch
+        robot_moveit_servo_launch
     ])

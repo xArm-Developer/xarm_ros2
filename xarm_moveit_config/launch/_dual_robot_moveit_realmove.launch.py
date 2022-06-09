@@ -102,10 +102,10 @@ def launch_setup(context, *args, **kwargs):
     moveit_controller_manager_value = 'moveit_simple_controller_manager/MoveItSimpleControllerManager'
     ros_namespace = LaunchConfiguration('ros_namespace', default='').perform(context)
 
-    # xarm driver launch
-    # xarm_api/launch/_xarm_driver.launch.py
-    xarm_driver_launch_1 = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_api'), 'launch', '_xarm_driver.launch.py'])),
+    # robot driver launch
+    # xarm_api/launch/_robot_driver.launch.py
+    robot_driver_launch_1 = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_api'), 'launch', '_robot_driver.launch.py'])),
         launch_arguments={
             'robot_ip': robot1_ip,
             'report_type': report_type,
@@ -118,10 +118,10 @@ def launch_setup(context, *args, **kwargs):
             'robot_type': robot_type_1,
         }.items(),
     )
-    # xarm driver launch
-    # xarm_api/launch/_xarm_driver.launch.py
-    xarm_driver_launch_2 = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_api'), 'launch', '_xarm_driver.launch.py'])),
+    # robot driver launch
+    # xarm_api/launch/_robot_driver.launch.py
+    robot_driver_launch_2 = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_api'), 'launch', '_robot_driver.launch.py'])),
         launch_arguments={
             'robot_ip': robot2_ip,
             'report_type': report_type,
@@ -136,9 +136,9 @@ def launch_setup(context, *args, **kwargs):
     )
 
     # robot_description
-    # xarm_description/launch/lib/xarm_description_lib.py
+    # xarm_description/launch/lib/robot_description_lib.py
     xacro_file = PathJoinSubstitution([FindPackageShare('xarm_description'), 'urdf', 'dual_xarm_device.urdf.xacro'])
-    mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_description'), 'launch', 'lib', 'xarm_description_lib.py'))
+    mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_description'), 'launch', 'lib', 'robot_description_lib.py'))
     get_xacro_file_content = getattr(mod, 'get_xacro_file_content')
     robot_description = {
         'robot_description': get_xacro_file_content(
@@ -200,10 +200,10 @@ def launch_setup(context, *args, **kwargs):
         ]
     )
 
-   # xarm moveit common launch
-   # xarm_moveit_config/launch/_dual_xarm_moveit_common.launch.py
-    xarm_moveit_common_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_dual_xarm_moveit_common.launch.py'])),
+   # robot moveit common launch
+   # xarm_moveit_config/launch/_dual_robot_moveit_common.launch.py
+    robot_moveit_common_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_dual_robot_moveit_common.launch.py'])),
         launch_arguments={
             'prefix_1': prefix_1,
             'prefix_2': prefix_2,
@@ -337,11 +337,11 @@ def launch_setup(context, *args, **kwargs):
 
     return [
         robot_state_publisher_node,
-        xarm_moveit_common_launch,
+        robot_moveit_common_launch,
         joint_state_publisher_node,
         ros2_control_launch,
-        xarm_driver_launch_1,
-        xarm_driver_launch_2,
+        robot_driver_launch_1,
+        robot_driver_launch_2,
     ] + load_controllers
 
 

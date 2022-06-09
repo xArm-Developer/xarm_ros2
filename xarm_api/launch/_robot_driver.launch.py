@@ -116,8 +116,8 @@ def launch_setup(context, *args, **kwargs):
         LaunchConfiguration('ros_namespace', default='').perform(context)
     )
     
-    # xarm driver node
-    xarm_driver_node = Node(
+    # robot driver node
+    robot_driver_node = Node(
         # namespace=hw_ns,
         package='xarm_api',
         name='ufactory_driver',
@@ -140,13 +140,13 @@ def launch_setup(context, *args, **kwargs):
     )
 
     nodes = [
-        xarm_driver_node
+        robot_driver_node
     ]
     if show_rviz.perform(context) == 'true':
-        # xarm rviz launch
-        # xarm_description/launch/_xarm_rviz_display.launch.py
-        xarm_rviz_launch = IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_description'), 'launch', '_xarm_rviz_display.launch.py'])),
+        # robot rviz launch
+        # xarm_description/launch/_robot_rviz_display.launch.py
+        robot_rviz_launch = IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_description'), 'launch', '_robot_rviz_display.launch.py'])),
             launch_arguments={
                 'prefix': prefix,
                 'hw_ns': hw_ns,
@@ -155,7 +155,7 @@ def launch_setup(context, *args, **kwargs):
                 'dof': dof,
             }.items(),
         )
-        nodes.append(xarm_rviz_launch)
+        nodes.append(robot_rviz_launch)
     return nodes
 
 

@@ -49,8 +49,8 @@ def launch_setup(context, *args, **kwargs):
     xarm_type = '{}{}'.format(robot_type.perform(context), dof.perform(context))
 
     # robot_description_parameters
-    # xarm_moveit_config/launch/lib/xarm_moveit_config_lib.py
-    mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory(moveit_config_package_name), 'launch', 'lib', 'xarm_moveit_config_lib.py'))
+    # xarm_moveit_config/launch/lib/robot_moveit_config_lib.py
+    mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory(moveit_config_package_name), 'launch', 'lib', 'robot_moveit_config_lib.py'))
     get_xarm_robot_description_parameters = getattr(mod, 'get_xarm_robot_description_parameters')
     robot_description_parameters = get_xarm_robot_description_parameters(
         xacro_urdf_file=PathJoinSubstitution([FindPackageShare('xarm_description'), 'urdf', 'xarm_device.urdf.xacro']),
