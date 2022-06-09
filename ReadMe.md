@@ -135,8 +135,6 @@ __Reminder 3： All following instructions will base on xArm6，please use prope
     $ cd ~/dev_ws/
     # set 'add_gripper=true' to attach xArm gripper model
     $ ros2 launch xarm6_control_rviz_display.launch.py robot_ip:=192.168.1.117 [add_gripper:=true]
-    # open up two rviz windows for two separated arms at the same time
-    $ ros2 launch two_xarm6_control_rviz_display.launch.py robot1_ip:=192.168.1.117 robot2_ip:=192.168.1.203
     ```
 
 - ### 5.6 xarm_moveit_config
@@ -156,22 +154,6 @@ __Reminder 3： All following instructions will base on xArm6，please use prope
         $ cd ~/dev_ws/
         # set 'add_gripper=true' to attach xArm gripper model
         $ ros2 launch xarm_moveit_config xarm6_moveit_realmove.launch.py robot_ip:=192.168.1.117 [add_gripper:=true]
-        ```
-    
-    - 【simulated x2】launch two moveit processes(including rviz)，to control two xArms separately  
-
-        ```bash
-        $ cd ~/dev_ws/
-        # set 'add_gripper=true' to attach xArm gripper model
-        $ ros2 launch xarm_moveit_config two_xarm6_moveit_fake.launch.py [add_gripper:=true]
-        ```
-    
-    - 【real arm x2】launch two moveit processes(including rviz)，to control two xArms separately  
-
-        ```bash
-        $ cd ~/dev_ws/
-        # set 'add_gripper=true' to attach xArm gripper model
-        $ ros2 launch xarm_moveit_config two_xarm6_moveit_realmove.launch.py robot1_ip:=192.168.1.117 robot2_ip:=192.168.1.203 [add_gripper:=true]
         ```
     
     - 【Dual simulated】Launch single moveit process, and controlling two xArms in one rviz.  
