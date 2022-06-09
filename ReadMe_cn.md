@@ -130,8 +130,6 @@ __注意3： 以下启动说明以6轴为例，5轴和7轴的用法只需找到�
     $ cd ~/dev_ws/
     # add_gripper为true时会加载xarm夹爪的模型
     $ ros2 launch xarm6_control_rviz_display.launch.py robot_ip:=192.168.1.117 [add_gripper:=true]
-    # 启动两个rviz窗口对应两台机械臂
-    $ ros2 launch two_xarm6_control_rviz_display.launch.py robot1_ip:=192.168.1.117 robot2_ip:=192.168.1.203
     ```
 
 - ### 5.6 xarm_moveit_config
@@ -151,22 +149,6 @@ __注意3： 以下启动说明以6轴为例，5轴和7轴的用法只需找到�
         $ cd ~/dev_ws/
         # add_gripper为true时会加载xarm夹爪的模型
         $ ros2 launch xarm_moveit_config xarm6_moveit_realmove.launch.py robot_ip:=192.168.1.117 [add_gripper:=true]
-        ```
-    
-    - 【虚拟x2】启动两个moveit(包括rviz)，分别控制两台机械臂  
-
-        ```bash
-        $ cd ~/dev_ws/
-        # add_gripper为true时会加载xarm夹爪的模型
-        $ ros2 launch xarm_moveit_config two_xarm6_moveit_fake.launch.py [add_gripper:=true]
-        ```
-    
-    - 【真机x2】启动两个moveit(包括rviz)，分别控制两台机械臂  
-
-        ```bash
-        $ cd ~/dev_ws/
-        # add_gripper为true时会加载xarm夹爪的模型
-        $ ros2 launch xarm_moveit_config two_xarm6_moveit_realmove.launch.py robot1_ip:=192.168.1.117 robot2_ip:=192.168.1.203 [add_gripper:=true]
         ```
     
     - 【Dual虚拟】启动moveit并在rviz显示, 控制两台机械臂  
