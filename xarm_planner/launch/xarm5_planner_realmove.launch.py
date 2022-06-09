@@ -41,11 +41,12 @@ def generate_launch_description():
     default_gripper_baud = LaunchConfiguration('default_gripper_baud', default=2000000)
 
     dof = 5
+    robot_type = 'xarm'
 
-    # xarm moveit realmove launch
-    # xarm_moveit_config/launch/_xarm_moveit_realmove.launch.py
-    xarm_moveit_realmove_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_xarm_moveit_realmove.launch.py'])),
+    # robot moveit realmove launch
+    # xarm_moveit_config/launch/_robot_moveit_realmove.launch.py
+    robot_moveit_realmove_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_robot_moveit_realmove.launch.py'])),
         launch_arguments={
             'robot_ip': robot_ip,
             'report_type': report_type,
@@ -57,6 +58,7 @@ def generate_launch_description():
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': str(dof),
+            'robot_type': robot_type,
             'no_gui_ctrl': 'true',
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,
@@ -75,10 +77,10 @@ def generate_launch_description():
         }.items(),
     )
 
-    # xarm planner launch
-    # xarm_planner/launch/_xarm_planner.launch.py
-    xarm_planner_node_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_planner'), 'launch', '_xarm_planner.launch.py'])),
+    # robot planner launch
+    # xarm_planner/launch/_robot_planner.launch.py
+    robot_planner_node_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_planner'), 'launch', '_robot_planner.launch.py'])),
         launch_arguments={
             'prefix': prefix,
             'hw_ns': hw_ns,
@@ -88,6 +90,7 @@ def generate_launch_description():
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': str(dof),
+            'robot_type': robot_type,
             'ros2_control_plugin': 'xarm_control/XArmHW',
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,
@@ -105,6 +108,6 @@ def generate_launch_description():
     )
     
     return LaunchDescription([
-        xarm_moveit_realmove_launch,
-        xarm_planner_node_launch
+        robot_moveit_realmove_launch,
+        robot_planner_node_launch
     ])

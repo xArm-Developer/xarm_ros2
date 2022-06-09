@@ -28,10 +28,10 @@ def generate_launch_description():
     default_gripper_baud = LaunchConfiguration('default_gripper_baud', default=2000000)
     robot_type = LaunchConfiguration('robot_type', default='xarm')
 
-    # xarm moveit servo launch
-    # xarm_moveit_servo/launch/_xarm_moveit_servo.launch.py
-    xarm_moveit_servo_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_servo'), 'launch', '_xarm_moveit_servo.launch.py'])),
+    # robot moveit servo launch
+    # xarm_moveit_servo/launch/_robot_moveit_servo.launch.py
+    robot_moveit_servo_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_servo'), 'launch', '_robot_moveit_servo.launch.py'])),
         launch_arguments={
             'dof': dof,
             'prefix': prefix,
@@ -46,10 +46,10 @@ def generate_launch_description():
         }.items(),
     )
 
-    # xarm driver launch
-    # xarm_api/launch/_xarm_driver.launch.py
-    xarm_driver_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_api'), 'launch', '_xarm_driver.launch.py'])),
+    # robot driver launch
+    # xarm_api/launch/_robot_driver.launch.py
+    robot_driver_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_api'), 'launch', '_robot_driver.launch.py'])),
         launch_arguments={
             'robot_ip': robot_ip,
             'report_type': report_type,
@@ -64,6 +64,6 @@ def generate_launch_description():
     )
     
     return LaunchDescription([
-        xarm_moveit_servo_launch,
-        xarm_driver_launch,
+        robot_moveit_servo_launch,
+        robot_driver_launch,
     ])

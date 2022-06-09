@@ -37,10 +37,10 @@ def generate_launch_description():
     geometry_mesh_tcp_xyz = LaunchConfiguration('geometry_mesh_tcp_xyz', default='"0 0 0"')
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
 
-    # xarm moveit realmove launch
-    # xarm_moveit_config/launch/_xarm_moveit_realmove.launch.py
-    xarm_moveit_realmove_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_xarm_moveit_realmove.launch.py'])),
+    # robot moveit realmove launch
+    # xarm_moveit_config/launch/_robot_moveit_realmove.launch.py
+    robot_moveit_realmove_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_robot_moveit_realmove.launch.py'])),
         launch_arguments={
             'robot_ip': robot_ip,
             'report_type': report_type,
@@ -52,6 +52,7 @@ def generate_launch_description():
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': '5',
+            'robot_type': 'xarm',
             'no_gui_ctrl': 'false',
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,
@@ -69,5 +70,5 @@ def generate_launch_description():
     )
     
     return LaunchDescription([
-        xarm_moveit_realmove_launch
+        robot_moveit_realmove_launch
     ])

@@ -35,10 +35,13 @@ def generate_launch_description():
     geometry_mesh_tcp_xyz = LaunchConfiguration('geometry_mesh_tcp_xyz', default='"0 0 0"')
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
 
-    # robot moveit gazebo launch
-    # xarm_moveit_config/launch/_robot_moveit_gazebo.launch.py
-    robot_moveit_gazebo_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_robot_moveit_gazebo.launch.py'])),
+    dof = 6
+    robot_type = 'lite'
+
+    # robot moveit fake launch
+    # xarm_moveit_config/launch/_robot_moveit_fake.launch.py
+    robot_moveit_fake_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_robot_moveit_fake.launch.py'])),
         launch_arguments={
             'prefix': prefix,
             'hw_ns': hw_ns,
@@ -47,9 +50,39 @@ def generate_launch_description():
             'velocity_control': velocity_control,
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
-            'dof': '5',
-            'robot_type': 'xarm',
-            'no_gui_ctrl': 'false',
+            'dof': str(dof),
+            'robot_type': robot_type,
+            'no_gui_ctrl': 'true',
+            'add_other_geometry': add_other_geometry,
+            'geometry_type': geometry_type,
+            'geometry_mass': geometry_mass,
+            'geometry_height': geometry_height,
+            'geometry_radius': geometry_radius,
+            'geometry_length': geometry_length,
+            'geometry_width': geometry_width,
+            'geometry_mesh_filename': geometry_mesh_filename,
+            'geometry_mesh_origin_xyz': geometry_mesh_origin_xyz,
+            'geometry_mesh_origin_rpy': geometry_mesh_origin_rpy,
+            'geometry_mesh_tcp_xyz': geometry_mesh_tcp_xyz,
+            'geometry_mesh_tcp_rpy': geometry_mesh_tcp_rpy,
+        }.items(),
+    )
+
+    # robot planner launch
+    # xarm_planner/launch/_robot_planner.launch.py
+    robot_planner_node_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_planner'), 'launch', '_robot_planner.launch.py'])),
+        launch_arguments={
+            'prefix': prefix,
+            'hw_ns': hw_ns,
+            'limited': limited,
+            'effort_control': effort_control,
+            'velocity_control': velocity_control,
+            'add_gripper': add_gripper,
+            'add_vacuum_gripper': add_vacuum_gripper,
+            'dof': str(dof),
+            'robot_type': robot_type,
+            'ros2_control_plugin': 'xarm_control/FakeXArmHW',
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,
             'geometry_mass': geometry_mass,
@@ -66,5 +99,6 @@ def generate_launch_description():
     )
     
     return LaunchDescription([
-        robot_moveit_gazebo_launch
+        robot_moveit_fake_launch,
+        robot_planner_node_launch
     ])

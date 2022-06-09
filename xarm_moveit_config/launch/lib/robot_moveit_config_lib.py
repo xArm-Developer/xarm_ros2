@@ -68,8 +68,8 @@ def get_xarm_robot_description_parameters(
     moveit_config_package_name = 'xarm_moveit_config'
     xarm_type = arguments.get('xarm_type', None)
     
-    # xarm_description/launch/lib/xarm_description_lib.py
-    mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_description'), 'launch', 'lib', 'xarm_description_lib.py'))
+    # xarm_description/launch/lib/robot_description_lib.py
+    mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_description'), 'launch', 'lib', 'robot_description_lib.py'))
     get_xacro_file_content = getattr(mod, 'get_xacro_file_content')
     
     return {

@@ -32,10 +32,10 @@ def launch_setup(context, *args, **kwargs):
     node_executable = 'test_xarm_planner_api_pose'
     node_parameters = {}
 
-    # xarm planner launch
-    # xarm_planner/launch/_xarm_planner.launch.py
-    xarm_planner_node_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_planner'), 'launch', '_xarm_planner.launch.py'])),
+    # robot planner launch
+    # xarm_planner/launch/_robot_planner.launch.py
+    robot_planner_node_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_planner'), 'launch', '_robot_planner.launch.py'])),
         launch_arguments={
             'prefix': prefix,
             'hw_ns': hw_ns,
@@ -51,7 +51,7 @@ def launch_setup(context, *args, **kwargs):
     )
 
     return [
-        xarm_planner_node_launch
+        robot_planner_node_launch
     ]
 
 

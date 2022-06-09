@@ -35,14 +35,13 @@ def generate_launch_description():
     geometry_mesh_tcp_xyz = LaunchConfiguration('geometry_mesh_tcp_xyz', default='"0 0 0"')
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
 
-    robot_type = LaunchConfiguration('robot_type', default='xarm')
-
     dof = 6
+    robot_type = 'xarm'
 
-    # xarm moveit fake launch
-    # xarm_moveit_config/launch/_xarm_moveit_fake.launch.py
-    xarm_moveit_fake_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_xarm_moveit_fake.launch.py'])),
+    # robot moveit fake launch
+    # xarm_moveit_config/launch/_robot_moveit_fake.launch.py
+    robot_moveit_fake_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_robot_moveit_fake.launch.py'])),
         launch_arguments={
             'prefix': prefix,
             'hw_ns': hw_ns,
@@ -69,10 +68,10 @@ def generate_launch_description():
         }.items(),
     )
 
-    # xarm planner launch
-    # xarm_planner/launch/_xarm_planner.launch.py
-    xarm_planner_node_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_planner'), 'launch', '_xarm_planner.launch.py'])),
+    # robot planner launch
+    # xarm_planner/launch/_robot_planner.launch.py
+    robot_planner_node_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_planner'), 'launch', '_robot_planner.launch.py'])),
         launch_arguments={
             'prefix': prefix,
             'hw_ns': hw_ns,
@@ -100,6 +99,6 @@ def generate_launch_description():
     )
     
     return LaunchDescription([
-        xarm_moveit_fake_launch,
-        xarm_planner_node_launch
+        robot_moveit_fake_launch,
+        robot_planner_node_launch
     ])

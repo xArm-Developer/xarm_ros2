@@ -7,13 +7,15 @@
 # Author: Vinman <vinman.wen@ufactory.cc> <vinman.cub@gmail.com>
 
 from launch import LaunchDescription
-from launch.actions import OpaqueFunction, IncludeLaunchDescription, DeclareLaunchArgument
+from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
 
 
-def launch_setup(context, *args, **kwargs):
+def generate_launch_description():
+    robot_ip = LaunchConfiguration('robot_ip')
+    report_type = LaunchConfiguration('report_type', default='normal')
     prefix = LaunchConfiguration('prefix', default='')
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     limited = LaunchConfiguration('limited', default=True)
@@ -21,9 +23,6 @@ def launch_setup(context, *args, **kwargs):
     velocity_control = LaunchConfiguration('velocity_control', default=False)
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
-    dof = LaunchConfiguration('dof', default=7)
-    robot_type = LaunchConfiguration('robot_type', default='xarm')
-    no_gui_ctrl = LaunchConfiguration('no_gui_ctrl', default=False)
 
     add_other_geometry = LaunchConfiguration('add_other_geometry', default=False)
     geometry_type = LaunchConfiguration('geometry_type', default='box')
@@ -38,15 +37,50 @@ def launch_setup(context, *args, **kwargs):
     geometry_mesh_tcp_xyz = LaunchConfiguration('geometry_mesh_tcp_xyz', default='"0 0 0"')
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
 
-    ros2_control_plugin = 'gazebo_ros2_control/GazeboSystem'
-    controllers_name = 'fake_controllers'
-    moveit_controller_manager_key = 'moveit_simple_controller_manager'
-    moveit_controller_manager_value = 'moveit_simple_controller_manager/MoveItSimpleControllerManager'
+    baud_checkset = LaunchConfiguration('baud_checkset', default=True)
+    default_gripper_baud = LaunchConfiguration('default_gripper_baud', default=2000000)
 
-    # xarm moveit common launch
-    # xarm_moveit_config/launch/_xarm_moveit_common.launch.py
-    xarm_moveit_common_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_xarm_moveit_common.launch.py'])),
+    dof = 6
+    robot_type = 'lite'
+
+    # robot moveit realmove launch
+    # xarm_moveit_config/launch/_robot_moveit_realmove.launch.py
+    robot_moveit_realmove_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_robot_moveit_realmove.launch.py'])),
+        launch_arguments={
+            'robot_ip': robot_ip,
+            'report_type': report_type,
+            'prefix': prefix,
+            'hw_ns': hw_ns,
+            'limited': limited,
+            'effort_control': effort_control,
+            'velocity_control': velocity_control,
+            'add_gripper': add_gripper,
+            'add_vacuum_gripper': add_vacuum_gripper,
+            'dof': str(dof),
+            'robot_type': robot_type,
+            'no_gui_ctrl': 'true',
+            'add_other_geometry': add_other_geometry,
+            'geometry_type': geometry_type,
+            'geometry_mass': geometry_mass,
+            'geometry_height': geometry_height,
+            'geometry_radius': geometry_radius,
+            'geometry_length': geometry_length,
+            'geometry_width': geometry_width,
+            'geometry_mesh_filename': geometry_mesh_filename,
+            'geometry_mesh_origin_xyz': geometry_mesh_origin_xyz,
+            'geometry_mesh_origin_rpy': geometry_mesh_origin_rpy,
+            'geometry_mesh_tcp_xyz': geometry_mesh_tcp_xyz,
+            'geometry_mesh_tcp_rpy': geometry_mesh_tcp_rpy,
+            'baud_checkset': baud_checkset,
+            'default_gripper_baud': default_gripper_baud,
+        }.items(),
+    )
+
+    # robot planner launch
+    # xarm_planner/launch/_robot_planner.launch.py
+    robot_planner_node_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_planner'), 'launch', '_robot_planner.launch.py'])),
         launch_arguments={
             'prefix': prefix,
             'hw_ns': hw_ns,
@@ -55,13 +89,9 @@ def launch_setup(context, *args, **kwargs):
             'velocity_control': velocity_control,
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
-            'dof': dof,
+            'dof': str(dof),
             'robot_type': robot_type,
-            'no_gui_ctrl': no_gui_ctrl,
-            'ros2_control_plugin': ros2_control_plugin,
-            'controllers_name': controllers_name,
-            'moveit_controller_manager_key': moveit_controller_manager_key,
-            'moveit_controller_manager_value': moveit_controller_manager_value,
+            'ros2_control_plugin': 'xarm_control/XArmHW',
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,
             'geometry_mass': geometry_mass,
@@ -76,32 +106,8 @@ def launch_setup(context, *args, **kwargs):
             'geometry_mesh_tcp_rpy': geometry_mesh_tcp_rpy,
         }.items(),
     )
-
-    # xarm gazebo launch
-    # xarm_gazebo/launch/_xarm_beside_table_gazebo.launch.py
-    gazebo_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_gazebo'), 'launch', '_xarm_beside_table_gazebo.launch.py'])),
-        launch_arguments={
-            'prefix': prefix,
-            'hw_ns': hw_ns,
-            'limited': limited,
-            'effort_control': effort_control,
-            'velocity_control': velocity_control,
-            'add_gripper': add_gripper,
-            'add_vacuum_gripper': add_vacuum_gripper,
-            'dof': dof,
-            'robot_type': robot_type,
-            'ros2_control_plugin': ros2_control_plugin,
-        }.items(),
-    )
-
-    return [
-        gazebo_launch,
-        xarm_moveit_common_launch,
-    ]
-
-
-def generate_launch_description():
+    
     return LaunchDescription([
-        OpaqueFunction(function=launch_setup)
+        robot_moveit_realmove_launch,
+        robot_planner_node_launch
     ])
