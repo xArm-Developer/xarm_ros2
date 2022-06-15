@@ -14,9 +14,11 @@ from launch_ros.substitutions import FindPackageShare
 
 
 def launch_setup(context, *args, **kwargs):
-    # xarm driver configuration
+    # robot driver configuration
     robot_ip = LaunchConfiguration('robot_ip')
     report_type = LaunchConfiguration('report_type', default='normal')
+    baud_checkset = LaunchConfiguration('baud_checkset', default=True)
+    default_gripper_baud = LaunchConfiguration('default_gripper_baud', default=2000000)
 
     prefix = LaunchConfiguration('prefix', default='')
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
@@ -43,20 +45,20 @@ def launch_setup(context, *args, **kwargs):
     geometry_mesh_tcp_xyz = LaunchConfiguration('geometry_mesh_tcp_xyz', default='"0 0 0"')
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
 
-    # robot driver launch
-    # xarm_api/launch/_robot_driver.launch.py
-    robot_driver_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_api'), 'launch', '_robot_driver.launch.py'])),
-        launch_arguments={
-            'robot_ip': robot_ip,
-            'report_type': report_type,
-            'dof': dof,
-            'hw_ns': hw_ns,
-            'add_gripper': add_gripper,
-            'prefix': prefix,
-            'robot_type': robot_type,
-        }.items(),
-    )
+    # # robot driver launch
+    # # xarm_api/launch/_robot_driver.launch.py
+    # robot_driver_launch = IncludeLaunchDescription(
+    #     PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_api'), 'launch', '_robot_driver.launch.py'])),
+    #     launch_arguments={
+    #         'robot_ip': robot_ip,
+    #         'report_type': report_type,
+    #         'dof': dof,
+    #         'hw_ns': hw_ns,
+    #         'add_gripper': add_gripper,
+    #         'prefix': prefix,
+    #         'robot_type': robot_type,
+    #     }.items(),
+    # )
 
     # robot joint state launch
     # xarm_description/launch/_robot_joint_state.launch.py
@@ -116,11 +118,15 @@ def launch_setup(context, *args, **kwargs):
             'geometry_mesh_origin_rpy': geometry_mesh_origin_rpy,
             'geometry_mesh_tcp_xyz': geometry_mesh_tcp_xyz,
             'geometry_mesh_tcp_rpy': geometry_mesh_tcp_rpy,
+            'robot_ip': robot_ip,
+            'report_type': report_type,
+            'baud_checkset': baud_checkset,
+            'default_gripper_baud': default_gripper_baud,
         }.items(),
     )
     
     return [
-        robot_driver_launch,
+        # robot_driver_launch,
         robot_joint_state_launch,
         ros2_control_launch
     ]

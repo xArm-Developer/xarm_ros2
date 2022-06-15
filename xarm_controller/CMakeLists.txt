@@ -41,6 +41,7 @@ find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(xarm_msgs REQUIRED)
 find_package(xarm_api REQUIRED)
+find_package(xarm_sdk REQUIRED)
 
 add_library(
   xarm_hw
@@ -51,6 +52,7 @@ target_include_directories(
   xarm_hw
   PRIVATE
   include
+  ${xarm_sdk_INCLUDE_DIRS}
   ${xarm_api_INCLUDE_DIRS}
 )
 ament_target_dependencies(
@@ -62,6 +64,11 @@ ament_target_dependencies(
   sensor_msgs
   xarm_msgs
 )
+
+message(STATUS "xarm_sdk_INCLUDE_DIRS: ${xarm_sdk_INCLUDE_DIRS}")
+message(WARNING "xarm_api_INCLUDE_DIRS: ${xarm_api_INCLUDE_DIRS}")
+message(WARNING "xarm_sdk_LIBRARIES: ${xarm_sdk_LIBRARIES}")
+message(WARNING "xarm_api_LIBRARIES: ${xarm_api_LIBRARIES}")
 
 target_link_libraries(xarm_hw 
   ${xarm_api_LIBRARIES}

@@ -17,6 +17,10 @@ from launch_ros.substitutions import FindPackageShare
 
 
 def launch_setup(context, *args, **kwargs):
+    robot_ip = LaunchConfiguration('robot_ip', default='')
+    report_type = LaunchConfiguration('report_type', default='normal')
+    baud_checkset = LaunchConfiguration('baud_checkset', default=True)
+    default_gripper_baud = LaunchConfiguration('default_gripper_baud', default=2000000)
     prefix = LaunchConfiguration('prefix', default='')
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     limited = LaunchConfiguration('limited', default=False)
@@ -84,9 +88,21 @@ def launch_setup(context, *args, **kwargs):
                 'geometry_mesh_origin_rpy': geometry_mesh_origin_rpy,
                 'geometry_mesh_tcp_xyz': geometry_mesh_tcp_xyz,
                 'geometry_mesh_tcp_rpy': geometry_mesh_tcp_rpy,
+                'robot_ip': robot_ip,
+                'report_type': report_type,
+                'baud_checkset': baud_checkset,
+                'default_gripper_baud': default_gripper_baud,
             }
         )
     }
+
+    mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_api'), 'launch', 'lib', 'robot_api_lib.py'))
+    generate_robot_api_params = getattr(mod, 'generate_robot_api_params')
+    robot_params = generate_robot_api_params(
+        os.path.join(get_package_share_directory('xarm_api'), 'config', 'xarm_params.yaml'),
+        os.path.join(get_package_share_directory('xarm_api'), 'config', 'xarm_user_params.yaml'),
+        LaunchConfiguration('ros_namespace', default='').perform(context), node_name='ufactory_driver'
+    )
 
     # ros2 control node
     ros2_control_node = Node(
@@ -95,6 +111,7 @@ def launch_setup(context, *args, **kwargs):
         parameters=[
             robot_description,
             ros2_control_params,
+            robot_params,
         ],
         output='screen',
     )

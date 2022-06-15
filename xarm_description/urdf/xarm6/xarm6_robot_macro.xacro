@@ -2,7 +2,8 @@
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="xarm6" >
   <xacro:macro name="xarm6_robot" params="prefix:='' namespace:='xarm' limited:='false' effort_control:='false' 
     velocity_control:='false' attach_to:='world' xyz:='0 0 0' rpy:='0 0 0' load_gazebo_plugin:='false' 
-    ros2_control_plugin:='xarm_control/XArmHW' ros2_control_params:='' ">
+    ros2_control_plugin:='xarm_control/XArmHW' ros2_control_params:='' add_gripper:='false' 
+    robot_ip:='' report_type:='normal' baud_checkset:='true' default_gripper_baud:=2000000 ">
 
     <!-- include xarm6 relative macros: -->
     <xacro:include filename="$(find xarm_description)/urdf/xarm6/xarm6.ros2_control.xacro" />
@@ -31,7 +32,9 @@
       <xacro:xarm6_ros2_control prefix="${prefix}"
         velocity_control="${velocity_control}"
         ros2_control_plugin="${ros2_control_plugin}"
-        hw_ns="${namespace}"
+        hw_ns="${namespace}" add_gripper="${add_gripper}"
+        robot_ip="${robot_ip}" report_type="${report_type}"
+        baud_checkset="${baud_checkset}" default_gripper_baud="${default_gripper_baud}"
         joint1_lower_limit="${-pi*0.99}" joint1_upper_limit="${pi*0.99}"
         joint2_lower_limit="${-2.059}" joint2_upper_limit="${2.0944}"
         joint3_lower_limit="${-pi*0.99}" joint3_upper_limit="${0.19198}"
@@ -49,7 +52,9 @@
     <xacro:unless value="${limited}">
       <xacro:xarm6_ros2_control prefix="${prefix}" velocity_control="${velocity_control}"
         ros2_control_plugin="${ros2_control_plugin}"
-        hw_ns="${namespace}" />
+        hw_ns="${namespace}" add_gripper="${add_gripper}"
+        robot_ip="${robot_ip}" report_type="${report_type}"
+        baud_checkset="${baud_checkset}" default_gripper_baud="${default_gripper_baud}" />
       <xacro:xarm6_urdf prefix="${prefix}"/>
     </xacro:unless>
 

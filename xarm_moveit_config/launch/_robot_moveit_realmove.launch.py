@@ -51,22 +51,22 @@ def launch_setup(context, *args, **kwargs):
     xarm_type = '{}{}'.format(robot_type.perform(context), dof.perform(context))
     ros_namespace = LaunchConfiguration('ros_namespace', default='').perform(context)
 
-    # robot driver launch
-    # xarm_api/launch/_robot_driver.launch.py
-    robot_driver_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_api'), 'launch', '_robot_driver.launch.py'])),
-        launch_arguments={
-            'robot_ip': robot_ip,
-            'report_type': report_type,
-            'dof': dof,
-            'hw_ns': hw_ns,
-            'add_gripper': add_gripper,
-            'prefix': prefix,
-            'baud_checkset': baud_checkset,
-            'default_gripper_baud': default_gripper_baud,
-            'robot_type': robot_type,
-        }.items(),
-    )
+    # # robot driver launch
+    # # xarm_api/launch/_robot_driver.launch.py
+    # robot_driver_launch = IncludeLaunchDescription(
+    #     PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_api'), 'launch', '_robot_driver.launch.py'])),
+    #     launch_arguments={
+    #         'robot_ip': robot_ip,
+    #         'report_type': report_type,
+    #         'dof': dof,
+    #         'hw_ns': hw_ns,
+    #         'add_gripper': add_gripper,
+    #         'prefix': prefix,
+    #         'baud_checkset': baud_checkset,
+    #         'default_gripper_baud': default_gripper_baud,
+    #         'robot_type': robot_type,
+    #     }.items(),
+    # )
     
     # robot description launch
     # xarm_description/launch/_robot_description.launch.py
@@ -78,7 +78,7 @@ def launch_setup(context, *args, **kwargs):
             'limited': limited,
             'effort_control': effort_control,
             'velocity_control': velocity_control,
-            'add_gripper': add_gripper,
+            'add_gripper': add_gripper if robot_type.perform(context) == 'xarm' else 'false',
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': dof,
             'robot_type': robot_type,
@@ -150,6 +150,10 @@ def launch_setup(context, *args, **kwargs):
     ros2_control_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_controller'), 'launch', '_ros2_control.launch.py'])),
         launch_arguments={
+            'robot_ip': robot_ip,
+            'report_type': report_type,
+            'baud_checkset': baud_checkset,
+            'default_gripper_baud': default_gripper_baud,
             'prefix': prefix,
             'hw_ns': hw_ns,
             'limited': limited,
@@ -179,7 +183,7 @@ def launch_setup(context, *args, **kwargs):
         joint_state_publisher_node,
         ros2_control_launch,
         control_node,
-        robot_driver_launch,
+        # robot_driver_launch,
     ]
 
 

@@ -168,8 +168,8 @@ def launch_setup(context, *args, **kwargs):
             'dof_2': dof_2,
             'robot_type_1': robot_type_1,
             'robot_type_2': robot_type_2,
-            'add_gripper_1': add_gripper_1,
-            'add_gripper_2': add_gripper_2,
+            'add_gripper_1': add_gripper_1 if robot_type_1.perform(context) == 'xarm' else 'false',
+            'add_gripper_2': add_gripper_2 if robot_type_2.perform(context) == 'xarm' else 'false',
             'add_vacuum_gripper_1': add_vacuum_gripper_1,
             'add_vacuum_gripper_2': add_vacuum_gripper_2,
             'hw_ns': hw_ns,
@@ -216,12 +216,12 @@ def launch_setup(context, *args, **kwargs):
         '{}{}{}_traj_controller'.format(prefix_1.perform(context), robot_type_1.perform(context), dof_1.perform(context)),
         '{}{}{}_traj_controller'.format(prefix_2.perform(context), robot_type_2.perform(context), dof_2.perform(context)),
     ]
-    if add_gripper_1.perform(context) in ('True', 'true'):
+    if add_gripper_1.perform(context) in ('True', 'true') and robot_type_1.perform(context) == 'xarm':
         remappings.append(
             ('follow_joint_trajectory', '{}xarm_gripper_traj_controller/follow_joint_trajectory'.format(prefix_1.perform(context)))
         )
         controllers.append('{}xarm_gripper_traj_controller'.format(prefix_1.perform(context)))
-    if add_gripper_2.perform(context) in ('True', 'true'):
+    if add_gripper_2.perform(context) in ('True', 'true') and robot_type_2.perform(context) == 'xarm':
         remappings.append(
             ('follow_joint_trajectory', '{}xarm_gripper_traj_controller/follow_joint_trajectory'.format(prefix_2.perform(context)))
         )

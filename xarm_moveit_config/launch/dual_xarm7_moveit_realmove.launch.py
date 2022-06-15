@@ -14,8 +14,8 @@ from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
-    robot1_ip = LaunchConfiguration('robot1_ip')
-    robot2_ip = LaunchConfiguration('robot2_ip')
+    robot_ip_1 = LaunchConfiguration('robot_ip_1')
+    robot_ip_2 = LaunchConfiguration('robot_ip_2')
     report_type = LaunchConfiguration('report_type', default='normal')
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     limited = LaunchConfiguration('limited', default=True)
@@ -42,8 +42,8 @@ def generate_launch_description():
     robot_moveit_realmove_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_dual_robot_moveit_realmove.launch.py'])),
         launch_arguments={
-            'robot1_ip': robot1_ip,
-            'robot2_ip': robot2_ip,
+            'robot_ip_1': robot_ip_1,
+            'robot_ip_2': robot_ip_2,
             'report_type': report_type,
             'hw_ns': hw_ns,
             'limited': limited,

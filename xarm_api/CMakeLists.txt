@@ -3,7 +3,7 @@ project(xarm_api)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
-  set(CMAKE_C_STANDARD 14)
+  set(CMAKE_C_STANDARD 11)
 endif()
 
 # Default to C++14
@@ -100,6 +100,7 @@ add_executable(test_xarm_states
 )
 ament_target_dependencies(test_xarm_states ${dependencies})
 
+ament_export_libraries(xarm_ros_driver)
 ament_export_libraries(xarm_ros_client)
 ament_export_include_directories(include)
 

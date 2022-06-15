@@ -33,6 +33,10 @@ def generate_launch_description():
     robot_moveit_servo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_servo'), 'launch', '_robot_moveit_servo.launch.py'])),
         launch_arguments={
+            'robot_ip': robot_ip,
+            'report_type': report_type,
+            'baud_checkset': baud_checkset,
+            'default_gripper_baud': default_gripper_baud,
             'dof': dof,
             'prefix': prefix,
             'hw_ns': hw_ns,
@@ -46,24 +50,24 @@ def generate_launch_description():
         }.items(),
     )
 
-    # robot driver launch
-    # xarm_api/launch/_robot_driver.launch.py
-    robot_driver_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_api'), 'launch', '_robot_driver.launch.py'])),
-        launch_arguments={
-            'robot_ip': robot_ip,
-            'report_type': report_type,
-            'dof': dof,
-            'hw_ns': hw_ns,
-            'add_gripper': add_gripper,
-            'prefix': prefix,
-            'baud_checkset': baud_checkset,
-            'default_gripper_baud': default_gripper_baud,
-            'robot_type': robot_type,
-        }.items(),
-    )
+    # # robot driver launch
+    # # xarm_api/launch/_robot_driver.launch.py
+    # robot_driver_launch = IncludeLaunchDescription(
+    #     PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_api'), 'launch', '_robot_driver.launch.py'])),
+    #     launch_arguments={
+    #         'robot_ip': robot_ip,
+    #         'report_type': report_type,
+    #         'dof': dof,
+    #         'hw_ns': hw_ns,
+    #         'add_gripper': add_gripper,
+    #         'prefix': prefix,
+    #         'baud_checkset': baud_checkset,
+    #         'default_gripper_baud': default_gripper_baud,
+    #         'robot_type': robot_type,
+    #     }.items(),
+    # )
     
     return LaunchDescription([
         robot_moveit_servo_launch,
-        robot_driver_launch,
+        # robot_driver_launch,
     ])

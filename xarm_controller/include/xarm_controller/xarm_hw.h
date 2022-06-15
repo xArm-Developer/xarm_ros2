@@ -25,7 +25,7 @@
 #include "controller_manager_msgs/srv/load_start_controller.hpp"
 #include "controller_manager_msgs/srv/reload_controller_libraries.hpp"
 #include "controller_manager_msgs/srv/switch_controller.hpp"
-#include "xarm_api/xarm_ros_client.h"
+#include "xarm_api/xarm_driver.h"
 
 
 namespace xarm_control
@@ -63,16 +63,13 @@ namespace xarm_control
         hardware_interface::status status_;
     
     private:
-        int curr_state_;
-        int curr_mode_;
-        int curr_err_;
         int read_code_;
         int write_code_;
 
         std::string hw_ns_;
 
-        std::vector<float> prev_cmds_float_;
-        std::vector<float> cmds_float_;
+        float prev_cmds_float_[7];
+		float cmds_float_[7];
         std::vector<double> position_cmds_;
         std::vector<double> velocity_cmds_;
         std::vector<double> position_states_;
@@ -87,8 +84,11 @@ namespace xarm_control
         long int read_failed_cnts_;
         double read_max_time_;
         double read_total_time_;
-        std::vector<float> prev_read_angles_;
-        std::vector<float> curr_read_angles_;
+        
+        float prev_read_position_[7];
+		float curr_read_position_[7];
+		float curr_read_velocity_[7];
+		float curr_read_effort_[7];
         
         rclcpp::Time prev_read_time_;
         rclcpp::Time curr_read_time_;
@@ -96,8 +96,7 @@ namespace xarm_control
         rclcpp::Time prev_write_time_;
 
         std::shared_ptr<rclcpp::Node> node_;
-        std::shared_ptr<rclcpp::Node> client_node_;
-        xarm_api::XArmROSClient xarm_client_;
+        xarm_api::XArmDriver xarm_driver_;
 
         std::shared_ptr<controller_manager_msgs::srv::ListControllers::Request> req_list_controller_;
 	    std::shared_ptr<controller_manager_msgs::srv::ListControllers::Response> res_list_controller_;
@@ -107,21 +106,16 @@ namespace xarm_control
         rclcpp::Client<controller_manager_msgs::srv::ListControllers>::SharedPtr client_list_controller_;
         rclcpp::Client<controller_manager_msgs::srv::SwitchController>::SharedPtr client_switch_controller_;
 
-        rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr joint_state_sub_;
-        rclcpp::Subscription<xarm_msgs::msg::RobotMsg>::SharedPtr xarm_state_sub_;
-        rclcpp::Subscription<std_msgs::msg::String>::SharedPtr trajectory_execution_event_sub_;
-
-        void _receive_event(const std_msgs::msg::String::SharedPtr event);
-        void _joint_states_callback(const sensor_msgs::msg::JointState::SharedPtr states);
-        void _xarm_states_callback(const xarm_msgs::msg::RobotMsg::SharedPtr states);
-        bool _check_cmds_is_change(std::vector<float> prev, std::vector<float> cur, double threshold = 0.0001);
-        bool _check_cmds_is_change(std::vector<double> prev, std::vector<double> cur, double threshold = 0.0001);
+        bool _check_cmds_is_change(float *prev, float *cur, double threshold = 0.0001);
         bool _xarm_is_ready_read(void);
         bool _xarm_is_ready_write(void);
+        bool _firmware_version_is_ge(int major, int minor, int revision);
 
         bool _need_reset(void);
 
         void _reload_controller(void);
+
+        void _init_ufactory_driver(void);
 
         template<typename ServiceT, typename SharedRequest = typename ServiceT::Request::SharedPtr, typename SharedResponse = typename ServiceT::Response::SharedPtr>
         int _call_request(std::shared_ptr<ServiceT> client, SharedRequest req, SharedResponse& res);

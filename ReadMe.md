@@ -172,14 +172,14 @@ __Reminder 3： All following instructions will base on xArm6，please use prope
 
         ```bash
         $ cd ~/dev_ws/
-        # 'robot1_ip': IP address of left arm
-        # 'robot2_ip': IP address of right arm
+        # 'robot_ip_1': IP address of left arm
+        # 'robot_ip_2': IP address of right arm
         # set 'add_gripper=true' to attach xArm gripper model
         # 'add_gripper_1': can separately decide whether to attach gripper for left arm，default for same value with 'add_gripper'
         # 'add_gripper_2': can separately decide whether to attach gripper for right arm，default for same value with 'add_gripper'
         # 'dof_1': can separately configure the model DOF of left arm，default to be the same DOF specified in filename.
         # 'dof_2': can separately configure the model DOF of right arm，default to be the same DOF specified in filename.
-        $ ros2 launch xarm_moveit_config dual_xarm6_moveit_realmove.launch.py robot1_ip:=192.168.1.117 robot2_ip:=192.168.1.203 [add_gripper:=true]
+        $ ros2 launch xarm_moveit_config dual_xarm6_moveit_realmove.launch.py robot_ip_1:=192.168.1.117 robot_ip_2:=192.168.1.203 [add_gripper:=true]
         ```
 
 - ### 5.7 xarm_planner
