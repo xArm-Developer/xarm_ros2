@@ -66,7 +66,7 @@ namespace xarm_control
         int read_code_;
         int write_code_;
 
-        std::string hw_ns_;
+        std::string robot_ip_;
 
         float prev_cmds_float_[7];
 		float cmds_float_[7];
