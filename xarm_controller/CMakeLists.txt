@@ -65,10 +65,10 @@ ament_target_dependencies(
   xarm_msgs
 )
 
-message(STATUS "xarm_sdk_INCLUDE_DIRS: ${xarm_sdk_INCLUDE_DIRS}")
-message(WARNING "xarm_api_INCLUDE_DIRS: ${xarm_api_INCLUDE_DIRS}")
-message(WARNING "xarm_sdk_LIBRARIES: ${xarm_sdk_LIBRARIES}")
-message(WARNING "xarm_api_LIBRARIES: ${xarm_api_LIBRARIES}")
+# message(STATUS "xarm_sdk_INCLUDE_DIRS: ${xarm_sdk_INCLUDE_DIRS}")
+# message(WARNING "xarm_api_INCLUDE_DIRS: ${xarm_api_INCLUDE_DIRS}")
+# message(WARNING "xarm_sdk_LIBRARIES: ${xarm_sdk_LIBRARIES}")
+# message(WARNING "xarm_api_LIBRARIES: ${xarm_api_LIBRARIES}")
 
 target_link_libraries(xarm_hw 
   ${xarm_api_LIBRARIES}
