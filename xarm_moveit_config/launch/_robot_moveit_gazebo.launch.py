@@ -53,7 +53,7 @@ def launch_setup(context, *args, **kwargs):
             'limited': limited,
             'effort_control': effort_control,
             'velocity_control': velocity_control,
-            'add_gripper': add_gripper,
+            'add_gripper': add_gripper if robot_type.perform(context) == 'xarm' else 'false',
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': dof,
             'robot_type': robot_type,

@@ -20,6 +20,10 @@ from launch_ros.actions import Node
 
 
 def launch_setup(context, *args, **kwargs):
+    robot_ip = LaunchConfiguration('robot_ip', default='')
+    report_type = LaunchConfiguration('report_type', default='normal')
+    baud_checkset = LaunchConfiguration('baud_checkset', default=True)
+    default_gripper_baud = LaunchConfiguration('default_gripper_baud', default=2000000)
     dof = LaunchConfiguration('dof', default=7)
     prefix = LaunchConfiguration('prefix', default='')
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
@@ -131,6 +135,10 @@ def launch_setup(context, *args, **kwargs):
     ros2_control_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_controller'), 'launch', '_ros2_control.launch.py'])),
         launch_arguments={
+            'robot_ip': robot_ip,
+            'report_type': report_type,
+            'baud_checkset': baud_checkset,
+            'default_gripper_baud': default_gripper_baud,
             'prefix': prefix,
             'hw_ns': hw_ns,
             'limited': limited,

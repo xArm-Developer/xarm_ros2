@@ -167,14 +167,14 @@ __注意3： 以下启动说明以6轴为例，5轴和7轴的用法只需找到�
     
         ```bash
         $ cd ~/dev_ws/
-        # robot1_ip表示左臂控制的IP地址
-        # robot2_ip表示右臂控制的IP地址
+        # robot_ip_1表示左臂控制的IP地址
+        # robot_ip_2表示右臂控制的IP地址
         # add_gripper为true时会加载xarm夹爪的模型
         # add_gripper_1参数可以单独指定左臂是否加载夹爪的模型，默认为add_gripper的值
         # add_gripper_2参数可以单独指定右臂是否加载夹爪的模型，默认为add_gripper的值
         # dof_1参数可以单独指定左臂轴数，默认为dof的值（这里为6，不同启动脚本不一样）
         # dof_2参数可以单独指定右臂轴数，默认为dof的值（这里为6，不同启动脚本不一样）
-        $ ros2 launch xarm_moveit_config dual_xarm6_moveit_realmove.launch.py robot1_ip:=192.168.1.117 robot2_ip:=192.168.1.203 [add_gripper:=true]
+        $ ros2 launch xarm_moveit_config dual_xarm6_moveit_realmove.launch.py robot_ip_1_1:=192.168.1.117 robot_ip_2:=192.168.1.203 [add_gripper:=true]
         ```
 
 - ### 5.7 xarm_planner

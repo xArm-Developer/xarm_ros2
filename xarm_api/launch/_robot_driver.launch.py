@@ -7,8 +7,6 @@
 # Author: Vinman <vinman.wen@ufactory.cc> <vinman.cub@gmail.com>
 
 import os
-import yaml
-from tempfile import NamedTemporaryFile
 from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import OpaqueFunction, DeclareLaunchArgument, IncludeLaunchDescription
@@ -16,6 +14,7 @@ from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
+<<<<<<< HEAD
 
 
 def merge_dict(dict1, dict2):
@@ -63,6 +62,11 @@ def generate_xarm_params(xarm_default_params_path, xarm_user_params_path=None, r
             yaml.dump(xarm_params_yaml, h, default_flow_style=False)
             return h.name
     return xarm_default_params_path
+=======
+from launch import LaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.launch_description_sources import load_python_launch_file_as_module
+>>>>>>> e5a1e3f... Call SDK API directly in xarm_controller
 
 
 def launch_setup(context, *args, **kwargs):
@@ -110,10 +114,12 @@ def launch_setup(context, *args, **kwargs):
     show_rviz = LaunchConfiguration('show_rviz', default=False)
     robot_type = LaunchConfiguration('robot_type', default='xarm')
     
-    xarm_params = generate_xarm_params(
+    mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_api'), 'launch', 'lib', 'robot_api_lib.py'))
+    generate_robot_api_params = getattr(mod, 'generate_robot_api_params')
+    robot_params = generate_robot_api_params(
         os.path.join(get_package_share_directory('xarm_api'), 'config', 'xarm_params.yaml'),
         os.path.join(get_package_share_directory('xarm_api'), 'config', 'xarm_user_params.yaml'),
-        LaunchConfiguration('ros_namespace', default='').perform(context)
+        LaunchConfiguration('ros_namespace', default='').perform(context), node_name='ufactory_driver'
     )
     
     # robot driver node
@@ -125,13 +131,13 @@ def launch_setup(context, *args, **kwargs):
         output='screen',
         emulate_tty=True,
         parameters=[
-            xarm_params,
+            robot_params,
             {
                 'robot_ip': robot_ip,
                 'report_type': report_type,
                 'dof': dof,
                 'add_gripper': add_gripper if robot_type.perform(context) == 'xarm' else False,
-                'hw_ns': hw_ns.perform(context).strip('/'),
+                'hw_ns': '{}{}'.format(prefix.perform(context).strip('/'), hw_ns.perform(context).strip('/')),
                 'prefix': prefix.perform(context).strip('/'),
                 'baud_checkset': baud_checkset,
                 'default_gripper_baud': default_gripper_baud,

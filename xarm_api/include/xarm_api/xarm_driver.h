@@ -32,6 +32,7 @@ namespace xarm_api
         void pub_cgpio_state(xarm_msgs::msg::CIOState &cio_msg);
         
         bool is_connected(void);
+        std::string controller_error_interpreter(int err=-1);
 
         rclcpp::Logger get_logger() { return node_->get_logger(); }
 

@@ -36,6 +36,8 @@ void* cmd_heart_beat(void* args)
 
 namespace xarm_api
 {   
+    static const rclcpp::Logger LOGGER = rclcpp::get_logger("uf_ros_driver.sdk");
+
     XArmDriver::~XArmDriver()
     {   
         arm->set_mode(XARM_MODE::POSE);
@@ -128,7 +130,7 @@ namespace xarm_api
         std::string hw_ns;
         node_->get_parameter_or("hw_ns", hw_ns, std::string("xarm"));
         // hw_ns = prefix + hw_ns;
-        hw_node_ = node->create_sub_node(hw_ns);
+        hw_node_ = node_->create_sub_node(hw_ns);
         node_->get_parameter_or("dof", dof_, 7);
         node_->get_parameter_or("report_type", report_type_, std::string("normal"));
 
@@ -148,8 +150,9 @@ namespace xarm_api
         node_->get_parameter_or("default_gripper_baud", default_gripper_baud, 2000000);
         
         RCLCPP_INFO(node_->get_logger(), "baud_checkset: %d, default_gripper_baud: %d", baud_checkset, default_gripper_baud);
-        
+
         _init_publisher();
+        setlinebuf(stdout);
 
         arm = new XArmAPI(
             server_ip, 
@@ -178,7 +181,7 @@ namespace xarm_api
         int err_warn[2] = {0};
         int ret = arm->get_err_warn_code(err_warn);
         if (err_warn[0] != 0) {
-            RCLCPP_WARN(node_->get_logger(), "UFACTORY ErrorCode: C%d: [ %s ]", err_warn[0], uf_controller_error_interpreter(err_warn[0]).c_str());
+            RCLCPP_WARN(node_->get_logger(), "UFACTORY ErrorCode: C%d: [ %s ]", err_warn[0], controller_error_interpreter(err_warn[0]).c_str());
         }
         
         std::thread th(cmd_heart_beat, this);
@@ -454,6 +457,83 @@ namespace xarm_api
 
     bool XArmDriver::is_connected(void) {
         return arm == NULL ? false : arm->is_connected();
+    }
+
+    std::string XArmDriver::controller_error_interpreter(int err)
+    {
+        err = (err==-1) ? curr_err : err;
+        switch(err)
+        {
+            case 0:
+                return "Everything OK";
+            case 1:
+                return "Hardware Emergency STOP effective";
+            case 2:
+                return "Emergency IO of Control Box is triggered";
+            case 3:
+                return "Emergency Stop of Three-state Switch triggered";
+            case 11:
+            case 12:
+            case 13:
+            case 14:
+            case 15:
+            case 16:
+            case 17:
+                return std::string("Servo Motor Error of Joint ") + std::to_string(err-10); 
+            case 19:
+                return "End Module Communication Error";
+            case 21:
+                return "Kinematic Error";
+            case 22:
+                return "Self-collision Error";
+            case 23:
+                return "Joint Angle Exceed Limit";
+            case 24:
+                return "Speed Exceeds Limit";
+            case 25:
+                return "Planning Error";
+            case 26:
+                return "System Real Time Error";
+            case 27:
+                return "Command Reply Error";
+            case 29:
+                return "Other Errors, please contact technical support";
+            case 30:
+                return "Feedback Speed Exceeds limit";
+            case 31:
+                return "Collision Caused Abnormal Joint Current";
+            case 32:
+                return "Circle Calculation Error";
+            case 33:
+                return "Controller GPIO Error";
+            case 34:
+                return "Trajectory Recording Timeout";
+            case 35:
+                return "Exceed Safety Boundary";
+            case 36:
+                return "Number of Delayed Command Exceed Limit";
+            case 37:
+                return "Abnormal Motion in Manual Mode";
+            case 38: 
+                return "Abnormal Joint Angle";
+            case 39:
+                return "Abnormal Communication Between Master and Slave IC of Power Board";
+            case 50:
+                return "Tool Force/Torque Sensor Error";
+            case 51:
+                return "Tool Force Torque Sensor Mode Setting Error";
+            case 52:
+                return "Tool Force Torque Sensor Zero Setting Error";
+            case 53:
+                return "Tool Force Torque Sensor Overload";
+            case 110:
+                return "Robot Arm Base Board Communication Error";
+            case 111:
+                return "Control Box External RS485 Device Communication Error";
+
+            default:
+                return "Abnormal Error Code, please contact support!";
+        }
     }
 
 }
