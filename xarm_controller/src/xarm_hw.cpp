@@ -10,7 +10,7 @@
 
 #define SERVICE_CALL_FAILED 999
 #define SERVICE_IS_PERSISTENT_BUT_INVALID 998
-#define XARM_IS_DISCONNECTED -1
+#define ROBOT_IS_DISCONNECTED -1
 #define WAIT_SERVICE_TIMEOUT 996
 #define VELO_DURATION 1
 
@@ -25,12 +25,12 @@ namespace xarm_control
         int failed_cnts = 0;
         while (!client->wait_for_service(std::chrono::seconds(1))) {
             if (!rclcpp::ok()) {
-                RCLCPP_ERROR(LOGGER, "Interrupted while waiting for the service. Exiting.");
+                RCLCPP_ERROR(LOGGER, "[%s] Interrupted while waiting for the service. Exiting.", robot_ip_.c_str());
                 exit(1);
             }
             if (!is_try_again) {
                 is_try_again = true;
-                RCLCPP_WARN(LOGGER, "service %s not available, waiting ...", client->get_service_name());
+                RCLCPP_WARN(LOGGER, "[%s] service %s not available, waiting ...", robot_ip_.c_str(), client->get_service_name());
             }
             failed_cnts += 1;
             if (failed_cnts >= 5) return WAIT_SERVICE_TIMEOUT;
@@ -38,7 +38,7 @@ namespace xarm_control
         auto result_future = client->async_send_request(req);
         if (rclcpp::spin_until_future_complete(node_, result_future, std::chrono::seconds(1)) != rclcpp::FutureReturnCode::SUCCESS)
         {
-            // RCLCPP_ERROR(LOGGER, "Failed to call service %s", client->get_service_name());
+            // RCLCPP_ERROR(LOGGER, "[%s] Failed to call service %s", robot_ip_.c_str(), client->get_service_name());
             return SERVICE_CALL_FAILED;
         }
         res = result_future.get();
@@ -52,14 +52,23 @@ namespace xarm_control
         node_options.automatically_declare_parameters_from_overrides(true);
         node_ = rclcpp::Node::make_shared("ufactory_driver", node_options);
 
-        RCLCPP_INFO(LOGGER, "namespace: %s", node_->get_namespace());
-
-        hw_ns_ = "xarm";
-        auto it = info_.hardware_parameters.find("hw_ns");
+        robot_ip_ = "";
+        auto it = info_.hardware_parameters.find("robot_ip");
         if (it != info_.hardware_parameters.end()) {
-            hw_ns_ = it->second;
+            robot_ip_ = it->second.substr(1);
         }
-        node_->set_parameter(rclcpp::Parameter("hw_ns", hw_ns_));
+        if (robot_ip_ == "") {
+            RCLCPP_ERROR(LOGGER, "[%s] No param named 'robot_ip'", robot_ip_.c_str());
+            rclcpp::shutdown();
+            exit(1);
+        }
+
+        std::string hw_ns = "xarm";
+        it = info_.hardware_parameters.find("hw_ns");
+        if (it != info_.hardware_parameters.end()) {
+            hw_ns = it->second;
+        }
+        node_->set_parameter(rclcpp::Parameter("hw_ns", hw_ns));
 
         std::string prefix = "";
         it = info_.hardware_parameters.find("prefix");
@@ -83,8 +92,10 @@ namespace xarm_control
         if (it != info_.hardware_parameters.end()) {
             robot_type = it->second;
         }
-        RCLCPP_INFO(LOGGER, "robot_type: %s, hw_ns: %s, prefix: %s, report_type: %s", 
-            robot_type.c_str(), hw_ns_.c_str(), prefix.c_str(), report_type.c_str());
+
+        RCLCPP_INFO(LOGGER, "[%s] namespace: %s", robot_ip_.c_str(), node_->get_namespace());
+        RCLCPP_INFO(LOGGER, "[%s] robot_type: %s, hw_ns: %s, prefix: %s, report_type: %s", 
+            robot_ip_.c_str(), robot_type.c_str(), hw_ns.c_str(), prefix.c_str(), report_type.c_str());
 
         int dof = 7;
         it = info_.hardware_parameters.find("dof");
@@ -120,22 +131,21 @@ namespace xarm_control
         if (it != info_.hardware_parameters.end()) {
             velocity_control_ = (it->second == "True" || it->second == "true");
         }
-        RCLCPP_INFO(LOGGER, "dof: %d, velocity_control: %d, add_gripper: %d, baud_checkset: %d, default_gripper_baud: %d", 
-            dof, velocity_control_, add_gripper, baud_checkset, default_gripper_baud);
+        RCLCPP_INFO(LOGGER, "[%s] dof: %d, velocity_control: %d, add_gripper: %d, baud_checkset: %d, default_gripper_baud: %d", 
+            robot_ip_.c_str(), dof, velocity_control_, add_gripper, baud_checkset, default_gripper_baud);
         
-        std::string robot_ip = "";
+        robot_ip_ = "";
         it = info_.hardware_parameters.find("robot_ip");
         if (it != info_.hardware_parameters.end()) {
-            robot_ip = it->second.substr(1);
+            robot_ip_ = it->second.substr(1);
         }
-        if (robot_ip == "") {
-            RCLCPP_ERROR(LOGGER, "No param named 'robot_ip'");
+        if (robot_ip_ == "") {
+            RCLCPP_ERROR(LOGGER, "[%s] No param named 'robot_ip'", robot_ip_.c_str());
             rclcpp::shutdown();
             exit(1);
         }
-        RCLCPP_INFO(LOGGER, "robot_ip: %s", robot_ip.c_str());
         
-        xarm_driver_.init(node_, robot_ip);
+        xarm_driver_.init(node_, robot_ip_);
     }
 
     CallbackReturn XArmHW::on_init(const hardware_interface::HardwareInfo& info)
@@ -172,8 +182,8 @@ namespace xarm_control
                 }
             }
             if (!has_pos_cmd_interface) {
-                RCLCPP_ERROR(LOGGER, "Joint '%s' has %ld command interfaces found, but not found %s command interface",
-                    joint.name.c_str(), joint.command_interfaces.size(), hardware_interface::HW_IF_POSITION
+                RCLCPP_ERROR(LOGGER, "[%s] Joint '%s' has %ld command interfaces found, but not found %s command interface",
+                    robot_ip_.c_str(), joint.name.c_str(), joint.command_interfaces.size(), hardware_interface::HW_IF_POSITION
                 );
                 return CallbackReturn::ERROR;
             }
@@ -186,14 +196,14 @@ namespace xarm_control
                 }
             }
             if (!has_pos_state_interface) {
-                RCLCPP_ERROR(LOGGER, "Joint '%s' has %ld state interfaces found, but not found %s state interface",
-                    joint.name.c_str(), joint.state_interfaces.size(), hardware_interface::HW_IF_POSITION
+                RCLCPP_ERROR(LOGGER, "[%s] Joint '%s' has %ld state interfaces found, but not found %s state interface",
+                    robot_ip_.c_str(), joint.name.c_str(), joint.state_interfaces.size(), hardware_interface::HW_IF_POSITION
                 );
                 return CallbackReturn::ERROR;
             }
         }
 
-        RCLCPP_INFO(LOGGER, "System Sucessfully configured!");
+        RCLCPP_INFO(LOGGER, "[%s] System Sucessfully configured!", robot_ip_.c_str());
         return CallbackReturn::SUCCESS;
     }
 
@@ -254,17 +264,17 @@ namespace xarm_control
             }
         }
         
-        RCLCPP_INFO(LOGGER, "System Sucessfully started!");
+        RCLCPP_INFO(LOGGER, "[%s] System Sucessfully started!", robot_ip_.c_str());
         return CallbackReturn::SUCCESS;
     }
 
     CallbackReturn XArmHW::on_deactivate(const rclcpp_lifecycle::State& previous_state)
     {
-        RCLCPP_INFO(LOGGER, "Stopping ...please wait...");
+        RCLCPP_INFO(LOGGER, "[%s] Stopping ...please wait...", robot_ip_.c_str());
 
         xarm_driver_.arm->set_mode(XARM_MODE::POSE);
 
-        RCLCPP_INFO(LOGGER, "System sucessfully stopped!");
+        RCLCPP_INFO(LOGGER, "[%s] System sucessfully stopped!", robot_ip_.c_str());
         return CallbackReturn::SUCCESS;
     }
 
@@ -288,7 +298,7 @@ namespace xarm_control
             read_max_time_ = time_sec;
         }
         // if (read_cnts_ % 6000 == 0) {
-        //     RCLCPP_INFO(LOGGER, "[READ] cnt: %ld, max: %f, mean: %f, failed: %ld", read_cnts_, read_max_time_, read_total_time_ / read_cnts_, read_failed_cnts_);
+        //     RCLCPP_INFO(LOGGER, "[%s] [READ] cnt: %ld, max: %f, mean: %f, failed: %ld", robot_ip_.c_str(), read_cnts_, read_max_time_, read_total_time_ / read_cnts_, read_failed_cnts_);
         // }
         if (read_code_ == 0 && read_ready_) {
             for (int j = 0; j < info_.joints.size(); j++) {
@@ -318,9 +328,9 @@ namespace xarm_control
             // initialized_ = read_ready_ && _xarm_is_ready_write();
             if (read_code_) {
                 read_failed_cnts_ += 1;
-                RCLCPP_INFO(LOGGER, "[hw_ns: %s] xArmHW::Read() returns: %d", hw_ns_.c_str(), read_code_);
-                if (read_code_ == XARM_IS_DISCONNECTED) {
-                    RCLCPP_ERROR(LOGGER, "[hw_ns: %s] xArm is disconnected, ros shutdown", hw_ns_.c_str());
+                RCLCPP_INFO(LOGGER, "[%s] Read() returns: %d", robot_ip_.c_str(), read_code_);
+                if (read_code_ == ROBOT_IS_DISCONNECTED) {
+                    RCLCPP_ERROR(LOGGER, "[%s] Robot is disconnected, ros shutdown", robot_ip_.c_str());
                     rclcpp::shutdown();
                     exit(1);
 				}
@@ -349,17 +359,17 @@ namespace xarm_control
         // }
         // pos_str += "]";
         // vel_str += "]";
-        // RCLCPP_INFO(LOGGER, "positon: %s, velocity: %s", pos_str.c_str(), vel_str.c_str());
+        // RCLCPP_INFO(LOGGER, "[%s] positon: %s, velocity: %s", robot_ip_.c_str(), pos_str.c_str(), vel_str.c_str());
 
         int cmd_ret = 0;
         if (velocity_control_) {
             for (int i = 0; i < velocity_cmds_.size(); i++) { 
                 cmds_float_[i] = (float)velocity_cmds_[i];
             }
-            // RCLCPP_INFO(LOGGER, "velocity: %s", vel_str.c_str());
+            // RCLCPP_INFO(LOGGER, "[%s] velocity: %s", robot_ip_.c_str(), vel_str.c_str());
             cmd_ret = xarm_driver_.arm->vc_set_joint_velocity(cmds_float_, true, VELO_DURATION);
             if (cmd_ret != 0) {
-                RCLCPP_WARN(LOGGER, "[hw_ns: %s] vc_set_joint_velocity, ret=%d", hw_ns_.c_str(), cmd_ret);
+                RCLCPP_WARN(LOGGER, "[%s] vc_set_joint_velocity, ret=%d", robot_ip_.c_str(), cmd_ret);
             }
         }
         else {
@@ -368,10 +378,10 @@ namespace xarm_control
             }
             curr_write_time_ = node_->get_clock()->now();
             if (curr_write_time_.seconds() - prev_write_time_.seconds() > 1 || _check_cmds_is_change(prev_cmds_float_, cmds_float_)) {
-                // RCLCPP_INFO(LOGGER, "positon: %s", pos_str.c_str());
+                // RCLCPP_INFO(LOGGER, "[%s] positon: %s", robot_ip_.c_str(), pos_str.c_str());
                 cmd_ret = xarm_driver_.arm->set_servo_angle_j(cmds_float_, 0, 0, 0);
                 if (cmd_ret != 0) {
-                    RCLCPP_WARN(LOGGER, "[hw_ns: %s] set_servo_angle_j, ret= %d", hw_ns_.c_str(), cmd_ret);
+                    RCLCPP_WARN(LOGGER, "[%s] set_servo_angle_j, ret= %d", robot_ip_.c_str(), cmd_ret);
                 }
                 if (cmd_ret == 0) {
                     prev_write_time_ = curr_write_time_;
@@ -416,7 +426,7 @@ namespace xarm_control
 		int curr_err = xarm_driver_.curr_err;
         if (curr_err != 0) {
             if (last_err != curr_err) {
-                RCLCPP_ERROR(LOGGER, "UFACTORY Error detected! Code C%d -> [ %s ] ", curr_err, xarm_driver_.controller_error_interpreter(curr_err).c_str());
+                RCLCPP_ERROR(LOGGER, "[%s] UFACTORY Error detected! Code C%d -> [ %s ] ", robot_ip_.c_str(), curr_err, xarm_driver_.controller_error_interpreter(curr_err).c_str());
             }
         }
         last_err = curr_err;
@@ -439,7 +449,7 @@ namespace xarm_control
         if (curr_state > 2) {
             if (last_state != curr_state) {
                 last_state = curr_state;
-                RCLCPP_ERROR(LOGGER, "[hw_ns: %s] xArm State detected! State: %d", hw_ns_.c_str(), curr_state);
+                RCLCPP_ERROR(LOGGER, "[%s] Robot State detected! State: %d", robot_ip_.c_str(), curr_state);
             }
             last_not_ready = true;
             return false;
@@ -449,7 +459,7 @@ namespace xarm_control
         if (!(velocity_control_ ? curr_mode == XARM_MODE::VELO_JOINT : curr_mode == XARM_MODE::SERVO)) {
             if (last_mode != curr_mode) {
                 last_mode = curr_mode;
-                RCLCPP_ERROR(LOGGER, "[hw_ns: %s] xArm Mode detected! Mode: %d", hw_ns_.c_str(), curr_mode);
+                RCLCPP_ERROR(LOGGER, "[%s] Robot Mode detected! Mode: %d", robot_ip_.c_str(), curr_mode);
             }
             last_not_ready = true;
             return false;
@@ -457,7 +467,7 @@ namespace xarm_control
         last_mode = curr_mode;
 
         if (last_not_ready) {
-            RCLCPP_INFO(LOGGER, "[hw_ns: %s] xArm is Ready", hw_ns_.c_str());
+            RCLCPP_INFO(LOGGER, "[%s] Robot is Ready", robot_ip_.c_str());
         }
         last_not_ready = false;
         return true;
@@ -474,14 +484,14 @@ namespace xarm_control
         bool write_succeed = write_code_ == 0;
         if (!write_succeed) {
             int ret = xarm_driver_.arm->set_state(XARM_STATE::STOP);
-            RCLCPP_ERROR(LOGGER, "[hw_ns: %s] XArmHW::Write() failed, failed_ret=%d !, Setting Robot State to STOP... (ret: %d)", hw_ns_.c_str(), write_code_, ret);
+            RCLCPP_ERROR(LOGGER, "[%s] Write() failed, failed_ret=%d !, Setting Robot State to STOP... (ret: %d)", robot_ip_.c_str(), write_code_, ret);
             if (write_code_ == SERVICE_IS_PERSISTENT_BUT_INVALID || write_code_ == SERVICE_CALL_FAILED) {
-                RCLCPP_ERROR(LOGGER, "[hw_ns: %s] service is invaild, ros shutdown", hw_ns_.c_str());
+                RCLCPP_ERROR(LOGGER, "[%s] Service is invaild, ros shutdown", robot_ip_.c_str());
                 rclcpp::shutdown();
                 exit(1);
             }
-            else if (write_code_ == XARM_IS_DISCONNECTED) {
-                RCLCPP_ERROR(LOGGER, "[hw_ns: %s] xArm is disconnected, ros shutdown", hw_ns_.c_str());
+            else if (write_code_ == ROBOT_IS_DISCONNECTED) {
+                RCLCPP_ERROR(LOGGER, "[%s] Robot is disconnected, ros shutdown", robot_ip_.c_str());
                 rclcpp::shutdown();
                 exit(1);
             }
