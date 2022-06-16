@@ -1,9 +1,0 @@
-<library path="xarm_hw">
-  <class name="xarm_control/XArmHW"
-         type="xarm_control::XArmHW"
-         base_class_type="hardware_interface::SystemInterface">
-    <description>
-      hardware interface class for driving xArm.
-    </description>
-  </class>
-</library>
