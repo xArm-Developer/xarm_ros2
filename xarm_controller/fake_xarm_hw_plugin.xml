@@ -1,9 +1,0 @@
-<library path="fake_xarm_hw">
-  <class name="xarm_control/FakeXArmHW"
-         type="xarm_control::FakeXArmHW"
-         base_class_type="hardware_interface::SystemInterface">
-    <description>
-      hardware interface class for driving xArm.
-    </description>
-  </class>
-</library>
