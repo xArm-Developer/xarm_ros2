@@ -46,7 +46,7 @@ def generate_launch_description():
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'robot_type': robot_type,
-            'ros2_control_plugin': 'xarm_control/XArmHW',
+            'ros2_control_plugin': 'uf_robot_hardware/UFRobotSystemHardware',
         }.items(),
     )
 

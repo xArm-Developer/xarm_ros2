@@ -91,7 +91,7 @@ def generate_launch_description():
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': str(dof),
             'robot_type': robot_type,
-            'ros2_control_plugin': 'xarm_control/XArmHW',
+            'ros2_control_plugin': 'uf_robot_hardware/UFRobotSystemHardware',
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,
             'geometry_mass': geometry_mass,

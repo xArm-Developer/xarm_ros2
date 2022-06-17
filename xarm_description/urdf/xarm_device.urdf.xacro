@@ -9,7 +9,7 @@
   <xacro:arg name="add_vacuum_gripper" default="false"/>
   <xacro:arg name="dof" default="7"/>
   <xacro:arg name="robot_type" default="xarm"/>
-  <xacro:arg name="ros2_control_plugin" default="xarm_control/XArmHW"/>
+  <xacro:arg name="ros2_control_plugin" default="uf_robot_hardware/UFRobotSystemHardware"/>
   <xacro:arg name="ros2_control_params" default="$(find xarm_controller)/config/xarm$(arg dof)_controllers.yaml"/>
 
   <xacro:arg name="add_other_geometry" default="false"/>

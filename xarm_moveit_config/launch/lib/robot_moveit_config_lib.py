@@ -64,7 +64,7 @@ def get_xarm_robot_description_parameters(
     urdf_arguments={},
     srdf_arguments={},
     arguments={}):
-    urdf_arguments['ros2_control_plugin'] = urdf_arguments.get('ros2_control_plugin', 'xarm_control/XArmHW')
+    urdf_arguments['ros2_control_plugin'] = urdf_arguments.get('ros2_control_plugin', 'uf_robot_hardware/UFRobotSystemHardware')
     moveit_config_package_name = 'xarm_moveit_config'
     xarm_type = arguments.get('xarm_type', None)
     

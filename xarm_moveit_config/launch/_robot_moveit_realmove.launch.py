@@ -44,7 +44,7 @@ def launch_setup(context, *args, **kwargs):
     baud_checkset = LaunchConfiguration('baud_checkset', default=True)
     default_gripper_baud = LaunchConfiguration('default_gripper_baud', default=2000000)
 
-    ros2_control_plugin = 'xarm_control/XArmHW'
+    ros2_control_plugin = 'uf_robot_hardware/UFRobotSystemHardware'
     controllers_name = 'controllers'
     moveit_controller_manager_key = 'moveit_simple_controller_manager'
     moveit_controller_manager_value = 'moveit_simple_controller_manager/MoveItSimpleControllerManager'

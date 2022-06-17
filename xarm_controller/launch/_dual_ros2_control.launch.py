@@ -40,7 +40,7 @@ def launch_setup(context, *args, **kwargs):
     limited = LaunchConfiguration('limited', default=False)
     effort_control = LaunchConfiguration('effort_control', default=False)
     velocity_control = LaunchConfiguration('velocity_control', default=False)
-    ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='xarm_control/XArmHW')
+    ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='uf_robot_hardware/UFRobotSystemHardware')
 
     baud_checkset = LaunchConfiguration('baud_checkset', default=True)
     baud_checkset_1 = LaunchConfiguration('baud_checkset', default=baud_checkset)
