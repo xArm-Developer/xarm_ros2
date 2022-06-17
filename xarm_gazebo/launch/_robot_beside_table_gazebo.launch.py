@@ -56,6 +56,7 @@ def launch_setup(context, *args, **kwargs):
         add_gripper=add_gripper.perform(context) in ('True', 'true'),
         ros_namespace=LaunchConfiguration('ros_namespace', default='').perform(context),
         update_rate=1000,
+        robot_type=robot_type.perform(context)
     )
 
     # robot_description

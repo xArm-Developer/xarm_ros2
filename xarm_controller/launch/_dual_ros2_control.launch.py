@@ -108,7 +108,9 @@ def launch_setup(context, *args, **kwargs):
         prefix_2=prefix_2.perform(context), 
         add_gripper_1=add_gripper_1.perform(context) in ('True', 'true'),
         add_gripper_2=add_gripper_2.perform(context) in ('True', 'true'),
-        ros_namespace=LaunchConfiguration('ros_namespace', default='').perform(context)
+        ros_namespace=LaunchConfiguration('ros_namespace', default='').perform(context),
+        robot_type_1=robot_type_1.perform(context), 
+        robot_type_2=robot_type_2.perform(context), 
     )
 
     # robot_description

@@ -103,6 +103,8 @@ def launch_setup(context, *args, **kwargs):
         add_gripper_2=add_gripper_2.perform(context) in ('True', 'true'),
         ros_namespace=ros_namespace,
         update_rate=1000,
+        robot_type_1=robot_type_1.perform(context), 
+        robot_type_2=robot_type_2.perform(context), 
     )
 
     # robot_description
