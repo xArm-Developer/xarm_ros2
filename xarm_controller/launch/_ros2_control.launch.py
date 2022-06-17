@@ -62,7 +62,8 @@ def launch_setup(context, *args, **kwargs):
         os.path.join(get_package_share_directory('xarm_controller'), 'config', '{}{}_controllers.yaml'.format(robot_type.perform(context), '' if robot_type.perform(context) == 'uf850' else dof.perform(context))),
         prefix=prefix.perform(context), 
         add_gripper=add_gripper.perform(context) in ('True', 'true'),
-        ros_namespace=LaunchConfiguration('ros_namespace', default='').perform(context)
+        ros_namespace=LaunchConfiguration('ros_namespace', default='').perform(context),
+        robot_type=robot_type.perform(context)
     )
 
     # robot_description
