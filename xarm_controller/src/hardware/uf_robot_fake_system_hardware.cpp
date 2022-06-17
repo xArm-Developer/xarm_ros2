@@ -10,13 +10,16 @@
 
 namespace uf_robot_hardware
 {
-    static const rclcpp::Logger LOGGER = rclcpp::get_logger("fake_xarm_hw");
+    static const rclcpp::Logger LOGGER = rclcpp::get_logger("UFACTORY.RobotFakeHW");
 
-    hardware_interface::return_type UFRobotFakeSystemHardware::configure(const hardware_interface::HardwareInfo & info)
+    CallbackReturn UFRobotFakeSystemHardware::on_init(const hardware_interface::HardwareInfo& info)
     {
+        if (hardware_interface::SystemInterface::on_init(info) != CallbackReturn::SUCCESS) {
+            return CallbackReturn::ERROR;
+        }
         info_ = info;
 
-        node_ = rclcpp::Node::make_shared("fake_xarm_hw");
+        node_ = rclcpp::Node::make_shared("uf_robot_fake_hw");
         joint_state_pub_ = node_->create_publisher<sensor_msgs::msg::JointState>("joint_states", 1000);
         node_thread_ = std::thread([this]() {
             rclcpp::spin(node_);
@@ -46,10 +49,10 @@ namespace uf_robot_hardware
                 }
             }
             if (!has_pos_cmd_interface) {
-                RCLCPP_ERROR(LOGGER, "Joint '%s' has %d command interfaces found, but not found %s command interface",
+                RCLCPP_ERROR(LOGGER, "Joint '%s' has %ld command interfaces found, but not found %s command interface",
                     joint.name.c_str(), joint.command_interfaces.size(), hardware_interface::HW_IF_POSITION
                 );
-                return hardware_interface::return_type::ERROR;
+                return CallbackReturn::ERROR;
             }
 
             bool has_pos_state_interface = false;
@@ -60,16 +63,15 @@ namespace uf_robot_hardware
                 }
             }
             if (!has_pos_state_interface) {
-                RCLCPP_ERROR(LOGGER, "Joint '%s' has %d state interfaces found, but not found %s state interface",
+                RCLCPP_ERROR(LOGGER, "Joint '%s' has %ld state interfaces found, but not found %s state interface",
                     joint.name.c_str(), joint.state_interfaces.size(), hardware_interface::HW_IF_POSITION
                 );
-                return hardware_interface::return_type::ERROR;
+                return CallbackReturn::ERROR;
             }
         }
 
-        RCLCPP_INFO(LOGGER, "System Sucessfully configured!");
-        status_ = hardware_interface::status::CONFIGURED;
-        return hardware_interface::return_type::OK;
+        RCLCPP_INFO(LOGGER, "System Sucessfully inited!");
+        return CallbackReturn::SUCCESS;
     }
 
     std::vector<hardware_interface::StateInterface> UFRobotFakeSystemHardware::export_state_interfaces()
@@ -98,22 +100,18 @@ namespace uf_robot_hardware
         return command_interfaces;
     }
 
-    hardware_interface::return_type UFRobotFakeSystemHardware::start()
+    CallbackReturn UFRobotFakeSystemHardware::on_activate(const rclcpp_lifecycle::State& previous_state)
     {
-        status_ = hardware_interface::status::STARTED;
-        
-        RCLCPP_INFO(LOGGER, "System Sucessfully started!");
-        return hardware_interface::return_type::OK;
+        RCLCPP_INFO(LOGGER, "System Sucessfully activated!");
+        return CallbackReturn::SUCCESS;
     }
 
-    hardware_interface::return_type UFRobotFakeSystemHardware::stop()
+    CallbackReturn UFRobotFakeSystemHardware::on_deactivate(const rclcpp_lifecycle::State& previous_state)
     {
         RCLCPP_INFO(LOGGER, "Stopping ...please wait...");
-        status_ = hardware_interface::status::STOPPED;
 
-
-        RCLCPP_INFO(LOGGER, "System sucessfully stopped!");
-        return hardware_interface::return_type::OK;
+        RCLCPP_INFO(LOGGER, "System sucessfully deactivated!");
+        return CallbackReturn::SUCCESS;
     }
 
     hardware_interface::return_type UFRobotFakeSystemHardware::read()
@@ -135,7 +133,7 @@ namespace uf_robot_hardware
         // }
         // pos_str += "]";
         // vel_str += "]";
-        // RCLCPP_INFO(node_->get_logger(), "positon: %s, velocity: %s", pos_str.c_str(), vel_str.c_str());
+        // RCLCPP_INFO(LOGGER, "positon: %s, velocity: %s", pos_str.c_str(), vel_str.c_str());
 
         for (int i = 0; i < position_cmds_.size(); i++) { 
             position_states_[i] = position_cmds_[i];

@@ -148,8 +148,11 @@ namespace uf_robot_hardware
         xarm_driver_.init(node_, robot_ip_);
     }
 
-    hardware_interface::return_type UFRobotSystemHardware::configure(const hardware_interface::HardwareInfo & info)
+    CallbackReturn UFRobotSystemHardware::on_init(const hardware_interface::HardwareInfo& info)
     {
+        if (hardware_interface::SystemInterface::on_init(info) != CallbackReturn::SUCCESS) {
+            return CallbackReturn::ERROR;
+        }
         info_ = info;
         velocity_control_ = false;
         read_code_ = 0;
@@ -179,10 +182,10 @@ namespace uf_robot_hardware
                 }
             }
             if (!has_pos_cmd_interface) {
-                RCLCPP_ERROR(LOGGER, "[%s] Joint '%s' has %d command interfaces found, but not found %s command interface",
+                RCLCPP_ERROR(LOGGER, "[%s] Joint '%s' has %ld command interfaces found, but not found %s command interface",
                     robot_ip_.c_str(), joint.name.c_str(), joint.command_interfaces.size(), hardware_interface::HW_IF_POSITION
                 );
-                return hardware_interface::return_type::ERROR;
+                return CallbackReturn::ERROR;
             }
 
             bool has_pos_state_interface = false;
@@ -193,16 +196,15 @@ namespace uf_robot_hardware
                 }
             }
             if (!has_pos_state_interface) {
-                RCLCPP_ERROR(LOGGER, "[%s] Joint '%s' has %d state interfaces found, but not found %s state interface",
+                RCLCPP_ERROR(LOGGER, "[%s] Joint '%s' has %ld state interfaces found, but not found %s state interface",
                     robot_ip_.c_str(), joint.name.c_str(), joint.state_interfaces.size(), hardware_interface::HW_IF_POSITION
                 );
-                return hardware_interface::return_type::ERROR;
+                return CallbackReturn::ERROR;
             }
         }
 
         RCLCPP_INFO(LOGGER, "[%s] System Sucessfully configured!", robot_ip_.c_str());
-        status_ = hardware_interface::status::CONFIGURED;
-        return hardware_interface::return_type::OK;
+        return CallbackReturn::SUCCESS;
     }
 
     std::vector<hardware_interface::StateInterface> UFRobotSystemHardware::export_state_interfaces()
@@ -231,7 +233,7 @@ namespace uf_robot_hardware
         return command_interfaces;
     }
 
-    hardware_interface::return_type UFRobotSystemHardware::start()
+    CallbackReturn UFRobotSystemHardware::on_activate(const rclcpp_lifecycle::State& previous_state)
     {
         xarm_driver_.arm->motion_enable(true);
 		xarm_driver_.arm->set_mode(velocity_control_ ? XARM_MODE::VELO_JOINT : XARM_MODE::SERVO);
@@ -261,39 +263,19 @@ namespace uf_robot_hardware
                 velocity_cmds_[i] = velocity_states_[i];
             }
         }
-
-        status_ = hardware_interface::status::STARTED;
         
         RCLCPP_INFO(LOGGER, "[%s] System Sucessfully started!", robot_ip_.c_str());
-        return hardware_interface::return_type::OK;
+        return CallbackReturn::SUCCESS;
     }
 
-    hardware_interface::return_type UFRobotSystemHardware::stop()
+    CallbackReturn UFRobotSystemHardware::on_deactivate(const rclcpp_lifecycle::State& previous_state)
     {
         RCLCPP_INFO(LOGGER, "[%s] Stopping ...please wait...", robot_ip_.c_str());
-        status_ = hardware_interface::status::STOPPED;
 
         xarm_driver_.arm->set_mode(XARM_MODE::POSE);
 
         RCLCPP_INFO(LOGGER, "[%s] System sucessfully stopped!", robot_ip_.c_str());
-        return hardware_interface::return_type::OK;
-    }
-
-    void UFRobotSystemHardware::_reload_controller(void) {
-        int ret = _call_request(client_list_controller_, req_list_controller_, res_list_controller_);
-        if (ret == 0 && res_list_controller_->controller.size() > 0) {
-            req_switch_controller_->start_controllers.resize(res_list_controller_->controller.size());
-            req_switch_controller_->stop_controllers.resize(res_list_controller_->controller.size());
-            for (uint i = 0; i < res_list_controller_->controller.size(); i++) {
-                req_switch_controller_->start_controllers[i] = res_list_controller_->controller[i].name;
-                req_switch_controller_->stop_controllers[i] = res_list_controller_->controller[i].name;
-            }
-            req_switch_controller_->strictness = controller_manager_msgs::srv::SwitchController::Request::BEST_EFFORT;
-            _call_request(client_switch_controller_, req_switch_controller_, res_switch_controller_);
-        }
-        if (ret == 0) {
-            reload_controller_ = false;
-        }
+        return CallbackReturn::SUCCESS;
     }
 
     hardware_interface::return_type UFRobotSystemHardware::read()
@@ -411,6 +393,23 @@ namespace uf_robot_hardware
         }
 
         return hardware_interface::return_type::OK;
+    }
+
+    void UFRobotSystemHardware::_reload_controller(void) {
+        int ret = _call_request(client_list_controller_, req_list_controller_, res_list_controller_);
+        if (ret == 0 && res_list_controller_->controller.size() > 0) {
+            req_switch_controller_->start_controllers.resize(res_list_controller_->controller.size());
+            req_switch_controller_->stop_controllers.resize(res_list_controller_->controller.size());
+            for (uint i = 0; i < res_list_controller_->controller.size(); i++) {
+                req_switch_controller_->start_controllers[i] = res_list_controller_->controller[i].name;
+                req_switch_controller_->stop_controllers[i] = res_list_controller_->controller[i].name;
+            }
+            req_switch_controller_->strictness = controller_manager_msgs::srv::SwitchController::Request::BEST_EFFORT;
+            _call_request(client_switch_controller_, req_switch_controller_, res_switch_controller_);
+        }
+        if (ret == 0) {
+            reload_controller_ = false;
+        }
     }
 
     bool UFRobotSystemHardware::_check_cmds_is_change(float *prev, float *cur, double threshold)

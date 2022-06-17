@@ -6,8 +6,8 @@
            Vinman <vinman.cub@gmail.com>
  ============================================================================*/
 
-#ifndef __XARM_HARDWARE_INTERFACE_H__
-#define __XARM_HARDWARE_INTERFACE_H__
+#ifndef __UF_ROBOT_SYSTEM_HARDWARE_INTERFACE_H__
+#define __UF_ROBOT_SYSTEM_HARDWARE_INTERFACE_H__
 
 #include <vector>
 #include <thread>
@@ -18,7 +18,6 @@
 #include "hardware_interface/hardware_info.hpp"
 #include "hardware_interface/system_interface.hpp"
 #include "hardware_interface/types/hardware_interface_return_values.hpp"
-#include "hardware_interface/types/hardware_interface_status_values.hpp"
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include "hardware_interface/visibility_control.h"
 #include "controller_manager_msgs/srv/list_controllers.hpp"
@@ -35,32 +34,25 @@ namespace uf_robot_hardware
     public:
         RCLCPP_SHARED_PTR_DEFINITIONS(UFRobotSystemHardware)
 
-        hardware_interface::return_type configure(const hardware_interface::HardwareInfo & info) override;
+        CallbackReturn on_init(const hardware_interface::HardwareInfo& info) final;
+        std::vector<hardware_interface::StateInterface> export_state_interfaces() final;
 
-        std::vector<hardware_interface::StateInterface> export_state_interfaces() override;
+        std::vector<hardware_interface::CommandInterface> export_command_interfaces() final;
 
-        std::vector<hardware_interface::CommandInterface> export_command_interfaces() override;
+        CallbackReturn on_activate(const rclcpp_lifecycle::State& previous_state) final;
+        CallbackReturn on_deactivate(const rclcpp_lifecycle::State& previous_state) final;
 
-        hardware_interface::return_type start() override;
+        hardware_interface::return_type read() final;
+        hardware_interface::return_type write() final;
 
-        hardware_interface::return_type stop() override;
+        // hardware_interface::return_type prepare_command_mode_switch(const std::vector<std::string>& start_interfaces,
+        //                                                             const std::vector<std::string>& stop_interfaces) final;
 
-        hardware_interface::return_type read() override;
-
-        hardware_interface::return_type write() override;
-
-        hardware_interface::status get_status() const final
-        {
-            return status_;
-        }
-        std::string get_name() const final
-        {
-            return info_.name;
-        }
+        // hardware_interface::return_type perform_command_mode_switch(const std::vector<std::string>& start_interfaces,
+        //                                                             const std::vector<std::string>& stop_interfaces) final;
 
     protected:
         hardware_interface::HardwareInfo info_;
-        hardware_interface::status status_;
     
     private:
         int read_code_;
@@ -127,4 +119,4 @@ namespace uf_robot_hardware
 
 PLUGINLIB_EXPORT_CLASS(uf_robot_hardware::UFRobotSystemHardware, hardware_interface::SystemInterface)
 
-#endif // __XARM_HARDWARE_INTERFACE_H__
+#endif // __UF_ROBOT_SYSTEM_HARDWARE_INTERFACE_H__
