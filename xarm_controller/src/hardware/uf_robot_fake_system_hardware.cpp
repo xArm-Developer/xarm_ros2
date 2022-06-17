@@ -10,13 +10,13 @@
 
 namespace uf_robot_hardware
 {
-    static const rclcpp::Logger LOGGER = rclcpp::get_logger("fake_xarm_hw");
+    static const rclcpp::Logger LOGGER = rclcpp::get_logger("UFACTORY.RobotFakeHW");
 
     hardware_interface::return_type UFRobotFakeSystemHardware::configure(const hardware_interface::HardwareInfo & info)
     {
         info_ = info;
 
-        node_ = rclcpp::Node::make_shared("fake_xarm_hw");
+        node_ = rclcpp::Node::make_shared("uf_robot_fake_hw");
         joint_state_pub_ = node_->create_publisher<sensor_msgs::msg::JointState>("joint_states", 1000);
         node_thread_ = std::thread([this]() {
             rclcpp::spin(node_);
@@ -135,7 +135,7 @@ namespace uf_robot_hardware
         // }
         // pos_str += "]";
         // vel_str += "]";
-        // RCLCPP_INFO(node_->get_logger(), "positon: %s, velocity: %s", pos_str.c_str(), vel_str.c_str());
+        // RCLCPP_INFO(LOGGER, "positon: %s, velocity: %s", pos_str.c_str(), vel_str.c_str());
 
         for (int i = 0; i < position_cmds_.size(); i++) { 
             position_states_[i] = position_cmds_[i];

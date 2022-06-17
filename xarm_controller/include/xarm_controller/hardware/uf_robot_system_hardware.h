@@ -6,8 +6,8 @@
            Vinman <vinman.cub@gmail.com>
  ============================================================================*/
 
-#ifndef __XARM_HARDWARE_INTERFACE_H__
-#define __XARM_HARDWARE_INTERFACE_H__
+#ifndef __UF_ROBOT_SYSTEM_HARDWARE_INTERFACE_H__
+#define __UF_ROBOT_SYSTEM_HARDWARE_INTERFACE_H__
 
 #include <vector>
 #include <thread>
@@ -127,4 +127,4 @@ namespace uf_robot_hardware
 
 PLUGINLIB_EXPORT_CLASS(uf_robot_hardware::UFRobotSystemHardware, hardware_interface::SystemInterface)
 
-#endif // __XARM_HARDWARE_INTERFACE_H__
+#endif // __UF_ROBOT_SYSTEM_HARDWARE_INTERFACE_H__
