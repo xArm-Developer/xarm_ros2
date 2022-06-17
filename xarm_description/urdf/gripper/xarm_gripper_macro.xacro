@@ -8,7 +8,7 @@
   <xacro:include filename="$(find xarm_description)/urdf/gripper/xarm_gripper.gazebo.xacro" />
 
   <xacro:macro name="xarm_gripper_macro" params="prefix:='' attach_to:='' ns:='xarm' xyz:='0 0 0' rpy:='0 0 0' effort_control:='false' velocity_control:='false' 
-    load_gazebo_plugin:='false' ros2_control_plugin:='xarm_control/FakeXArmHW' ros2_control_params:='' ">
+    load_gazebo_plugin:='false' ros2_control_plugin:='uf_robot_hardware/UFRobotFakeSystemHardware' ros2_control_params:='' ">
 
     <!-- gazebo_plugin -->
     <xacro:if value="${load_gazebo_plugin}">
@@ -16,7 +16,7 @@
       <xacro:gazebo_ros_control_plugin prefix="${prefix}" ros2_control_params="${ros2_control_params}"/>
     </xacro:if>
 
-    <xacro:if value="${ros2_control_plugin != 'xarm_control/XArmHW'}">
+    <xacro:if value="${ros2_control_plugin != 'uf_robot_hardware/UFRobotSystemHardware'}">
       <xacro:xarm_gripper_ros2_control prefix="${prefix}" ros2_control_plugin="${ros2_control_plugin}" />
     </xacro:if>
 

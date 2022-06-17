@@ -44,20 +44,20 @@ find_package(xarm_api REQUIRED)
 find_package(xarm_sdk REQUIRED)
 
 add_library(
-  ${PROJECT_NAME}
+  uf_robot_hardware
   SHARED
-  src/xarm_hw.cpp
-  src/fake_xarm_hw.cpp
+  src/hardware/uf_robot_system_hardware.cpp
+  src/hardware/uf_robot_fake_system_hardware.cpp
 )
 target_include_directories(
-  ${PROJECT_NAME}
+  uf_robot_hardware
   PRIVATE
   include
   ${xarm_sdk_INCLUDE_DIRS}
   ${xarm_api_INCLUDE_DIRS}
 )
 ament_target_dependencies(
-  ${PROJECT_NAME}
+  uf_robot_hardware
   hardware_interface
   pluginlib
   rclcpp
@@ -71,7 +71,7 @@ ament_target_dependencies(
 # message(WARNING "xarm_sdk_LIBRARIES: ${xarm_sdk_LIBRARIES}")
 # message(WARNING "xarm_api_LIBRARIES: ${xarm_api_LIBRARIES}")
 
-target_link_libraries(${PROJECT_NAME} 
+target_link_libraries(uf_robot_hardware 
   ${xarm_api_LIBRARIES}
   ${ament_LIBRARIES}
 )
@@ -84,7 +84,7 @@ install(
 )
 
 install(
-  TARGETS ${PROJECT_NAME}
+  TARGETS uf_robot_hardware
   DESTINATION lib
 )
 
@@ -95,7 +95,7 @@ install(DIRECTORY
 )
 
 ament_export_include_directories(include)
-ament_export_libraries(${PROJECT_NAME})
+ament_export_libraries(uf_robot_hardware)
 ament_export_dependencies(
   hardware_interface
   pluginlib

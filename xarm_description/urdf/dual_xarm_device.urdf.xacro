@@ -14,7 +14,7 @@
   <xacro:arg name="limited" default="false"/>
   <xacro:arg name="effort_control" default="false"/>
   <xacro:arg name="velocity_control" default="false"/>
-  <xacro:arg name="ros2_control_plugin" default="xarm_control/XArmHW"/>
+  <xacro:arg name="ros2_control_plugin" default="uf_robot_hardware/UFRobotSystemHardware"/>
   <xacro:arg name="ros2_control_params" default="$(find xarm_controller)/config/xarm$(arg dof_1)_controllers.yaml"/>
 
   <xacro:arg name="add_other_geometry_1" default="false"/>

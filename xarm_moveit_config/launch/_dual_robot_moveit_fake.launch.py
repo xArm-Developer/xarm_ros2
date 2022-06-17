@@ -86,7 +86,7 @@ def launch_setup(context, *args, **kwargs):
     geometry_mesh_tcp_rpy_1 = LaunchConfiguration('geometry_mesh_tcp_rpy_1', default=geometry_mesh_tcp_rpy)
     geometry_mesh_tcp_rpy_2 = LaunchConfiguration('geometry_mesh_tcp_rpy_2', default=geometry_mesh_tcp_rpy)
 
-    ros2_control_plugin = 'xarm_control/FakeXArmHW'
+    ros2_control_plugin = 'uf_robot_hardware/UFRobotFakeSystemHardware'
     controllers_name = 'fake_controllers'
     moveit_controller_manager_key = 'moveit_simple_controller_manager'
     moveit_controller_manager_value = 'moveit_simple_controller_manager/MoveItSimpleControllerManager'

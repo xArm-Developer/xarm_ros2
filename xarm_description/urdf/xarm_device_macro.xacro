@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="xarm_device">
   <xacro:macro name="xarm_device" params="prefix:='' namespace:='xarm' limited:='false' effort_control:='false' 
-    velocity_control:='false' add_gripper:='false' add_vacuum_gripper:='false' dof:=7 robot_type:='xarm' ros2_control_plugin:='xarm_control/XArmHW'
+    velocity_control:='false' add_gripper:='false' add_vacuum_gripper:='false' dof:=7 robot_type:='xarm' ros2_control_plugin:='uf_robot_hardware/UFRobotSystemHardware'
     attach_to:='world' xyz:='0 0 0' rpy:='0 0 0' ros2_control_params:='' load_gazebo_plugin:='false' 
     add_other_geometry:='false' 
     geometry_type:='box' geometry_mass:='0.1' 

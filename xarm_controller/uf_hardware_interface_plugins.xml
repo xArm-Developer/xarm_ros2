@@ -1,16 +1,16 @@
-<library path="xarm_controller">
-  <class name="xarm_control/XArmHW"
-         type="xarm_control::XArmHW"
+<library path="uf_robot_hardware">
+  <class name="uf_robot_hardware/UFRobotSystemHardware"
+         type="uf_robot_hardware::UFRobotSystemHardware"
          base_class_type="hardware_interface::SystemInterface">
     <description>
-      hardware interface class for driving xArm.
+      The ROS2 Control HardWare Interface for UFACTORY ROBOT.
     </description>
   </class>
-  <class name="xarm_control/FakeXArmHW"
-         type="xarm_control::FakeXArmHW"
+  <class name="uf_robot_hardware/UFRobotFakeSystemHardware"
+         type="uf_robot_hardware::UFRobotFakeSystemHardware"
          base_class_type="hardware_interface::SystemInterface">
     <description>
-      hardware interface class for driving xArm.
+      The ROS2 Control Fake HardWare Interface for UFACTORY ROBOT.
     </description>
   </class>
 </library>

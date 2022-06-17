@@ -2,7 +2,7 @@
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="xarm5" >
   <xacro:macro name="xarm5_robot" params="prefix:='' namespace:='xarm' limited:='false' effort_control:='false' 
     velocity_control:='false' attach_to:='world' xyz:='0 0 0' rpy:='0 0 0' load_gazebo_plugin:='false' 
-    ros2_control_plugin:='xarm_control/XArmHW' ros2_control_params:='' add_gripper:='false' 
+    ros2_control_plugin:='uf_robot_hardware/UFRobotSystemHardware' ros2_control_params:='' add_gripper:='false' 
     robot_ip:='' report_type:='normal' baud_checkset:='true' default_gripper_baud:=2000000 ">
 
     <!-- include xarm5 relative macros: -->

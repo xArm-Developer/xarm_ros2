@@ -29,7 +29,7 @@ def launch_setup(context, *args, **kwargs):
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     dof = LaunchConfiguration('dof', default=7)
     robot_type = LaunchConfiguration('robot_type', default='xarm')
-    ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='xarm_control/XArmHW')
+    ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='uf_robot_hardware/UFRobotSystemHardware')
     # joint_states_remapping = LaunchConfiguration('joint_states_remapping', default=PathJoinSubstitution([hw_ns, 'joint_states']))
     
     add_other_geometry = LaunchConfiguration('add_other_geometry', default=False)
