@@ -100,17 +100,19 @@ def launch_setup(context, *args, **kwargs):
     joint_limits_yaml = robot_description_parameters.get('robot_description_planning', None)
 
     if add_gripper.perform(context) in ('True', 'true'):
-        gripper_controllers_yaml = load_yaml(moveit_config_package_name, 'config', 'xarm_gripper', '{}.yaml'.format(controllers_name.perform(context)))
-        gripper_ompl_planning_yaml = load_yaml(moveit_config_package_name, 'config', 'xarm_gripper', 'ompl_planning.yaml')
-        gripper_joint_limits_yaml = load_yaml(moveit_config_package_name, 'config', 'xarm_gripper', 'joint_limits.yaml')
+        gripper_controllers_yaml = load_yaml(moveit_config_package_name, 'config', '{}_gripper'.format(robot_type.perform(context)), '{}.yaml'.format(controllers_name.perform(context)))
+        gripper_ompl_planning_yaml = load_yaml(moveit_config_package_name, 'config', '{}_gripper'.format(robot_type.perform(context)), 'ompl_planning.yaml')
+        gripper_joint_limits_yaml = load_yaml(moveit_config_package_name, 'config', '{}_gripper'.format(robot_type.perform(context)), 'joint_limits.yaml')
 
-        for name in gripper_controllers_yaml['controller_names']:
-            if name in gripper_controllers_yaml:
-                if name not in controllers_yaml['controller_names']:
-                    controllers_yaml['controller_names'].append(name)
-                controllers_yaml[name] = gripper_controllers_yaml[name]
-        ompl_planning_yaml.update(gripper_ompl_planning_yaml)
-        if joint_limits_yaml:
+        if gripper_controllers_yaml and 'controller_names' in gripper_controllers_yaml:
+            for name in gripper_controllers_yaml['controller_names']:
+                if name in gripper_controllers_yaml:
+                    if name not in controllers_yaml['controller_names']:
+                        controllers_yaml['controller_names'].append(name)
+                    controllers_yaml[name] = gripper_controllers_yaml[name]
+        if gripper_ompl_planning_yaml:
+            ompl_planning_yaml.update(gripper_ompl_planning_yaml)
+        if joint_limits_yaml and gripper_joint_limits_yaml:
             joint_limits_yaml['joint_limits'].update(gripper_joint_limits_yaml['joint_limits'])
 
     add_prefix_to_moveit_params = getattr(mod, 'add_prefix_to_moveit_params')
