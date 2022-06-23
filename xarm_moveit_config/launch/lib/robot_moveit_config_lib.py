@@ -17,22 +17,28 @@ from launch_ros.substitutions import FindPackageShare
 def load_file(package_name, *file_path):
     package_path = get_package_share_directory(package_name)
     absolute_file_path = os.path.join(package_path, *file_path)
-
+    if not os.path.exists(absolute_file_path):
+        return {}
     try:
         with open(absolute_file_path, 'r') as file:
             return file.read()
     except EnvironmentError:  # parent of IOError, OSError *and* WindowsError where available
-        return None
+        return {}
+    except:
+        return {}
 
 def load_yaml(package_name, *file_path):
     package_path = get_package_share_directory(package_name)
     absolute_file_path = os.path.join(package_path, *file_path)
-
+    if not os.path.exists(absolute_file_path):
+        return {}
     try:
         with open(absolute_file_path, 'r') as file:
             return yaml.safe_load(file)
     except EnvironmentError:  # parent of IOError, OSError *and* WindowsError where available
-        return None
+        return {}
+    except:
+        return {}
 
 
 def add_prefix_to_moveit_params(controllers_yaml=None, ompl_planning_yaml=None, kinematics_yaml=None, joint_limits_yaml=None, prefix=''):

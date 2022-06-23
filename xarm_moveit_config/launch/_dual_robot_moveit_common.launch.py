@@ -175,35 +175,39 @@ def launch_setup(context, *args, **kwargs):
     
         
     if add_gripper_1.perform(context) in ('True', 'true'):
-        gripper_controllers_yaml_1 = load_yaml(moveit_config_package_name, 'config', 'xarm_gripper', '{}.yaml'.format(controllers_name.perform(context)))
-        gripper_ompl_planning_yaml_1 = load_yaml(moveit_config_package_name, 'config', 'xarm_gripper', 'ompl_planning.yaml')
-        # gripper_kinematics_yaml_1 = load_yaml(moveit_config_package_name, 'config', 'xarm_gripper', 'kinematics.yaml')
-        gripper_joint_limits_yaml_1 = load_yaml(moveit_config_package_name, 'config', 'xarm_gripper', 'joint_limits.yaml')
+        gripper_controllers_yaml_1 = load_yaml(moveit_config_package_name, 'config', '{}_gripper'.format(robot_type_1.perform(context)), '{}.yaml'.format(controllers_name.perform(context)))
+        gripper_ompl_planning_yaml_1 = load_yaml(moveit_config_package_name, 'config', '{}_gripper'.format(robot_type_1.perform(context)), 'ompl_planning.yaml')
+        # gripper_kinematics_yaml_1 = load_yaml(moveit_config_package_name, 'config', '{}_gripper'.format(robot_type_1.perform(context)), 'kinematics.yaml')
+        gripper_joint_limits_yaml_1 = load_yaml(moveit_config_package_name, 'config', '{}_gripper'.format(robot_type_1.perform(context)), 'joint_limits.yaml')
 
-        for name in gripper_controllers_yaml_1['controller_names']:
-            if name not in gripper_controllers_yaml_1:
-                continue
-            if name not in controllers_yaml_1['controller_names']:
-                controllers_yaml_1['controller_names'].append(name)
-            controllers_yaml_1[name] = gripper_controllers_yaml_1[name]
-        ompl_planning_yaml_1.update(gripper_ompl_planning_yaml_1)
+        if gripper_controllers_yaml_1 and 'controller_names' in gripper_controllers_yaml_1:
+            for name in gripper_controllers_yaml_1['controller_names']:
+                if name not in gripper_controllers_yaml_1:
+                    continue
+                if name not in controllers_yaml_1['controller_names']:
+                    controllers_yaml_1['controller_names'].append(name)
+                controllers_yaml_1[name] = gripper_controllers_yaml_1[name]
+        if gripper_ompl_planning_yaml_1:
+            ompl_planning_yaml_1.update(gripper_ompl_planning_yaml_1)
         # kinematics_yaml_1.update(gripper_kinematics_yaml_1)
-        if joint_limits_yaml_1:
+        if joint_limits_yaml_1 and gripper_joint_limits_yaml_1:
             joint_limits_yaml_1['joint_limits'].update(gripper_joint_limits_yaml_1['joint_limits'])
     
     if add_gripper_2.perform(context) in ('True', 'true'):
-        gripper_controllers_yaml_2 = load_yaml(moveit_config_package_name, 'config', 'xarm_gripper', '{}.yaml'.format(controllers_name.perform(context)))
-        gripper_ompl_planning_yaml_2 = load_yaml(moveit_config_package_name, 'config', 'xarm_gripper', 'ompl_planning.yaml')
-        gripper_joint_limits_yaml_2 = load_yaml(moveit_config_package_name, 'config', 'xarm_gripper', 'joint_limits.yaml')
+        gripper_controllers_yaml_2 = load_yaml(moveit_config_package_name, 'config', '{}_gripper'.format(robot_type_2.perform(context)), '{}.yaml'.format(controllers_name.perform(context)))
+        gripper_ompl_planning_yaml_2 = load_yaml(moveit_config_package_name, 'config', '{}_gripper'.format(robot_type_2.perform(context)), 'ompl_planning.yaml')
+        gripper_joint_limits_yaml_2 = load_yaml(moveit_config_package_name, 'config', '{}_gripper'.format(robot_type_2.perform(context)), 'joint_limits.yaml')
 
-        for name in gripper_controllers_yaml_2['controller_names']:
-            if name not in gripper_controllers_yaml_2:
-                continue
-            if name not in controllers_yaml_2['controller_names']:
-                controllers_yaml_2['controller_names'].append(name)
-            controllers_yaml_2[name] = gripper_controllers_yaml_2[name]
-        ompl_planning_yaml_2.update(gripper_ompl_planning_yaml_2)
-        if joint_limits_yaml_2:
+        if gripper_controllers_yaml_2 and 'controller_names' in gripper_controllers_yaml_2:
+            for name in gripper_controllers_yaml_2['controller_names']:
+                if name not in gripper_controllers_yaml_2:
+                    continue
+                if name not in controllers_yaml_2['controller_names']:
+                    controllers_yaml_2['controller_names'].append(name)
+                controllers_yaml_2[name] = gripper_controllers_yaml_2[name]
+        if gripper_ompl_planning_yaml_2:
+            ompl_planning_yaml_2.update(gripper_ompl_planning_yaml_2)
+        if joint_limits_yaml_2 and gripper_joint_limits_yaml_2:
             joint_limits_yaml_2['joint_limits'].update(gripper_joint_limits_yaml_2['joint_limits'])
         
 
