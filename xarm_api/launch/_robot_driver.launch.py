@@ -11,62 +11,11 @@ from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import OpaqueFunction, DeclareLaunchArgument, IncludeLaunchDescription
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
-from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
-<<<<<<< HEAD
-
-
-def merge_dict(dict1, dict2):
-    for k, v in dict1.items():
-        try:
-            if k not in dict2:
-                continue
-            if isinstance(v, dict):
-                merge_dict(v, dict2[k])
-            else:
-                dict1[k] = dict2[k]
-        except Exception as e:
-            pass
-
-
-def load_yaml(path):
-    if os.path.exists(path):
-        try:
-            with open(path, 'r') as file:
-                return yaml.safe_load(file)
-        except Exception as e:
-            print('load {} error, {}'.format(path, e))
-    return {}
-
-
-def generate_xarm_params(xarm_default_params_path, xarm_user_params_path=None, ros_namespace=''):
-    if not os.path.exists(xarm_user_params_path):
-        xarm_user_params_path = None
-    if ros_namespace or (xarm_user_params_path is not None and xarm_default_params_path != xarm_user_params_path):
-        ros2_control_params_yaml = load_yaml(xarm_default_params_path)
-        ros2_control_user_params_yaml = load_yaml(xarm_user_params_path)
-        # change xarm_driver to ufactory_driver
-        if 'xarm_driver' in ros2_control_params_yaml and 'ufactory_driver' not in ros2_control_params_yaml:
-            ros2_control_params_yaml['ufactory_driver'] = ros2_control_params_yaml.pop('xarm_driver')
-        if 'xarm_driver' in ros2_control_user_params_yaml and 'ufactory_driver' not in ros2_control_user_params_yaml:
-            ros2_control_user_params_yaml['ufactory_driver'] = ros2_control_user_params_yaml.pop('xarm_driver')
-        merge_dict(ros2_control_params_yaml, ros2_control_user_params_yaml)
-        if ros_namespace:
-            xarm_params_yaml = {
-                ros_namespace: ros2_control_params_yaml
-            }
-        else:
-            xarm_params_yaml = ros2_control_params_yaml
-        with NamedTemporaryFile(mode='w', prefix='launch_params_', delete=False) as h:
-            yaml.dump(xarm_params_yaml, h, default_flow_style=False)
-            return h.name
-    return xarm_default_params_path
-=======
 from launch import LaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.launch_description_sources import load_python_launch_file_as_module
->>>>>>> e5a1e3f... Call SDK API directly in xarm_controller
 
 
 def launch_setup(context, *args, **kwargs):

@@ -52,6 +52,12 @@ namespace uf_robot_hardware
         node_options.automatically_declare_parameters_from_overrides(true);
         node_ = rclcpp::Node::make_shared("ufactory_driver", node_options);
 
+        std::thread th([this]() -> void {
+            rclcpp::spin(node_);
+            rclcpp::shutdown();
+        });
+        th.detach();
+
         robot_ip_ = "";
         auto it = info_.hardware_parameters.find("robot_ip");
         if (it != info_.hardware_parameters.end()) {
@@ -166,7 +172,9 @@ namespace uf_robot_hardware
         read_total_time_ = 0;
         read_failed_cnts_ = 0;
 
+        RCLCPP_INFO(LOGGER, "===========on_init");
         _init_ufactory_driver();
+        RCLCPP_INFO(LOGGER, "===========on_init");
         
         position_states_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
         velocity_states_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());

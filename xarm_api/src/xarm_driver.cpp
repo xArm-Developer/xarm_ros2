@@ -253,15 +253,9 @@ namespace xarm_api
                 gripper_joint_state_msg_.name[i] = prefix + gripper_joint_state_msg_.name[i];
             }
         }
-        gripper_node_ = node_->create_sub_node("gripper");
-        std::thread th([this]() -> void {
-            rclcpp::spin(gripper_node_);
-            rclcpp::shutdown();
-        });
-        th.detach();
 
         gripper_action_server_ = rclcpp_action::create_server<control_msgs::action::GripperCommand>(
-            gripper_node_, prefix + "xarm_gripper/gripper_action",
+            node_, prefix + "xarm_gripper/gripper_action",
             BIND_CLS_CB(&XArmDriver::_handle_gripper_action_goal),
             BIND_CLS_CB_1(&XArmDriver::_handle_gripper_action_cancel),
             BIND_CLS_CB_1(&XArmDriver::_handle_gripper_action_accepted));

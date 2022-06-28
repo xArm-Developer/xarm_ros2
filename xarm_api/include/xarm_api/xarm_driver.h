@@ -65,7 +65,6 @@ namespace xarm_api
     private:
         rclcpp::Node::SharedPtr node_;
         rclcpp::Node::SharedPtr hw_node_;
-        rclcpp::Node::SharedPtr gripper_node_;
 
         int dof_;
         std::string report_type_;
