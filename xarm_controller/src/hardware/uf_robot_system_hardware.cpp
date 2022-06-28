@@ -52,6 +52,12 @@ namespace uf_robot_hardware
         node_options.automatically_declare_parameters_from_overrides(true);
         node_ = rclcpp::Node::make_shared("ufactory_driver", node_options);
 
+        std::thread th([this]() -> void {
+            rclcpp::spin(node_);
+            rclcpp::shutdown();
+        });
+        th.detach();
+
         robot_ip_ = "";
         auto it = info_.hardware_parameters.find("robot_ip");
         if (it != info_.hardware_parameters.end()) {
