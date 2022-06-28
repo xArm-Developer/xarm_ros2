@@ -253,9 +253,15 @@ namespace xarm_api
                 gripper_joint_state_msg_.name[i] = prefix + gripper_joint_state_msg_.name[i];
             }
         }
+        gripper_node_ = node_->create_sub_node("gripper");
+        std::thread th([this]() -> void {
+            rclcpp::spin(gripper_node_);
+            rclcpp::shutdown();
+        });
+        th.detach();
 
         gripper_action_server_ = rclcpp_action::create_server<control_msgs::action::GripperCommand>(
-            node_, prefix + "xarm_gripper/gripper_action",
+            gripper_node_, prefix + "xarm_gripper/gripper_action",
             BIND_CLS_CB(&XArmDriver::_handle_gripper_action_goal),
             BIND_CLS_CB_1(&XArmDriver::_handle_gripper_action_cancel),
             BIND_CLS_CB_1(&XArmDriver::_handle_gripper_action_accepted));
@@ -380,7 +386,7 @@ namespace xarm_api
         bool is_move = true;
         std::thread([this, &target_pos, &is_move, &cur_pos]() {
             is_move = true;
-            int ret2 = arm->set_gripper_position(target_pos, true);
+            int ret2 = arm->set_gripper_position(target_pos, true, -1, false); // set wait_motion=false
             int err;
             arm->get_gripper_err_code(&err);
             RCLCPP_INFO(node_->get_logger(), "set_gripper_position, ret=%d, err=%d, cur_pos=%f", ret2, err, cur_pos);
