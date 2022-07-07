@@ -13,6 +13,7 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     dof = LaunchConfiguration('dof')
+    robot_type = LaunchConfiguration('robot_type', default='xarm')
 
     xarm_planner_node_test = Node(
         name='test_xarm_planner_client_joint',
@@ -20,7 +21,10 @@ def generate_launch_description():
         executable='test_xarm_planner_client_joint',
         output='screen',
         parameters=[
-            {'dof': dof},
+            {
+                'robot_type': robot_type,
+                'dof': dof
+            },
         ],
     )
     return LaunchDescription([

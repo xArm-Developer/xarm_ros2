@@ -111,7 +111,10 @@ def launch_setup(context, *args, **kwargs):
         output='screen',
         parameters=[
             robot_description_parameters,
-            {'dof': dof},
+            {
+                'robot_type': robot_type,
+                'dof': dof
+            },
             xarm_planner_parameters,
         ],
     )
