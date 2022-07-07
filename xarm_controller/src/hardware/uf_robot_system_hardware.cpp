@@ -36,7 +36,7 @@ namespace uf_robot_hardware
             if (failed_cnts >= 5) return WAIT_SERVICE_TIMEOUT;
         }
         auto result_future = client->async_send_request(req);
-        if (rclcpp::spin_until_future_complete(node_, result_future, std::chrono::seconds(1)) != rclcpp::FutureReturnCode::SUCCESS)
+        if (rclcpp::spin_until_future_complete(hw_node_, result_future, std::chrono::seconds(1)) != rclcpp::FutureReturnCode::SUCCESS)
         {
             // RCLCPP_ERROR(LOGGER, "[%s] Failed to call service %s", robot_ip_.c_str(), client->get_service_name());
             return SERVICE_CALL_FAILED;
@@ -51,6 +51,7 @@ namespace uf_robot_hardware
         node_options.allow_undeclared_parameters(true);
         node_options.automatically_declare_parameters_from_overrides(true);
         node_ = rclcpp::Node::make_shared("ufactory_driver", node_options);
+        hw_node_ = rclcpp::Node::make_shared("ufactory_robot_hw", node_options);
 
         std::thread th([this]() -> void {
             rclcpp::spin(node_);
@@ -252,8 +253,8 @@ namespace uf_robot_hardware
         req_switch_controller_ = std::make_shared<controller_manager_msgs::srv::SwitchController::Request>();
         res_switch_controller_ = std::make_shared<controller_manager_msgs::srv::SwitchController::Response>();
 
-        client_list_controller_ = node_->create_client<controller_manager_msgs::srv::ListControllers>("/controller_manager/list_controllers");
-        client_switch_controller_ = node_->create_client<controller_manager_msgs::srv::SwitchController>("/controller_manager/switch_controller");
+        client_list_controller_ = hw_node_->create_client<controller_manager_msgs::srv::ListControllers>("/controller_manager/list_controllers");
+        client_switch_controller_ = hw_node_->create_client<controller_manager_msgs::srv::SwitchController>("/controller_manager/switch_controller");
 
         for (uint i = 0; i < position_states_.size(); i++) {
             if (std::isnan(position_states_[i])) {
