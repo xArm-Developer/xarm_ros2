@@ -18,7 +18,7 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 
 - ### 3.2 Install [Moveit2](https://moveit.ros.org/install-moveit2/source/)  
 
-- ### 3.3 Install [ros2_control, ros2_controllers](https://ros-controls.github.io/control.ros.org/getting_started.html)  
+- ### 3.3 Install [ros2_control, ros2_controllers](https://control.ros.org/master/doc/getting_started/getting_started.html)  
 
 - ### 3.4 Install [gazebo_ros_pkgs](http://gazebosim.org/tutorials?tut=ros2_installing&cat=connect_ros)  
 
