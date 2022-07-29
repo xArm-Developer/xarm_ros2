@@ -372,7 +372,7 @@ __Reminder 3： All following instructions will base on xArm6，please use prope
     - __geometry_mesh_tcp_rpy_1__
     - __geometry_mesh_tcp_rpy_2__
 
-## 6. StevensIDM New Instructions
+## 7. StevensIDM New Instructions
 - Visualize using RViz
 
         $ ros2 launch xarm_description stevensIDM_rviz_display.launch.py
