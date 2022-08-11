@@ -4,7 +4,11 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 
 ## 1. Introduction
 
-&ensp;&ensp;&ensp;&ensp;This repository contains simulation models, and corresponding motion planning and controlling demos of the xArm series from UFACTORY. Developing environment: Ubuntu 20.04 + ROS Foxy.  
+&ensp;&ensp;&ensp;&ensp;This repository contains simulation models, and corresponding motion planning and controlling demos of the xArm series from UFACTORY. Developing environment: Ubuntu 20.04 + ROS Foxy + ROS Galactic.  
+
+&ensp;&ensp;&ensp;&ensp;Please switch to the corresponding code branch according to different ros2 versions (no corresponding code branch means it has not been tested in this version)
+- Foxy: [foxy](https://github.com/xArm-Developer/xarm_ros2/tree/foxy)
+- Galactic: [galactic](https://github.com/xArm-Developer/xarm_ros2/tree/galactic)
 
 ## 2. Update History    
 - moveit dual arm control (under single rviz GUI), each arm can be separately configured（e.g. DOF, add_gripper, etc）
@@ -14,11 +18,11 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 
 ## 3. Preparation
 
-- ### 3.1 Install [ROS Foxy](https://docs.ros.org/en/foxy/Installation.html) 
+- ### 3.1 Install [ROS Foxy](https://docs.ros.org/) 
 
-- ### 3.2 Install [Moveit2](https://moveit.ros.org/install-moveit2/source/)  
+- ### 3.2 Install [Moveit2](https://moveit.ros.org/install-moveit2/binary/)  
 
-- ### 3.3 Install [ros2_control, ros2_controllers](https://ros-controls.github.io/control.ros.org/getting_started.html)  
+- ### 3.3 Install [ros2_control, ros2_controllers](https://control.ros.org/master/doc/getting_started/getting_started.html)  
 
 - ### 3.4 Install [gazebo_ros_pkgs](http://gazebosim.org/tutorials?tut=ros2_installing&cat=connect_ros)  
 
