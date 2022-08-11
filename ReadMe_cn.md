@@ -2,7 +2,11 @@
 
 ## 1. 简介
 
-&ensp;&ensp;&ensp;&ensp;此代码库包含xArm模型文件以及相关的控制、规划等示例开发包。开发及测试使用的环境为 Ubuntu 20.04 + ROS Foxy。
+&ensp;&ensp;&ensp;&ensp;此代码库包含xArm模型文件以及相关的控制、规划等示例开发包。开发及测试使用的环境为 Ubuntu 20.04 + ROS Foxy + ROS Galactic。
+
+&ensp;&ensp;&ensp;&ensp;请根据不同ros2版本切换到对应的代码分支（没有对应的代码分支表示未在该版本测试过）
+- Foxy: [foxy](https://github.com/xArm-Developer/xarm_ros2/tree/foxy)
+- Galactic: [galactic](https://github.com/xArm-Developer/xarm_ros2/tree/galactic)
 
 
 ## 2. 更新记录
@@ -13,11 +17,11 @@
 
 ## 3. 准备工作
 
-- ### 3.1 安装 [ROS Foxy](https://docs.ros.org/en/foxy/Installation.html) 
+- ### 3.1 安装 [ROS Foxy](https://docs.ros.org/) 
 
-- ### 3.2 安装 [Moveit2](https://moveit.ros.org/install-moveit2/source/)
+- ### 3.2 安装 [Moveit2](https://moveit.ros.org/install-moveit2/binary/)
 
-- ### 3.3 安装 [ros2_control, ros2_controllers](https://ros-controls.github.io/control.ros.org/getting_started.html)  
+- ### 3.3 安装 [ros2_control, ros2_controllers](https://control.ros.org/master/doc/getting_started/getting_started.html)  
 
 - ### 3.4 安装 [gazebo_ros_pkgs](http://gazebosim.org/tutorials?tut=ros2_installing&cat=connect_ros)  
 
