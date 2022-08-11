@@ -17,7 +17,7 @@
 
 ## 3. 准备工作
 
-- ### 3.1 安装 [ROS Foxy](https://docs.ros.org/) 
+- ### 3.1 安装 [ROS2](https://docs.ros.org/) 
 
 - ### 3.2 安装 [Moveit2](https://moveit.ros.org/install-moveit2/binary/)
 

@@ -18,7 +18,7 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 
 ## 3. Preparation
 
-- ### 3.1 Install [ROS Foxy](https://docs.ros.org/) 
+- ### 3.1 Install [ROS2](https://docs.ros.org/) 
 
 - ### 3.2 Install [Moveit2](https://moveit.ros.org/install-moveit2/binary/)  
 
