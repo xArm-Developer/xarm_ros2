@@ -88,6 +88,8 @@ def launch_setup(context, *args, **kwargs):
     geometry_mesh_tcp_rpy_1 = LaunchConfiguration('geometry_mesh_tcp_rpy_1', default=geometry_mesh_tcp_rpy)
     geometry_mesh_tcp_rpy_2 = LaunchConfiguration('geometry_mesh_tcp_rpy_2', default=geometry_mesh_tcp_rpy)
 
+    load_controller = LaunchConfiguration('load_controller', default=False)
+
     ros_namespace = LaunchConfiguration('ros_namespace', default='').perform(context)
 
     # ros2 control params
@@ -176,6 +178,8 @@ def launch_setup(context, *args, **kwargs):
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('gazebo_ros'), 'launch', 'gazebo.launch.py'])),
         launch_arguments={
             'world': xarm_gazebo_world,
+            'server_required': 'true',
+            'gui_required': 'true',
             # 'pause': 'true'
         }.items(),
     )
@@ -201,21 +205,24 @@ def launch_setup(context, *args, **kwargs):
         '{}{}{}_traj_controller'.format(prefix_1.perform(context), robot_type_1.perform(context), dof_1.perform(context)),
         '{}{}{}_traj_controller'.format(prefix_2.perform(context), robot_type_2.perform(context), dof_2.perform(context)),
     ]
-    if add_gripper_1.perform(context) in ('True', 'true'):
-        controllers.append('{}xarm_gripper_traj_controller'.format(prefix_1.perform(context)))
-    if add_gripper_2.perform(context) in ('True', 'true'):
-        controllers.append('{}xarm_gripper_traj_controller'.format(prefix_2.perform(context)))
+    # check robot_type is xarm
+    if robot_type_1.perform(context) == 'xarm' and add_gripper_1.perform(context) in ('True', 'true'):
+        controllers.append('{}{}_gripper_traj_controller'.format(prefix_1.perform(context), robot_type_1.perform(context)))
+    # check robot_type is xarm
+    if robot_type_2.perform(context) == 'xarm' and add_gripper_2.perform(context) in ('True', 'true'):
+        controllers.append('{}{}_gripper_traj_controller'.format(prefix_2.perform(context), robot_type_2.perform(context)))
     load_controllers = []
-    for controller in controllers:
-        load_controllers.append(Node(
-            package='controller_manager',
-            executable='spawner',
-            output='screen',
-            arguments=[
-                controller,
-                '--controller-manager', '{}/controller_manager'.format(ros_namespace)
-            ],
-        ))
+    if load_controller.perform(context) in ('True', 'true'):
+        for controller in controllers:
+            load_controllers.append(Node(
+                package='controller_manager',
+                executable='spawner.py',
+                output='screen',
+                arguments=[
+                    controller,
+                    '--controller-manager', '{}/controller_manager'.format(ros_namespace)
+                ],
+            ))
 
     return [
         RegisterEventHandler(
