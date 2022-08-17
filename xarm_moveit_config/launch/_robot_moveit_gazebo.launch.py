@@ -93,6 +93,7 @@ def launch_setup(context, *args, **kwargs):
             'dof': dof,
             'robot_type': robot_type,
             'ros2_control_plugin': ros2_control_plugin,
+            'load_controller': 'true',
         }.items(),
     )
 
