@@ -113,8 +113,14 @@ __注意3： 以下启动说明以6轴为例，5轴和7轴的用法只需找到�
     - __topics__:  
 
         __joint_states__: 格式为 __sensor_msgs::msg::JointState__  
+
         __xarm_states__: 格式为 __xarm_msgs::msg::RobotMsg__  
+        
         __xarm_cgpio_states__: 格式为 __xarm_msgs::msg::CIOState__  
+        
+        __uf_ftsensor_raw_states__: 格式为 __geometry_msgs::msg::WrenchStamped__  
+        
+        __uf_ftsensor_ext_states__: 格式为 __geometry_msgs::msg::WrenchStamped__  
 
     
     - 启动与测试

@@ -13,6 +13,7 @@
 #include <rclcpp_action/rclcpp_action.hpp>
 #include <std_msgs/msg/float32.hpp>
 #include <sensor_msgs/msg/joint_state.hpp>
+#include <geometry_msgs/msg/wrench_stamped.hpp>
 #include <control_msgs/action/gripper_command.hpp>
 
 #include "xarm_msgs.h"
@@ -30,6 +31,8 @@ namespace xarm_api
         void pub_robot_msg(xarm_msgs::msg::RobotMsg &rm_msg);
         void pub_joint_state(sensor_msgs::msg::JointState &js_msg);
         void pub_cgpio_state(xarm_msgs::msg::CIOState &cio_msg);
+        void pub_ftsensor_ext_state(geometry_msgs::msg::WrenchStamped &wrench_msg);
+        void pub_ftsensor_raw_state(geometry_msgs::msg::WrenchStamped &wrench_msg);
         
         bool is_connected(void);
         std::string controller_error_interpreter(int err=-1);
@@ -70,12 +73,15 @@ namespace xarm_api
         std::string report_type_;
         std::vector<std::string> joint_names_;
         sensor_msgs::msg::JointState joint_state_msg_;
+        geometry_msgs::msg::WrenchStamped ftsensor_msg_;
         xarm_msgs::msg::RobotMsg xarm_state_msg_;
         xarm_msgs::msg::CIOState cgpio_state_msg_;
 
         rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr joint_state_pub_;
         rclcpp::Publisher<xarm_msgs::msg::RobotMsg>::SharedPtr robot_state_pub_;
         rclcpp::Publisher<xarm_msgs::msg::CIOState>::SharedPtr cgpio_state_pub_;
+        rclcpp::Publisher<geometry_msgs::msg::WrenchStamped>::SharedPtr ftsensor_ext_state_pub_;
+        rclcpp::Publisher<geometry_msgs::msg::WrenchStamped>::SharedPtr ftsensor_raw_state_pub_;
 
         rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr sleep_sub_;
 

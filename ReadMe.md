@@ -119,6 +119,10 @@ __Reminder 3： All following instructions will base on xArm6，please use prope
         __xarm_states__: is of type __xarm_msgs::msg::RobotMsg__  
 
         __xarm_cgpio_states__: is of type __xarm_msgs::msg::CIOState__  
+
+        __uf_ftsensor_raw_states__: is of type __geometry_msgs::msg::WrenchStamped__  
+
+        __uf_ftsensor_ext_states__: is of type __geometry_msgs::msg::WrenchStamped__  
     
     - Launch and test  
 
