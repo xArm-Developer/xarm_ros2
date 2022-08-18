@@ -138,7 +138,7 @@ def launch_setup(context, *args, **kwargs):
             'geometry_mesh_tcp_xyz_2': geometry_mesh_tcp_xyz_2,
             'geometry_mesh_tcp_rpy_1': geometry_mesh_tcp_rpy_1,
             'geometry_mesh_tcp_rpy_2': geometry_mesh_tcp_rpy_2,
-            'load_controller': 'true',
+            'use_sim_time': 'true'
         }.items(),
     )
 

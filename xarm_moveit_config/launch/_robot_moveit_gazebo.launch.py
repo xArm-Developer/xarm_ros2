@@ -75,6 +75,7 @@ def launch_setup(context, *args, **kwargs):
             'geometry_mesh_origin_rpy': geometry_mesh_origin_rpy,
             'geometry_mesh_tcp_xyz': geometry_mesh_tcp_xyz,
             'geometry_mesh_tcp_rpy': geometry_mesh_tcp_rpy,
+            'use_sim_time': 'true'
         }.items(),
     )
 
