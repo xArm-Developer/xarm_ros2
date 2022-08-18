@@ -114,6 +114,27 @@ namespace xarm_api
             }
             pub_cgpio_state(cgpio_state_msg_);
         }
+
+        if ((report_type_ == "dev" && report_data_ptr->total_num >= 135) 
+            || (report_type_ == "rich" && report_data_ptr->total_num >= 481)) {
+            ftsensor_msg_.header.stamp = now_;
+            ftsensor_msg_.header.frame_id = "uf_ft_sensor_ext_data";
+            ftsensor_msg_.wrench.force.x = report_data_ptr->ft_ext_force[0];
+            ftsensor_msg_.wrench.force.y = report_data_ptr->ft_ext_force[1];
+            ftsensor_msg_.wrench.force.z = report_data_ptr->ft_ext_force[2];
+            ftsensor_msg_.wrench.torque.x = report_data_ptr->ft_ext_force[3];
+            ftsensor_msg_.wrench.torque.y = report_data_ptr->ft_ext_force[4];
+            ftsensor_msg_.wrench.torque.z = report_data_ptr->ft_ext_force[5];
+            pub_ftsensor_ext_state(ftsensor_msg_);
+            ftsensor_msg_.header.frame_id = "uf_ft_sensor_raw_data";
+            ftsensor_msg_.wrench.force.x = report_data_ptr->ft_raw_force[0];
+            ftsensor_msg_.wrench.force.y = report_data_ptr->ft_raw_force[1];
+            ftsensor_msg_.wrench.force.z = report_data_ptr->ft_raw_force[2];
+            ftsensor_msg_.wrench.torque.x = report_data_ptr->ft_raw_force[3];
+            ftsensor_msg_.wrench.torque.y = report_data_ptr->ft_raw_force[4];
+            ftsensor_msg_.wrench.torque.z = report_data_ptr->ft_raw_force[5];
+            pub_ftsensor_raw_state(ftsensor_msg_);
+        }
     }
 
     void XArmDriver::init(rclcpp::Node::SharedPtr& node, std::string &server_ip)
@@ -223,6 +244,8 @@ namespace xarm_api
         joint_state_pub_ = hw_node_->create_publisher<sensor_msgs::msg::JointState>("joint_states", 10);
         robot_state_pub_ = hw_node_->create_publisher<xarm_msgs::msg::RobotMsg>("xarm_states", 10);
         cgpio_state_pub_ = hw_node_->create_publisher<xarm_msgs::msg::CIOState>("xarm_cgpio_states", 10);
+        ftsensor_ext_state_pub_ = hw_node_->create_publisher<geometry_msgs::msg::WrenchStamped>("uf_ftsensor_ext_states", 10);
+        ftsensor_raw_state_pub_ = hw_node_->create_publisher<geometry_msgs::msg::WrenchStamped>("uf_ftsensor_raw_states", 10);
     }
 
     void XArmDriver::_init_gripper(void)
@@ -453,6 +476,16 @@ namespace xarm_api
     void XArmDriver::pub_cgpio_state(xarm_msgs::msg::CIOState &cio_msg)
     {
         cgpio_state_pub_->publish(cio_msg);
+    }
+
+    void XArmDriver::pub_ftsensor_ext_state(geometry_msgs::msg::WrenchStamped &wrench_msg)
+    {
+        ftsensor_ext_state_pub_->publish(wrench_msg);
+    }
+
+    void XArmDriver::pub_ftsensor_raw_state(geometry_msgs::msg::WrenchStamped &wrench_msg)
+    {
+        ftsensor_raw_state_pub_->publish(wrench_msg);
     }
 
     bool XArmDriver::is_connected(void) {
