@@ -48,6 +48,8 @@ def launch_setup(context, *args, **kwargs):
     geometry_mesh_tcp_xyz = LaunchConfiguration('geometry_mesh_tcp_xyz', default='"0 0 0"')
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
 
+    use_sim_time = LaunchConfiguration('use_sim_time', default=False)
+
     moveit_config_package_name = 'xarm_moveit_config'
     xarm_type = '{}{}'.format(robot_type.perform(context), dof.perform(context))
 
@@ -181,6 +183,7 @@ def launch_setup(context, *args, **kwargs):
             plan_execution,
             moveit_controllers,
             planning_scene_monitor_parameters,
+            {'use_sim_time': use_sim_time},
         ],
     )
 
@@ -196,6 +199,7 @@ def launch_setup(context, *args, **kwargs):
         parameters=[
             robot_description_parameters,
             ompl_planning_pipeline_config,
+            {'use_sim_time': use_sim_time},
         ],
         remappings=[
             ('/tf', 'tf'),
