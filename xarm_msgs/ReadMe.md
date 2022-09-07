@@ -3,7 +3,7 @@
 
 ## msg
 - [xarm_msgs::msg::RobotMsg](./msg/RobotMsg.msg)
-    - xarm_api->topic: __xarm_states__
+    - xarm_api->topic: __robot_states__
 - [xarm_msgs::msg::CIOState](./msg/CIOState.msg)
     - xarm_api->topic: __xarm_cgpio_states__
 - [sensor_msgs::msg::JointState](http://docs.ros.org/en/api/sensor_msgs/html/msg/JointState.html)

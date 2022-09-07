@@ -96,10 +96,10 @@ target_link_libraries(test_xarm_velo_move
   ${ament_LIBRARIES}
 )
 
-add_executable(test_xarm_states
-   test/test_xarm_states.cpp
+add_executable(test_robot_states
+   test/test_robot_states.cpp
 )
-ament_target_dependencies(test_xarm_states ${dependencies})
+ament_target_dependencies(test_robot_states ${dependencies})
 
 ament_export_libraries(xarm_ros_driver)
 ament_export_libraries(xarm_ros_client)
@@ -121,7 +121,7 @@ install(
   xarm_driver_node 
   test_xarm_ros_client
   test_xarm_velo_move
-  test_xarm_states
+  test_robot_states
   DESTINATION lib/${PROJECT_NAME}
 )
 

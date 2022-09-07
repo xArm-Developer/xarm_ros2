@@ -14,6 +14,7 @@
 - 支持加载其它模型到机械臂末端
 - 新增xarm_moveit_servo支持xbox手柄/SpaceMouse/键盘控制
 - (2022-09-07) 变更service(__set_tgpio_modbus_timeout__/__getset_tgpio_modbus_data__)的参数类型，增加参数支持透传
+- (2022-09-07) 变更Topic名字(xarm_states改为robot_states)
 - (2022-09-07) 更新子模块xarm-sdk到1.11.0版本
 
 ## 3. 准备工作
@@ -115,7 +116,7 @@ __注意3： 以下启动说明以6轴为例，5轴和7轴的用法只需找到�
 
         __joint_states__: 格式为 __sensor_msgs::msg::JointState__  
 
-        __xarm_states__: 格式为 __xarm_msgs::msg::RobotMsg__  
+        __robot_states__: 格式为 __xarm_msgs::msg::RobotMsg__  
         
         __xarm_cgpio_states__: 格式为 __xarm_msgs::msg::CIOState__  
         
@@ -132,7 +133,7 @@ __注意3： 以下启动说明以6轴为例，5轴和7轴的用法只需找到�
         # 测试service
         $ ros2 run xarm_api test_xarm_ros_client
         # 测试topic
-        $ ros2 run xarm_api test_xarm_states
+        $ ros2 run xarm_api test_robot_states
         ```
 
 - ### 5.5 xarm_controller

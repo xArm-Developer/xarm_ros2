@@ -15,6 +15,7 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 - add support for Gazebo simulation, can be controlled by moveit.
 - support adding customized tool model.  
 - (2022-09-07) Change the parameter type of service (__set_tgpio_modbus_timeout__/__getset_tgpio_modbus_data__), and add parameters to support transparent transmission
+- (2022-09-07) Change topic name (xarm_states to robot_states)
 - (2022-09-07) Update submodule xarm-sdk to version 1.11.0
 
 
@@ -118,7 +119,7 @@ __Reminder 3： All following instructions will base on xArm6，please use prope
 
         __joint_states__: is of type __sensor_msgs::msg::JointState__  
 
-        __xarm_states__: is of type __xarm_msgs::msg::RobotMsg__  
+        __robot_states__: is of type __xarm_msgs::msg::RobotMsg__  
 
         __xarm_cgpio_states__: is of type __xarm_msgs::msg::CIOState__  
 
@@ -135,7 +136,7 @@ __Reminder 3： All following instructions will base on xArm6，please use prope
         # service test
         $ ros2 run xarm_api test_xarm_ros_client
         # topic test
-        $ ros2 run xarm_api test_xarm_states
+        $ ros2 run xarm_api test_robot_states
         ```
 
 - ### 5.5 xarm_controller
