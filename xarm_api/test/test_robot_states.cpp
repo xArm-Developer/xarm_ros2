@@ -28,9 +28,9 @@ void joint_states_callback(const sensor_msgs::msg::JointState::SharedPtr states)
     RCLCPP_INFO(rclcpp::get_logger("joint_states"), "positon: %s", pos_str.c_str());
 }
 
-void xarm_states_callback(const xarm_msgs::msg::RobotMsg::SharedPtr states)
+void robot_states_callback(const xarm_msgs::msg::RobotMsg::SharedPtr states)
 {
-    RCLCPP_INFO(rclcpp::get_logger("xarm_states"), "state: %d, error: %d", states->state, states->err);
+    RCLCPP_INFO(rclcpp::get_logger("robot_states"), "state: %d, error: %d", states->state, states->err);
 }
 
 void xarm_cgpio_states_callback(const xarm_msgs::msg::CIOState::SharedPtr states)
@@ -42,19 +42,19 @@ int main(int argc, char **argv)
 {
     rclcpp::init(argc, argv);
     std::string hw_ns = "xarm";
-    std::shared_ptr<rclcpp::Node> node = rclcpp::Node::make_shared("test_xarm_states", hw_ns);
+    std::shared_ptr<rclcpp::Node> node = rclcpp::Node::make_shared("test_robot_states", hw_ns);
 
-    RCLCPP_INFO(rclcpp::get_logger("test_xarm_states"), "namespace: %s", node->get_namespace());
-    RCLCPP_INFO(rclcpp::get_logger("test_xarm_states"), "test_xarm_states start");
+    RCLCPP_INFO(rclcpp::get_logger("test_robot_states"), "namespace: %s", node->get_namespace());
+    RCLCPP_INFO(rclcpp::get_logger("test_robot_states"), "test_robot_states start");
 
     rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr joint_state_sub = node->create_subscription<sensor_msgs::msg::JointState>("joint_states", 100, joint_states_callback);
-    rclcpp::Subscription<xarm_msgs::msg::RobotMsg>::SharedPtr xarm_state_sub = node->create_subscription<xarm_msgs::msg::RobotMsg>("xarm_states", 100, xarm_states_callback);
+    rclcpp::Subscription<xarm_msgs::msg::RobotMsg>::SharedPtr xarm_state_sub = node->create_subscription<xarm_msgs::msg::RobotMsg>("robot_states", 100, robot_states_callback);
     rclcpp::Subscription<xarm_msgs::msg::CIOState>::SharedPtr cgpio_sub = node->create_subscription<xarm_msgs::msg::CIOState>("xarm_cgpio_states", 100, xarm_cgpio_states_callback);
 
     signal(SIGINT, exit_sig_handler);
     rclcpp::spin(node);
     rclcpp::shutdown();
 
-    RCLCPP_INFO(rclcpp::get_logger("test_xarm_states"), "test_xarm_states over");
+    RCLCPP_INFO(rclcpp::get_logger("test_robot_states"), "test_robot_states over");
     return 0;
 }
