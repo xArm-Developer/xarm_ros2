@@ -147,7 +147,6 @@ namespace xarm_api
         rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_teach_sensitivity_;
         rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_gripper_mode_;
         rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_gripper_enable_;
-        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_tgpio_modbus_timeout_;
         rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_bio_gripper_speed_;
         rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_collision_rebound_;
         rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_fence_mode_;
@@ -161,7 +160,6 @@ namespace xarm_api
         bool _set_teach_sensitivity(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
         bool _set_gripper_mode(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
         bool _set_gripper_enable(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
-        bool _set_tgpio_modbus_timeout(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
         bool _set_bio_gripper_speed(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
         bool _set_collision_rebound(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
         bool _set_fence_mode(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
@@ -339,6 +337,10 @@ namespace xarm_api
         // RobotiqGetStatus
         rclcpp::Service<xarm_msgs::srv::RobotiqGetStatus>::SharedPtr service_robotiq_get_status_;
         bool _robotiq_get_status(const std::shared_ptr<xarm_msgs::srv::RobotiqGetStatus::Request> req, std::shared_ptr<xarm_msgs::srv::RobotiqGetStatus::Response> res);
+
+        // SetModbusTimeout
+        rclcpp::Service<xarm_msgs::srv::SetModbusTimeout>::SharedPtr service_set_tgpio_modbus_timeout_;
+        bool _set_tgpio_modbus_timeout(const std::shared_ptr<xarm_msgs::srv::SetModbusTimeout::Request> req, std::shared_ptr<xarm_msgs::srv::SetModbusTimeout::Response> res);
 
         // GetSetModbusData
         rclcpp::Service<xarm_msgs::srv::GetSetModbusData>::SharedPtr service_getset_tgpio_modbus_data_;

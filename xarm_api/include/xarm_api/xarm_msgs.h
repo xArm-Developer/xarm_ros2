@@ -40,5 +40,6 @@
 #include <xarm_msgs/srv/traj_ctrl.hpp>
 #include <xarm_msgs/srv/traj_play.hpp>
 #include <xarm_msgs/srv/vacuum_gripper_ctrl.hpp>
+#include <xarm_msgs/srv/set_modbus_timeout.hpp>
 
 #endif // __XARM_MSGS_H

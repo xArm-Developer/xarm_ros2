@@ -14,6 +14,8 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 - moveit dual arm control (under single rviz GUI), each arm can be separately configured（e.g. DOF, add_gripper, etc）
 - add support for Gazebo simulation, can be controlled by moveit.
 - support adding customized tool model.  
+- (2022-09-07) Change the parameter type of service (__set_tgpio_modbus_timeout__/__getset_tgpio_modbus_data__), and add parameters to support transparent transmission
+- (2022-09-07) Update submodule xarm-sdk to version 1.11.0
 
 
 ## 3. Preparation

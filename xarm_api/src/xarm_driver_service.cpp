@@ -59,7 +59,6 @@ namespace xarm_api
         service_set_teach_sensitivity_ = _create_service<xarm_msgs::srv::SetInt16>("set_teach_sensitivity", &XArmDriver::_set_teach_sensitivity);
         service_set_gripper_mode_ = _create_service<xarm_msgs::srv::SetInt16>("set_gripper_mode", &XArmDriver::_set_gripper_mode);
         service_set_gripper_enable_ = _create_service<xarm_msgs::srv::SetInt16>("set_gripper_enable", &XArmDriver::_set_gripper_enable);
-        service_set_tgpio_modbus_timeout_ = _create_service<xarm_msgs::srv::SetInt16>("set_tgpio_modbus_timeout", &XArmDriver::_set_tgpio_modbus_timeout);
         service_set_bio_gripper_speed_ = _create_service<xarm_msgs::srv::SetInt16>("set_bio_gripper_speed", &XArmDriver::_set_bio_gripper_speed);
         service_set_collision_rebound_ = _create_service<xarm_msgs::srv::SetInt16>("set_collision_rebound", &XArmDriver::_set_collision_rebound);
         service_set_fence_mode_ = _create_service<xarm_msgs::srv::SetInt16>("set_fence_mode", &XArmDriver::_set_fence_mode);
@@ -181,6 +180,9 @@ namespace xarm_api
         // RobotiqGetStatus
         service_robotiq_get_status_ = _create_service<xarm_msgs::srv::RobotiqGetStatus>("robotiq_get_status", &XArmDriver::_robotiq_get_status);
         
+        // SetModbusTimeout
+        service_set_tgpio_modbus_timeout_ = _create_service<xarm_msgs::srv::SetModbusTimeout>("set_tgpio_modbus_timeout", &XArmDriver::_set_tgpio_modbus_timeout);
+
         // GetSetModbusData
         service_getset_tgpio_modbus_data_ = _create_service<xarm_msgs::srv::GetSetModbusData>("getset_tgpio_modbus_data", &XArmDriver::_getset_tgpio_modbus_data);
         
@@ -353,10 +355,10 @@ namespace xarm_api
         return true; 
     }
 
-    bool XArmDriver::_set_tgpio_modbus_timeout(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
+    bool XArmDriver::_set_tgpio_modbus_timeout(const std::shared_ptr<xarm_msgs::srv::SetModbusTimeout::Request> req, std::shared_ptr<xarm_msgs::srv::SetModbusTimeout::Response> res)
     {
-        res->ret = arm->set_tgpio_modbus_timeout(req->data);
-        res->message = "data=" + std::to_string(req->data);
+        res->ret = arm->set_tgpio_modbus_timeout(req->timeout, req->is_transparent_transmission);
+        res->message = "data=" + std::to_string(req->timeout);
         return true;  
     }
 
@@ -928,7 +930,7 @@ namespace xarm_api
     bool XArmDriver::_getset_tgpio_modbus_data(const std::shared_ptr<xarm_msgs::srv::GetSetModbusData::Request> req, std::shared_ptr<xarm_msgs::srv::GetSetModbusData::Response> res)
     {
         res->ret_data.resize(req->ret_length);
-        res->ret = arm->getset_tgpio_modbus_data(&req->modbus_data[0], req->modbus_length, &res->ret_data[0], req->ret_length);
+        res->ret = arm->getset_tgpio_modbus_data(&req->modbus_data[0], req->modbus_length <= 0 ? req->modbus_data.size() : req->modbus_length, &res->ret_data[0], req->ret_length, req->host_id, req->is_transparent_transmission, req->use_503_port);
         return true;
     }
 
