@@ -13,7 +13,8 @@
 - 新增xarm_gazebo以支持gazebo，并和moveit关联
 - 支持加载其它模型到机械臂末端
 - 新增xarm_moveit_servo支持xbox手柄/SpaceMouse/键盘控制
-
+- (2022-09-07) 变更service(__set_tgpio_modbus_timeout__/__getset_tgpio_modbus_data__)的参数类型，增加参数支持透传
+- (2022-09-07) 更新子模块xarm-sdk到1.11.0版本
 
 ## 3. 准备工作
 
