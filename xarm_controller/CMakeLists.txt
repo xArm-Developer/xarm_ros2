@@ -36,9 +36,11 @@ if(BUILD_TESTING)
 endif()
 
 find_package(hardware_interface REQUIRED)
+# find_package(controller_interface REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(controller_manager_msgs REQUIRED)
 find_package(xarm_msgs REQUIRED)
 find_package(xarm_api REQUIRED)
 find_package(xarm_sdk REQUIRED)
@@ -59,10 +61,12 @@ target_include_directories(
 ament_target_dependencies(
   uf_robot_hardware
   hardware_interface
+  # controller_interface
   pluginlib
   rclcpp
   std_msgs
   sensor_msgs
+  controller_manager_msgs
   xarm_msgs
 )
 

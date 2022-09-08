@@ -9,11 +9,18 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
   
+  <depend>moveit</depend>
   <depend>moveit_ros_planning_interface</depend>
   <depend>rclcpp</depend>
   <depend>std_msgs</depend>
-  <depend>xarm_msgs</depend>
   <depend>geometry_msgs</depend>
+  <depend>moveit_msgs</depend>
+  <depend>xarm_msgs</depend>
+  <depend>xarm_description</depend>
+  <depend>xarm_moveit_config</depend>
+
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

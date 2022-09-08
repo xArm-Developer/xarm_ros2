@@ -58,7 +58,7 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
     # Remember to source ros foxy environment settings first
     $ cd ~/dev_ws/src/
     $ rosdep update
-    $ rosdep install --from-paths . --ignore-src --rosdistro $ROS_DISTRO
+    $ rosdep install --from-paths . --ignore-src --rosdistro $ROS_DISTRO -y
     ```
 
 - ### 4.5 Build xarm_ros2

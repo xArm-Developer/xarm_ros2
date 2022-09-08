@@ -19,6 +19,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(control_toolbox REQUIRED)
+find_package(controller_manager REQUIRED)
 find_package(gazebo REQUIRED)
 
 # uncomment the following section in order to fill in
@@ -48,6 +49,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GAZEBO_CXX_FLAGS}")
 add_library(gazebo_mimic_joint_plugin SHARED src/mimic_joint_plugin.cpp)
 ament_target_dependencies(gazebo_mimic_joint_plugin
   control_toolbox
+  controller_manager
 )
 target_link_libraries(gazebo_mimic_joint_plugin ${ament_LIBRARIES} ${GAZEBO_LIBRARIES})
 
