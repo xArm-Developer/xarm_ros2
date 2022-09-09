@@ -2,11 +2,15 @@
 
 ## 1. 简介
 
-&ensp;&ensp;&ensp;&ensp;此代码库包含xArm模型文件以及相关的控制、规划等示例开发包。开发及测试使用的环境为 Ubuntu 20.04 + ROS Foxy + ROS Galactic。
+&ensp;&ensp;&ensp;&ensp;此代码库包含xArm模型文件以及相关的控制、规划等示例开发包。开发及测试使用的环境如下
+- Ubuntu 20.04 + ROS Foxy
+- Ubuntu 20.04 ROS Galactic
+- Ubuntu 22.04 + ROS Humble
 
 &ensp;&ensp;&ensp;&ensp;请根据不同ros2版本切换到对应的代码分支（没有对应的代码分支表示未在该版本测试过）
 - Foxy: [foxy](https://github.com/xArm-Developer/xarm_ros2/tree/foxy)
 - Galactic: [galactic](https://github.com/xArm-Developer/xarm_ros2/tree/galactic)
+- Humble: [humble](https://github.com/xArm-Developer/xarm_ros2/tree/humble)
 
 
 ## 2. 更新记录
@@ -16,14 +20,18 @@
 - (2022-09-07) 变更service(__set_tgpio_modbus_timeout__/__getset_tgpio_modbus_data__)的参数类型，增加参数支持透传
 - (2022-09-07) 变更Topic名字(xarm_states改为robot_states)
 - (2022-09-07) 更新子模块xarm-sdk到1.11.0版本
+- (2022-09-09) [Beta]支持Ros Humble版本
 
 ## 3. 准备工作
 
 - ### 3.1 安装 [ROS2](https://docs.ros.org/) 
+  - [Foxy](https://docs.ros.org/en/ros2_documentation/foxy/Installation.html)
+  - [Galactic](https://docs.ros.org/en/ros2_documentation/galactic/Installation.html)
+  - [Humble](https://docs.ros.org/en/ros2_documentation/humble/Installation.html)
 
 - ### 3.2 安装 [Moveit2](https://moveit.ros.org/install-moveit2/binary/)
 
-- ### 3.3 安装 [ros2_control, ros2_controllers](https://control.ros.org/master/doc/getting_started/getting_started.html)  
+- ### 3.3 安装 [Gazebo](https://classic.gazebosim.org/tutorials?tut=install_ubuntu)  
 
 - ### 3.4 安装 [gazebo_ros_pkgs](http://gazebosim.org/tutorials?tut=ros2_installing&cat=connect_ros)  
 
@@ -53,7 +61,7 @@
 
 - ### 4.4 安装xarm_ros2依赖
     ```bash
-    # 记得先source已安装的ros foxy环境
+    # 记得先source已安装的ros2环境
     $ cd ~/dev_ws/src/
     $ rosdep update
     $ rosdep install --from-paths . --ignore-src --rosdistro $ROS_DISTRO -y
@@ -61,7 +69,7 @@
 
 - ### 4.5 编译xarm_ros2
     ```bash
-    # 记得先source已安装的ros foxy环境和moveit2环境
+    # 记得先source已安装的ros2环境和moveit2环境
     $ cd ~/dev_ws/
     # 编译所有包
     $ colcon build
@@ -72,7 +80,10 @@
 
 
 ## 5. 模块说明
-__注意1： 如果当前局域网有多人使用ros2，为避免相互间发生干扰，请设置一下[ROS_DOMAIN_ID](https://docs.ros.org/en/ros2_documentation/foxy/Concepts/About-Domain-ID.html)__
+__注意1： 如果当前局域网有多人使用ros2，为避免相互间发生干扰，请设置一下 ROS_DOMAIN_ID__
+  - [Foxy](https://docs.ros.org/en/ros2_documentation/foxy/Concepts/About-Domain-ID.html)
+  - [Galactic](https://docs.ros.org/en/ros2_documentation/galactic/Concepts/About-Domain-ID.html)
+  - [Humble](https://docs.ros.org/en/ros2_documentation/humble/Concepts/About-Domain-ID.html)
 
 __注意2： 运行xarm_ros2中的程序或启动脚本之前请先source当前工作区环境__
 ```bash
