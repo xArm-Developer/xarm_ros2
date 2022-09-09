@@ -4,11 +4,15 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 
 ## 1. Introduction
 
-&ensp;&ensp;&ensp;&ensp;This repository contains simulation models, and corresponding motion planning and controlling demos of the xArm series from UFACTORY. Developing environment: Ubuntu 20.04 + ROS Foxy + ROS Galactic.  
+&ensp;&ensp;&ensp;&ensp;This repository contains simulation models, and corresponding motion planning and controlling demos of the xArm series from UFACTORY. The development and test environment is as follows
+- Ubuntu 20.04 + ROS Foxy
+- Ubuntu 20.04 + ROS Galactic
+- Ubuntu 22.04 + ROS Humble
 
 &ensp;&ensp;&ensp;&ensp;Please switch to the corresponding code branch according to different ros2 versions (no corresponding code branch means it has not been tested in this version)
 - Foxy: [foxy](https://github.com/xArm-Developer/xarm_ros2/tree/foxy)
 - Galactic: [galactic](https://github.com/xArm-Developer/xarm_ros2/tree/galactic)
+- Humble: [humble](https://github.com/xArm-Developer/xarm_ros2/tree/humble)
 
 ## 2. Update History    
 - moveit dual arm control (under single rviz GUI), each arm can be separately configured（e.g. DOF, add_gripper, etc）
@@ -17,15 +21,19 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 - (2022-09-07) Change the parameter type of service (__set_tgpio_modbus_timeout__/__getset_tgpio_modbus_data__), and add parameters to support transparent transmission
 - (2022-09-07) Change topic name (xarm_states to robot_states)
 - (2022-09-07) Update submodule xarm-sdk to version 1.11.0
+- (2022-09-09) [Beta]支持Ros Humble版本
 
 
 ## 3. Preparation
 
 - ### 3.1 Install [ROS2](https://docs.ros.org/) 
+  - [Foxy](https://docs.ros.org/en/ros2_documentation/foxy/Installation.html)
+  - [Galactic](https://docs.ros.org/en/ros2_documentation/galactic/Installation.html)
+  - [Humble](https://docs.ros.org/en/ros2_documentation/humble/Installation.html)
 
 - ### 3.2 Install [Moveit2](https://moveit.ros.org/install-moveit2/binary/)  
 
-- ### 3.3 Install [ros2_control, ros2_controllers](https://control.ros.org/master/doc/getting_started/getting_started.html)  
+- ### 3.3 Install [Gazebo](https://classic.gazebosim.org/tutorials?tut=install_ubuntu)  
 
 - ### 3.4 Install [gazebo_ros_pkgs](http://gazebosim.org/tutorials?tut=ros2_installing&cat=connect_ros)  
 
@@ -55,7 +63,7 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 
 - ### 4.4 Install dependencies
     ```bash
-    # Remember to source ros foxy environment settings first
+    # Remember to source ros2 environment settings first
     $ cd ~/dev_ws/src/
     $ rosdep update
     $ rosdep install --from-paths . --ignore-src --rosdistro $ROS_DISTRO -y
@@ -63,7 +71,7 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 
 - ### 4.5 Build xarm_ros2
     ```bash
-    # Remember to source ros foxy and moveit2 environment settings first
+    # Remember to source ros2 and moveit2 environment settings first
     $ cd ~/dev_ws/
     # build all packages
     $ colcon build
@@ -75,7 +83,10 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 
 ## 5. Package Introduction
 
-__Reminder 1: If there are multiple people using ros2 in the current LAN, in order to avoid mutual interference, please set [ROS_DOMAIN_ID](https://docs.ros.org/en/ros2_documentation/foxy/Concepts/About-Domain-ID.html)__
+__Reminder 1: If there are multiple people using ros2 in the current LAN, in order to avoid mutual interference, please set ROS_DOMAIN_ID__
+  - [Foxy](https://docs.ros.org/en/ros2_documentation/foxy/Concepts/About-Domain-ID.html)
+  - [Galactic](https://docs.ros.org/en/ros2_documentation/galactic/Concepts/About-Domain-ID.html)
+  - [Humble](https://docs.ros.org/en/ros2_documentation/humble/Concepts/About-Domain-ID.html)
 
 __Reminder 2： Remember to source the environment setup script before running any applications in xarm_ros2__
 
