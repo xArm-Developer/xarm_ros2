@@ -39,6 +39,8 @@ find_package(hardware_interface REQUIRED)
 # find_package(controller_interface REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_action REQUIRED)
+find_package(rclcpp_lifecycle REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(controller_manager_msgs REQUIRED)
 find_package(xarm_msgs REQUIRED)
@@ -57,6 +59,7 @@ target_include_directories(
   include
   ${xarm_sdk_INCLUDE_DIRS}
   ${xarm_api_INCLUDE_DIRS}
+  ${ament_INCLUDE_DIRS}
 )
 ament_target_dependencies(
   uf_robot_hardware
@@ -64,6 +67,8 @@ ament_target_dependencies(
   # controller_interface
   pluginlib
   rclcpp
+  rclcpp_action
+  rclcpp_lifecycle
   std_msgs
   sensor_msgs
   controller_manager_msgs
