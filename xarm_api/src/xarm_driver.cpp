@@ -36,6 +36,8 @@ void* cmd_heart_beat(void* args)
 
 namespace xarm_api
 {   
+    static const rclcpp::Logger LOGGER = rclcpp::get_logger("uf_ros_driver.sdk");
+
     XArmDriver::~XArmDriver()
     {   
         arm->set_mode(XARM_MODE::POSE);
@@ -112,6 +114,27 @@ namespace xarm_api
             }
             pub_cgpio_state(cgpio_state_msg_);
         }
+
+        if ((report_type_ == "dev" && report_data_ptr->total_num >= 135) 
+            || (report_type_ == "rich" && report_data_ptr->total_num >= 481)) {
+            ftsensor_msg_.header.stamp = now_;
+            ftsensor_msg_.header.frame_id = "uf_ft_sensor_ext_data";
+            ftsensor_msg_.wrench.force.x = report_data_ptr->ft_ext_force[0];
+            ftsensor_msg_.wrench.force.y = report_data_ptr->ft_ext_force[1];
+            ftsensor_msg_.wrench.force.z = report_data_ptr->ft_ext_force[2];
+            ftsensor_msg_.wrench.torque.x = report_data_ptr->ft_ext_force[3];
+            ftsensor_msg_.wrench.torque.y = report_data_ptr->ft_ext_force[4];
+            ftsensor_msg_.wrench.torque.z = report_data_ptr->ft_ext_force[5];
+            pub_ftsensor_ext_state(ftsensor_msg_);
+            ftsensor_msg_.header.frame_id = "uf_ft_sensor_raw_data";
+            ftsensor_msg_.wrench.force.x = report_data_ptr->ft_raw_force[0];
+            ftsensor_msg_.wrench.force.y = report_data_ptr->ft_raw_force[1];
+            ftsensor_msg_.wrench.force.z = report_data_ptr->ft_raw_force[2];
+            ftsensor_msg_.wrench.torque.x = report_data_ptr->ft_raw_force[3];
+            ftsensor_msg_.wrench.torque.y = report_data_ptr->ft_raw_force[4];
+            ftsensor_msg_.wrench.torque.z = report_data_ptr->ft_raw_force[5];
+            pub_ftsensor_raw_state(ftsensor_msg_);
+        }
     }
 
     void XArmDriver::init(rclcpp::Node::SharedPtr& node, std::string &server_ip)
@@ -128,7 +151,7 @@ namespace xarm_api
         std::string hw_ns;
         node_->get_parameter_or("hw_ns", hw_ns, std::string("xarm"));
         // hw_ns = prefix + hw_ns;
-        hw_node_ = node->create_sub_node(hw_ns);
+        hw_node_ = node_->create_sub_node(hw_ns);
         node_->get_parameter_or("dof", dof_, 7);
         node_->get_parameter_or("report_type", report_type_, std::string("normal"));
 
@@ -148,8 +171,9 @@ namespace xarm_api
         node_->get_parameter_or("default_gripper_baud", default_gripper_baud, 2000000);
         
         RCLCPP_INFO(node_->get_logger(), "baud_checkset: %d, default_gripper_baud: %d", baud_checkset, default_gripper_baud);
-        
+
         _init_publisher();
+        setlinebuf(stdout);
 
         arm = new XArmAPI(
             server_ip, 
@@ -178,7 +202,7 @@ namespace xarm_api
         int err_warn[2] = {0};
         int ret = arm->get_err_warn_code(err_warn);
         if (err_warn[0] != 0) {
-            RCLCPP_WARN(node_->get_logger(), "xArmErrorCode: %d", err_warn[0]);
+            RCLCPP_WARN(node_->get_logger(), "UFACTORY ErrorCode: C%d: [ %s ]", err_warn[0], controller_error_interpreter(err_warn[0]).c_str());
         }
         
         std::thread th(cmd_heart_beat, this);
@@ -218,8 +242,10 @@ namespace xarm_api
         xarm_state_msg_.angle.resize(dof_);
 
         joint_state_pub_ = hw_node_->create_publisher<sensor_msgs::msg::JointState>("joint_states", 10);
-        robot_state_pub_ = hw_node_->create_publisher<xarm_msgs::msg::RobotMsg>("xarm_states", 10);
+        robot_state_pub_ = hw_node_->create_publisher<xarm_msgs::msg::RobotMsg>("robot_states", 10);
         cgpio_state_pub_ = hw_node_->create_publisher<xarm_msgs::msg::CIOState>("xarm_cgpio_states", 10);
+        ftsensor_ext_state_pub_ = hw_node_->create_publisher<geometry_msgs::msg::WrenchStamped>("uf_ftsensor_ext_states", 10);
+        ftsensor_raw_state_pub_ = hw_node_->create_publisher<geometry_msgs::msg::WrenchStamped>("uf_ftsensor_raw_states", 10);
     }
 
     void XArmDriver::_init_gripper(void)
@@ -377,7 +403,7 @@ namespace xarm_api
         bool is_move = true;
         std::thread([this, &target_pos, &is_move, &cur_pos]() {
             is_move = true;
-            int ret2 = arm->set_gripper_position(target_pos, true);
+            int ret2 = arm->set_gripper_position(target_pos, true, -1, false); // set wait_motion=false
             int err;
             arm->get_gripper_err_code(&err);
             RCLCPP_INFO(node_->get_logger(), "set_gripper_position, ret=%d, err=%d, cur_pos=%f", ret2, err, cur_pos);
@@ -452,7 +478,95 @@ namespace xarm_api
         cgpio_state_pub_->publish(cio_msg);
     }
 
+    void XArmDriver::pub_ftsensor_ext_state(geometry_msgs::msg::WrenchStamped &wrench_msg)
+    {
+        ftsensor_ext_state_pub_->publish(wrench_msg);
+    }
+
+    void XArmDriver::pub_ftsensor_raw_state(geometry_msgs::msg::WrenchStamped &wrench_msg)
+    {
+        ftsensor_raw_state_pub_->publish(wrench_msg);
+    }
+
     bool XArmDriver::is_connected(void) {
         return arm == NULL ? false : arm->is_connected();
     }
+
+    std::string XArmDriver::controller_error_interpreter(int err)
+    {
+        err = (err==-1) ? curr_err : err;
+        switch(err)
+        {
+            case 0:
+                return "Everything OK";
+            case 1:
+                return "Hardware Emergency STOP effective";
+            case 2:
+                return "Emergency IO of Control Box is triggered";
+            case 3:
+                return "Emergency Stop of Three-state Switch triggered";
+            case 11:
+            case 12:
+            case 13:
+            case 14:
+            case 15:
+            case 16:
+            case 17:
+                return std::string("Servo Motor Error of Joint ") + std::to_string(err-10); 
+            case 19:
+                return "End Module Communication Error";
+            case 21:
+                return "Kinematic Error";
+            case 22:
+                return "Self-collision Error";
+            case 23:
+                return "Joint Angle Exceed Limit";
+            case 24:
+                return "Speed Exceeds Limit";
+            case 25:
+                return "Planning Error";
+            case 26:
+                return "System Real Time Error";
+            case 27:
+                return "Command Reply Error";
+            case 29:
+                return "Other Errors, please contact technical support";
+            case 30:
+                return "Feedback Speed Exceeds limit";
+            case 31:
+                return "Collision Caused Abnormal Joint Current";
+            case 32:
+                return "Circle Calculation Error";
+            case 33:
+                return "Controller GPIO Error";
+            case 34:
+                return "Trajectory Recording Timeout";
+            case 35:
+                return "Exceed Safety Boundary";
+            case 36:
+                return "Number of Delayed Command Exceed Limit";
+            case 37:
+                return "Abnormal Motion in Manual Mode";
+            case 38: 
+                return "Abnormal Joint Angle";
+            case 39:
+                return "Abnormal Communication Between Master and Slave IC of Power Board";
+            case 50:
+                return "Tool Force/Torque Sensor Error";
+            case 51:
+                return "Tool Force Torque Sensor Mode Setting Error";
+            case 52:
+                return "Tool Force Torque Sensor Zero Setting Error";
+            case 53:
+                return "Tool Force Torque Sensor Overload";
+            case 110:
+                return "Robot Arm Base Board Communication Error";
+            case 111:
+                return "Control Box External RS485 Device Communication Error";
+
+            default:
+                return "Abnormal Error Code, please contact support!";
+        }
+    }
+
 }

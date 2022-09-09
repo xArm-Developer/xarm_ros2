@@ -3,7 +3,7 @@ project(xarm_api)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
-  set(CMAKE_C_STANDARD 99)
+  set(CMAKE_C_STANDARD 11)
 endif()
 
 # Default to C++14
@@ -41,6 +41,7 @@ find_package(rclcpp_action REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(control_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
 find_package(xarm_msgs REQUIRED)
 find_package(xarm_sdk REQUIRED)
 
@@ -50,7 +51,7 @@ include_directories(
   ${ament_INCLUDE_DIRS}
 )
 
-set(dependencies "rclcpp" "rclcpp_action" "std_msgs" "sensor_msgs" "control_msgs" "xarm_msgs")
+set(dependencies "rclcpp" "rclcpp_action" "std_msgs" "sensor_msgs" "control_msgs" "geometry_msgs" "xarm_msgs")
 
 add_library(xarm_ros_driver SHARED
   src/xarm_driver.cpp
@@ -95,11 +96,12 @@ target_link_libraries(test_xarm_velo_move
   ${ament_LIBRARIES}
 )
 
-add_executable(test_xarm_states
-   test/test_xarm_states.cpp
+add_executable(test_robot_states
+   test/test_robot_states.cpp
 )
-ament_target_dependencies(test_xarm_states ${dependencies})
+ament_target_dependencies(test_robot_states ${dependencies})
 
+ament_export_libraries(xarm_ros_driver)
 ament_export_libraries(xarm_ros_client)
 ament_export_include_directories(include)
 
@@ -119,7 +121,7 @@ install(
   xarm_driver_node 
   test_xarm_ros_client
   test_xarm_velo_move
-  test_xarm_states
+  test_robot_states
   DESTINATION lib/${PROJECT_NAME}
 )
 

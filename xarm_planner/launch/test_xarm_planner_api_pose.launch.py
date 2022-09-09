@@ -28,14 +28,15 @@ def launch_setup(context, *args, **kwargs):
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     dof = LaunchConfiguration('dof')
+    robot_type = LaunchConfiguration('robot_type', default='xarm')
 
     node_executable = 'test_xarm_planner_api_pose'
     node_parameters = {}
 
-    # xarm planner launch
-    # xarm_planner/launch/_xarm_planner.launch.py
-    xarm_planner_node_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_planner'), 'launch', '_xarm_planner.launch.py'])),
+    # robot planner launch
+    # xarm_planner/launch/_robot_planner.launch.py
+    robot_planner_node_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_planner'), 'launch', '_robot_planner.launch.py'])),
         launch_arguments={
             'prefix': prefix,
             'hw_ns': hw_ns,
@@ -45,13 +46,14 @@ def launch_setup(context, *args, **kwargs):
             'add_gripper': 'false',
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': dof,
+            'robot_type': robot_type,
             'node_executable': node_executable,
             'node_parameters': json.dumps(node_parameters)
         }.items(),
     )
 
     return [
-        xarm_planner_node_launch
+        robot_planner_node_launch
     ]
 
 

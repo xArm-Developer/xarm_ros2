@@ -1,0 +1,16 @@
+<library path="uf_robot_hardware">
+  <class name="uf_robot_hardware/UFRobotSystemHardware"
+         type="uf_robot_hardware::UFRobotSystemHardware"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      The ROS2 Control HardWare Interface for UFACTORY ROBOT.
+    </description>
+  </class>
+  <class name="uf_robot_hardware/UFRobotFakeSystemHardware"
+         type="uf_robot_hardware::UFRobotFakeSystemHardware"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      The ROS2 Control Fake HardWare Interface for UFACTORY ROBOT.
+    </description>
+  </class>
+</library>

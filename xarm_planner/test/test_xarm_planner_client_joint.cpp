@@ -57,9 +57,9 @@ int main(int argc, char** argv)
     node_options.automatically_declare_parameters_from_overrides(true);
     node = rclcpp::Node::make_shared("test_xarm_planner_node_joint", node_options);
     RCLCPP_INFO(node->get_logger(), "test_xarm_planner_node_joint start");
-    // node->declare_parameter("DOF");
+    // node->declare_parameter("dof");
     int dof;
-    node->get_parameter_or("DOF", dof, 7);
+    node->get_parameter_or("dof", dof, 7);
     RCLCPP_INFO(node->get_logger(), "namespace: %s, dof: %d", node->get_namespace(), dof);
     
     signal(SIGINT, exit_sig_handler);

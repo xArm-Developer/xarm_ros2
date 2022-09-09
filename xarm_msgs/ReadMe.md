@@ -3,7 +3,7 @@
 
 ## msg
 - [xarm_msgs::msg::RobotMsg](./msg/RobotMsg.msg)
-    - xarm_api->topic: __xarm_states__
+    - xarm_api->topic: __robot_states__
 - [xarm_msgs::msg::CIOState](./msg/CIOState.msg)
     - xarm_api->topic: __xarm_cgpio_states__
 - [sensor_msgs::msg::JointState](http://docs.ros.org/en/api/sensor_msgs/html/msg/JointState.html)
@@ -39,7 +39,6 @@
     - xarm_api->service: __set_teach_sensitivity__
     - xarm_api->service: __set_gripper_mode__
     - xarm_api->service: __set_gripper_enable__
-    - xarm_api->service: __set_tgpio_modbus_timeout__
     - xarm_api->service: __set_bio_gripper_speed__
     - xarm_api->service: __set_fence_mode__
     - xarm_api->service: __set_reduced_mode__
@@ -152,6 +151,9 @@
 
 - [xarm_msgs::srv::RobotiqGetStatus](./srv/RobotiqGetStatus.srv)
     - xarm_api->service: __robotiq_get_status__
+
+- [xarm_msgs::srv::SetModbusTimeout](./srv/SetModbusTimeout.srv)
+    - xarm_api->service: __set_tgpio_modbus_timeout__
 
 - [xarm_msgs::srv::GetSetModbusData](./srv/GetSetModbusData.srv)
     - xarm_api->service: __getset_tgpio_modbus_data__

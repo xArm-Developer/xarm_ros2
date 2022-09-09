@@ -16,7 +16,7 @@ from launch_ros.substitutions import FindPackageShare
 def generate_launch_description():
     prefix = LaunchConfiguration('prefix', default='')
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
-    limited = LaunchConfiguration('limited', default=False)
+    limited = LaunchConfiguration('limited', default=True)
     effort_control = LaunchConfiguration('effort_control', default=False)
     velocity_control = LaunchConfiguration('velocity_control', default=False)
     add_gripper = LaunchConfiguration('add_gripper', default=False)
@@ -36,11 +36,12 @@ def generate_launch_description():
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
 
     dof = 5
+    robot_type = 'xarm'
 
-    # xarm moveit gazebo launch
-    # xarm_moveit_config/launch/_xarm_moveit_gazebo.launch.py
-    xarm_moveit_gazebo_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_xarm_moveit_gazebo.launch.py'])),
+    # robot moveit gazebo launch
+    # xarm_moveit_config/launch/_robot_moveit_gazebo.launch.py
+    robot_moveit_gazebo_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_robot_moveit_gazebo.launch.py'])),
         launch_arguments={
             'prefix': prefix,
             'hw_ns': hw_ns,
@@ -50,6 +51,7 @@ def generate_launch_description():
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': str(dof),
+            'robot_type': robot_type,
             'no_gui_ctrl': 'true',
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,
@@ -66,10 +68,10 @@ def generate_launch_description():
         }.items(),
     )
 
-    # xarm planner launch
-    # xarm_planner/launch/_xarm_planner.launch.py
-    xarm_planner_node_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_planner'), 'launch', '_xarm_planner.launch.py'])),
+    # robot planner launch
+    # xarm_planner/launch/_robot_planner.launch.py
+    robot_planner_node_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_planner'), 'launch', '_robot_planner.launch.py'])),
         launch_arguments={
             'prefix': prefix,
             'hw_ns': hw_ns,
@@ -79,6 +81,7 @@ def generate_launch_description():
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': str(dof),
+            'robot_type': robot_type,
             'ros2_control_plugin': 'gazebo_ros2_control/GazeboSystem',
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,
@@ -96,6 +99,6 @@ def generate_launch_description():
     )
     
     return LaunchDescription([
-        xarm_moveit_gazebo_launch,
-        xarm_planner_node_launch
+        robot_moveit_gazebo_launch,
+        robot_planner_node_launch
     ])

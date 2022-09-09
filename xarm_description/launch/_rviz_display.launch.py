@@ -10,6 +10,10 @@ from launch import LaunchDescription
 from launch.substitutions import PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
+from launch.actions import RegisterEventHandler, EmitEvent
+from launch.event_handlers import OnProcessExit
+from launch.events import Shutdown
+
 
 def generate_launch_description():
     # rviz2 node
@@ -27,5 +31,9 @@ def generate_launch_description():
     )
     
     return LaunchDescription([
-        rviz2_node
+        RegisterEventHandler(event_handler=OnProcessExit(
+            target_action=rviz2_node,
+            on_exit=[EmitEvent(event=Shutdown())]
+        )),
+        rviz2_node,
     ])

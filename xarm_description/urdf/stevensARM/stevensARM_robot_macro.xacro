@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="xarm7" >
+  <xacro:macro name="xarm7_robot" params="prefix:='' namespace:='xarm' limited:='false' effort_control:='false' 
+    velocity_control:='false' attach_to:='world' xyz:='0 0 0' rpy:='0 0 0' load_gazebo_plugin:='false' 
+    ros2_control_plugin:='uf_robot_hardware/UFRobotSystemHardware' ros2_control_params:='' add_gripper:='false' 
+    robot_ip:='' report_type:='normal' baud_checkset:='true' default_gripper_baud:=2000000 ">  
+
+    <!-- stevensARM -->
+    <xacro:include filename="$(find xarm_description)/urdf/stevensARM/stevensARM.ros2_control.xacro" />
+    <xacro:include filename="$(find xarm_description)/urdf/stevensARM/stevensARM.urdf.xacro" />
+    <xacro:include filename="$(find xarm_description)/urdf/stevensARM/stevensARM.transmission.xacro" />
+    <xacro:include filename="$(find xarm_description)/urdf/stevensARM/stevensARM.gazebo.xacro" />
+
+    <!-- gazebo_plugin -->
+    <xacro:if value="${load_gazebo_plugin}">
+      <xacro:include filename="$(find xarm_description)/urdf/common/common.gazebo.xacro" />
+      <xacro:gazebo_ros_control_plugin  prefix="${prefix}" ros2_control_params="${ros2_control_params}"/>
+    </xacro:if>
+
+    <!-- add one world link if no 'attach_to' specified  -->
+    <xacro:if value="${attach_to == 'world'}">
+      <link name="world" />
+    </xacro:if>
+
+    <joint name="${prefix}world_joint" type="fixed">
+      <parent link="${attach_to}" />
+      <child link = "${prefix}link_base" />
+      <origin xyz="${xyz}" rpy="${rpy}" />
+    </joint>
+
+    <xacro:if value="${limited}">
+      <xacro:xarm7_ros2_control prefix="${prefix}"
+        velocity_control="${velocity_control}"
+        ros2_control_plugin="${ros2_control_plugin}"
+        hw_ns="${namespace}" add_gripper="${add_gripper}"
+        robot_ip="${robot_ip}" report_type="${report_type}"
+        baud_checkset="${baud_checkset}" default_gripper_baud="${default_gripper_baud}"
+        joint1_lower_limit="${-pi*0.99}" joint1_upper_limit="${pi*0.99}"
+        joint2_lower_limit="${-2.18}" joint2_upper_limit="${2.18}"
+        joint3_lower_limit="${-pi*0.99}" joint3_upper_limit="${pi*0.99}"
+        joint4_lower_limit="${-0.11}" joint4_upper_limit="${pi*0.99}"
+        joint5_lower_limit="${-pi*0.99}" joint5_upper_limit="${pi*0.99}"
+        joint6_lower_limit="${-1.75}" joint6_upper_limit="${pi*0.99}"
+        joint7_lower_limit="${-pi*0.99}" joint7_upper_limit="${pi*0.99}"/>
+      <xacro:xarm7_urdf prefix="${prefix}"
+        joint1_lower_limit="${-pi*0.99}" joint1_upper_limit="${pi*0.99}"
+        joint2_lower_limit="${-2.18}" joint2_upper_limit="${2.18}"
+        joint3_lower_limit="${-pi*0.99}" joint3_upper_limit="${pi*0.99}"
+        joint4_lower_limit="${-0.11}" joint4_upper_limit="${pi*0.99}"
+        joint5_lower_limit="${-pi*0.99}" joint5_upper_limit="${pi*0.99}"
+        joint6_lower_limit="${-1.75}" joint6_upper_limit="${pi*0.99}"
+        joint7_lower_limit="${-pi*0.99}" joint7_upper_limit="${pi*0.99}"/>
+    </xacro:if>
+    <xacro:unless value="${limited}">
+      <xacro:xarm7_ros2_control prefix="${prefix}" velocity_control="${velocity_control}" 
+        ros2_control_plugin="${ros2_control_plugin}"
+        hw_ns="${namespace}" add_gripper="${add_gripper}"
+        robot_ip="${robot_ip}" report_type="${report_type}"
+        baud_checkset="${baud_checkset}" default_gripper_baud="${default_gripper_baud}" />
+      <xacro:xarm7_urdf prefix="${prefix}"/>
+    </xacro:unless>
+
+    <xacro:xarm7_transmission prefix="${prefix}" hard_interface="${'EffortJointInterface' if effort_control else 'VelocityJointInterface' if velocity_control else 'PositionJointInterface'}" />
+
+    <xacro:xarm7_gazebo prefix="${prefix}" />
+
+  </xacro:macro>
+
+</robot>

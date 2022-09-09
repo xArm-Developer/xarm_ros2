@@ -1,86 +1,52 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="xarm_gripper_transmission"
+    params="prefix hard_interface:=PositionJointInterface reduction:=1">
 
-  <xacro:macro name="xarm7_transmission"
-    params="prefix hard_interface:=EffortJointInterface reduction:=100">
-
-    <transmission name="${prefix}tran1">
+    <transmission name="${prefix}tran9">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${prefix}joint1">
+      <joint name="${prefix}joint9">
         <hardwareInterface>hardware_interface/${hard_interface}</hardwareInterface>
       </joint>
-      <actuator name="${prefix}motor1">
+      <actuator name="${prefix}motor9">
         <hardwareInterface>hardware_interface/${hard_interface}</hardwareInterface>
         <mechanicalReduction>${reduction}</mechanicalReduction>
       </actuator>
     </transmission>
 
-    <transmission name="${prefix}tran2">
+    <!-- Use if Prismatic -->
+    <transmission name="${prefix}tran10">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${prefix}joint2">
+      <joint name="${prefix}joint10">
         <hardwareInterface>hardware_interface/${hard_interface}</hardwareInterface>
       </joint>
-      <actuator name="${prefix}motor2">
+      <actuator name="${prefix}motor10">
         <hardwareInterface>hardware_interface/${hard_interface}</hardwareInterface>
         <mechanicalReduction>${reduction}</mechanicalReduction>
       </actuator>
     </transmission>
 
-    <transmission name="${prefix}tran3">
+    <transmission name="${prefix}tran11">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${prefix}joint3">
+      <joint name="${prefix}joint11">
         <hardwareInterface>hardware_interface/${hard_interface}</hardwareInterface>
       </joint>
-      <actuator name="${prefix}motor3">
+      <actuator name="${prefix}motor11">
         <hardwareInterface>hardware_interface/${hard_interface}</hardwareInterface>
         <mechanicalReduction>${reduction}</mechanicalReduction>
       </actuator>
     </transmission>
 
-    <transmission name="${prefix}tran4">
+    <transmission name="${prefix}tran12">
       <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${prefix}joint4">
+      <joint name="${prefix}joint12">
         <hardwareInterface>hardware_interface/${hard_interface}</hardwareInterface>
       </joint>
-      <actuator name="${prefix}motor3">
-        <hardwareInterface>hardware_interface/${hard_interface}</hardwareInterface>
-        <mechanicalReduction>${reduction}</mechanicalReduction>
-      </actuator>
-    </transmission>
-
-    <transmission name="${prefix}tran5">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${prefix}joint5">
-        <hardwareInterface>hardware_interface/${hard_interface}</hardwareInterface>
-      </joint>
-      <actuator name="${prefix}motor5">
-        <hardwareInterface>hardware_interface/${hard_interface}</hardwareInterface>
-        <mechanicalReduction>${reduction}</mechanicalReduction>
-      </actuator>
-    </transmission>
-
-    <transmission name="${prefix}tran6">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${prefix}joint6">
-        <hardwareInterface>hardware_interface/${hard_interface}</hardwareInterface>
-      </joint>
-      <actuator name="${prefix}motor6">
-        <hardwareInterface>hardware_interface/${hard_interface}</hardwareInterface>
-        <mechanicalReduction>${reduction}</mechanicalReduction>
-      </actuator>
-    </transmission>
-
-    <transmission name="${prefix}tran7">
-      <type>transmission_interface/SimpleTransmission</type>
-      <joint name="${prefix}joint7">
-        <hardwareInterface>hardware_interface/${hard_interface}</hardwareInterface>
-      </joint>
-      <actuator name="${prefix}motor7">
+      <actuator name="${prefix}motor12">
         <hardwareInterface>hardware_interface/${hard_interface}</hardwareInterface>
         <mechanicalReduction>${reduction}</mechanicalReduction>
       </actuator>
     </transmission>
 
   </xacro:macro>
-
 </robot>

@@ -1,8 +1,7 @@
 # Please do not modify this file, this configuration is the default configuration
 # if you need to modify, please modify xarm_user_params.yaml
-xarm_driver:
+ufactory_driver:
   ros__parameters:
-    DOF: 7
     joint_names: ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6', 'joint7']
     xarm_gripper:
       joint_names: ['drive_joint', 'left_finger_joint', 'left_inner_knuckle_joint', 'right_outer_knuckle_joint', 'right_finger_joint', 'right_inner_knuckle_joint']

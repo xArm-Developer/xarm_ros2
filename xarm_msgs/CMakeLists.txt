@@ -79,6 +79,7 @@ set(srv_files
   ${srv_dir}/TrajPlay.srv
   ${srv_dir}/VacuumGripperCtrl.srv
   ${srv_dir}/SetTcpLoad.srv
+  ${srv_dir}/SetModbusTimeout.srv
 
   ${srv_dir}/PlanExec.srv
   ${srv_dir}/PlanJoint.srv

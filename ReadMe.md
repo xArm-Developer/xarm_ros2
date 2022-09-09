@@ -4,21 +4,36 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 
 ## 1. Introduction
 
-&ensp;&ensp;&ensp;&ensp;This repository contains simulation models, and corresponding motion planning and controlling demos of the xArm series from UFACTORY. Developing environment: Ubuntu 20.04 + ROS Foxy.  
+&ensp;&ensp;&ensp;&ensp;This repository contains simulation models, and corresponding motion planning and controlling demos of the xArm series from UFACTORY. The development and test environment is as follows
+- Ubuntu 20.04 + ROS Foxy
+- Ubuntu 20.04 + ROS Galactic
+- Ubuntu 22.04 + ROS Humble
+
+&ensp;&ensp;&ensp;&ensp;Please switch to the corresponding code branch according to different ros2 versions (no corresponding code branch means it has not been tested in this version)
+- Foxy: [foxy](https://github.com/xArm-Developer/xarm_ros2/tree/foxy)
+- Galactic: [galactic](https://github.com/xArm-Developer/xarm_ros2/tree/galactic)
+- Humble: [humble](https://github.com/xArm-Developer/xarm_ros2/tree/humble)
 
 ## 2. Update History    
 - moveit dual arm control (under single rviz GUI), each arm can be separately configured（e.g. DOF, add_gripper, etc）
 - add support for Gazebo simulation, can be controlled by moveit.
 - support adding customized tool model.  
+- (2022-09-07) Change the parameter type of service (__set_tgpio_modbus_timeout__/__getset_tgpio_modbus_data__), and add parameters to support transparent transmission
+- (2022-09-07) Change topic name (xarm_states to robot_states)
+- (2022-09-07) Update submodule xarm-sdk to version 1.11.0
+- (2022-09-09) [Beta]支持Ros Humble版本
 
 
 ## 3. Preparation
 
-- ### 3.1 Install [ROS Foxy](https://docs.ros.org/en/foxy/Installation.html) 
+- ### 3.1 Install [ROS2](https://docs.ros.org/) 
+  - [Foxy](https://docs.ros.org/en/ros2_documentation/foxy/Installation.html)
+  - [Galactic](https://docs.ros.org/en/ros2_documentation/galactic/Installation.html)
+  - [Humble](https://docs.ros.org/en/ros2_documentation/humble/Installation.html)
 
-- ### 3.2 Install [Moveit2](https://moveit.ros.org/install-moveit2/source/)  
+- ### 3.2 Install [Moveit2](https://moveit.ros.org/install-moveit2/binary/)  
 
-- ### 3.3 Install [ros2_control, ros2_controllers](https://control.ros.org/master/doc/getting_started/getting_started.html)  
+- ### 3.3 Install [Gazebo](https://classic.gazebosim.org/tutorials?tut=install_ubuntu)  
 
 - ### 3.4 Install [gazebo_ros_pkgs](http://gazebosim.org/tutorials?tut=ros2_installing&cat=connect_ros)  
 
@@ -48,15 +63,15 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 
 - ### 4.4 Install dependencies
     ```bash
-    # Remember to source ros foxy environment settings first
+    # Remember to source ros2 environment settings first
     $ cd ~/dev_ws/src/
     $ rosdep update
-    $ rosdep install --from-paths . --ignore-src --rosdistro $ROS_DISTRO
+    $ rosdep install --from-paths . --ignore-src --rosdistro $ROS_DISTRO -y
     ```
 
 - ### 4.5 Build xarm_ros2
     ```bash
-    # Remember to source ros foxy and moveit2 environment settings first
+    # Remember to source ros2 and moveit2 environment settings first
     $ cd ~/dev_ws/
     # build all packages
     $ colcon build
@@ -68,7 +83,10 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 
 ## 5. Package Introduction
 
-__Reminder 1: If there are multiple people using ros2 in the current LAN, in order to avoid mutual interference, please set [ROS_DOMAIN_ID](https://docs.ros.org/en/ros2_documentation/foxy/Concepts/About-Domain-ID.html)__
+__Reminder 1: If there are multiple people using ros2 in the current LAN, in order to avoid mutual interference, please set ROS_DOMAIN_ID__
+  - [Foxy](https://docs.ros.org/en/ros2_documentation/foxy/Concepts/About-Domain-ID.html)
+  - [Galactic](https://docs.ros.org/en/ros2_documentation/galactic/Concepts/About-Domain-ID.html)
+  - [Humble](https://docs.ros.org/en/ros2_documentation/humble/Concepts/About-Domain-ID.html)
 
 __Reminder 2： Remember to source the environment setup script before running any applications in xarm_ros2__
 
@@ -112,9 +130,13 @@ __Reminder 3： All following instructions will base on xArm6，please use prope
 
         __joint_states__: is of type __sensor_msgs::msg::JointState__  
 
-        __xarm_states__: is of type __xarm_msgs::msg::RobotMsg__  
+        __robot_states__: is of type __xarm_msgs::msg::RobotMsg__  
 
         __xarm_cgpio_states__: is of type __xarm_msgs::msg::CIOState__  
+
+        __uf_ftsensor_raw_states__: is of type __geometry_msgs::msg::WrenchStamped__  
+
+        __uf_ftsensor_ext_states__: is of type __geometry_msgs::msg::WrenchStamped__  
     
     - Launch and test  
 
@@ -125,7 +147,7 @@ __Reminder 3： All following instructions will base on xArm6，please use prope
         # service test
         $ ros2 run xarm_api test_xarm_ros_client
         # topic test
-        $ ros2 run xarm_api test_xarm_states
+        $ ros2 run xarm_api test_robot_states
         ```
 
 - ### 5.5 xarm_controller
@@ -135,8 +157,6 @@ __Reminder 3： All following instructions will base on xArm6，please use prope
     $ cd ~/dev_ws/
     # set 'add_gripper=true' to attach xArm gripper model
     $ ros2 launch xarm6_control_rviz_display.launch.py robot_ip:=192.168.1.117 [add_gripper:=true]
-    # open up two rviz windows for two separated arms at the same time
-    $ ros2 launch two_xarm6_control_rviz_display.launch.py robot1_ip:=192.168.1.117 robot2_ip:=192.168.1.203
     ```
 
 - ### 5.6 xarm_moveit_config
@@ -158,22 +178,6 @@ __Reminder 3： All following instructions will base on xArm6，please use prope
         $ ros2 launch xarm_moveit_config xarm6_moveit_realmove.launch.py robot_ip:=192.168.1.117 [add_gripper:=true]
         ```
     
-    - 【simulated x2】launch two moveit processes(including rviz)，to control two xArms separately  
-
-        ```bash
-        $ cd ~/dev_ws/
-        # set 'add_gripper=true' to attach xArm gripper model
-        $ ros2 launch xarm_moveit_config two_xarm6_moveit_fake.launch.py [add_gripper:=true]
-        ```
-    
-    - 【real arm x2】launch two moveit processes(including rviz)，to control two xArms separately  
-
-        ```bash
-        $ cd ~/dev_ws/
-        # set 'add_gripper=true' to attach xArm gripper model
-        $ ros2 launch xarm_moveit_config two_xarm6_moveit_realmove.launch.py robot1_ip:=192.168.1.117 robot2_ip:=192.168.1.203 [add_gripper:=true]
-        ```
-    
     - 【Dual simulated】Launch single moveit process, and controlling two xArms in one rviz.  
 
         ```bash
@@ -190,14 +194,14 @@ __Reminder 3： All following instructions will base on xArm6，please use prope
 
         ```bash
         $ cd ~/dev_ws/
-        # 'robot1_ip': IP address of left arm
-        # 'robot2_ip': IP address of right arm
+        # 'robot_ip_1': IP address of left arm
+        # 'robot_ip_2': IP address of right arm
         # set 'add_gripper=true' to attach xArm gripper model
         # 'add_gripper_1': can separately decide whether to attach gripper for left arm，default for same value with 'add_gripper'
         # 'add_gripper_2': can separately decide whether to attach gripper for right arm，default for same value with 'add_gripper'
         # 'dof_1': can separately configure the model DOF of left arm，default to be the same DOF specified in filename.
         # 'dof_2': can separately configure the model DOF of right arm，default to be the same DOF specified in filename.
-        $ ros2 launch xarm_moveit_config dual_xarm6_moveit_realmove.launch.py robot1_ip:=192.168.1.117 robot2_ip:=192.168.1.203 [add_gripper:=true]
+        $ ros2 launch xarm_moveit_config dual_xarm6_moveit_realmove.launch.py robot_ip_1:=192.168.1.117 robot_ip_2:=192.168.1.203 [add_gripper:=true]
         ```
 
 - ### 5.7 xarm_planner
@@ -372,11 +376,11 @@ __Reminder 3： All following instructions will base on xArm6，please use prope
     - __geometry_mesh_tcp_rpy_1__
     - __geometry_mesh_tcp_rpy_2__
 
-## 7. StevensIDM New Instructions
+## 7. StevensARM New Instructions
 - Visualize using RViz
 
-        $ ros2 launch xarm_description stevensIDM_rviz_display.launch.py
+        $ ros2 launch xarm_description stevensARM_rviz_display.launch.py add_gripper:=true
         
 - Control RViz using moveit  
 
-        $ ros2 launch xarm_moveit_config stevensIDM_moveit_fake.launch.py
+        $ ros2 launch xarm_moveit_config stevensARM_moveit_fake.launch.py add_gripper:=true

@@ -13,6 +13,7 @@
 #include <rclcpp_action/rclcpp_action.hpp>
 #include <std_msgs/msg/float32.hpp>
 #include <sensor_msgs/msg/joint_state.hpp>
+#include <geometry_msgs/msg/wrench_stamped.hpp>
 #include <control_msgs/action/gripper_command.hpp>
 
 #include "xarm_msgs.h"
@@ -30,8 +31,11 @@ namespace xarm_api
         void pub_robot_msg(xarm_msgs::msg::RobotMsg &rm_msg);
         void pub_joint_state(sensor_msgs::msg::JointState &js_msg);
         void pub_cgpio_state(xarm_msgs::msg::CIOState &cio_msg);
-
+        void pub_ftsensor_ext_state(geometry_msgs::msg::WrenchStamped &wrench_msg);
+        void pub_ftsensor_raw_state(geometry_msgs::msg::WrenchStamped &wrench_msg);
+        
         bool is_connected(void);
+        std::string controller_error_interpreter(int err=-1);
 
         rclcpp::Logger get_logger() { return node_->get_logger(); }
 
@@ -69,12 +73,15 @@ namespace xarm_api
         std::string report_type_;
         std::vector<std::string> joint_names_;
         sensor_msgs::msg::JointState joint_state_msg_;
+        geometry_msgs::msg::WrenchStamped ftsensor_msg_;
         xarm_msgs::msg::RobotMsg xarm_state_msg_;
         xarm_msgs::msg::CIOState cgpio_state_msg_;
 
         rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr joint_state_pub_;
         rclcpp::Publisher<xarm_msgs::msg::RobotMsg>::SharedPtr robot_state_pub_;
         rclcpp::Publisher<xarm_msgs::msg::CIOState>::SharedPtr cgpio_state_pub_;
+        rclcpp::Publisher<geometry_msgs::msg::WrenchStamped>::SharedPtr ftsensor_ext_state_pub_;
+        rclcpp::Publisher<geometry_msgs::msg::WrenchStamped>::SharedPtr ftsensor_raw_state_pub_;
 
         rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr sleep_sub_;
 
@@ -140,7 +147,6 @@ namespace xarm_api
         rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_teach_sensitivity_;
         rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_gripper_mode_;
         rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_gripper_enable_;
-        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_tgpio_modbus_timeout_;
         rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_bio_gripper_speed_;
         rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_collision_rebound_;
         rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_fence_mode_;
@@ -154,7 +160,6 @@ namespace xarm_api
         bool _set_teach_sensitivity(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
         bool _set_gripper_mode(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
         bool _set_gripper_enable(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
-        bool _set_tgpio_modbus_timeout(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
         bool _set_bio_gripper_speed(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
         bool _set_collision_rebound(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
         bool _set_fence_mode(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
@@ -332,6 +337,10 @@ namespace xarm_api
         // RobotiqGetStatus
         rclcpp::Service<xarm_msgs::srv::RobotiqGetStatus>::SharedPtr service_robotiq_get_status_;
         bool _robotiq_get_status(const std::shared_ptr<xarm_msgs::srv::RobotiqGetStatus::Request> req, std::shared_ptr<xarm_msgs::srv::RobotiqGetStatus::Response> res);
+
+        // SetModbusTimeout
+        rclcpp::Service<xarm_msgs::srv::SetModbusTimeout>::SharedPtr service_set_tgpio_modbus_timeout_;
+        bool _set_tgpio_modbus_timeout(const std::shared_ptr<xarm_msgs::srv::SetModbusTimeout::Request> req, std::shared_ptr<xarm_msgs::srv::SetModbusTimeout::Response> res);
 
         // GetSetModbusData
         rclcpp::Service<xarm_msgs::srv::GetSetModbusData>::SharedPtr service_getset_tgpio_modbus_data_;

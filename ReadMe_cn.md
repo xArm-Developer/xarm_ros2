@@ -2,22 +2,36 @@
 
 ## 1. 简介
 
-&ensp;&ensp;&ensp;&ensp;此代码库包含xArm模型文件以及相关的控制、规划等示例开发包。开发及测试使用的环境为 Ubuntu 20.04 + ROS Foxy。
+&ensp;&ensp;&ensp;&ensp;此代码库包含xArm模型文件以及相关的控制、规划等示例开发包。开发及测试使用的环境如下
+- Ubuntu 20.04 + ROS Foxy
+- Ubuntu 20.04 ROS Galactic
+- Ubuntu 22.04 + ROS Humble
+
+&ensp;&ensp;&ensp;&ensp;请根据不同ros2版本切换到对应的代码分支（没有对应的代码分支表示未在该版本测试过）
+- Foxy: [foxy](https://github.com/xArm-Developer/xarm_ros2/tree/foxy)
+- Galactic: [galactic](https://github.com/xArm-Developer/xarm_ros2/tree/galactic)
+- Humble: [humble](https://github.com/xArm-Developer/xarm_ros2/tree/humble)
 
 
 ## 2. 更新记录
 - 新增xarm_gazebo以支持gazebo，并和moveit关联
 - 支持加载其它模型到机械臂末端
 - 新增xarm_moveit_servo支持xbox手柄/SpaceMouse/键盘控制
-
+- (2022-09-07) 变更service(__set_tgpio_modbus_timeout__/__getset_tgpio_modbus_data__)的参数类型，增加参数支持透传
+- (2022-09-07) 变更Topic名字(xarm_states改为robot_states)
+- (2022-09-07) 更新子模块xarm-sdk到1.11.0版本
+- (2022-09-09) [Beta]支持Ros Humble版本
 
 ## 3. 准备工作
 
-- ### 3.1 安装 [ROS Foxy](https://docs.ros.org/en/foxy/Installation.html) 
+- ### 3.1 安装 [ROS2](https://docs.ros.org/) 
+  - [Foxy](https://docs.ros.org/en/ros2_documentation/foxy/Installation.html)
+  - [Galactic](https://docs.ros.org/en/ros2_documentation/galactic/Installation.html)
+  - [Humble](https://docs.ros.org/en/ros2_documentation/humble/Installation.html)
 
-- ### 3.2 安装 [Moveit2](https://moveit.ros.org/install-moveit2/source/)
+- ### 3.2 安装 [Moveit2](https://moveit.ros.org/install-moveit2/binary/)
 
-- ### 3.3 安装 [ros2_control, ros2_controllers](https://ros-controls.github.io/control.ros.org/getting_started.html)  
+- ### 3.3 安装 [Gazebo](https://classic.gazebosim.org/tutorials?tut=install_ubuntu)  
 
 - ### 3.4 安装 [gazebo_ros_pkgs](http://gazebosim.org/tutorials?tut=ros2_installing&cat=connect_ros)  
 
@@ -47,15 +61,15 @@
 
 - ### 4.4 安装xarm_ros2依赖
     ```bash
-    # 记得先source已安装的ros foxy环境
+    # 记得先source已安装的ros2环境
     $ cd ~/dev_ws/src/
     $ rosdep update
-    $ rosdep install --from-paths . --ignore-src --rosdistro $ROS_DISTRO
+    $ rosdep install --from-paths . --ignore-src --rosdistro $ROS_DISTRO -y
     ```
 
 - ### 4.5 编译xarm_ros2
     ```bash
-    # 记得先source已安装的ros foxy环境和moveit2环境
+    # 记得先source已安装的ros2环境和moveit2环境
     $ cd ~/dev_ws/
     # 编译所有包
     $ colcon build
@@ -66,7 +80,10 @@
 
 
 ## 5. 模块说明
-__注意1： 如果当前局域网有多人使用ros2，为避免相互间发生干扰，请设置一下[ROS_DOMAIN_ID](https://docs.ros.org/en/ros2_documentation/foxy/Concepts/About-Domain-ID.html)__
+__注意1： 如果当前局域网有多人使用ros2，为避免相互间发生干扰，请设置一下 ROS_DOMAIN_ID__
+  - [Foxy](https://docs.ros.org/en/ros2_documentation/foxy/Concepts/About-Domain-ID.html)
+  - [Galactic](https://docs.ros.org/en/ros2_documentation/galactic/Concepts/About-Domain-ID.html)
+  - [Humble](https://docs.ros.org/en/ros2_documentation/humble/Concepts/About-Domain-ID.html)
 
 __注意2： 运行xarm_ros2中的程序或启动脚本之前请先source当前工作区环境__
 ```bash
@@ -109,8 +126,14 @@ __注意3： 以下启动说明以6轴为例，5轴和7轴的用法只需找到�
     - __topics__:  
 
         __joint_states__: 格式为 __sensor_msgs::msg::JointState__  
-        __xarm_states__: 格式为 __xarm_msgs::msg::RobotMsg__  
+
+        __robot_states__: 格式为 __xarm_msgs::msg::RobotMsg__  
+        
         __xarm_cgpio_states__: 格式为 __xarm_msgs::msg::CIOState__  
+        
+        __uf_ftsensor_raw_states__: 格式为 __geometry_msgs::msg::WrenchStamped__  
+        
+        __uf_ftsensor_ext_states__: 格式为 __geometry_msgs::msg::WrenchStamped__  
 
     
     - 启动与测试
@@ -121,7 +144,7 @@ __注意3： 以下启动说明以6轴为例，5轴和7轴的用法只需找到�
         # 测试service
         $ ros2 run xarm_api test_xarm_ros_client
         # 测试topic
-        $ ros2 run xarm_api test_xarm_states
+        $ ros2 run xarm_api test_robot_states
         ```
 
 - ### 5.5 xarm_controller
@@ -130,8 +153,6 @@ __注意3： 以下启动说明以6轴为例，5轴和7轴的用法只需找到�
     $ cd ~/dev_ws/
     # add_gripper为true时会加载xarm夹爪的模型
     $ ros2 launch xarm6_control_rviz_display.launch.py robot_ip:=192.168.1.117 [add_gripper:=true]
-    # 启动两个rviz窗口对应两台机械臂
-    $ ros2 launch two_xarm6_control_rviz_display.launch.py robot1_ip:=192.168.1.117 robot2_ip:=192.168.1.203
     ```
 
 - ### 5.6 xarm_moveit_config
@@ -153,22 +174,6 @@ __注意3： 以下启动说明以6轴为例，5轴和7轴的用法只需找到�
         $ ros2 launch xarm_moveit_config xarm6_moveit_realmove.launch.py robot_ip:=192.168.1.117 [add_gripper:=true]
         ```
     
-    - 【虚拟x2】启动两个moveit(包括rviz)，分别控制两台机械臂  
-
-        ```bash
-        $ cd ~/dev_ws/
-        # add_gripper为true时会加载xarm夹爪的模型
-        $ ros2 launch xarm_moveit_config two_xarm6_moveit_fake.launch.py [add_gripper:=true]
-        ```
-    
-    - 【真机x2】启动两个moveit(包括rviz)，分别控制两台机械臂  
-
-        ```bash
-        $ cd ~/dev_ws/
-        # add_gripper为true时会加载xarm夹爪的模型
-        $ ros2 launch xarm_moveit_config two_xarm6_moveit_realmove.launch.py robot1_ip:=192.168.1.117 robot2_ip:=192.168.1.203 [add_gripper:=true]
-        ```
-    
     - 【Dual虚拟】启动moveit并在rviz显示, 控制两台机械臂  
 
         ```bash
@@ -185,14 +190,14 @@ __注意3： 以下启动说明以6轴为例，5轴和7轴的用法只需找到�
     
         ```bash
         $ cd ~/dev_ws/
-        # robot1_ip表示左臂控制的IP地址
-        # robot2_ip表示右臂控制的IP地址
+        # robot_ip_1表示左臂控制的IP地址
+        # robot_ip_2表示右臂控制的IP地址
         # add_gripper为true时会加载xarm夹爪的模型
         # add_gripper_1参数可以单独指定左臂是否加载夹爪的模型，默认为add_gripper的值
         # add_gripper_2参数可以单独指定右臂是否加载夹爪的模型，默认为add_gripper的值
         # dof_1参数可以单独指定左臂轴数，默认为dof的值（这里为6，不同启动脚本不一样）
         # dof_2参数可以单独指定右臂轴数，默认为dof的值（这里为6，不同启动脚本不一样）
-        $ ros2 launch xarm_moveit_config dual_xarm6_moveit_realmove.launch.py robot1_ip:=192.168.1.117 robot2_ip:=192.168.1.203 [add_gripper:=true]
+        $ ros2 launch xarm_moveit_config dual_xarm6_moveit_realmove.launch.py robot_ip_1_1:=192.168.1.117 robot_ip_2:=192.168.1.203 [add_gripper:=true]
         ```
 
 - ### 5.7 xarm_planner

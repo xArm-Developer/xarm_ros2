@@ -15,7 +15,7 @@ from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
-    limited = LaunchConfiguration('limited', default=False)
+    limited = LaunchConfiguration('limited', default=True)
     effort_control = LaunchConfiguration('effort_control', default=False)
     velocity_control = LaunchConfiguration('velocity_control', default=False)
     add_gripper = LaunchConfiguration('add_gripper', default=False)
@@ -34,10 +34,10 @@ def generate_launch_description():
     geometry_mesh_tcp_xyz = LaunchConfiguration('geometry_mesh_tcp_xyz', default='"0 0 0"')
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
 
-    # xarm moveit fake launch
-    # xarm_moveit_config/launch/_dual_xarm_moveit_fake.launch.py
-    xarm_moveit_fake_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_dual_xarm_moveit_fake.launch.py'])),
+    # robot moveit fake launch
+    # xarm_moveit_config/launch/_dual_robot_moveit_fake.launch.py
+    robot_moveit_fake_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_dual_robot_moveit_fake.launch.py'])),
         launch_arguments={
             'hw_ns': hw_ns,
             'limited': limited,
@@ -46,6 +46,7 @@ def generate_launch_description():
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'dof': '6',
+            'robot_type': 'xarm',
             'no_gui_ctrl': 'false',
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,
@@ -63,5 +64,5 @@ def generate_launch_description():
     )
     
     return LaunchDescription([
-        xarm_moveit_fake_launch
+        robot_moveit_fake_launch
     ])

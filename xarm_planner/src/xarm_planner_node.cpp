@@ -43,8 +43,10 @@ XArmPlannerRunner::XArmPlannerRunner(rclcpp::Node::SharedPtr& node)
     : node_(node)
 {
     int dof;
-    node_->get_parameter_or("DOF", dof, 7);
-    std::string group_name = "xarm" + std::to_string(dof);
+    node_->get_parameter_or("dof", dof, 7);
+    std::string robot_type;
+    node_->get_parameter_or("robot_type", robot_type, std::string("xarm"));
+    std::string group_name = robot_type + std::to_string(dof);
 
     RCLCPP_INFO(node_->get_logger(), "namespace: %s, group_name: %s", node->get_namespace(), group_name.c_str());
 

@@ -36,62 +36,56 @@ if(BUILD_TESTING)
 endif()
 
 find_package(hardware_interface REQUIRED)
+# find_package(controller_interface REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_action REQUIRED)
+find_package(rclcpp_lifecycle REQUIRED)
 find_package(sensor_msgs REQUIRED)
+find_package(controller_manager_msgs REQUIRED)
 find_package(xarm_msgs REQUIRED)
 find_package(xarm_api REQUIRED)
+find_package(xarm_sdk REQUIRED)
 
 add_library(
-  xarm_hw
+  uf_robot_hardware
   SHARED
-  src/xarm_hw.cpp
+  src/hardware/uf_robot_system_hardware.cpp
+  src/hardware/uf_robot_fake_system_hardware.cpp
 )
 target_include_directories(
-  xarm_hw
+  uf_robot_hardware
   PRIVATE
   include
+  ${xarm_sdk_INCLUDE_DIRS}
   ${xarm_api_INCLUDE_DIRS}
+  ${ament_INCLUDE_DIRS}
 )
 ament_target_dependencies(
-  xarm_hw
+  uf_robot_hardware
   hardware_interface
+  # controller_interface
   pluginlib
   rclcpp
+  rclcpp_action
+  rclcpp_lifecycle
   std_msgs
   sensor_msgs
+  controller_manager_msgs
   xarm_msgs
 )
 
-target_link_libraries(xarm_hw 
+# message(STATUS "xarm_sdk_INCLUDE_DIRS: ${xarm_sdk_INCLUDE_DIRS}")
+# message(WARNING "xarm_api_INCLUDE_DIRS: ${xarm_api_INCLUDE_DIRS}")
+# message(WARNING "xarm_sdk_LIBRARIES: ${xarm_sdk_LIBRARIES}")
+# message(WARNING "xarm_api_LIBRARIES: ${xarm_api_LIBRARIES}")
+
+target_link_libraries(uf_robot_hardware 
   ${xarm_api_LIBRARIES}
   ${ament_LIBRARIES}
 )
 
-add_library(
-  fake_xarm_hw
-  SHARED
-  src/fake_xarm_hw.cpp
-)
-target_include_directories(
-  fake_xarm_hw
-  PRIVATE
-  include
-)
-ament_target_dependencies(
-  fake_xarm_hw
-  hardware_interface
-  pluginlib
-  rclcpp
-  std_msgs
-  sensor_msgs
-)
-target_link_libraries(fake_xarm_hw 
-  ${ament_LIBRARIES}
-)
-
-pluginlib_export_plugin_description_file(hardware_interface xarm_hw_plugin.xml)
-pluginlib_export_plugin_description_file(hardware_interface fake_xarm_hw_plugin.xml)
+pluginlib_export_plugin_description_file(hardware_interface uf_hardware_interface_plugins.xml)
 
 install(
   DIRECTORY include/
@@ -99,7 +93,7 @@ install(
 )
 
 install(
-  TARGETS xarm_hw fake_xarm_hw
+  TARGETS uf_robot_hardware
   DESTINATION lib
 )
 
@@ -110,8 +104,7 @@ install(DIRECTORY
 )
 
 ament_export_include_directories(include)
-ament_export_libraries(xarm_hw)
-ament_export_libraries(fake_xarm_hw)
+ament_export_libraries(uf_robot_hardware)
 ament_export_dependencies(
   hardware_interface
   pluginlib
