@@ -39,7 +39,7 @@ bool XArmPlanner::planJointTarget(const std::vector<double>& joint_target)
     bool success = move_group_->setJointValueTarget(joint_target);
     if (!success)
         RCLCPP_WARN(node_->get_logger(), "setJointValueTarget: out of bounds");
-    success = (move_group_->plan(xarm_plan_) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+    success = (move_group_->plan(xarm_plan_) == moveit::core::MoveItErrorCode::SUCCESS);
     if (!success)
         RCLCPP_ERROR(node_->get_logger(), "planJointTarget: plan failed");
     return success;
@@ -50,7 +50,7 @@ bool XArmPlanner::planPoseTarget(const geometry_msgs::msg::Pose& pose_target)
     bool success = move_group_->setPoseTarget(pose_target);
     if (!success)
         RCLCPP_WARN(node_->get_logger(), "setPoseTarget: out of bounds");
-    success = (move_group_->plan(xarm_plan_) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+    success = (move_group_->plan(xarm_plan_) == moveit::core::MoveItErrorCode::SUCCESS);
     if (!success)
         RCLCPP_ERROR(node_->get_logger(), "planPoseTarget: plan failed");
     return success;
@@ -61,7 +61,7 @@ bool XArmPlanner::planPoseTargets(const std::vector<geometry_msgs::msg::Pose>& p
     bool success = move_group_->setPoseTargets(pose_target_vector);
     if (!success)
         RCLCPP_WARN(node_->get_logger(), "setPoseTargets: out of bounds");
-    success = (move_group_->plan(xarm_plan_) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+    success = (move_group_->plan(xarm_plan_) == moveit::core::MoveItErrorCode::SUCCESS);
     if (!success)
         RCLCPP_ERROR(node_->get_logger(), "planPoseTargets: plan failed");
     return success;
@@ -84,12 +84,12 @@ bool XArmPlanner::planCartesianPath(const std::vector<geometry_msgs::msg::Pose>&
 
 bool XArmPlanner::executePath(bool wait)
 {
-    moveit::planning_interface::MoveItErrorCode code;
+    moveit::core::MoveItErrorCode code;
     if (wait)
         code =  move_group_->execute(xarm_plan_);
     else
         code =  move_group_->asyncExecute(xarm_plan_);
-    bool success = (code == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+    bool success = (code == moveit::core::MoveItErrorCode::SUCCESS);
     if (!success)
         RCLCPP_ERROR(node_->get_logger(), "executePath: execute failed, wait=%d, MoveItErrorCode=%d", wait, code.val);
     return success;
