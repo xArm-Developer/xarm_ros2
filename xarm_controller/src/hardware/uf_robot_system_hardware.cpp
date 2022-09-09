@@ -287,7 +287,7 @@ namespace uf_robot_hardware
         return CallbackReturn::SUCCESS;
     }
 
-    hardware_interface::return_type UFRobotSystemHardware::read()
+    hardware_interface::return_type UFRobotSystemHardware::read(const rclcpp::Time & time, const rclcpp::Duration &period)
     {
         read_cnts_ += 1;
         read_ready_ = _xarm_is_ready_read();
@@ -349,7 +349,7 @@ namespace uf_robot_hardware
         return hardware_interface::return_type::OK;
     }
 
-    hardware_interface::return_type UFRobotSystemHardware::write()
+    hardware_interface::return_type UFRobotSystemHardware::write(const rclcpp::Time & time, const rclcpp::Duration &period)
     {
         if (_need_reset()) {
             if (initialized_) reload_controller_ = true;

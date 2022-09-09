@@ -114,14 +114,14 @@ namespace uf_robot_hardware
         return CallbackReturn::SUCCESS;
     }
 
-    hardware_interface::return_type UFRobotFakeSystemHardware::read()
+    hardware_interface::return_type UFRobotFakeSystemHardware::read(const rclcpp::Time & time, const rclcpp::Duration &period)
     {
         joint_state_msg_.header.stamp = node_->get_clock()->now();
         joint_state_pub_->publish(joint_state_msg_);
         return hardware_interface::return_type::OK;
     }
 
-    hardware_interface::return_type UFRobotFakeSystemHardware::write()
+    hardware_interface::return_type UFRobotFakeSystemHardware::write(const rclcpp::Time & time, const rclcpp::Duration &period)
     {
         // std::string pos_str = "[ ";
         // std::string vel_str = "[ ";

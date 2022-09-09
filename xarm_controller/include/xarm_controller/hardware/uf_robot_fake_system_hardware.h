@@ -15,6 +15,8 @@
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/string.hpp>
 #include <sensor_msgs/msg/joint_state.hpp>
+#include "rclcpp_lifecycle/node_interfaces/lifecycle_node_interface.hpp"
+// #include "rclcpp_lifecycle/state.hpp"
 #include "hardware_interface/hardware_info.hpp"
 #include "hardware_interface/system_interface.hpp"
 #include "hardware_interface/types/hardware_interface_return_values.hpp"
@@ -24,6 +26,8 @@
 
 namespace uf_robot_hardware
 {
+    using CallbackReturn = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn;
+
     class UFRobotFakeSystemHardware : public hardware_interface::SystemInterface
     {
     public:
@@ -37,8 +41,8 @@ namespace uf_robot_hardware
         CallbackReturn on_activate(const rclcpp_lifecycle::State& previous_state) final;
         CallbackReturn on_deactivate(const rclcpp_lifecycle::State& previous_state) final;
 
-        hardware_interface::return_type read() final;
-        hardware_interface::return_type write() final;
+        hardware_interface::return_type read(const rclcpp::Time & time, const rclcpp::Duration &period) final;
+        hardware_interface::return_type write(const rclcpp::Time & time, const rclcpp::Duration &period) final;
 
     protected:
         hardware_interface::HardwareInfo info_;
