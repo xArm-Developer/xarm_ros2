@@ -375,3 +375,12 @@ __Reminder 3： All following instructions will base on xArm6，please use prope
     - __geometry_mesh_tcp_xyz_2__
     - __geometry_mesh_tcp_rpy_1__
     - __geometry_mesh_tcp_rpy_2__
+
+## 7. StevensARM New Instructions
+- Visualize using RViz
+
+        $ ros2 launch xarm_description stevensARM_rviz_display.launch.py add_gripper:=true
+        
+- Control RViz using moveit  
+
+        $ ros2 launch xarm_moveit_config stevensARM_moveit_fake.launch.py add_gripper:=true

@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="xarm_device">
+  <xacro:macro name="xarm_device" params="prefix:='' namespace:='xarm' limited:='false' effort_control:='false' 
+    velocity_control:='false' add_gripper:='false' add_vacuum_gripper:='false' dof:=7 robot_type:='xarm' ros2_control_plugin:='uf_robot_hardware/UFRobotSystemHardware'
+    attach_to:='world' xyz:='0 0 0' rpy:='0 0 0' ros2_control_params:='' load_gazebo_plugin:='false' 
+    add_other_geometry:='false' 
+    geometry_type:='box' geometry_mass:='0.1' 
+    geometry_radius:='0.1' geometry_height:='0.1' 
+    geometry_length:='0.1' geometry_width:='0.1'
+    geometry_mesh_filename:=''
+    geometry_mesh_origin_xyz:='0 0 0'
+    geometry_mesh_origin_rpy:='0 0 0'
+    geometry_mesh_tcp_xyz:='0 0 0'
+    geometry_mesh_tcp_rpy:='0 0 0' 
+    robot_ip:='' report_type:='normal'
+    baud_checkset:='true'
+    default_gripper_baud:=2000000 "> 
+    
+    <xacro:if value="${dof == 5}">
+      <!-- Load XArm5 Robot Model URDF -->
+      <xacro:include filename="$(find xarm_description)/urdf/xarm5/xarm5_robot_macro.xacro" />
+      <xacro:xarm5_robot prefix="${prefix}" namespace="${namespace}" limited="${limited}" 
+        effort_control="${effort_control}" velocity_control="${velocity_control}" 
+        ros2_control_plugin="${ros2_control_plugin}" 
+        attach_to="${attach_to}" xyz="${xyz}" rpy="${rpy}"
+        ros2_control_params="${ros2_control_params}"
+        load_gazebo_plugin="${load_gazebo_plugin}"
+        add_gripper="${add_gripper}"
+        robot_ip="${robot_ip}"
+        report_type="${report_type}"
+        baud_checkset="${baud_checkset}"
+        default_gripper_baud="${default_gripper_baud}" />
+    </xacro:if>
+    <xacro:if value="${dof == 6}">
+      <xacro:if value="${robot_type == 'lite'}">
+        <!-- Load Lite6 Robot Model URDF -->
+        <xacro:include filename="$(find xarm_description)/urdf/lite6/lite6_robot_macro.xacro" />
+        <xacro:lite6_robot prefix="${prefix}" namespace="${namespace}" limited="${limited}" 
+          effort_control="${effort_control}" velocity_control="${velocity_control}" 
+          ros2_control_plugin="${ros2_control_plugin}" 
+          attach_to="${attach_to}" xyz="${xyz}" rpy="${rpy}"
+          ros2_control_params="${ros2_control_params}"
+          load_gazebo_plugin="${load_gazebo_plugin}" 
+          add_gripper="${add_gripper}"
+          robot_ip="${robot_ip}"
+          report_type="${report_type}"
+          baud_checkset="${baud_checkset}"
+          default_gripper_baud="${default_gripper_baud}" />
+      </xacro:if>
+      <xacro:unless value="${robot_type == 'lite'}">
+        <!-- Load XArm6 Robot Model URDF -->
+        <xacro:include filename="$(find xarm_description)/urdf/xarm6/xarm6_robot_macro.xacro" />
+        <xacro:xarm6_robot prefix="${prefix}" namespace="${namespace}" limited="${limited}" 
+          effort_control="${effort_control}" velocity_control="${velocity_control}" 
+          ros2_control_plugin="${ros2_control_plugin}" 
+          attach_to="${attach_to}" xyz="${xyz}" rpy="${rpy}"
+          ros2_control_params="${ros2_control_params}"
+          load_gazebo_plugin="${load_gazebo_plugin}" 
+          add_gripper="${add_gripper}"
+          robot_ip="${robot_ip}"
+          report_type="${report_type}"
+          baud_checkset="${baud_checkset}"
+          default_gripper_baud="${default_gripper_baud}"/>
+      </xacro:unless>
+    </xacro:if>
+    <xacro:unless value="${dof == 5 or dof == 6}">
+      <!-- Load XArm7 Robot Model URDF -->
+      <xacro:include filename="$(find xarm_description)/urdf/stevensARM/stevensARM_robot_macro.xacro" />
+      <xacro:xarm7_robot prefix="${prefix}" namespace="${namespace}" limited="${limited}" 
+        effort_control="${effort_control}" velocity_control="${velocity_control}" 
+        ros2_control_plugin="${ros2_control_plugin}"
+        attach_to="${attach_to}" xyz="${xyz}" rpy="${rpy}"
+        ros2_control_params="${ros2_control_params}"
+        load_gazebo_plugin="${load_gazebo_plugin}" 
+        add_gripper="${add_gripper}"
+        robot_ip="${robot_ip}"
+        report_type="${report_type}"
+        baud_checkset="${baud_checkset}"
+        default_gripper_baud="${default_gripper_baud}" />
+    </xacro:unless>
+    
+    <xacro:if value="${add_gripper}">
+      <xacro:if value="${robot_type == 'lite'}">
+        <!-- Load Lite Gripper Model URDF -->
+        <xacro:include filename="$(find xarm_description)/urdf/gripper/lite_gripper.urdf.xacro" />
+        <xacro:uflite_gripper_urdf prefix="${prefix}" attach_to="${prefix}link_eef" />
+      </xacro:if>
+      <xacro:unless value="${robot_type == 'lite'}">
+        <!-- Load XArm Gripper Model URDF -->
+        <xacro:include filename="$(find xarm_description)/urdf/stevensIDM/stevensIDM_macro.xacro" />
+        <xacro:xarm_gripper_macro prefix="${prefix}" attach_to="${prefix}link_eef" effort_control="${effort_control}" velocity_control="${velocity_control}" 
+          ros2_control_plugin="${ros2_control_plugin}" ros2_control_params="${ros2_control_params}"
+          load_gazebo_plugin="${load_gazebo_plugin}" />
+      </xacro:unless>
+    </xacro:if>
+
+    <xacro:if value="${not add_gripper and add_vacuum_gripper}">
+      <xacro:if value="${robot_type == 'lite'}">
+        <!-- Load Lite Vacuum Gripper Model URDF -->
+        <xacro:include filename="$(find xarm_description)/urdf/vacuum_gripper/lite_vacuum_gripper.urdf.xacro" />
+        <xacro:uflite_vacuum_gripper_urdf prefix="${prefix}" attach_to="${prefix}link_eef" />
+      </xacro:if>
+      <xacro:unless value="${robot_type == 'lite'}">
+        <!-- Load XArm Vacuum Gripper Model URDF -->
+        <xacro:include filename="$(find xarm_description)/urdf/vacuum_gripper/xarm_vacuum_gripper.urdf.xacro" />
+        <xacro:xarm_vacuum_gripper_urdf prefix="${prefix}" attach_to="${prefix}link_eef" effort_control="${effort_control}" velocity_control="${velocity_control}" />
+      </xacro:unless>
+    </xacro:if>
+
+    <xacro:if value="${not add_gripper and not add_vacuum_gripper and add_other_geometry}">
+      <!-- Load Other Model URDF -->
+      <xacro:include filename="$(find xarm_description)/urdf/other/other_geometry.urdf.xacro" />
+      <xacro:other_geometry prefix="${prefix}" attach_to="${prefix}link_eef"
+        geometry_type="${geometry_type}" geometry_mass="${geometry_mass}" 
+        geometry_height="${geometry_height}" geometry_radius="${geometry_radius}"
+        geometry_length="${geometry_length}" geometry_width="${geometry_width}"
+        geometry_mesh_filename="${geometry_mesh_filename}" 
+        geometry_mesh_origin_xyz="${geometry_mesh_origin_xyz}" geometry_mesh_origin_rpy="${geometry_mesh_origin_rpy}"
+        geometry_mesh_tcp_xyz="${geometry_mesh_tcp_xyz}" geometry_mesh_tcp_rpy="${geometry_mesh_tcp_rpy}"
+      />
+    </xacro:if>
+
+  </xacro:macro>
+</robot>

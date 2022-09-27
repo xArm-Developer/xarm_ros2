@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="xarm_gripper_ros2_control" params="
+    prefix:='' ros2_control_plugin:='uf_robot_hardware/UFRobotFakeSystemHardware'
+    joint9_lower_limit:=${-0.1}  joint9_upper_limit:=${0.1}
+    joint10_lower_limit:=${-pi}  joint10_upper_limit:=${pi}
+    joint11_lower_limit:=${-0.7854}  joint11_upper_limit:=${0.7854}
+    joint12_lower_limit:=${-pi}  joint12_upper_limit:=${pi}">
+  <!--
+    Old
+    joint9_lower_limit:=${-pi}  joint9_upper_limit:=${pi}
+    joint10_lower_limit:=${0}  joint10_upper_limit:=${0}
+    New
+    joint9_lower_limit:=${-0.1}  joint9_upper_limit:=${0.1}
+    joint10_lower_limit:=${-pi}  joint10_upper_limit:=${pi}
+  -->
+    <ros2_control name="XArmGripperSystem" type="system">
+      <hardware>
+        <plugin>${ros2_control_plugin}</plugin>
+      </hardware>
+      <joint name="${prefix}joint9">
+        <command_interface name="position">
+          <param name="min">${joint9_lower_limit}</param>
+          <param name="min">${joint9_upper_limit}</param>
+        </command_interface>
+        <command_interface name="velocity">
+          <param name="min">-3.14</param>
+          <param name="max">3.14</param>
+        </command_interface>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        <!-- <state_interface name="effort"/> -->
+      </joint>
+      <joint name="${prefix}joint10">
+        <command_interface name="position">
+          <param name="min">${joint10_lower_limit}</param>
+          <param name="min">${joint10_upper_limit}</param>
+        </command_interface>
+        <command_interface name="velocity">
+          <param name="min">-3.14</param>
+          <param name="max">3.14</param>
+        </command_interface>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        <!-- <state_interface name="effort"/> -->
+      </joint>
+      <joint name="${prefix}joint11">
+        <command_interface name="position">
+          <param name="min">${joint11_lower_limit}</param>
+          <param name="min">${joint11_upper_limit}</param>
+        </command_interface>
+        <command_interface name="velocity">
+          <param name="min">-3.14</param>
+          <param name="max">3.14</param>
+        </command_interface>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        <!-- <state_interface name="effort"/> -->
+      </joint>
+      <joint name="${prefix}joint12">
+        <command_interface name="position">
+          <param name="min">${joint12_lower_limit}</param>
+          <param name="min">${joint12_upper_limit}</param>
+        </command_interface>
+        <command_interface name="velocity">
+          <param name="min">-3.14</param>
+          <param name="max">3.14</param>
+        </command_interface>
+        <state_interface name="position"/>
+        <state_interface name="velocity"/>
+        <!-- <state_interface name="effort"/> -->
+      </joint>
+    </ros2_control>
+  </xacro:macro>
+</robot>

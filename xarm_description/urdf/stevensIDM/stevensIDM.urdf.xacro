@@ -1,0 +1,369 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="xarm_gripper">
+<!--
+  Author: Jason Peng <jason@ufactory.cc>
+-->
+  <xacro:macro name="xarm_gripper_urdf" params="prefix:='' attach_to:='' rpy:='0 0 0' xyz:='0 0 0'
+    joint9_lower_limit:=${-0.1}  joint9_upper_limit:=${0.1}
+    joint10_lower_limit:=${-pi}  joint10_upper_limit:=${pi}
+    joint11_lower_limit:=${-0.7854}  joint11_upper_limit:=${0.7854}
+    joint12_lower_limit:=${-pi}  joint12_upper_limit:=${pi}">
+  <!--
+    Old
+    joint9_lower_limit:=${-pi}  joint9_upper_limit:=${pi}
+    joint10_lower_limit:=${0}  joint10_upper_limit:=${0}
+    New
+    joint9_lower_limit:=${-0.1}  joint9_upper_limit:=${0.1}
+    joint10_lower_limit:=${-pi}  joint10_upper_limit:=${pi}
+  -->
+  <xacro:unless value="${attach_to == ''}">
+    <joint name="${prefix}gripper_fix" type="fixed">
+      <parent link="${attach_to}"/>
+      <child link="${prefix}xarm_gripper_base_link"/>
+      <origin xyz="${xyz}" rpy="1.5708 0 0"/>
+    </joint>
+  </xacro:unless>
+  <link
+    name="${prefix}xarm_gripper_base_link">
+    <inertial>
+      <origin
+        xyz="9.99200722162641E-16 0.00458824672038405 1.49289644255923E-05"
+        rpy="0 0 0" />
+      <mass
+        value="0.0946962330384301" />
+      <inertia
+        ixx="7.70552813773481E-05"
+        ixy="-5.9292306307801E-20"
+        ixz="-7.6232965252887E-21"
+        iyy="0.000154382619015506"
+        iyz="-5.82102485295375E-10"
+        izz="7.92651325273305E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <!-- <mesh filename="package://xarm_description/meshes/stevensIDM/link_eef1.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/stevensIDM/link_eef1.STL"/>
+      </geometry>
+      <material name="White">
+        <color rgba="1.0 1.0 1.0 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <!-- <mesh filename="package://xarm_description/meshes/stevensIDM/link_eef1.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/stevensIDM/link_eef1.STL"/>
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="${prefix}link_eef2">
+    <inertial>
+      <origin
+        xyz="-0.0117721068477706 -0.00368627483133455 0.00563763818837004"
+        rpy="0 0 0" />
+      <mass
+        value="0.534470263388155" />
+      <inertia
+        ixx="0.000316041014096872"
+        ixy="1.39432456637317E-07"
+        ixz="-1.11227882546747E-06"
+        iyy="0.000462904499321384"
+        iyz="-4.86460916641938E-06"
+        izz="0.000272495193939556" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <!-- <mesh filename="package://xarm_description/meshes/stevensIDM/link_eef2.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/stevensIDM/link_eef2.STL"/>
+      </geometry>
+      <material name="Silver">
+        <color rgba="0.753 0.753 0.753 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <!-- <mesh filename="package://xarm_description/meshes/stevensIDM/link_eef2.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/stevensIDM/link_eef2.STL"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="${prefix}joint8"
+    type="fixed">
+    <origin
+      xyz="-0.011926 0.064724 -0.01202"
+      rpy="0 1.5708 0" />
+    <parent
+      link="${prefix}xarm_gripper_base_link" />
+    <child
+      link="${prefix}link_eef2" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="${prefix}link_eef3">
+    <inertial>
+      <origin
+        xyz="5.77315972805081E-15 -5.55111512312578E-17 -0.146909106356603"
+        rpy="0 0 0" />
+      <mass
+        value="0.0203272103093399" />
+      <inertia
+        ixx="0.000227995343661604"
+        ixy="1.6940658945086E-20"
+        ixz="3.59287553423633E-19"
+        iyy="0.000227995343661603"
+        iyz="-2.97029804619829E-19"
+        izz="1.79285994928384E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <!-- <mesh filename="package://xarm_description/meshes/stevensIDM/link_eef3.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/stevensIDM/link_eef3.STL"/>
+      </geometry>
+      <material name="Silver">
+        <color rgba="0.753 0.753 0.753 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <!-- <mesh filename="package://xarm_description/meshes/stevensIDM/link_eef3.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/stevensIDM/link_eef3.STL"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="${prefix}joint9"
+    type="prismatic">
+    <!-- Old Revolute | New Prismatic? -->
+    <origin
+      xyz="-0.011806 0.024616 0.095924"
+      rpy="3.1416 0 1.7008" />
+    <parent
+      link="${prefix}link_eef2" />
+    <child
+      link="${prefix}link_eef3" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="${joint9_lower_limit}"
+      upper="${joint9_upper_limit}"
+      effort="0"
+      velocity="1" />
+  </joint>
+  <link
+    name="${prefix}link_eef4">
+    <inertial>
+      <origin
+        xyz="-0.0240197598201422 -0.00187600496956952 0.0128659799586333"
+        rpy="0 0 0" />
+      <mass
+        value="0.000400893201461897" />
+      <inertia
+        ixx="4.68051660900571E-09"
+        ixy="-1.17372126196901E-15"
+        ixz="7.41958686295516E-15"
+        iyy="3.75288399336496E-09"
+        iyz="-3.48111353781535E-15"
+        izz="4.03083642490634E-09" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0.024 0 -0.01285"
+        rpy="0 0 0" />
+      <!-- xyz="0 0 0" rpy="0 0 0" -->
+      <geometry>
+        <!-- <mesh filename="package://xarm_description/meshes/stevensIDM/link_eef4.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/stevensIDM/link_eef4.STL"/>
+      </geometry>
+      <material name="Silver">
+        <color rgba="0.753 0.753 0.753 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <!-- <mesh filename="package://xarm_description/meshes/stevensIDM/link_eef4.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/stevensIDM/link_eef4.STL"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="${prefix}joint10"
+    type="revolute">
+    <!-- Old Fixed | New Revolute? -->
+    <origin
+      xyz="0.00 0.00 -0.33619"
+      rpy="-1.5708 0 0" />
+      <!-- xyz="0.025594 0.0093495 -0.33619" rpy="-1.5708 0 0.84199" -->
+    <parent
+      link="${prefix}link_eef3" />
+    <child
+      link="${prefix}link_eef4" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="${joint10_lower_limit}"
+      upper="${joint10_upper_limit}"
+      effort="0"
+      velocity="1" />
+  </joint>
+  <link
+    name="${prefix}link_eef5">
+    <inertial>
+      <origin
+        xyz="0.00476028482319157 0.00513868396125695 1.60593939668718E-06"
+        rpy="0 0 0" />
+      <mass
+        value="0.000275381232562461" />
+      <inertia
+        ixx="4.19431891117433E-09"
+        ixy="-9.22955576886424E-14"
+        ixz="-2.79163362540996E-14"
+        iyy="1.98380804889247E-09"
+        iyz="3.10397621335179E-14"
+        izz="2.9581472195642E-09" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="-0.00475 0 0"
+        rpy="0 0 0" />
+      <!-- xyz="0 0 0" rpy="0 0 3.1415" -->
+      <geometry>
+        <!-- <mesh filename="package://xarm_description/meshes/stevensIDM/link_eef5.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/stevensIDM/link_eef5.STL"/>
+      </geometry>
+      <material name="Silver">
+        <color rgba="0.753 0.753 0.753 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <!-- <mesh filename="package://xarm_description/meshes/stevensIDM/link_eef5.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/stevensIDM/link_eef5.STL"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="${prefix}joint11"
+    type="revolute">
+    <origin
+      xyz="0 0.0034188 0"
+      rpy="3.1411 -1.5708 3.1415" />
+    <!--"3.1411 -1.5708 0"-->
+    <!-- 
+      xyz -0.01285 0 -0.024 new
+      xyz -0.02402 0.0034188 0.0079557 old
+    -->
+    <parent
+      link="${prefix}link_eef4" />
+    <child
+      link="${prefix}link_eef5" />
+    <axis
+      xyz="1 0 0" />
+    <limit
+      lower="${joint11_lower_limit}"
+      upper="${joint11_upper_limit}"
+      effort="0"
+      velocity="1" />
+  </joint>
+  <link
+    name="${prefix}link_eef6">
+    <inertial>
+      <origin
+        xyz="0.00439132494768618 0.00152591739398578 0.0040215463859922"
+        rpy="0 0 0" />
+      <mass
+        value="5.85180216618526E-05" />
+      <inertia
+        ixx="1.15433640989747E-09"
+        ixy="-1.98562538714451E-11"
+        ixz="8.81689630462912E-11"
+        iyy="1.15716092227916E-09"
+        iyz="2.2905931060693E-10"
+        izz="1.47335359647222E-10" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="-0.00475 0 -0.00075"
+        rpy="0 0 0" />
+      <!-- xyz="-0.00475 0 -0.00075" rpy="0 3.1415 0"-->
+      <!-- -0.01285 0 -0.024-->
+      <geometry>
+        <!-- <mesh filename="package://xarm_description/meshes/stevensIDM/link_eef6_1.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/stevensIDM/link_eef6_1.STL"/>
+      </geometry>
+      <material name="Silver">
+        <color rgba="0.753 0.753 0.753 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="-0.00475 0 -0.00075"
+        rpy="0 0 0" />
+      <geometry>
+        <!-- <mesh filename="package://xarm_description/meshes/stevensIDM/link_eef6_1.STL" /> -->
+        <mesh filename="file:///$(find xarm_description)/meshes/stevensIDM/link_eef6_1.STL"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="${prefix}joint12"
+    type="revolute">
+    <origin
+      xyz="0 0.01075 0"
+      rpy="-1.5708 0 0" />
+      <!-- xyz="0.0048 0.01075 0" rpy="-1.5708 0 0" -->
+    <parent
+      link="${prefix}link_eef5" />
+    <child
+      link="${prefix}link_eef6" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="${joint12_lower_limit}"
+      upper="${joint12_upper_limit}"
+      effort="0"
+      velocity="1" />
+  </joint>
+
+  <link name="${prefix}link_tcp" />
+
+  <joint
+    name="${prefix}joint_tcp"
+    type="fixed">
+    <origin
+      xyz="0 0 0.172"
+      rpy="0 0 0" />
+    <parent
+      link="${prefix}xarm_gripper_base_link" />
+    <child
+      link="${prefix}link_tcp" />
+  </joint>
+
+  </xacro:macro>
+
+</robot>
