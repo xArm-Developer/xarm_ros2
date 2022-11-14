@@ -110,6 +110,12 @@ namespace xarm_api
         rclcpp::Service<xarm_msgs::srv::Call>::SharedPtr service_clean_bio_gripper_error_;
         rclcpp::Service<xarm_msgs::srv::Call>::SharedPtr service_start_record_trajectory_;
         rclcpp::Service<xarm_msgs::srv::Call>::SharedPtr service_stop_record_trajectory_;
+        rclcpp::Service<xarm_msgs::srv::Call>::SharedPtr service_ft_sensor_set_zero_;
+        rclcpp::Service<xarm_msgs::srv::Call>::SharedPtr service_set_linear_track_stop_;
+        rclcpp::Service<xarm_msgs::srv::Call>::SharedPtr service_clean_linear_track_error_;
+        rclcpp::Service<xarm_msgs::srv::Call>::SharedPtr service_open_lite6_gripper_;
+        rclcpp::Service<xarm_msgs::srv::Call>::SharedPtr service_close_lite6_gripper_;
+        rclcpp::Service<xarm_msgs::srv::Call>::SharedPtr service_stop_lite6_gripper_;
         bool _clean_error(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
         bool _clean_warn(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
         bool _clean_conf(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
@@ -121,6 +127,12 @@ namespace xarm_api
         bool _clean_bio_gripper_error(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
         bool _start_record_trajectory(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
         bool _stop_record_trajectory(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
+        bool _ft_sensor_set_zero(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
+        bool _set_linear_track_stop(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
+        bool _clean_linear_track_error(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
+        bool _open_lite6_gripper(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
+        bool _close_lite6_gripper(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
+        bool _stop_lite6_gripper(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res);
 
         // GetInt16
         rclcpp::Service<xarm_msgs::srv::GetInt16>::SharedPtr service_get_state_;
@@ -129,16 +141,40 @@ namespace xarm_api
         rclcpp::Service<xarm_msgs::srv::GetInt16>::SharedPtr service_get_gripper_err_code_;
         rclcpp::Service<xarm_msgs::srv::GetInt16>::SharedPtr service_get_bio_gripper_status_;
         rclcpp::Service<xarm_msgs::srv::GetInt16>::SharedPtr service_get_bio_gripper_error_;
+        rclcpp::Service<xarm_msgs::srv::GetInt16>::SharedPtr service_get_reduced_mode_;
+        rclcpp::Service<xarm_msgs::srv::GetInt16>::SharedPtr service_get_report_tau_or_i_;
+        rclcpp::Service<xarm_msgs::srv::GetInt16>::SharedPtr service_ft_sensor_app_get_;
+        rclcpp::Service<xarm_msgs::srv::GetInt16>::SharedPtr service_get_ft_sensor_error_;
+        rclcpp::Service<xarm_msgs::srv::GetInt16>::SharedPtr service_get_trajectory_rw_status_;
+        rclcpp::Service<xarm_msgs::srv::GetInt16>::SharedPtr service_get_linear_track_pos_;
+        rclcpp::Service<xarm_msgs::srv::GetInt16>::SharedPtr service_get_linear_track_status_;
+        rclcpp::Service<xarm_msgs::srv::GetInt16>::SharedPtr service_get_linear_track_error_;
+        rclcpp::Service<xarm_msgs::srv::GetInt16>::SharedPtr service_get_linear_track_is_enabled_;
+        rclcpp::Service<xarm_msgs::srv::GetInt16>::SharedPtr service_get_linear_track_on_zero_;
+        rclcpp::Service<xarm_msgs::srv::GetInt16>::SharedPtr service_get_linear_track_sci_;
         bool _get_state(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
         bool _get_cmdnum(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
         bool _get_vacuum_gripper(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
         bool _get_gripper_err_code(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
         bool _get_bio_gripper_status(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
         bool _get_bio_gripper_error(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
+        bool _get_reduced_mode(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
+        bool _get_report_tau_or_i(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
+        bool _ft_sensor_app_get(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
+        bool _get_ft_sensor_error(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
+        bool _get_trajectory_rw_status(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
+        bool _get_linear_track_pos(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
+        bool _get_linear_track_status(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
+        bool _get_linear_track_error(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
+        bool _get_linear_track_is_enabled(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
+        bool _get_linear_track_on_zero(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
+        bool _get_linear_track_sci(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res);
 
         // GetInt16List
         rclcpp::Service<xarm_msgs::srv::GetInt16List>::SharedPtr service_get_err_warn_code_;
+        rclcpp::Service<xarm_msgs::srv::GetInt16List>::SharedPtr service_get_linear_track_sco_;
         bool _get_err_warn_code(const std::shared_ptr<xarm_msgs::srv::GetInt16List::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16List::Response> res);
+        bool _get_linear_track_sco(const std::shared_ptr<xarm_msgs::srv::GetInt16List::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16List::Response> res);
 
         // SetInt16
         rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_mode_;
@@ -154,6 +190,16 @@ namespace xarm_api
         rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_self_collision_detection_;
         rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_simulation_robot_;
         rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_baud_checkset_enable_;
+        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_report_tau_or_i_;
+        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_ft_sensor_enable_;
+        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_ft_sensor_app_set_;
+        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_linear_track_enable_;
+        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_linear_track_speed_;
+        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_cartesian_velo_continuous_;
+        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_allow_approx_motion_;
+        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_set_only_check_type_;     
+        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_config_tgpio_reset_when_stop_;     
+        rclcpp::Service<xarm_msgs::srv::SetInt16>::SharedPtr service_config_cgpio_reset_when_stop_;     
         bool _set_mode(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
         bool _set_state(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
         bool _set_collision_sensitivity(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
@@ -167,6 +213,16 @@ namespace xarm_api
         bool _set_self_collision_detection(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
         bool _set_simulation_robot(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
         bool _set_baud_checkset_enable(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+        bool _set_report_tau_or_i(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+        bool _ft_sensor_enable(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+        bool _ft_sensor_app_set(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+        bool _set_linear_track_enable(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+        bool _set_linear_track_speed(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+        bool _set_cartesian_velo_continuous(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+        bool _set_allow_approx_motion(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+        bool _set_only_check_type(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+        bool _config_tgpio_reset_when_stop(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
+        bool _config_cgpio_reset_when_stop(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res);
 
         // SetInt16ById
         rclcpp::Service<xarm_msgs::srv::SetInt16ById>::SharedPtr service_motion_enable_;
@@ -204,9 +260,11 @@ namespace xarm_api
         rclcpp::Service<xarm_msgs::srv::GetFloat32List>::SharedPtr service_get_position_;
         rclcpp::Service<xarm_msgs::srv::GetFloat32List>::SharedPtr service_get_servo_angle_;
         rclcpp::Service<xarm_msgs::srv::GetFloat32List>::SharedPtr service_get_position_aa_;
+        rclcpp::Service<xarm_msgs::srv::GetFloat32List>::SharedPtr service_get_ft_sensor_data_;
         bool _get_position(const std::shared_ptr<xarm_msgs::srv::GetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::GetFloat32List::Response> res);
         bool _get_servo_angle(const std::shared_ptr<xarm_msgs::srv::GetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::GetFloat32List::Response> res);
         bool _get_position_aa(const std::shared_ptr<xarm_msgs::srv::GetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::GetFloat32List::Response> res);
+        bool _get_ft_sensor_data(const std::shared_ptr<xarm_msgs::srv::GetFloat32List::Request> req, std::shared_ptr<xarm_msgs::srv::GetFloat32List::Response> res);
         
         // SetFloat32
         rclcpp::Service<xarm_msgs::srv::SetFloat32>::SharedPtr service_set_pause_time_;
@@ -355,6 +413,40 @@ namespace xarm_api
         // TrajPlay
         rclcpp::Service<xarm_msgs::srv::TrajPlay>::SharedPtr service_playback_trajectory_;
         bool _playback_trajectory(const std::shared_ptr<xarm_msgs::srv::TrajPlay::Request> req, std::shared_ptr<xarm_msgs::srv::TrajPlay::Response> res);
+    
+        // IdenLoad
+        rclcpp::Service<xarm_msgs::srv::IdenLoad>::SharedPtr service_iden_tcp_load_;
+        rclcpp::Service<xarm_msgs::srv::IdenLoad>::SharedPtr service_ft_sensor_iden_load_;
+        bool _iden_tcp_load(const std::shared_ptr<xarm_msgs::srv::IdenLoad::Request> req, std::shared_ptr<xarm_msgs::srv::IdenLoad::Response> res);
+        bool _ft_sensor_iden_load(const std::shared_ptr<xarm_msgs::srv::IdenLoad::Request> req, std::shared_ptr<xarm_msgs::srv::IdenLoad::Response> res);
+
+        // FtCaliLoad
+        rclcpp::Service<xarm_msgs::srv::FtCaliLoad>::SharedPtr service_ft_sensor_cali_load_;
+        bool _ft_sensor_cali_load(const std::shared_ptr<xarm_msgs::srv::FtCaliLoad::Request> req, std::shared_ptr<xarm_msgs::srv::FtCaliLoad::Response> res);
+    
+        // FtForceConfig
+        rclcpp::Service<xarm_msgs::srv::FtForceConfig>::SharedPtr service_config_force_control_;
+        bool _config_force_control(const std::shared_ptr<xarm_msgs::srv::FtForceConfig::Request> req, std::shared_ptr<xarm_msgs::srv::FtForceConfig::Response> res);
+    
+        // FtForcePid
+        rclcpp::Service<xarm_msgs::srv::FtForcePid>::SharedPtr service_set_force_control_pid_;
+        bool _set_force_control_pid(const std::shared_ptr<xarm_msgs::srv::FtForcePid::Request> req, std::shared_ptr<xarm_msgs::srv::FtForcePid::Response> res);
+    
+        // FtImpedance
+        rclcpp::Service<xarm_msgs::srv::FtImpedance>::SharedPtr service_set_impedance_;
+        rclcpp::Service<xarm_msgs::srv::FtImpedance>::SharedPtr service_set_impedance_mbk_;
+        rclcpp::Service<xarm_msgs::srv::FtImpedance>::SharedPtr service_set_impedance_config_;
+        bool _set_impedance(const std::shared_ptr<xarm_msgs::srv::FtImpedance::Request> req, std::shared_ptr<xarm_msgs::srv::FtImpedance::Response> res);
+        bool _set_impedance_mbk(const std::shared_ptr<xarm_msgs::srv::FtImpedance::Request> req, std::shared_ptr<xarm_msgs::srv::FtImpedance::Response> res);
+        bool _set_impedance_config(const std::shared_ptr<xarm_msgs::srv::FtImpedance::Request> req, std::shared_ptr<xarm_msgs::srv::FtImpedance::Response> res);
+
+        // LinearTrackBackOrigin
+        rclcpp::Service<xarm_msgs::srv::LinearTrackBackOrigin>::SharedPtr service_set_linear_track_back_origin_;
+        bool _set_linear_track_back_origin(const std::shared_ptr<xarm_msgs::srv::LinearTrackBackOrigin::Request> req, std::shared_ptr<xarm_msgs::srv::LinearTrackBackOrigin::Response> res);
+
+        // LinearTrackSetPos
+        rclcpp::Service<xarm_msgs::srv::LinearTrackSetPos>::SharedPtr service_set_linear_track_pos_;
+        bool _set_linear_track_pos(const std::shared_ptr<xarm_msgs::srv::LinearTrackSetPos::Request> req, std::shared_ptr<xarm_msgs::srv::LinearTrackSetPos::Response> res);
     };
 }
 

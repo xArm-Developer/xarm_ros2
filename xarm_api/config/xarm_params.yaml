@@ -23,13 +23,31 @@ ufactory_driver:
       clean_bio_gripper_error: false
       start_record_trajectory: false
       stop_record_trajectory: false
+      ft_sensor_set_zero: false
+      set_linear_track_stop: false
+      clean_linear_track_error: false
+      open_lite6_gripper: false
+      close_lite6_gripper: false
+      stop_lite6_gripper: false
       get_state: false
       get_cmdnum: false
       get_vacuum_gripper: false
       get_gripper_err_code: false
       get_bio_gripper_status: false
       get_bio_gripper_error: false
+      get_reduced_mode: false
+      get_report_tau_or_i: false
+      ft_sensor_app_get: false
+      get_ft_sensor_error: false
+      get_trajectory_rw_status: false
+      get_linear_track_pos: false
+      get_linear_track_status: false
+      get_linear_track_error: false
+      get_linear_track_is_enabled: false
+      get_linear_track_on_zero: false
+      get_linear_track_sci: false
       get_err_warn_code: false
+      get_linear_track_sco: false
       set_mode: true
       set_state: true
       set_collision_sensitivity: false
@@ -44,6 +62,16 @@ ufactory_driver:
       set_self_collision_detection: false
       set_simulation_robot: false
       set_baud_checkset_enable: false
+      set_report_tau_or_i: false
+      ft_sensor_enable: false
+      ft_sensor_app_set: false
+      set_linear_track_enable: false
+      set_linear_track_speed: false
+      set_cartesian_velo_continuous: false
+      set_allow_approx_motion: false
+      set_only_check_type: false
+      config_tgpio_reset_when_stop: false
+      config_cgpio_reset_when_stop: false
       motion_enable: true
       set_servo_attach: false
       set_servo_detach: false
@@ -56,6 +84,7 @@ ufactory_driver:
       get_position: false
       get_servo_angle: true
       get_position_aa: false
+      get_ft_sensor_data: false
       set_pause_time: false
       set_tcp_jerk: false
       set_tcp_maxacc: false
@@ -105,3 +134,12 @@ ufactory_driver:
       save_record_trajectory: false
       load_trajectory: false
       playback_trajectory: false
+      iden_tcp_load: false
+      ft_sensor_iden_load: false
+      ft_sensor_cali_load: false
+      config_force_control: false
+      set_impedance: false
+      set_impedance_mbk: false
+      set_impedance_config: false
+      set_linear_track_back_origin: false
+      set_linear_track_pos: false

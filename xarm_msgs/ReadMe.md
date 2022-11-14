@@ -23,6 +23,12 @@
     - xarm_api->service: __clean_bio_gripper_error__
     - xarm_api->service: __start_record_trajectory__
     - xarm_api->service: __stop_record_trajectory__
+    - xarm_api->service: __ft_sensor_set_zero__
+    - xarm_api->service: __set_linear_track_stop__
+    - xarm_api->service: __clean_linear_track_error__
+    - xarm_api->service: __open_lite6_gripper__
+    - xarm_api->service: __close_lite6_gripper__
+    - xarm_api->service: __stop_lite6_gripper__
 
 - [xarm_msgs::srv::GetInt16](./srv/GetInt16.srv)
     - xarm_api->service: __get_state__
@@ -31,6 +37,21 @@
     - xarm_api->service: __get_gripper_err_code__
     - xarm_api->service: __get_bio_gripper_status__
     - xarm_api->service: __get_bio_gripper_error__
+    - xarm_api->service: __get_reduced_mode__
+    - xarm_api->service: __get_report_tau_or_i__
+    - xarm_api->service: __ft_sensor_app_get__
+    - xarm_api->service: __get_ft_sensor_error__
+    - xarm_api->service: __get_trajectory_rw_status__
+    - xarm_api->service: __get_linear_track_pos__
+    - xarm_api->service: __get_linear_track_status__
+    - xarm_api->service: __get_linear_track_error__
+    - xarm_api->service: __get_linear_track_is_enabled__
+    - xarm_api->service: __get_linear_track_on_zero__
+    - xarm_api->service: __get_linear_track_sci__
+
+- [xarm_msgs::srv::GetInt16List](./srv/GetInt16List.srv)
+    - xarm_api->service: __get_err_warn_code__
+    - xarm_api->service: __get_linear_track_sco__
 
 - [xarm_msgs::srv::SetInt16](./srv/SetInt16.srv)
     - xarm_api->service: __set_mode__
@@ -44,6 +65,17 @@
     - xarm_api->service: __set_reduced_mode__
     - xarm_api->service: __set_self_collision_detection__
     - xarm_api->service: __set_simulation_robot__
+    - xarm_api->service: __set_baud_checkset_enable__
+    - xarm_api->service: __set_report_tau_or_i__
+    - xarm_api->service: __ft_sensor_enable__
+    - xarm_api->service: __ft_sensor_app_set__
+    - xarm_api->service: __set_linear_track_enable__
+    - xarm_api->service: __set_linear_track_speed__
+    - xarm_api->service: __set_cartesian_velo_continuous__
+    - xarm_api->service: __set_allow_approx_motion__
+    - xarm_api->service: __set_only_check_type__
+    - xarm_api->service: __config_tgpio_reset_when_stop__
+    - xarm_api->service: __config_cgpio_reset_when_stop__
 
 - [xarm_msgs::srv::SetInt16ById](./srv/SetInt16ById.srv)
     - xarm_api->service: __motion_enable__
@@ -66,6 +98,7 @@
     - xarm_api->service: __get_position__
     - xarm_api->service: __get_servo_angle__
     - xarm_api->service: __get_position_aa__
+    - xarm_api->service: __get_ft_sensor_data__
 
 - [xarm_msgs::srv::SetFloat32](./srv/SetFloat32.srv)
     - xarm_api->service: __set_pause_time__
@@ -164,6 +197,30 @@
 
 - [xarm_msgs::srv::TrajPlay](./srv/TrajPlay.srv)
     - xarm_api->service: __playback_trajectory__
+
+- [xarm_msgs::srv::IdenLoad](./srv/IdenLoad.srv)
+    - xarm_api->service: __iden_tcp_load__
+    - xarm_api->service: __ft_sensor_iden_load__
+
+- [xarm_msgs::srv::FtCaliLoad](./srv/FtCaliLoad.srv)
+    - xarm_api->service: __ft_sensor_cali_load__
+
+- [xarm_msgs::srv::FtForceConfig](./srv/FtForceConfig.srv)
+    - xarm_api->service: __config_force_control__
+
+- [xarm_msgs::srv::FtForcePid](./srv/FtForcePid.srv)
+    - xarm_api->service: __set_force_control_pid__
+
+- [xarm_msgs::srv::FtImpedance](./srv/FtImpedance.srv)
+    - xarm_api->service: __set_impedance__
+    - xarm_api->service: __set_impedance_mbk__
+    - xarm_api->service: ___set_impedance_config__
+
+- [xarm_msgs::srv::LinearTrackBackOrigin](./srv/LinearTrackBackOrigin.srv)
+    - xarm_api->service: __set_linear_track_back_origin__
+
+- [xarm_msgs::srv::LinearTrackSetPos](./srv/LinearTrackSetPos.srv)
+    - xarm_api->service: __set_linear_track_pos__
 
 - [xarm_msgs::srv::PlanPose](./srv/PlanPose.srv)
     - xarm_planner->service: __xarm_pose_plan__
