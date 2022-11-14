@@ -81,6 +81,14 @@ set(srv_files
   ${srv_dir}/SetTcpLoad.srv
   ${srv_dir}/SetModbusTimeout.srv
 
+  ${srv_dir}/IdenLoad.srv
+  ${srv_dir}/FtCaliLoad.srv
+  ${srv_dir}/FtForceConfig.srv
+  ${srv_dir}/FtForcePid.srv
+  ${srv_dir}/FtImpedance.srv
+  ${srv_dir}/LinearTrackBackOrigin.srv
+  ${srv_dir}/LinearTrackSetPos.srv
+
   ${srv_dir}/PlanExec.srv
   ${srv_dir}/PlanJoint.srv
   ${srv_dir}/PlanPose.srv

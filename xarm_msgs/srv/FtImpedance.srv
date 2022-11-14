@@ -1,0 +1,15 @@
+# This format is suitable for the following services
+#   - set_impedance
+#   - set_impedance_mbk
+#   - set_impedance_config
+
+int16 coord
+int16[] c_axis
+float32[] m
+float32[] k
+float32[] b
+
+---
+
+int16 ret
+string message
