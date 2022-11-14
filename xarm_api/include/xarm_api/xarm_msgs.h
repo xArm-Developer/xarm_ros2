@@ -41,5 +41,12 @@
 #include <xarm_msgs/srv/traj_play.hpp>
 #include <xarm_msgs/srv/vacuum_gripper_ctrl.hpp>
 #include <xarm_msgs/srv/set_modbus_timeout.hpp>
+#include <xarm_msgs/srv/iden_load.hpp>
+#include <xarm_msgs/srv/ft_cali_load.hpp>
+#include <xarm_msgs/srv/ft_force_config.hpp>
+#include <xarm_msgs/srv/ft_force_pid.hpp>
+#include <xarm_msgs/srv/ft_impedance.hpp>
+#include <xarm_msgs/srv/linear_track_back_origin.hpp>
+#include <xarm_msgs/srv/linear_track_set_pos.hpp>
 
 #endif // __XARM_MSGS_H

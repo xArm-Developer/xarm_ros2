@@ -10,6 +10,12 @@
 #   - clean_bio_gripper_error
 #   - start_record_trajectory
 #   - stop_record_trajectory
+#   - ft_sensor_set_zero
+#   - set_linear_track_stop
+#   - clean_linear_track_error
+#   - open_lite6_gripper
+#   - close_lite6_gripper
+#   - stop_lite6_gripper
 
 ---
 

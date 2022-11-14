@@ -21,6 +21,7 @@
 - (2022-09-07) 变更Topic名字(xarm_states改为robot_states)
 - (2022-09-07) 更新子模块xarm-sdk到1.11.0版本
 - (2022-09-09) [Beta]支持Ros Humble版本
+- (2022-10-10) xarm_api新增一些服务
 
 ## 3. 准备工作
 

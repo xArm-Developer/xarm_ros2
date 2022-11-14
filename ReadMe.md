@@ -21,7 +21,8 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 - (2022-09-07) Change the parameter type of service (__set_tgpio_modbus_timeout__/__getset_tgpio_modbus_data__), and add parameters to support transparent transmission
 - (2022-09-07) Change topic name (xarm_states to robot_states)
 - (2022-09-07) Update submodule xarm-sdk to version 1.11.0
-- (2022-09-09) [Beta]支持Ros Humble版本
+- (2022-09-09) [Beta]Support Humble version
+- (2022-10-10) xarm_api adds some services
 
 
 ## 3. Preparation
