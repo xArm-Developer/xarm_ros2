@@ -40,17 +40,18 @@ joint_command_in_topic_("/servo_server/delta_joint_cmds"),
 robot_link_command_frame_("link_base"), 
 ee_frame_name_("link_eef"),
 planning_frame_("link_base"),
-joint_vel_cmd_(1.0)
+joint_vel_cmd_(1.0),
+linear_pos_cmd_(0.5)
 {
     node_ = node;
     // init parameter from node
-    declareOrGetParam<int>(dof_, "dof", dof_);
-    declareOrGetParam<int>(ros_queue_size_, "ros_queue_size", ros_queue_size_);
-    declareOrGetParam<std::string>(cartesian_command_in_topic_, "moveit_servo.cartesian_command_in_topic", cartesian_command_in_topic_);
-    declareOrGetParam<std::string>(joint_command_in_topic_, "moveit_servo.joint_command_in_topic", joint_command_in_topic_);
-    declareOrGetParam<std::string>(robot_link_command_frame_, "moveit_servo.robot_link_command_frame", robot_link_command_frame_);
-    declareOrGetParam<std::string>(ee_frame_name_, "moveit_servo.ee_frame_name", ee_frame_name_);
-    declareOrGetParam<std::string>(planning_frame_, "moveit_servo.planning_frame", planning_frame_);
+    _declare_or_get_param<int>(dof_, "dof", dof_);
+    _declare_or_get_param<int>(ros_queue_size_, "ros_queue_size", ros_queue_size_);
+    _declare_or_get_param<std::string>(cartesian_command_in_topic_, "moveit_servo.cartesian_command_in_topic", cartesian_command_in_topic_);
+    _declare_or_get_param<std::string>(joint_command_in_topic_, "moveit_servo.joint_command_in_topic", joint_command_in_topic_);
+    _declare_or_get_param<std::string>(robot_link_command_frame_, "moveit_servo.robot_link_command_frame", robot_link_command_frame_);
+    _declare_or_get_param<std::string>(ee_frame_name_, "moveit_servo.ee_frame_name", ee_frame_name_);
+    _declare_or_get_param<std::string>(planning_frame_, "moveit_servo.planning_frame", planning_frame_);
 
     if (cartesian_command_in_topic_.rfind("~/", 0) == 0) {
         cartesian_command_in_topic_ = "/servo_server/" + cartesian_command_in_topic_.substr(2, cartesian_command_in_topic_.length());
@@ -73,7 +74,7 @@ joint_vel_cmd_(1.0)
 }
 
 template <typename T>
-void KeyboardServoPub::declareOrGetParam(T& output_value, const std::string& param_name, const T default_value)
+void KeyboardServoPub::_declare_or_get_param(T& output_value, const std::string& param_name, const T default_value)
 {
     try
     {
@@ -137,32 +138,32 @@ void KeyboardServoPub::keyLoop()
         {
         case KEYCODE_LEFT:
             RCLCPP_DEBUG(node_->get_logger(), "LEFT");
-            twist_msg->twist.linear.y = 0.2;
+            twist_msg->twist.linear.y = linear_pos_cmd_;
             publish_twist = true;
             break;
         case KEYCODE_RIGHT:
             RCLCPP_DEBUG(node_->get_logger(), "RIGHT");
-            twist_msg->twist.linear.y = -0.2;
+            twist_msg->twist.linear.y = -linear_pos_cmd_;
             publish_twist = true;
             break;
         case KEYCODE_UP:
             RCLCPP_DEBUG(node_->get_logger(), "UP");
-            twist_msg->twist.linear.x = 0.2;
+            twist_msg->twist.linear.x = linear_pos_cmd_;
             publish_twist = true;
             break;
         case KEYCODE_DOWN:
             RCLCPP_DEBUG(node_->get_logger(), "DOWN");
-            twist_msg->twist.linear.x = -0.2;
+            twist_msg->twist.linear.x = -linear_pos_cmd_;
             publish_twist = true;
             break;
         case KEYCODE_PERIOD:
             RCLCPP_DEBUG(node_->get_logger(), "PERIOD");
-            twist_msg->twist.linear.z = -0.2;
+            twist_msg->twist.linear.z = -linear_pos_cmd_;
             publish_twist = true;
             break;
         case KEYCODE_SEMICOLON:
             RCLCPP_DEBUG(node_->get_logger(), "SEMICOLON");
-            twist_msg->twist.linear.z = 0.2;
+            twist_msg->twist.linear.z = linear_pos_cmd_;
             publish_twist = true;
             break;
         case KEYCODE_E:
