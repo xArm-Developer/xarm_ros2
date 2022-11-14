@@ -59,7 +59,7 @@ public:
 
 private:
     template <typename T>
-    void declareOrGetParam(T& output_value, const std::string& param_name, const T default_value = T{});
+    void _declare_or_get_param(T& output_value, const std::string& param_name, const T default_value = T{});
     void spin();
 
     rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr twist_pub_;
@@ -79,6 +79,7 @@ private:
     std::string planning_frame_;
 
     double joint_vel_cmd_;
+    double linear_pos_cmd_;
 
     rclcpp::Node::SharedPtr node_;
 };
