@@ -47,9 +47,11 @@
 
 - ### 4.2 获取xarm_ros2源码包
     ```bash
+    # Remember to source ros2 environment settings first
     $ cd ~/dev_ws/src
     # 注意需要--recursive参数，否则不会下载源码包的子模块源码
-    $ git clone https://github.com/xArm-Developer/xarm_ros2.git --recursive
+    # 注意使用-b参数指令分支, $ROS_DISTRO表示当前激活的ROS版本，如果没有激活ROS环境，需要自定指定分支(foxy/galactic/humble)
+    $ git clone https://github.com/xArm-Developer/xarm_ros2.git --recursive -b $ROS_DISTRO
     ```
 
 - ### 4.3 升级xarm_ros2源码包
