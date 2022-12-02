@@ -923,7 +923,7 @@ namespace xarm_api
             res->ret = PARAM_ERROR;
             return true;
         }
-        res->ret = arm->set_position(&req->pose[0], req->radius, req->speed, req->acc, req->mvtime, req->wait, req->timeout);
+        res->ret = arm->set_position(&req->pose[0], req->radius, req->speed, req->acc, req->mvtime, req->wait, req->timeout, req->relative, req->motion_type);
         return true;
     }
 
@@ -933,7 +933,7 @@ namespace xarm_api
             res->ret = PARAM_ERROR;
             return true;
         }
-        res->ret = arm->set_tool_position(&req->pose[0], req->speed, req->acc, req->mvtime, req->wait, req->timeout);
+        res->ret = arm->set_tool_position(&req->pose[0], req->speed, req->acc, req->mvtime, req->wait, req->timeout, req->radius, req->motion_type);
         return true;
     }
 
@@ -943,7 +943,7 @@ namespace xarm_api
             res->ret = PARAM_ERROR;
             return true;
         }
-        res->ret = arm->set_position_aa(&req->pose[0], req->speed, req->acc, req->mvtime, req->is_tool_coord, req->relative, req->wait, req->timeout);
+        res->ret = arm->set_position_aa(&req->pose[0], req->speed, req->acc, req->mvtime, req->is_tool_coord, req->relative, req->wait, req->timeout, req->radius, req->motion_type);
         return true;
     }
 
@@ -977,7 +977,7 @@ namespace xarm_api
         for (int i = 0; i < std::min((int)req->angles.size(), 7); i++) {
             angles[i] = req->angles[i];
         }
-        res->ret = arm->set_servo_angle(angles, req->speed, req->acc, req->mvtime, req->wait, req->timeout, req->radius);
+        res->ret = arm->set_servo_angle(angles, req->speed, req->acc, req->mvtime, req->wait, req->timeout, req->radius, req->relative);
         return true;
     }
 
@@ -1001,7 +1001,7 @@ namespace xarm_api
             res->ret = PARAM_ERROR;
             return true;
         }
-        res->ret = arm->move_circle(&req->pose1[0], &req->pose2[0], req->percent, req->speed, req->acc, req->mvtime, req->wait, req->timeout);
+        res->ret = arm->move_circle(&req->pose1[0], &req->pose2[0], req->percent, req->speed, req->acc, req->mvtime, req->wait, req->timeout, req->is_tool_coord, req->is_axis_angle);
         return true;
     }
 
