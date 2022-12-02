@@ -11,11 +11,11 @@ float32 speed       0
 float32 acc         0
 float32 mvtime      0
 
-# set_position/set_position_aa
+# set_position/set_position_aa/set_tool_position
 bool wait           false
 float32 timeout     -1
 
-# set_position
+# set_position/set_tool_position/set_position_aa
 float32 radius      -1
 
 # set_position_aa/set_servo_cartesian/set_servo_cartesian_aa
@@ -23,6 +23,19 @@ bool is_tool_coord  false
 
 # set_position_aa/set_servo_cartesian_aa
 bool relative       false
+
+# set_position/set_tool_position/set_position_aa
+#   motion_type == 0: default, linear planning
+#   motion_type == 1: prioritize linear planning, and turn to IK for joint planning when linear planning is not possible
+#   motion_type == 2: direct transfer to IK using joint planning
+#   Note: 
+#       1. only available if firmware_version >= 1.11.100
+#       2. when motion_type is 1 or 2, linear motion cannot be guaranteed
+#       3. once IK is transferred to joint planning, the given Cartesian velocity and acceleration are converted into joint velocity and acceleration according to the percentage
+#           speed = speed / max_tcp_speed * max_joint_speed
+#           acc = acc / max_tcp_acc * max_joint_acc
+#       4. if there is no suitable IK, a C40 error will be triggered
+uint8 motion_type 0
 
 ---
 

@@ -10,6 +10,8 @@ float32 acc         0
 float32 mvtime      0
 bool wait           false
 float32 timeout     -1
+bool is_tool_coord  false
+bool is_axis_angle  false
 
 ---
 
