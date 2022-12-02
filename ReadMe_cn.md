@@ -47,7 +47,7 @@
 
 - ### 4.2 获取xarm_ros2源码包
     ```bash
-    # Remember to source ros2 environment settings first
+    # 记得先source已安装的ros2环境
     $ cd ~/dev_ws/src
     # 注意需要--recursive参数，否则不会下载源码包的子模块源码
     # 注意使用-b参数指令分支, $ROS_DISTRO表示当前激活的ROS版本，如果没有激活ROS环境，需要自定指定分支(foxy/galactic/humble)

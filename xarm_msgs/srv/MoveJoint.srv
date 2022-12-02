@@ -2,7 +2,7 @@
 #   - set_servo_angle
 #   - set_servo_angle_j
 
-# set_servo_angle/set_servo_angle_j/set_position_aa
+# set_servo_angle/set_servo_angle_j
 float32[] angles
 float32 speed       0
 float32 acc         0
@@ -14,6 +14,9 @@ float32 timeout     -1
 
 # set_servo_angle
 float32 radius      -1
+
+# set_servo_angle
+bool relative       false
 
 ---
 
