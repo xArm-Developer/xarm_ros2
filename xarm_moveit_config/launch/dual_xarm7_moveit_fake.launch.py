@@ -21,6 +21,8 @@ def generate_launch_description():
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
 
+    add_realsense_d435i = LaunchConfiguration('add_realsense_d435i', default=False)
+    
     add_other_geometry = LaunchConfiguration('add_other_geometry', default=False)
     geometry_type = LaunchConfiguration('geometry_type', default='box')
     geometry_mass = LaunchConfiguration('geometry_mass', default=0.1)
@@ -48,6 +50,7 @@ def generate_launch_description():
             'dof': '7',
             'robot_type': 'xarm',
             'no_gui_ctrl': 'false',
+            'add_realsense_d435i': add_realsense_d435i,
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,
             'geometry_mass': geometry_mass,

@@ -40,6 +40,10 @@ def launch_setup(context, *args, **kwargs):
     velocity_control = LaunchConfiguration('velocity_control', default=False)
     ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='gazebo_ros2_control/GazeboSystem')
     
+    add_realsense_d435i = LaunchConfiguration('add_realsense_d435i', default=False)
+    add_realsense_d435i_1 = LaunchConfiguration('add_realsense_d435i_1', default=add_realsense_d435i)
+    add_realsense_d435i_2 = LaunchConfiguration('add_realsense_d435i_2', default=add_realsense_d435i)
+
     add_other_geometry = LaunchConfiguration('add_other_geometry', default=False)
     add_other_geometry_1 = LaunchConfiguration('add_other_geometry_1', default=add_other_geometry)
     add_other_geometry_2 = LaunchConfiguration('add_other_geometry_2', default=add_other_geometry)
@@ -133,6 +137,8 @@ def launch_setup(context, *args, **kwargs):
                 'velocity_control': velocity_control,
                 'ros2_control_plugin': ros2_control_plugin,
                 'ros2_control_params': ros2_control_params,
+                'add_realsense_d435i_1': add_realsense_d435i_1,
+                'add_realsense_d435i_2': add_realsense_d435i_2,
                 'add_other_geometry_1': add_other_geometry_1,
                 'add_other_geometry_2': add_other_geometry_2,
                 'geometry_type_1': geometry_type_1,
@@ -225,18 +231,25 @@ def launch_setup(context, *args, **kwargs):
                     '--controller-manager', '{}/controller_manager'.format(ros_namespace)
                 ],
             ))
-
-    return [
-        RegisterEventHandler(
-            event_handler=OnProcessExit(
-                target_action=gazebo_spawn_entity_node,
-                on_exit=load_controllers,
-            )
-        ),
-        gazebo_launch,
-        robot_state_publisher_node,
-        gazebo_spawn_entity_node,
-    ]
+    
+    if len(load_controllers) > 0:
+        return [
+            RegisterEventHandler(
+                event_handler=OnProcessExit(
+                    target_action=gazebo_spawn_entity_node,
+                    on_exit=load_controllers,
+                )
+            ),
+            gazebo_launch,
+            robot_state_publisher_node,
+            gazebo_spawn_entity_node,
+        ]
+    else:
+        return [
+            gazebo_launch,
+            robot_state_publisher_node,
+            gazebo_spawn_entity_node,
+        ]
 
 
 def generate_launch_description():

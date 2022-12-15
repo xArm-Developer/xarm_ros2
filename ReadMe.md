@@ -23,6 +23,7 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 - (2022-09-07) Update submodule xarm-sdk to version 1.11.0
 - (2022-09-09) [Beta]Support Humble version
 - (2022-10-10) xarm_api adds some services
+- (2022-12-15) Add parameter `add_realsense_d435i` to load realsense D435i camera model and support gazebo simulation
 
 
 ## 3. Preparation
@@ -407,6 +408,11 @@ __Reminder 3： All following instructions will base on xArm6，please use prope
     - __dof_2__
 - __velocity_control__, default: false. 
     Whether to control with velocity interface. (Otherwise, use position interface)
+- __add_realsense_d435i__, default: false.  
+    Whether to load the realsense D435i camera model at the end.
+    For dual arm launch files(with ```dual_``` prefix), it can be specified through:
+    - __add_realsense_d435i_1__
+    - __add_realsense_d435i_2__
 - __add_gripper__, default: false. 
     Whether to include UFACTORY gripper in the model，it has higher priority than the argument ```add_vacuum_gripper```.
     For dual arm launch files(with ```dual_``` prefix), it can be specified through:
