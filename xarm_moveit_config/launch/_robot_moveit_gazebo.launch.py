@@ -25,6 +25,8 @@ def launch_setup(context, *args, **kwargs):
     robot_type = LaunchConfiguration('robot_type', default='xarm')
     no_gui_ctrl = LaunchConfiguration('no_gui_ctrl', default=False)
 
+    add_realsense_d435i = LaunchConfiguration('add_realsense_d435i', default=False)
+
     add_other_geometry = LaunchConfiguration('add_other_geometry', default=False)
     geometry_type = LaunchConfiguration('geometry_type', default='box')
     geometry_mass = LaunchConfiguration('geometry_mass', default=0.1)
@@ -63,6 +65,7 @@ def launch_setup(context, *args, **kwargs):
             'controllers_name': controllers_name,
             'moveit_controller_manager_key': moveit_controller_manager_key,
             'moveit_controller_manager_value': moveit_controller_manager_value,
+            'add_realsense_d435i': add_realsense_d435i,
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,
             'geometry_mass': geometry_mass,

@@ -32,6 +32,8 @@ def launch_setup(context, *args, **kwargs):
     ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='uf_robot_hardware/UFRobotSystemHardware')
     # joint_states_remapping = LaunchConfiguration('joint_states_remapping', default=PathJoinSubstitution([hw_ns, 'joint_states']))
     
+    add_realsense_d435i = LaunchConfiguration('add_realsense_d435i', default=False)
+
     add_other_geometry = LaunchConfiguration('add_other_geometry', default=False)
     geometry_type = LaunchConfiguration('geometry_type', default='box')
     geometry_mass = LaunchConfiguration('geometry_mass', default=0.1)
@@ -76,6 +78,7 @@ def launch_setup(context, *args, **kwargs):
             'robot_type': robot_type,
             'ros2_control_plugin': ros2_control_plugin,
             'joint_states_remapping': PathJoinSubstitution(['/', LaunchConfiguration('ros_namespace', default='').perform(context), hw_ns, 'joint_states']),
+            'add_realsense_d435i': add_realsense_d435i,
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,
             'geometry_mass': geometry_mass,
@@ -106,6 +109,7 @@ def launch_setup(context, *args, **kwargs):
             'dof': dof,
             'robot_type': robot_type,
             'ros2_control_plugin': ros2_control_plugin,
+            'add_realsense_d435i': add_realsense_d435i,
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,
             'geometry_mass': geometry_mass,
