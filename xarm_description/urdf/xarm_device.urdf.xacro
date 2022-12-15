@@ -12,6 +12,8 @@
   <xacro:arg name="ros2_control_plugin" default="uf_robot_hardware/UFRobotSystemHardware"/>
   <xacro:arg name="ros2_control_params" default="$(find xarm_controller)/config/xarm$(arg dof)_controllers.yaml"/>
 
+  <xacro:arg name="add_realsense_d435i" default="false"/>
+
   <xacro:arg name="add_other_geometry" default="false"/>
   <xacro:arg name="geometry_type" default="box"/>
   <xacro:arg name="geometry_mass" default="0.1"/>
@@ -41,6 +43,7 @@
     add_gripper="$(arg add_gripper)" add_vacuum_gripper="$(arg add_vacuum_gripper)" dof="$(arg dof)" 
     ros2_control_plugin="$(arg ros2_control_plugin)" robot_type="$(arg robot_type)" 
     load_gazebo_plugin="false" ros2_control_params="$(arg ros2_control_params)"
+    add_realsense_d435i="$(arg add_realsense_d435i)" 
     add_other_geometry="$(arg add_other_geometry)" 
     geometry_type="$(arg geometry_type)" geometry_mass="$(arg geometry_mass)"
     geometry_height="$(arg geometry_height)" geometry_radius="$(arg geometry_radius)"

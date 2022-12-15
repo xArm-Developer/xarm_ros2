@@ -350,7 +350,7 @@
       <dynamics damping="1.0" friction="1.0"/>
     </joint>
 
-    <link name="${prefix}link_eef" />
+    <!-- <link name="${prefix}link_eef" />
 
     <joint
       name="${prefix}joint_eef"
@@ -362,6 +362,6 @@
         link="${prefix}link6" />
       <child
         link="${prefix}link_eef" />
-    </joint>
+    </joint> -->
   </xacro:macro>
 </robot>

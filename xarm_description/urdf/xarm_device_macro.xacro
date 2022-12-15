@@ -3,6 +3,7 @@
   <xacro:macro name="xarm_device" params="prefix:='' namespace:='xarm' limited:='false' effort_control:='false' 
     velocity_control:='false' add_gripper:='false' add_vacuum_gripper:='false' dof:=7 robot_type:='xarm' ros2_control_plugin:='uf_robot_hardware/UFRobotSystemHardware'
     attach_to:='world' xyz:='0 0 0' rpy:='0 0 0' ros2_control_params:='' load_gazebo_plugin:='false' 
+    add_realsense_d435i:='false'
     add_other_geometry:='false' 
     geometry_type:='box' geometry_mass:='0.1' 
     geometry_radius:='0.1' geometry_height:='0.1' 
@@ -78,6 +79,21 @@
         baud_checkset="${baud_checkset}"
         default_gripper_baud="${default_gripper_baud}" />
     </xacro:unless>
+
+    <xacro:if value="${robot_type != 'lite' and add_realsense_d435i}">
+      <xacro:include filename="$(find xarm_description)/urdf/camera/realsense_d435i.urdf.xacro" />
+      <xacro:d435i_urdf prefix="${prefix}"/>
+      <xacro:include filename="$(find xarm_description)/urdf/camera/realsense.gazebo.xacro" />    
+      <xacro:realsense_gazebo prefix="$(arg prefix)" />
+    </xacro:if>
+    <xacro:unless value="${add_realsense_d435i}">
+      <link name="${prefix}link_eef"/>
+    </xacro:unless>
+    <joint name="${prefix}joint_eef" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <parent link="${prefix}link${dof}" />
+      <child link="${prefix}link_eef" />
+    </joint>
     
     <xacro:if value="${add_gripper}">
       <xacro:if value="${robot_type == 'lite'}">
