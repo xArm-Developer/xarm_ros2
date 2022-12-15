@@ -22,6 +22,8 @@ def generate_launch_description():
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
 
+    add_realsense_d435i = LaunchConfiguration('add_realsense_d435i', default=False)
+
     add_other_geometry = LaunchConfiguration('add_other_geometry', default=False)
     geometry_type = LaunchConfiguration('geometry_type', default='box')
     geometry_mass = LaunchConfiguration('geometry_mass', default=0.1)
@@ -53,6 +55,7 @@ def generate_launch_description():
             'dof': str(dof),
             'robot_type': robot_type,
             'no_gui_ctrl': 'true',
+            'add_realsense_d435i': add_realsense_d435i,
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,
             'geometry_mass': geometry_mass,
@@ -83,6 +86,7 @@ def generate_launch_description():
             'dof': str(dof),
             'robot_type': robot_type,
             'ros2_control_plugin': 'gazebo_ros2_control/GazeboSystem',
+            'add_realsense_d435i': add_realsense_d435i,
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,
             'geometry_mass': geometry_mass,

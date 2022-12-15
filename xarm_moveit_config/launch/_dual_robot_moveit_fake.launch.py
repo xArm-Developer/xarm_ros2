@@ -38,6 +38,10 @@ def launch_setup(context, *args, **kwargs):
     velocity_control = LaunchConfiguration('velocity_control', default=False)
     no_gui_ctrl = LaunchConfiguration('no_gui_ctrl', default=False)
 
+    add_realsense_d435i = LaunchConfiguration('add_realsense_d435i', default=False)
+    add_realsense_d435i_1 = LaunchConfiguration('add_realsense_d435i_1', default=add_realsense_d435i)
+    add_realsense_d435i_2 = LaunchConfiguration('add_realsense_d435i_2', default=add_realsense_d435i)
+
     add_other_geometry = LaunchConfiguration('add_other_geometry', default=False)
     add_other_geometry_1 = LaunchConfiguration('add_other_geometry_1', default=add_other_geometry)
     add_other_geometry_2 = LaunchConfiguration('add_other_geometry_2', default=add_other_geometry)
@@ -116,6 +120,8 @@ def launch_setup(context, *args, **kwargs):
                 'effort_control': effort_control,
                 'velocity_control': velocity_control,
                 'ros2_control_plugin': ros2_control_plugin,
+                'add_realsense_d435i_1': add_realsense_d435i_1,
+                'add_realsense_d435i_2': add_realsense_d435i_2,
                 'add_other_geometry_1': add_other_geometry_1,
                 'add_other_geometry_2': add_other_geometry_2,
                 'geometry_type_1': geometry_type_1,
@@ -183,6 +189,8 @@ def launch_setup(context, *args, **kwargs):
             'controllers_name': controllers_name,
             'moveit_controller_manager_key': moveit_controller_manager_key,
             'moveit_controller_manager_value': moveit_controller_manager_value,
+            'add_realsense_d435i_1': add_realsense_d435i_1,
+            'add_realsense_d435i_2': add_realsense_d435i_2,
             'add_other_geometry_1': add_other_geometry_1,
             'add_other_geometry_2': add_other_geometry_2,
             'geometry_type_1': geometry_type_1,

@@ -33,6 +33,8 @@ def launch_setup(context, *args, **kwargs):
     node_parameters = LaunchConfiguration('node_parameters', default={})
     use_gripper_node = LaunchConfiguration('use_gripper_node', default=add_gripper)
 
+    add_realsense_d435i = LaunchConfiguration('add_realsense_d435i', default=False)
+
     add_other_geometry = LaunchConfiguration('add_other_geometry', default=False)
     geometry_type = LaunchConfiguration('geometry_type', default='box')
     geometry_mass = LaunchConfiguration('geometry_mass', default=0.1)
@@ -69,6 +71,7 @@ def launch_setup(context, *args, **kwargs):
             'dof': dof,
             'robot_type': robot_type,
             'ros2_control_plugin': ros2_control_plugin,
+            'add_realsense_d435i': add_realsense_d435i,
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,
             'geometry_mass': geometry_mass,
