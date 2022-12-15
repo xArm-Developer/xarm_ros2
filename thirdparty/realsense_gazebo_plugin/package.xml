@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>realsense_gazebo_plugin</name>
+  <version>1.1.0</version>
+  <description>Intel RealSense D435 Gazebo plugin package</description>
+
+  <maintainer email="sergey.dorodnicov@intel.com">Sergey Dorodnicov</maintainer>
+  <maintainer email="doron.hirshberg@intel.com">Doron Hirshberg</maintainer>
+  <maintainer email="missrisalaheddine@gmail.com">Salah-Eddine Missri</maintainer>
+  <maintainer email="adria.roig@pal-robotics.com">Adria Roig</maintainer>
+
+  <author email="sergey.dorodnicov@intel.com">Sergey Dorodnicov</author>
+  <author email="doron.hirshberg@intel.com">Doron Hirshberg</author>
+  <author email="fetulahatas1@gmail.com">Fetullah Atas</author>
+
+  <license>Apache 2.0</license>
+
+  <url type="website">http://www.ros.org/wiki/RealSense</url>
+  <url type="bugtracker">https://github.com/intel-ros/realsense/issues</url>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>gazebo_ros</depend>
+  <depend>rclcpp</depend>
+  <depend>sensor_msgs</depend>
+  <depend>image_transport</depend>
+  <depend>camera_info_manager</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type> 
+    <gazebo_ros plugin_path="${prefix}/lib" gazebo_media_path="${prefix}" gazebo_model_path="${prefix}/models" />
+  </export>
+</package>
