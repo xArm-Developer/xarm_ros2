@@ -41,15 +41,15 @@
         <origin xyz="0 0 0" rpy="0 0 0"/>
       </collision>
       <inertial>
-      <origin xyz="0.0 0.0 0.09103" rpy="0 0 0" />
-      <mass value="2.7" />
-      <inertia
-        ixx="0.00494875"
-        ixy="-3.5E-06"
-        ixz="1.25E-05"
-        iyy="0.00494174"
-        iyz="1.67E-06"
-        izz="0.002219" />
+        <origin xyz="0.0 0.0 0.09103" rpy="0 0 0" />
+        <mass value="2.7" />
+        <inertia
+          ixx="0.00494875"
+          ixy="-3.5E-06"
+          ixz="1.25E-05"
+          iyy="0.00494174"
+          iyz="1.67E-06"
+          izz="0.002219" />
       </inertial>
     </link>
 
