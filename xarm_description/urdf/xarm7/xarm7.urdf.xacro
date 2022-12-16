@@ -27,40 +27,40 @@
     </material>
 
     <link
-    name="${prefix}link_base">
-    <inertial>
-      <origin
-        xyz="-0.021131 -0.0016302 0.056488"
-        rpy="0 0 0" />
-      <mass
-        value="0.88556" />
-      <inertia
-        ixx="0.0030595"
-        ixy="0.00012259"
-        ixz="-0.00062705"
-        iyy="0.0037783"
-        iyz="0.00027023"
-        izz="0.0020125" />
-    </inertial>
-    <visual>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <!-- <mesh filename="package://xarm_description/meshes/xarm7/visual/link_base.STL" /> -->
-        <mesh filename="file:///$(find xarm_description)/meshes/xarm7/visual/link_base.STL"/>
-      </geometry>
-      <material name="${prefix}White" />
-    </visual>
-    <collision>
-      <origin
-        xyz="0 0 0"
-        rpy="0 0 0" />
-      <geometry>
-        <!-- <mesh filename="package://xarm_description/meshes/xarm7/visual/link_base.STL" /> -->
-        <mesh filename="file:///$(find xarm_description)/meshes/xarm7/visual/link_base.STL"/>
-      </geometry>
-    </collision>
+      name="${prefix}link_base">
+      <inertial>
+        <origin
+          xyz="-0.021131 -0.0016302 0.056488"
+          rpy="0 0 0" />
+        <mass
+          value="0.88556" />
+        <inertia
+          ixx="0.0030595"
+          ixy="0.00012259"
+          ixz="-0.00062705"
+          iyy="0.0037783"
+          iyz="0.00027023"
+          izz="0.0020125" />
+      </inertial>
+      <visual>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <!-- <mesh filename="package://xarm_description/meshes/xarm7/visual/link_base.STL" /> -->
+          <mesh filename="file:///$(find xarm_description)/meshes/xarm7/visual/link_base.STL"/>
+        </geometry>
+        <material name="${prefix}White" />
+      </visual>
+      <collision>
+        <origin
+          xyz="0 0 0"
+          rpy="0 0 0" />
+        <geometry>
+          <!-- <mesh filename="package://xarm_description/meshes/xarm7/visual/link_base.STL" /> -->
+          <mesh filename="file:///$(find xarm_description)/meshes/xarm7/visual/link_base.STL"/>
+        </geometry>
+      </collision>
     </link>
     <link
       name="${prefix}link1">
