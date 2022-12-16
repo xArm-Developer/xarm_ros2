@@ -11,19 +11,21 @@
     joint4_lower_limit:=${-2.0*pi}  joint4_upper_limit:=${2.0*pi}
     joint5_lower_limit:=${-2.1642}  joint5_upper_limit:=${2.1642}
     joint6_lower_limit:=${-2.0*pi}  joint6_upper_limit:=${2.0*pi}">
-    <ros2_control name="UFRobotSystem" type="system">
+    <ros2_control name="${prefix}${ros2_control_plugin}" type="system">
       <hardware>
         <plugin>${ros2_control_plugin}</plugin>
-        <param name="hw_ns">${prefix}${hw_ns}</param>
-        <param name="velocity_control">${velocity_control}</param>
-        <param name="prefix">P${prefix}</param>
-        <param name="robot_ip">R${robot_ip}</param>
-        <param name="report_type">${report_type}</param>
-        <param name="dof">6</param>
-        <param name="baud_checkset">${baud_checkset}</param>
-        <param name="default_gripper_baud">${default_gripper_baud}</param>
-        <param name="robot_type">lite</param>
-        <param name="add_gripper">${add_gripper}</param>
+        <xacro:if value="${ros2_control_plugin == 'uf_robot_hardware/UFRobotSystemHardware'}">
+          <param name="hw_ns">${prefix}${hw_ns}</param>
+          <param name="velocity_control">${velocity_control}</param>
+          <param name="prefix">P${prefix}</param>
+          <param name="robot_ip">R${robot_ip}</param>
+          <param name="report_type">${report_type}</param>
+          <param name="dof">6</param>
+          <param name="baud_checkset">${baud_checkset}</param>
+          <param name="default_gripper_baud">${default_gripper_baud}</param>
+          <param name="robot_type">lite</param>
+          <param name="add_gripper">${add_gripper}</param>
+        </xacro:if>
       </hardware>
       <joint name="${prefix}joint1">
         <command_interface name="position">
