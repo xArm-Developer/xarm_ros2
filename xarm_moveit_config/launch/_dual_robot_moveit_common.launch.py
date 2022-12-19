@@ -335,6 +335,7 @@ def launch_setup(context, *args, **kwargs):
         name='static_transform_publisher',
         output='screen',
         arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', 'ground', 'link_base'],
+        parameters=[{'use_sim_time': use_sim_time}],
     )
 
     return [

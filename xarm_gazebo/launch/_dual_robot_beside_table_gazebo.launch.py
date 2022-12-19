@@ -170,7 +170,7 @@ def launch_setup(context, *args, **kwargs):
         package='robot_state_publisher',
         executable='robot_state_publisher',
         output='screen',
-        parameters=[robot_description],
+        parameters=[{'use_sim_time': True}, robot_description],
         remappings=[
             ('/tf', 'tf'),
             ('/tf_static', 'tf_static'),
@@ -203,6 +203,7 @@ def launch_setup(context, *args, **kwargs):
             '-z', '1.021',
             '-Y', '1.571',
         ],
+        parameters=[{'use_sim_time': True}],
     )
 
     # Load controllers
@@ -228,6 +229,7 @@ def launch_setup(context, *args, **kwargs):
                     controller,
                     '--controller-manager', '{}/controller_manager'.format(ros_namespace)
                 ],
+                parameters=[{'use_sim_time': True}],
             ))
     
     if len(load_controllers) > 0:
