@@ -202,13 +202,13 @@ def launch_setup(context, *args, **kwargs):
             ),
             ComposableNode(
                 package='moveit_servo',
-                plugin='moveit_servo::ServoServer',
+                plugin='moveit_servo::ServoNode',
                 name='servo_server',
                 parameters=[
                     servo_params,
                     robot_description_parameters,
                 ],
-                extra_arguments=[{'use_intra_process_comms': True}],
+                # extra_arguments=[{'use_intra_process_comms': True}],
             ),
             ComposableNode(
                 package='xarm_moveit_servo',
@@ -222,7 +222,7 @@ def launch_setup(context, *args, **kwargs):
                         'joystick_type': joystick_type,
                     },
                 ],
-                extra_arguments=[{'use_intra_process_comms': True}],
+                # extra_arguments=[{'use_intra_process_comms': True}],
             ),
             ComposableNode(
                 package='joy',
@@ -231,7 +231,7 @@ def launch_setup(context, *args, **kwargs):
                 parameters=[
                     # {'autorepeat_rate': 50.0},
                 ],
-                extra_arguments=[{'use_intra_process_comms': True}],
+                # extra_arguments=[{'use_intra_process_comms': True}],
             ),
         ],
         output='screen',
