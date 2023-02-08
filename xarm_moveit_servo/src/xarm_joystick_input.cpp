@@ -98,7 +98,7 @@ JoyToServoPub::JoyToServoPub(const rclcpp::NodeOptions& options)
         cartesian_command_in_topic_ = "/servo_server/" + cartesian_command_in_topic_.substr(2, cartesian_command_in_topic_.length());
     }
     if (joint_command_in_topic_.rfind("~/", 0) == 0) {
-        joint_command_in_topic_ = "/servo_server/" + joint_command_in_topic_.substr(2, cartesian_command_in_topic_.length());
+        joint_command_in_topic_ = "/servo_server/" + joint_command_in_topic_.substr(2, joint_command_in_topic_.length());
     }
 
     // Setup pub/sub
