@@ -169,6 +169,8 @@ namespace uf_robot_hardware
         read_max_time_ = 0;
         read_total_time_ = 0;
         read_failed_cnts_ = 0;
+        memset(cmds_float_, 0, sizeof(cmds_float_));
+        memset(prev_cmds_float_, 0, sizeof(prev_cmds_float_));
 
         _init_ufactory_driver();
         
