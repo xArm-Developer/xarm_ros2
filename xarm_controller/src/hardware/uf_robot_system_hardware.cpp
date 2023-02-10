@@ -62,7 +62,7 @@ namespace uf_robot_hardware
         robot_ip_ = "";
         auto it = info_.hardware_parameters.find("robot_ip");
         if (it != info_.hardware_parameters.end()) {
-            robot_ip_ = it->second.substr(1);
+            robot_ip_ = it->second.substr(0);
         }
         if (robot_ip_ == "") {
             RCLCPP_ERROR(LOGGER, "[%s] No param named 'robot_ip'", robot_ip_.c_str());
@@ -144,7 +144,7 @@ namespace uf_robot_hardware
         robot_ip_ = "";
         it = info_.hardware_parameters.find("robot_ip");
         if (it != info_.hardware_parameters.end()) {
-            robot_ip_ = it->second.substr(1);
+            robot_ip_ = it->second.substr(0);
         }
         if (robot_ip_ == "") {
             RCLCPP_ERROR(LOGGER, "[%s] No param named 'robot_ip'", robot_ip_.c_str());
