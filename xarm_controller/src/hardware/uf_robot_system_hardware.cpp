@@ -141,17 +141,6 @@ namespace uf_robot_hardware
         RCLCPP_INFO(LOGGER, "[%s] dof: %d, velocity_control: %d, add_gripper: %d, baud_checkset: %d, default_gripper_baud: %d", 
             robot_ip_.c_str(), dof, velocity_control_, add_gripper, baud_checkset, default_gripper_baud);
         
-        robot_ip_ = "";
-        it = info_.hardware_parameters.find("robot_ip");
-        if (it != info_.hardware_parameters.end()) {
-            robot_ip_ = it->second.substr(1);
-        }
-        if (robot_ip_ == "") {
-            RCLCPP_ERROR(LOGGER, "[%s] No param named 'robot_ip'", robot_ip_.c_str());
-            rclcpp::shutdown();
-            exit(1);
-        }
-        
         xarm_driver_.init(node_, robot_ip_);
     }
 
