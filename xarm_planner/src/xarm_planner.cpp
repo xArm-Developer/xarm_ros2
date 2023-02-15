@@ -78,7 +78,7 @@ bool XArmPlanner::planCartesianPath(const std::vector<geometry_msgs::msg::Pose>&
         RCLCPP_ERROR(node_->get_logger(), "planCartesianPath: plan failed, fraction=%lf", fraction);
         return false;
     }
-    xarm_plan_.trajectory_ = trajectory;
+    xarm_plan_.trajectory = trajectory;
     return true;
 }
 
