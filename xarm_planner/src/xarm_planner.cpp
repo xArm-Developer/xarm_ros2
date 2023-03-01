@@ -27,6 +27,7 @@ XArmPlanner::XArmPlanner(const std::string& group_name)
 
 void XArmPlanner::init(const std::string& group_name) 
 {
+    is_trajectory_ = false;
     move_group_ = std::make_shared<moveit::planning_interface::MoveGroupInterface>(node_, group_name);
     RCLCPP_INFO(node_->get_logger(), "Planning frame: %s", move_group_->getPlanningFrame().c_str());
     RCLCPP_INFO(node_->get_logger(), "End effector link: %s", move_group_->getEndEffectorLink().c_str());
@@ -42,6 +43,7 @@ bool XArmPlanner::planJointTarget(const std::vector<double>& joint_target)
     success = (move_group_->plan(xarm_plan_) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
     if (!success)
         RCLCPP_ERROR(node_->get_logger(), "planJointTarget: plan failed");
+    is_trajectory_ = false;
     return success;
 }
 
@@ -53,6 +55,7 @@ bool XArmPlanner::planPoseTarget(const geometry_msgs::msg::Pose& pose_target)
     success = (move_group_->plan(xarm_plan_) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
     if (!success)
         RCLCPP_ERROR(node_->get_logger(), "planPoseTarget: plan failed");
+    is_trajectory_ = false;
     return success;
 }
 
@@ -64,21 +67,25 @@ bool XArmPlanner::planPoseTargets(const std::vector<geometry_msgs::msg::Pose>& p
     success = (move_group_->plan(xarm_plan_) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
     if (!success)
         RCLCPP_ERROR(node_->get_logger(), "planPoseTargets: plan failed");
+    is_trajectory_ = false;
     return success;
 }
 
 bool XArmPlanner::planCartesianPath(const std::vector<geometry_msgs::msg::Pose>& pose_target_vector)
 {   
     move_group_->setMaxVelocityScalingFactor(maxV_scale_factor);
-    moveit_msgs::msg::RobotTrajectory trajectory;
+    // moveit_msgs::msg::RobotTrajectory trajectory;
     
-    double fraction = move_group_->computeCartesianPath(pose_target_vector, eef_step, jump_threshold, trajectory);
+    double fraction = move_group_->computeCartesianPath(pose_target_vector, eef_step, jump_threshold, trajectory_);
     bool success = true;
     if(fraction < 0.9) {
         RCLCPP_ERROR(node_->get_logger(), "planCartesianPath: plan failed, fraction=%lf", fraction);
         return false;
     }
-    xarm_plan_.trajectory_ = trajectory;
+    is_trajectory_ = true;
+    // https://github.com/ros-planning/moveit2/commit/8bfe782d6254997d185644fa3eb358d2b79d69b2
+    // (struct Plan) trajectory_ => trajectory
+    // xarm_plan_.trajectory_ = trajectory;
     return true;
 }
 
@@ -86,9 +93,9 @@ bool XArmPlanner::executePath(bool wait)
 {
     moveit::planning_interface::MoveItErrorCode code;
     if (wait)
-        code =  move_group_->execute(xarm_plan_);
+        code = is_trajectory_ ? move_group_->execute(trajectory_) : move_group_->execute(xarm_plan_);
     else
-        code =  move_group_->asyncExecute(xarm_plan_);
+        code =  is_trajectory_ ? move_group_->asyncExecute(trajectory_) : move_group_->asyncExecute(xarm_plan_);
     bool success = (code == moveit::planning_interface::MoveItErrorCode::SUCCESS);
     if (!success)
         RCLCPP_ERROR(node_->get_logger(), "executePath: execute failed, wait=%d, MoveItErrorCode=%d", wait, code.val);

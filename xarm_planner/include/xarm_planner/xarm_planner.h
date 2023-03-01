@@ -46,6 +46,8 @@ namespace xarm_planner
         rclcpp::Node::SharedPtr node_;
         std::shared_ptr<moveit::planning_interface::MoveGroupInterface> move_group_;
         moveit::planning_interface::MoveGroupInterface::Plan xarm_plan_;
+        moveit_msgs::msg::RobotTrajectory trajectory_;
+        bool is_trajectory_;
     };
 }
 
