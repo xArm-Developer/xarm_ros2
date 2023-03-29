@@ -24,6 +24,7 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 - (2022-09-09) [Beta]Support Humble version
 - (2022-10-10) xarm_api adds some services
 - (2022-12-15) Add parameter `add_realsense_d435i` to load realsense D435i camera model and support gazebo simulation
+- (2023-03-29) Added the launch parameter model1300 (default is false), and replaced the model of the end of the xarm robot arm with the 1300 series
 
 
 ## 3. Preparation

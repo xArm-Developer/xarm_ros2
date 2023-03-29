@@ -31,6 +31,7 @@
   <xacro:arg name="report_type" default="normal"/>
   <xacro:arg name="baud_checkset" default="true"/>
   <xacro:arg name="default_gripper_baud" default="2000000"/>
+  <xacro:arg name="model1300" default="false"/>
 
   <!-- gazebo_plugin -->
   <xacro:include filename="$(find xarm_description)/urdf/common/common.gazebo.xacro" />
@@ -52,6 +53,7 @@
     geometry_mesh_origin_xyz="$(arg geometry_mesh_origin_xyz)" geometry_mesh_origin_rpy="$(arg geometry_mesh_origin_rpy)"
     geometry_mesh_tcp_xyz="$(arg geometry_mesh_tcp_xyz)" geometry_mesh_tcp_rpy="$(arg geometry_mesh_tcp_rpy)"
     robot_ip="$(arg robot_ip)" report_type="$(arg report_type)"
-    baud_checkset="$(arg baud_checkset)" default_gripper_baud="$(arg default_gripper_baud)"/>
+    baud_checkset="$(arg baud_checkset)" default_gripper_baud="$(arg default_gripper_baud)"
+    model1300="$(arg model1300)"/>
 
 </robot>
