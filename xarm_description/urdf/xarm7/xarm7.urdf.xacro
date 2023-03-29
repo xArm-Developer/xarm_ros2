@@ -8,7 +8,8 @@
     joint4_lower_limit:=${-0.19198}  joint4_upper_limit:=${3.927}
     joint5_lower_limit:=${-2.0*pi}  joint5_upper_limit:=${2.0*pi}
     joint6_lower_limit:=${-1.69297}  joint6_upper_limit:=${pi}
-    joint7_lower_limit:=${-2.0*pi}  joint7_upper_limit:=${2.0*pi}">
+    joint7_lower_limit:=${-2.0*pi}  joint7_upper_limit:=${2.0*pi}
+    model1300:=false">
 
     <material name="${prefix}Black">
       <color rgba="0.0 0.0 0.0 1.0"/>
@@ -426,7 +427,12 @@
           rpy="0 0 0" />
         <geometry>
           <!-- <mesh filename="package://xarm_description/meshes/xarm7/visual/link7.STL" /> -->
-          <mesh filename="file:///$(find xarm_description)/meshes/xarm7/visual/link7.STL"/>
+          <xacro:if value="${model1300}">
+            <mesh filename="file:///$(find xarm_description)/meshes/end_tool/visual/end_tool_1300.STL"/>
+          </xacro:if>
+          <xacro:unless value="${model1300}">
+            <mesh filename="file:///$(find xarm_description)/meshes/xarm7/visual/link7.STL"/>
+          </xacro:unless>
         </geometry>
         <material name="${prefix}Silver" />
       </visual>
@@ -436,7 +442,12 @@
           rpy="0 0 0" />
         <geometry>
           <!-- <mesh filename="package://xarm_description/meshes/xarm7/visual/link7.STL" /> -->
-          <mesh filename="file:///$(find xarm_description)/meshes/xarm7/visual/link7.STL"/>
+          <xacro:if value="${model1300}">
+            <mesh filename="file:///$(find xarm_description)/meshes/end_tool/collision/end_tool_1300.STL"/>
+          </xacro:if>
+          <xacro:unless value="${model1300}">
+            <mesh filename="file:///$(find xarm_description)/meshes/end_tool/collision/end_tool.STL"/>
+          </xacro:unless>
         </geometry>
       </collision>
     </link>

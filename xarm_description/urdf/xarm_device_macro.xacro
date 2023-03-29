@@ -15,7 +15,8 @@
     geometry_mesh_tcp_rpy:='0 0 0' 
     robot_ip:='' report_type:='normal'
     baud_checkset:='true'
-    default_gripper_baud:=2000000 "> 
+    default_gripper_baud:=2000000 
+    model1300:='false'"> 
     
     <xacro:if value="${dof == 5}">
       <!-- Load XArm5 Robot Model URDF -->
@@ -30,7 +31,8 @@
         robot_ip="${robot_ip}"
         report_type="${report_type}"
         baud_checkset="${baud_checkset}"
-        default_gripper_baud="${default_gripper_baud}" />
+        default_gripper_baud="${default_gripper_baud}" 
+        model1300="${model1300}" />
     </xacro:if>
     <xacro:if value="${dof == 6}">
       <xacro:if value="${robot_type == 'lite'}">
@@ -61,7 +63,8 @@
           robot_ip="${robot_ip}"
           report_type="${report_type}"
           baud_checkset="${baud_checkset}"
-          default_gripper_baud="${default_gripper_baud}"/>
+          default_gripper_baud="${default_gripper_baud}"
+          model1300="${model1300}" />
       </xacro:unless>
     </xacro:if>
     <xacro:unless value="${dof == 5 or dof == 6}">
@@ -77,7 +80,8 @@
         robot_ip="${robot_ip}"
         report_type="${report_type}"
         baud_checkset="${baud_checkset}"
-        default_gripper_baud="${default_gripper_baud}" />
+        default_gripper_baud="${default_gripper_baud}" 
+        model1300="${model1300}" />
     </xacro:unless>
 
     <xacro:if value="${robot_type != 'lite' and add_realsense_d435i}">
