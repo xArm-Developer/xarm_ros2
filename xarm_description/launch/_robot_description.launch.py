@@ -32,6 +32,7 @@ def launch_setup(context, *args, **kwargs):
     xacro_file = LaunchConfiguration('xacro_file', default=PathJoinSubstitution([FindPackageShare('xarm_description'), 'urdf', 'xarm_device.urdf.xacro']))
 
     add_realsense_d435i = LaunchConfiguration('add_realsense_d435i', default=False)
+    model1300 = LaunchConfiguration('model1300', default=False)
 
     add_other_geometry = LaunchConfiguration('add_other_geometry', default=False)
     geometry_type = LaunchConfiguration('geometry_type', default='box')
@@ -65,6 +66,7 @@ def launch_setup(context, *args, **kwargs):
                 'robot_type': robot_type,
                 'ros2_control_plugin': ros2_control_plugin,
                 'add_realsense_d435i': add_realsense_d435i,
+                'model1300': model1300,
                 'add_other_geometry': add_other_geometry,
                 'geometry_type': geometry_type,
                 'geometry_mass': geometry_mass,
