@@ -42,9 +42,17 @@ def launch_setup(context, *args, **kwargs):
     add_realsense_d435i_1 = LaunchConfiguration('add_realsense_d435i_1', default=add_realsense_d435i)
     add_realsense_d435i_2 = LaunchConfiguration('add_realsense_d435i_2', default=add_realsense_d435i)
 
+    add_d435i_links = LaunchConfiguration('add_d435i_links', default=True)
+    add_d435i_links_1 = LaunchConfiguration('add_d435i_links_1', default=add_d435i_links)
+    add_d435i_links_2 = LaunchConfiguration('add_d435i_links_2', default=add_d435i_links)
+    
     model1300 = LaunchConfiguration('model1300', default=False)
     model1300_1 = LaunchConfiguration('model1300_1', default=model1300)
     model1300_2 = LaunchConfiguration('model1300_2', default=model1300)
+
+    robot_sn = LaunchConfiguration('robot_sn', default='')
+    robot_sn_1 = LaunchConfiguration('robot_sn_1', default=robot_sn)
+    robot_sn_2 = LaunchConfiguration('robot_sn_2', default=robot_sn)
 
     add_other_geometry = LaunchConfiguration('add_other_geometry', default=False)
     add_other_geometry_1 = LaunchConfiguration('add_other_geometry_1', default=add_other_geometry)
@@ -126,8 +134,12 @@ def launch_setup(context, *args, **kwargs):
                 'ros2_control_plugin': ros2_control_plugin,
                 'add_realsense_d435i_1': add_realsense_d435i_1,
                 'add_realsense_d435i_2': add_realsense_d435i_2,
+                'add_d435i_links_1': add_d435i_links_1,
+                'add_d435i_links_2': add_d435i_links_2,
                 'model1300_1': model1300_1,
                 'model1300_2': model1300_2,
+                'robot_sn_1': robot_sn_1,
+                'robot_sn_2': robot_sn_2,
                 'add_other_geometry_1': add_other_geometry_1,
                 'add_other_geometry_2': add_other_geometry_2,
                 'geometry_type_1': geometry_type_1,
@@ -197,8 +209,12 @@ def launch_setup(context, *args, **kwargs):
             'moveit_controller_manager_value': moveit_controller_manager_value,
             'add_realsense_d435i_1': add_realsense_d435i_1,
             'add_realsense_d435i_2': add_realsense_d435i_2,
+            'add_d435i_links_1': add_d435i_links_1,
+            'add_d435i_links_2': add_d435i_links_2,
             'model1300_1': model1300_1,
             'model1300_2': model1300_2,
+            'robot_sn_1': robot_sn_1,
+            'robot_sn_2': robot_sn_2,
             'add_other_geometry_1': add_other_geometry_1,
             'add_other_geometry_2': add_other_geometry_2,
             'geometry_type_1': geometry_type_1,
@@ -279,8 +295,12 @@ def launch_setup(context, *args, **kwargs):
             'ros2_control_plugin': ros2_control_plugin,
             'add_realsense_d435i_1': add_realsense_d435i_1,
             'add_realsense_d435i_2': add_realsense_d435i_2,
+            'add_d435i_links_1': add_d435i_links_1,
+            'add_d435i_links_2': add_d435i_links_2,
             'model1300_1': model1300_1,
             'model1300_2': model1300_2,
+            'robot_sn_1': robot_sn_1,
+            'robot_sn_2': robot_sn_2,
         }.items(),
     )
 
