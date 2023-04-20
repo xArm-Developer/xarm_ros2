@@ -24,7 +24,12 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 - (2022-09-09) [Beta]Support Humble version
 - (2022-10-10) xarm_api adds some services
 - (2022-12-15) Add parameter `add_realsense_d435i` to load realsense D435i camera model and support gazebo simulation
-- (2023-03-29) Added the launch parameter model1300 (default is false), and replaced the model of the end of the xarm robot arm with the 1300 series
+- (2023-03-29) Added the launch parameter `model1300` (default is false), and replaced the model of the end of the xarm robot arm with the 1300 series
+- (2023-04-20) Update the URDF file, adapt to ROS1 and ROS2, and load the inertia parameters of the link from the configuration file according to the SN
+- (2023-04-20) Added the launch parameter `add_d435i_links` (default is false), which supports adding the link relationship between D435i cameras when loading the RealSense D435i model. It is only useful when `add_realsense_d435i` is true
+- (2023-04-20) Lite6 supports `add_realsense_d435i` and `add_d435i_links` parameters
+- (2023-04-20) Added the launch parameter `robot_sn`, supports loading the inertia parameters of the corresponding joint link, and automatically overrides the `model1300` parameters
+- (2023-04-20) Added launch parameters `attach_to`/`attach_xyz`/`attach_rpy` to support attaching the robot arm model to other models
 
 
 ## 3. Preparation

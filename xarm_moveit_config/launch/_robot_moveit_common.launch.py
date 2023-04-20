@@ -36,6 +36,7 @@ def launch_setup(context, *args, **kwargs):
     moveit_controller_manager_value = LaunchConfiguration('moveit_controller_manager_value', default='moveit_fake_controller_manager/MoveItFakeControllerManager')
 
     add_realsense_d435i = LaunchConfiguration('add_realsense_d435i', default=False)
+    add_d435i_links = LaunchConfiguration('add_d435i_links', default=True)
     model1300 = LaunchConfiguration('model1300', default=False)
 
     add_other_geometry = LaunchConfiguration('add_other_geometry', default=False)
@@ -75,6 +76,7 @@ def launch_setup(context, *args, **kwargs):
             'robot_type': robot_type,
             'ros2_control_plugin': ros2_control_plugin,
             'add_realsense_d435i': add_realsense_d435i,
+            'add_d435i_links': add_d435i_links,
             'model1300': model1300,
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,

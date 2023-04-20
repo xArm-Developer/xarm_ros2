@@ -23,7 +23,12 @@
 - (2022-09-09) [Beta]支持Ros Humble版本
 - (2022-10-10) xarm_api新增一些服务
 - (2022-12-15) 新增参数`add_realsense_d435i`以加载realsense d435i摄像头模型，并支持gazebo仿真
-- (2023-03-29) 新增launch启动参数model1300(默认为false), 更换xarm机械臂末端模型为1300系列的
+- (2023-03-29) 新增launch启动参数`model1300`(默认为false), 更换xarm机械臂末端模型为1300系列的
+- (2023-04-20) 更新URDF文件，适配ROS1和ROS2，并根据SN从配置文件加载连杆的惯性参数
+- (2023-04-20) 新增launch启动参数`add_d435i_links`(默认为false), 支持在加载RealSense D435i模型的增加D435i的各摄像头之间的连杆关系，在`add_realsense_d435i`为true时才有用
+- (2023-04-20) Lite6支持`add_realsense_d435i`和`add_d435i_links`参数
+- (2023-04-20) 新增launch启动参数`robot_sn`支持加载对应的关节连杆的惯性参数，并自动覆盖model1300参数
+- (2023-04-20) 新增launch启动参数 `attach_to`/`attach_xyz`/`attach_rpy`，支持把机械臂模型依附在其它模型之上
 
 ## 3. 准备工作
 
