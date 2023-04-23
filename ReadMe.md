@@ -23,7 +23,7 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 - (2022-09-07) Update submodule xarm-sdk to version 1.11.0
 - (2022-09-09) [Beta]Support Humble version
 - (2022-10-10) xarm_api adds some services
-- (2022-12-15) Add parameter `add_realsense_d435i` to load realsense D435i camera model and support gazebo simulation
+- (2022-12-15) Add parameter `add_realsense_d435i` to load RealSense D435i camera model and support gazebo simulation
 - (2023-03-29) Added the launch parameter `model1300` (default is false), and replaced the model of the end of the xarm robot arm with the 1300 series
 - (2023-04-20) Update the URDF file, adapt to ROS1 and ROS2, and load the inertia parameters of the link from the configuration file according to the SN
 - (2023-04-20) Added the launch parameter `add_d435i_links` (default is false), which supports adding the link relationship between D435i cameras when loading the RealSense D435i model. It is only useful when `add_realsense_d435i` is true
@@ -124,7 +124,7 @@ __Reminder 3： All following instructions will base on xArm6，please use prope
     This package serves as a submodule of this project，the corresponding git repository is: [xArm-CPLUS-SDK](https://github.com/xArm-Developer/xArm-CPLUS-SDK.git), for interfacing with real xArms, please refer to the documentation in "xArm-CPLUS-SDK" if interested.
 
 - ### 5.4 xarm_api
-    This package is a ros wrapper of "xarm_sdk"，functions are implemented as ros service or ros topic，communications with real xArm in "xarm_ros2" are based on the services and topics provided in this part. All the services and topics are under xarm/ namespace by default(unless 'hw_ns' parameter is specified)，e.g. full name for "joint_states" is actually "xarm/joint_states".  
+    This package is a ros wrapper of "xarm_sdk"，functions are implemented as ros service or ros topic，communications with real xArm in "xarm_ros2" are based on the services and topics provided in this part. All the services and topics are under xarm/ namespace (Lite6 is ufactory/ namespace) by default(unless 'hw_ns' parameter is specified)，e.g. full name for "joint_states" is actually "xarm/joint_states".  
     
     - __services__: the name of provided services are the same with the corresponding function in SDK, however, whether to activate the service is up to the configuration under the "services" domain in ```xarm_api/config/xarm_params.yaml``` and ```xarm_api/config/xarm_user_params.yaml```. The defined service can only be activated at initialization if that service is configured to ```true```. If you need to customize the parameters, please create a file ```xarm_api/config/xarm_user_params.yaml``` to modify, the format, refer to ```xarm_api/config/xarm_params.yaml```.
         ```
