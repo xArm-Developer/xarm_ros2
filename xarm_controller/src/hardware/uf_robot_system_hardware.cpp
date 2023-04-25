@@ -396,11 +396,11 @@ namespace uf_robot_hardware
     void UFRobotSystemHardware::_reload_controller(void) {
         int ret = _call_request(client_list_controller_, req_list_controller_, res_list_controller_);
         if (ret == 0 && res_list_controller_->controller.size() > 0) {
-            req_switch_controller_->start_controllers.resize(res_list_controller_->controller.size());
-            req_switch_controller_->stop_controllers.resize(res_list_controller_->controller.size());
+            req_switch_controller_->activate_controllers.resize(res_list_controller_->controller.size());
+            req_switch_controller_->deactivate_controllers.resize(res_list_controller_->controller.size());
             for (uint i = 0; i < res_list_controller_->controller.size(); i++) {
-                req_switch_controller_->start_controllers[i] = res_list_controller_->controller[i].name;
-                req_switch_controller_->stop_controllers[i] = res_list_controller_->controller[i].name;
+                req_switch_controller_->activate_controllers[i] = res_list_controller_->controller[i].name;
+                req_switch_controller_->deactivate_controllers[i] = res_list_controller_->controller[i].name;
             }
             req_switch_controller_->strictness = controller_manager_msgs::srv::SwitchController::Request::BEST_EFFORT;
             _call_request(client_switch_controller_, req_switch_controller_, res_switch_controller_);
