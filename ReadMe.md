@@ -8,11 +8,13 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 - Ubuntu 20.04 + ROS Foxy
 - Ubuntu 20.04 + ROS Galactic
 - Ubuntu 22.04 + ROS Humble
+- Ubuntu 22.04 + ROS Rolling
 
 &ensp;&ensp;&ensp;&ensp;Please switch to the corresponding code branch according to different ros2 versions (no corresponding code branch means it has not been tested in this version)
 - Foxy: [foxy](https://github.com/xArm-Developer/xarm_ros2/tree/foxy)
 - Galactic: [galactic](https://github.com/xArm-Developer/xarm_ros2/tree/galactic)
 - Humble: [humble](https://github.com/xArm-Developer/xarm_ros2/tree/humble)
+- Rolling: [rolling](https://github.com/xArm-Developer/xarm_ros2/tree/rolling)
 
 ## 2. Update History    
 - moveit dual arm control (under single rviz GUI), each arm can be separately configured（e.g. DOF, add_gripper, etc）
