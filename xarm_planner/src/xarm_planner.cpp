@@ -11,7 +11,8 @@ namespace xarm_planner
 {
 const double jump_threshold = 0.0;
 const double eef_step = 0.005;
-const double maxV_scale_factor = 0.3;
+const double max_velocity_scaling_factor = 0.3;  // [move_group_interface] default is 0.1
+const double max_acceleration_scaling_factor = 0.1;  // [move_group_interface] default is 0.1
 
 XArmPlanner::XArmPlanner(const rclcpp::Node::SharedPtr& node, const std::string& group_name)
     : node_(node)
@@ -33,6 +34,8 @@ void XArmPlanner::init(const std::string& group_name)
     RCLCPP_INFO(node_->get_logger(), "End effector link: %s", move_group_->getEndEffectorLink().c_str());
     RCLCPP_INFO(node_->get_logger(), "Available Planning Groups:");
     std::copy(move_group_->getJointModelGroupNames().begin(), move_group_->getJointModelGroupNames().end(), std::ostream_iterator<std::string>(std::cout, ", "));
+    move_group_->setMaxVelocityScalingFactor(max_velocity_scaling_factor);
+    move_group_->setMaxAccelerationScalingFactor(max_acceleration_scaling_factor);
 }
 
 bool XArmPlanner::planJointTarget(const std::vector<double>& joint_target)
@@ -73,7 +76,6 @@ bool XArmPlanner::planPoseTargets(const std::vector<geometry_msgs::msg::Pose>& p
 
 bool XArmPlanner::planCartesianPath(const std::vector<geometry_msgs::msg::Pose>& pose_target_vector)
 {   
-    move_group_->setMaxVelocityScalingFactor(maxV_scale_factor);
     // moveit_msgs::msg::RobotTrajectory trajectory;
     
     double fraction = move_group_->computeCartesianPath(pose_target_vector, eef_step, jump_threshold, trajectory_);
