@@ -6,11 +6,13 @@
 - Ubuntu 20.04 + ROS Foxy
 - Ubuntu 20.04 + ROS Galactic
 - Ubuntu 22.04 + ROS Humble
+- Ubuntu 22.04 + ROS Rolling
 
 &ensp;&ensp;&ensp;&ensp;请根据不同ros2版本切换到对应的代码分支（没有对应的代码分支表示未在该版本测试过）
 - Foxy: [foxy](https://github.com/xArm-Developer/xarm_ros2/tree/foxy)
 - Galactic: [galactic](https://github.com/xArm-Developer/xarm_ros2/tree/galactic)
 - Humble: [humble](https://github.com/xArm-Developer/xarm_ros2/tree/humble)
+- Rolling: [rolling](https://github.com/xArm-Developer/xarm_ros2/tree/rolling)
 
 
 ## 2. 更新记录
