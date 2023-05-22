@@ -268,13 +268,13 @@ def launch_setup(context, *args, **kwargs):
 
     # Planning Configuration
     ompl_planning_pipeline_config = {
-        'move_group': {
+        'ompl': {
             'planning_plugin': 'ompl_interface/OMPLPlanner',
             'request_adapters': """default_planner_request_adapters/AddTimeOptimalParameterization default_planner_request_adapters/FixWorkspaceBounds default_planner_request_adapters/FixStartStateBounds default_planner_request_adapters/FixStartStateCollision default_planner_request_adapters/FixStartStatePathConstraints""",
             'start_state_max_bounds_error': 0.1,
         }
     }
-    ompl_planning_pipeline_config['move_group'].update(ompl_planning_yaml)
+    ompl_planning_pipeline_config['ompl'].update(ompl_planning_yaml)
     # Moveit controllers Configuration
     moveit_controllers = {
         moveit_controller_manager_key.perform(context): controllers_yaml,
