@@ -135,6 +135,8 @@ def launch_setup(context, *args, **kwargs):
 
     # Planning Configuration
     ompl_planning_pipeline_config = {
+        'default_planning_pipeline': 'ompl',
+        'planning_pipelines': ['ompl'],
         'ompl': {
             'planning_plugin': 'ompl_interface/OMPLPlanner',
             'request_adapters': """default_planner_request_adapters/AddTimeOptimalParameterization default_planner_request_adapters/FixWorkspaceBounds default_planner_request_adapters/FixStartStateBounds default_planner_request_adapters/FixStartStateCollision default_planner_request_adapters/FixStartStatePathConstraints""",
