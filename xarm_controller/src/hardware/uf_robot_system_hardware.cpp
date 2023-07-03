@@ -131,7 +131,7 @@ namespace uf_robot_hardware
             add_gripper = (it->second == "True" || it->second == "true");
         }
         
-        if (robot_type != "xarm") add_gripper = false;
+        if (robot_type == "lite") add_gripper = false;
         node_->set_parameter(rclcpp::Parameter("add_gripper", add_gripper));
 
         it = info_.hardware_parameters.find("velocity_control");

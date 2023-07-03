@@ -13,7 +13,7 @@ from launch.substitutions import LaunchConfiguration, ThisLaunchFileDir
 
 def generate_launch_description():
     prefix = LaunchConfiguration('prefix', default='')
-    hw_ns = LaunchConfiguration('hw_ns', default='xarm')
+    hw_ns = LaunchConfiguration('hw_ns', default='ufactory')
     limited = LaunchConfiguration('limited', default=False)
     effort_control = LaunchConfiguration('effort_control', default=False)
     velocity_control = LaunchConfiguration('velocity_control', default=False)

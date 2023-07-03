@@ -144,7 +144,7 @@ Visualization Manager:
             Alpha: 1
             Show Axes: false
             Show Trail: false
-          ground:
+          world:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -261,7 +261,7 @@ Visualization Manager:
             Alpha: 1
             Show Axes: false
             Show Trail: false
-          ground:
+          world:
             Alpha: 1
             Show Axes: false
             Show Trail: false
@@ -356,7 +356,7 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        ground:
+        world:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -443,7 +443,7 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        ground:
+        world:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -462,7 +462,7 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: ground
+    Fixed Frame: world
     Frame Rate: 30
   Name: root
   Tools:
