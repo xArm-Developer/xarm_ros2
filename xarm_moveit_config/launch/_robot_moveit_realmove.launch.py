@@ -51,7 +51,7 @@ def launch_setup(context, *args, **kwargs):
     controllers_name = 'controllers'
     moveit_controller_manager_key = 'moveit_simple_controller_manager'
     moveit_controller_manager_value = 'moveit_simple_controller_manager/MoveItSimpleControllerManager'
-    xarm_type = '{}{}'.format(robot_type.perform(context), dof.perform(context))
+    xarm_type = '{}{}'.format(robot_type.perform(context), '' if robot_type.perform(context) == 'uf850' else dof.perform(context))
     ros_namespace = LaunchConfiguration('ros_namespace', default='').perform(context)
 
     # # robot driver launch
@@ -147,7 +147,7 @@ def launch_setup(context, *args, **kwargs):
         executable='joint_state_publisher',
         name='joint_state_publisher',
         output='screen',
-        parameters=[{'source_list': ['{}/joint_states'.format(hw_ns.perform(context))]}],
+        parameters=[{'source_list': ['{}{}/joint_states'.format(prefix.perform(context), hw_ns.perform(context))]}],
         remappings=[
             ('follow_joint_trajectory', '{}{}_traj_controller/follow_joint_trajectory'.format(prefix.perform(context), xarm_type)),
         ],

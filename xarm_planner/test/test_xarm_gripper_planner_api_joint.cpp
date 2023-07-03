@@ -21,8 +21,9 @@ int main(int argc, char** argv)
     std::shared_ptr<rclcpp::Node> node = rclcpp::Node::make_shared("test_xarm_gripper_planner_api_joint", node_options);
     RCLCPP_INFO(node->get_logger(), "test_xarm_gripper_planner_api_joint start");
 
-    std::string group_name;   
-    node->get_parameter_or("PLANNING_GROUP", group_name, std::string("xarm_gripper"));
+    std::string robot_type;
+    node->get_parameter_or("robot_type", robot_type, std::string("xarm"));
+    std::string group_name = robot_type + "_gripper";
 
     RCLCPP_INFO(node->get_logger(), "namespace: %s, group_name: %s", node->get_namespace(), group_name.c_str());
 

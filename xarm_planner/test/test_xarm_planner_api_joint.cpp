@@ -27,7 +27,9 @@ int main(int argc, char** argv)
     node->get_parameter_or("dof", dof, 7);
     std::string robot_type;
     node->get_parameter_or("robot_type", robot_type, std::string("xarm"));
-    std::string group_name = robot_type + std::to_string(dof);
+    std::string group_name = robot_type;
+    if (robot_type != "uf850")
+        group_name = robot_type + std::to_string(dof);
 
     RCLCPP_INFO(node->get_logger(), "namespace: %s, group_name: %s", node->get_namespace(), group_name.c_str());
 
