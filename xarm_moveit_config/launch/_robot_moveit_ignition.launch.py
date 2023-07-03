@@ -11,12 +11,9 @@ from launch.actions import OpaqueFunction, IncludeLaunchDescription, DeclareLaun
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
-from launch_ros.actions import Node
 
 
 def launch_setup(context, *args, **kwargs):
-    robot_ip = LaunchConfiguration('robot_ip')
-    report_type = LaunchConfiguration('report_type', default='normal')
     prefix = LaunchConfiguration('prefix', default='')
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     limited = LaunchConfiguration('limited', default=True)
@@ -29,6 +26,7 @@ def launch_setup(context, *args, **kwargs):
     no_gui_ctrl = LaunchConfiguration('no_gui_ctrl', default=False)
 
     add_realsense_d435i = LaunchConfiguration('add_realsense_d435i', default=False)
+    add_d435i_links = LaunchConfiguration('add_d435i_links', default=True)
     model1300 = LaunchConfiguration('model1300', default=False)
 
     add_other_geometry = LaunchConfiguration('add_other_geometry', default=False)
@@ -44,65 +42,10 @@ def launch_setup(context, *args, **kwargs):
     geometry_mesh_tcp_xyz = LaunchConfiguration('geometry_mesh_tcp_xyz', default='"0 0 0"')
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
 
-    baud_checkset = LaunchConfiguration('baud_checkset', default=True)
-    default_gripper_baud = LaunchConfiguration('default_gripper_baud', default=2000000)
-
-    ros2_control_plugin = 'uf_robot_hardware/UFRobotSystemHardware'
-    controllers_name = 'controllers'
+    ros2_control_plugin = 'ign_ros2_control/IgnitionSystem'
+    controllers_name = 'fake_controllers'
     moveit_controller_manager_key = 'moveit_simple_controller_manager'
     moveit_controller_manager_value = 'moveit_simple_controller_manager/MoveItSimpleControllerManager'
-    xarm_type = '{}{}'.format(robot_type.perform(context), '' if robot_type.perform(context) == 'uf850' else dof.perform(context))
-    ros_namespace = LaunchConfiguration('ros_namespace', default='').perform(context)
-
-    # # robot driver launch
-    # # xarm_api/launch/_robot_driver.launch.py
-    # robot_driver_launch = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_api'), 'launch', '_robot_driver.launch.py'])),
-    #     launch_arguments={
-    #         'robot_ip': robot_ip,
-    #         'report_type': report_type,
-    #         'dof': dof,
-    #         'hw_ns': hw_ns,
-    #         'add_gripper': add_gripper,
-    #         'prefix': prefix,
-    #         'baud_checkset': baud_checkset,
-    #         'default_gripper_baud': default_gripper_baud,
-    #         'robot_type': robot_type,
-    #     }.items(),
-    # )
-    
-    # robot description launch
-    # xarm_description/launch/_robot_description.launch.py
-    robot_description_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_description'), 'launch', '_robot_description.launch.py'])),
-        launch_arguments={
-            'prefix': prefix,
-            'hw_ns': hw_ns,
-            'limited': limited,
-            'effort_control': effort_control,
-            'velocity_control': velocity_control,
-            'add_gripper': add_gripper,
-            'add_vacuum_gripper': add_vacuum_gripper,
-            'dof': dof,
-            'robot_type': robot_type,
-            'ros2_control_plugin': ros2_control_plugin,
-            'joint_states_remapping': PathJoinSubstitution(['/', ros_namespace, hw_ns, 'joint_states']),
-            'add_realsense_d435i': add_realsense_d435i,
-            'model1300': model1300,
-            'add_other_geometry': add_other_geometry,
-            'geometry_type': geometry_type,
-            'geometry_mass': geometry_mass,
-            'geometry_height': geometry_height,
-            'geometry_radius': geometry_radius,
-            'geometry_length': geometry_length,
-            'geometry_width': geometry_width,
-            'geometry_mesh_filename': geometry_mesh_filename,
-            'geometry_mesh_origin_xyz': geometry_mesh_origin_xyz,
-            'geometry_mesh_origin_rpy': geometry_mesh_origin_rpy,
-            'geometry_mesh_tcp_xyz': geometry_mesh_tcp_xyz,
-            'geometry_mesh_tcp_rpy': geometry_mesh_tcp_rpy,
-        }.items(),
-    )
 
     # robot moveit common launch
     # xarm_moveit_config/launch/_robot_moveit_common.launch.py
@@ -125,6 +68,7 @@ def launch_setup(context, *args, **kwargs):
             'moveit_controller_manager_key': moveit_controller_manager_key,
             'moveit_controller_manager_value': moveit_controller_manager_value,
             'add_realsense_d435i': add_realsense_d435i,
+            'add_d435i_links': add_d435i_links,
             'model1300': model1300,
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,
@@ -138,30 +82,15 @@ def launch_setup(context, *args, **kwargs):
             'geometry_mesh_origin_rpy': geometry_mesh_origin_rpy,
             'geometry_mesh_tcp_xyz': geometry_mesh_tcp_xyz,
             'geometry_mesh_tcp_rpy': geometry_mesh_tcp_rpy,
+            'use_sim_time': 'true'
         }.items(),
     )
 
-    # joint state publisher node
-    joint_state_publisher_node = Node(
-        package='joint_state_publisher',
-        executable='joint_state_publisher',
-        name='joint_state_publisher',
-        output='screen',
-        parameters=[{'source_list': ['{}{}/joint_states'.format(prefix.perform(context), hw_ns.perform(context))]}],
-        remappings=[
-            ('follow_joint_trajectory', '{}{}_traj_controller/follow_joint_trajectory'.format(prefix.perform(context), xarm_type)),
-        ],
-    )
-
-    # ros2 control launch
-    # xarm_controller/launch/_ros2_control.launch.py
-    ros2_control_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_controller'), 'launch', '_ros2_control.launch.py'])),
+    # robot gazebo launch
+    # xarm_gazebo/launch/_robot_beside_table_gazebo.launch.py
+    robot_gazebo_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_gazebo'), 'launch', '_robot_beside_table_ignition.launch.py'])),
         launch_arguments={
-            'robot_ip': robot_ip,
-            'report_type': report_type,
-            'baud_checkset': baud_checkset,
-            'default_gripper_baud': default_gripper_baud,
             'prefix': prefix,
             'hw_ns': hw_ns,
             'limited': limited,
@@ -172,28 +101,16 @@ def launch_setup(context, *args, **kwargs):
             'dof': dof,
             'robot_type': robot_type,
             'ros2_control_plugin': ros2_control_plugin,
+            'load_controller': 'true',
             'add_realsense_d435i': add_realsense_d435i,
+            'add_d435i_links': add_d435i_links,
             'model1300': model1300,
         }.items(),
     )
 
-    control_node = Node(
-        package='controller_manager',
-        executable='spawner.py',
-        output='screen',
-        arguments=[
-            '{}{}_traj_controller'.format(prefix.perform(context), xarm_type),
-            '--controller-manager', '{}/controller_manager'.format(ros_namespace)
-        ],
-    )
-
     return [
-        robot_description_launch,
+        robot_gazebo_launch,
         robot_moveit_common_launch,
-        joint_state_publisher_node,
-        ros2_control_launch,
-        control_node,
-        # robot_driver_launch,
     ]
 
 

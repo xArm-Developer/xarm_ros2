@@ -300,8 +300,8 @@ def launch_setup(context, *args, **kwargs):
             ], 
         }],
         remappings=[
-            ('follow_joint_trajectory', '{}{}{}_traj_controller/follow_joint_trajectory'.format(prefix_1.perform(context), robot_type_1.perform(context), dof_1.perform(context))),
-            ('follow_joint_trajectory', '{}{}{}_traj_controller/follow_joint_trajectory'.format(prefix_2.perform(context), robot_type_2.perform(context), dof_2.perform(context))),
+            ('follow_joint_trajectory', '{}{}{}_traj_controller/follow_joint_trajectory'.format(prefix_1.perform(context), robot_type_1.perform(context), '' if robot_type_1.perform(context) == 'uf850' else dof_1.perform(context))),
+            ('follow_joint_trajectory', '{}{}{}_traj_controller/follow_joint_trajectory'.format(prefix_2.perform(context), robot_type_2.perform(context), '' if robot_type_2.perform(context) == 'uf850' else dof_2.perform(context))),
         ],
     )
 
@@ -374,8 +374,8 @@ def launch_setup(context, *args, **kwargs):
     # Load controllers
     load_controllers = []
     for controller in [
-        '{}{}{}_traj_controller'.format(prefix_1.perform(context), robot_type_1.perform(context), dof_1.perform(context)),
-        '{}{}{}_traj_controller'.format(prefix_2.perform(context), robot_type_2.perform(context), dof_2.perform(context)),
+        '{}{}{}_traj_controller'.format(prefix_1.perform(context), robot_type_1.perform(context), '' if robot_type_1.perform(context) == 'uf850' else dof_1.perform(context)),
+        '{}{}{}_traj_controller'.format(prefix_2.perform(context), robot_type_2.perform(context), '' if robot_type_2.perform(context) == 'uf850' else dof_2.perform(context)),
     ]:
         load_controllers.append(Node(
             package='controller_manager',

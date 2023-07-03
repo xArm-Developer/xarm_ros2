@@ -23,7 +23,8 @@ def generate_launch_description():
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
 
     add_realsense_d435i = LaunchConfiguration('add_realsense_d435i', default=False)
-    
+    model1300 = LaunchConfiguration('model1300', default=False)
+
     add_other_geometry = LaunchConfiguration('add_other_geometry', default=False)
     geometry_type = LaunchConfiguration('geometry_type', default='box')
     geometry_mass = LaunchConfiguration('geometry_mass', default=0.1)
@@ -38,7 +39,7 @@ def generate_launch_description():
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
 
     dof = 6
-    robot_type = 'lite'
+    robot_type = 'uf850'
 
     # robot moveit fake launch
     # xarm_moveit_config/launch/_robot_moveit_fake.launch.py
@@ -56,6 +57,7 @@ def generate_launch_description():
             'robot_type': robot_type,
             'no_gui_ctrl': 'true',
             'add_realsense_d435i': add_realsense_d435i,
+            'model1300': model1300,
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,
             'geometry_mass': geometry_mass,
@@ -87,6 +89,7 @@ def generate_launch_description():
             'robot_type': robot_type,
             'ros2_control_plugin': 'uf_robot_hardware/UFRobotFakeSystemHardware',
             'add_realsense_d435i': add_realsense_d435i,
+            'model1300': model1300,
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,
             'geometry_mass': geometry_mass,

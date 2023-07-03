@@ -113,8 +113,8 @@ def launch_setup(context, *args, **kwargs):
     mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_controller'), 'launch', 'lib', 'robot_controller_lib.py'))
     generate_dual_ros2_control_params_temp_file = getattr(mod, 'generate_dual_ros2_control_params_temp_file')
     ros2_control_params = generate_dual_ros2_control_params_temp_file(
-        os.path.join(get_package_share_directory('xarm_controller'), 'config', '{}{}_controllers.yaml'.format(robot_type_1.perform(context), dof_1.perform(context))),
-        os.path.join(get_package_share_directory('xarm_controller'), 'config', '{}{}_controllers.yaml'.format(robot_type_2.perform(context), dof_2.perform(context))),
+        os.path.join(get_package_share_directory('xarm_controller'), 'config', '{}{}_controllers.yaml'.format(robot_type_1.perform(context), '' if robot_type_1.perform(context) == 'uf850' else dof_1.perform(context))),
+        os.path.join(get_package_share_directory('xarm_controller'), 'config', '{}{}_controllers.yaml'.format(robot_type_2.perform(context), '' if robot_type_2.perform(context) == 'uf850' else dof_2.perform(context))),
         prefix_1=prefix_1.perform(context), 
         prefix_2=prefix_2.perform(context), 
         add_gripper_1=add_gripper_1.perform(context) in ('True', 'true'),
@@ -217,9 +217,9 @@ def launch_setup(context, *args, **kwargs):
         output='screen',
         arguments=[
             '-topic', 'robot_description',
-            '-entity', 'dual_xarm',
+            '-entity', 'DUAL_UF_ROBOT',
             '-x', '0.5',
-            '-y', '-0.5',
+            '-y', '-0.54' if robot_type.perform(context) == 'uf850' else '-0.5',
             '-z', '1.021',
             '-Y', '1.571',
         ],
@@ -229,14 +229,14 @@ def launch_setup(context, *args, **kwargs):
     # Load controllers
     controllers = [
         'joint_state_broadcaster',
-        '{}{}{}_traj_controller'.format(prefix_1.perform(context), robot_type_1.perform(context), dof_1.perform(context)),
-        '{}{}{}_traj_controller'.format(prefix_2.perform(context), robot_type_2.perform(context), dof_2.perform(context)),
+        '{}{}{}_traj_controller'.format(prefix_1.perform(context), robot_type_1.perform(context), '' if robot_type_1.perform(context) == 'uf850' else dof_1.perform(context)),
+        '{}{}{}_traj_controller'.format(prefix_2.perform(context), robot_type_2.perform(context), '' if robot_type_2.perform(context) == 'uf850' else dof_2.perform(context)),
     ]
     # check robot_type is xarm
-    if robot_type_1.perform(context) == 'xarm' and add_gripper_1.perform(context) in ('True', 'true'):
+    if robot_type_1.perform(context) != 'lite' and add_gripper_1.perform(context) in ('True', 'true'):
         controllers.append('{}{}_gripper_traj_controller'.format(prefix_1.perform(context), robot_type_1.perform(context)))
     # check robot_type is xarm
-    if robot_type_2.perform(context) == 'xarm' and add_gripper_2.perform(context) in ('True', 'true'):
+    if robot_type_2.perform(context) != 'lite' and add_gripper_2.perform(context) in ('True', 'true'):
         controllers.append('{}{}_gripper_traj_controller'.format(prefix_2.perform(context), robot_type_2.perform(context)))
     load_controllers = []
     if load_controller.perform(context) in ('True', 'true'):

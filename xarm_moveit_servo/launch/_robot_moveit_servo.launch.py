@@ -59,7 +59,7 @@ def launch_setup(context, *args, **kwargs):
     robot_type = LaunchConfiguration('robot_type', default='xarm')
 
     moveit_config_package_name = 'xarm_moveit_config'
-    xarm_type = '{}{}'.format(robot_type.perform(context), dof.perform(context))
+    xarm_type = '{}{}'.format(robot_type.perform(context), '' if robot_type.perform(context) == 'uf850' else dof.perform(context))
     ros_namespace = LaunchConfiguration('ros_namespace', default='').perform(context)
 
     # robot_description_parameters
@@ -117,8 +117,8 @@ def launch_setup(context, *args, **kwargs):
     servo_yaml['command_out_topic'] = '/{}/joint_trajectory'.format(xarm_traj_controller)
     servo_params = {"moveit_servo": servo_yaml}
     controllers = ['joint_state_broadcaster', xarm_traj_controller]
-    if add_gripper.perform(context) in ('True', 'true') and robot_type.perform(context) == 'xarm':
-        controllers.append('{}xarm_gripper_traj_controller'.format(prefix.perform(context)))
+    if add_gripper.perform(context) in ('True', 'true') and robot_type.perform(context) != 'lite':
+        controllers.append('{}{}_gripper_traj_controller'.format(prefix.perform(context), robot_type.perform(context)))
 
     # rviz_config_file = PathJoinSubstitution([FindPackageShare(moveit_config_package_name), 'rviz', 'moveit.rviz'])
     rviz_config_file = PathJoinSubstitution([FindPackageShare('xarm_moveit_servo'), 'rviz', 'servo.rviz'])
