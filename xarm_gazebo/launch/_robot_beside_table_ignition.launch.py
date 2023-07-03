@@ -29,7 +29,7 @@ def launch_setup(context, *args, **kwargs):
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     dof = LaunchConfiguration('dof', default=7)
     robot_type = LaunchConfiguration('robot_type', default='xarm')
-    ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='gazebo_ros2_control/GazeboSystem')
+    ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='ign_ros2_control/IgnitionSystem')
     
     add_realsense_d435i = LaunchConfiguration('add_realsense_d435i', default=False)
     add_d435i_links = LaunchConfiguration('add_d435i_links', default=True)
@@ -65,6 +65,7 @@ def launch_setup(context, *args, **kwargs):
         add_gripper=add_gripper.perform(context) in ('True', 'true'),
         ros_namespace=LaunchConfiguration('ros_namespace', default='').perform(context),
         update_rate=1000,
+        robot_type=robot_type.perform(context)
     )
 
     # robot_description
@@ -125,29 +126,43 @@ def launch_setup(context, *args, **kwargs):
     # gazebo_ros/launch/gazebo.launch.py
     xarm_gazebo_world = PathJoinSubstitution([FindPackageShare('xarm_gazebo'), 'worlds', 'table.world'])
     gazebo_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('gazebo_ros'), 'launch', 'gazebo.launch.py'])),
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('ros_ign_gazebo'), 'launch', 'ign_gazebo.launch.py'])),
         launch_arguments={
-            'world': xarm_gazebo_world,
-            'server_required': 'true',
-            'gui_required': 'true',
+            'ign_args': ' -r -v 3 {}'.format(xarm_gazebo_world.perform(context)),
+            # 'gz_args': ' -r -v 3 {}'.format(xarm_gazebo_world.perform(context)),
         }.items(),
     )
 
     # gazebo spawn entity node
     gazebo_spawn_entity_node = Node(
-        package="gazebo_ros",
-        executable="spawn_entity.py",
+        package="ros_ign_gazebo",
+        executable="create",
         output='screen',
         arguments=[
             '-topic', 'robot_description',
-            # '-entity', '{}{}'.format(robot_type.perform(context), '' if robot_type.perform(context) == 'uf850' else dof.perform(context)),
-            '-entity', 'UF_ROBOT',
+            '-name', '{}{}'.format(robot_type.perform(context), '' if robot_type.perform(context) == 'uf850' else dof.perform(context)),
             '-x', '-0.2',
             '-y', '-0.54' if robot_type.perform(context) == 'uf850' else '-0.5',
             '-z', '1.021',
             '-Y', '1.571',
+            # '-allow_renaming', 'true'
         ],
         parameters=[{'use_sim_time': True}],
+    )
+
+    ign_bridge = Node(
+        package='ros_ign_bridge',
+        executable='parameter_bridge',
+        arguments=[
+                # Clock (IGN -> ROS2)
+                '/clock@rosgraph_msgs/msg/Clock[ignition.msgs.Clock',
+                # # Joint states (IGN -> ROS2)
+                # '/xarm/joint_states@sensor_msgs/msg/JointState[ignition.msgs.Model',
+                ],
+        # remappings=[
+        #     ('/xarm/joint_states', 'joint_states'),
+        # ],
+        output='screen'
     )
 
     # Load controllers
@@ -162,7 +177,7 @@ def launch_setup(context, *args, **kwargs):
         for controller in controllers:
             load_controllers.append(Node(
                 package='controller_manager',
-                executable='spawner',
+                executable='spawner.py',
                 output='screen',
                 arguments=[
                     controller,
@@ -180,12 +195,14 @@ def launch_setup(context, *args, **kwargs):
                 )
             ),
             gazebo_launch,
+            ign_bridge,
             robot_state_publisher_node,
             gazebo_spawn_entity_node,
         ]
     else:
         return [
             gazebo_launch,
+            ign_bridge,
             robot_state_publisher_node,
             gazebo_spawn_entity_node,
         ]

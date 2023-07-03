@@ -47,7 +47,7 @@ def launch_setup(context, *args, **kwargs):
     controllers_name = 'fake_controllers'
     moveit_controller_manager_key = 'moveit_simple_controller_manager'
     moveit_controller_manager_value = 'moveit_simple_controller_manager/MoveItSimpleControllerManager'
-    xarm_type = '{}{}'.format(robot_type.perform(context), dof.perform(context))
+    xarm_type = '{}{}'.format(robot_type.perform(context), '' if robot_type.perform(context) == 'uf850' else dof.perform(context))
     ros_namespace = LaunchConfiguration('ros_namespace', default='').perform(context)
     
     # robot description launch
@@ -126,11 +126,11 @@ def launch_setup(context, *args, **kwargs):
         ('follow_joint_trajectory', '{}{}_traj_controller/follow_joint_trajectory'.format(prefix.perform(context), xarm_type)),
     ]
     controllers = ['{}{}_traj_controller'.format(prefix.perform(context), xarm_type)]
-    if add_gripper.perform(context) in ('True', 'true') and robot_type.perform(context) == 'xarm':
+    if add_gripper.perform(context) in ('True', 'true') and robot_type.perform(context) != 'lite':
         remappings.append(
-            ('follow_joint_trajectory', '{}xarm_gripper_traj_controller/follow_joint_trajectory'.format(prefix.perform(context)))
+            ('follow_joint_trajectory', '{}{}_gripper_traj_controller/follow_joint_trajectory'.format(prefix.perform(context), robot_type.perform(context)))
         )
-        controllers.append('{}xarm_gripper_traj_controller'.format(prefix.perform(context)))
+        controllers.append('{}{}_gripper_traj_controller'.format(prefix.perform(context), robot_type.perform(context)))
     # joint state publisher node
     joint_state_publisher_node = Node(
         package='joint_state_publisher',
