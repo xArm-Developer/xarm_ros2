@@ -3,3 +3,4 @@
 *bak/
 ignore_*
 xarm_api/config/xarm_user_params.yaml
+**/old
