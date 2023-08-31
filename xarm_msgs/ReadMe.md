@@ -214,7 +214,7 @@
 - [xarm_msgs::srv::FtImpedance](./srv/FtImpedance.srv)
     - xarm_api->service: __set_impedance__
     - xarm_api->service: __set_impedance_mbk__
-    - xarm_api->service: ___set_impedance_config__
+    - xarm_api->service: __set_impedance_config__
 
 - [xarm_msgs::srv::LinearTrackBackOrigin](./srv/LinearTrackBackOrigin.srv)
     - xarm_api->service: __set_linear_track_back_origin__
