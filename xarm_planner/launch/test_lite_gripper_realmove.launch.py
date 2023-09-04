@@ -21,7 +21,7 @@ def launch_setup(context, *args, **kwargs):
         output='screen',
         parameters=[
             {
-                'robot_type': prefix,
+                'prefix': prefix,
                 'hw_ns': hw_ns
             },
         ],
