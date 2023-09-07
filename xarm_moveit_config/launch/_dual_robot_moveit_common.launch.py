@@ -347,6 +347,8 @@ def launch_setup(context, *args, **kwargs):
             ('/tf_static', 'tf_static'),
         ]
     )
+    
+    target_frame = '{}{}'.format(prefix_1.perform(context), 'link_base')
 
     # Static TF
     static_tf = Node(
@@ -354,7 +356,7 @@ def launch_setup(context, *args, **kwargs):
         executable='static_transform_publisher',
         name='static_transform_publisher',
         output='screen',
-        arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', 'ground', 'link_base'],
+        arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', 'world', target_frame],
         parameters=[{'use_sim_time': use_sim_time}],
     )
 
