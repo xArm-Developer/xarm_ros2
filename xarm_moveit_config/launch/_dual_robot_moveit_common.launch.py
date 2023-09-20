@@ -348,15 +348,24 @@ def launch_setup(context, *args, **kwargs):
         ]
     )
     
-    target_frame = '{}{}'.format(prefix_1.perform(context), 'link_base')
+    link_base_1 = '{}link_base'.format(prefix_1.perform(context))
+    link_base_2 = '{}link_base'.format(prefix_2.perform(context))
 
     # Static TF
-    static_tf = Node(
+    static_tf_1 = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
-        name='static_transform_publisher',
+        name='{}static_transform_publisher'.format(prefix_1.perform(context)),
         output='screen',
-        arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', 'world', target_frame],
+        arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', 'world', link_base_1],
+        parameters=[{'use_sim_time': use_sim_time}],
+    )
+    static_tf_2 = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='{}static_transform_publisher'.format(prefix_2.perform(context)),
+        output='screen',
+        arguments=['0.0', '1.0', '0.0', '0.0', '0.0', '0.0', 'world', link_base_2],
         parameters=[{'use_sim_time': use_sim_time}],
     )
 
@@ -366,7 +375,8 @@ def launch_setup(context, *args, **kwargs):
             on_exit=[EmitEvent(event=Shutdown())]
         )),
         rviz2_node,
-        static_tf,
+        static_tf_1,
+        static_tf_2,
         move_group_node,
     ]
 
