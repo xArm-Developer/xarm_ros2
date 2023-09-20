@@ -39,6 +39,10 @@ def launch_setup(context, *args, **kwargs):
     add_d435i_links = LaunchConfiguration('add_d435i_links', default=True)
     model1300 = LaunchConfiguration('model1300', default=False)
 
+    attach_to = LaunchConfiguration('attach_to', default='world')
+    attach_xyz = LaunchConfiguration('attach_xyz', default='"0 0 0"')
+    attach_rpy = LaunchConfiguration('attach_rpy', default='"0 0 0"')
+
     add_other_geometry = LaunchConfiguration('add_other_geometry', default=False)
     geometry_type = LaunchConfiguration('geometry_type', default='box')
     geometry_mass = LaunchConfiguration('geometry_mass', default=0.1)
@@ -78,6 +82,9 @@ def launch_setup(context, *args, **kwargs):
             'add_realsense_d435i': add_realsense_d435i,
             'add_d435i_links': add_d435i_links,
             'model1300': model1300,
+            'attach_to': attach_to,
+            'attach_xyz': attach_xyz,
+            'attach_rpy': attach_rpy,
             'add_other_geometry': add_other_geometry,
             'geometry_type': geometry_type,
             'geometry_mass': geometry_mass,
@@ -216,13 +223,18 @@ def launch_setup(context, *args, **kwargs):
         ]
     )
 
+    xyz = attach_xyz.perform(context)[1:-1].split(' ')
+    rpy = attach_rpy.perform(context)[1:-1].split(' ')
+    args = xyz + rpy + ['world', '{}link_base'.format(prefix.perform(context))]
+
     # Static TF
     static_tf = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
         name='static_transform_publisher',
         output='screen',
-        arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', 'world', 'link_base'],
+        # arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', 'world', 'link_base'],
+        arguments=args,
         parameters=[{'use_sim_time': use_sim_time}],
     )
 
