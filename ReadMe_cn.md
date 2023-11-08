@@ -76,7 +76,7 @@
     ```bash
     # 记得先source已安装的ros2环境
     $ cd ~/dev_ws/src/
-    $ rosdep update
+    $ rosdep update --include-eol-distros
     $ rosdep install --from-paths . --ignore-src --rosdistro $ROS_DISTRO -y
     ```
 
