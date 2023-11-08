@@ -78,7 +78,7 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
     ```bash
     # Remember to source ros2 environment settings first
     $ cd ~/dev_ws/src/
-    $ rosdep update
+    $ rosdep update --include-eol-distros
     $ rosdep install --from-paths . --ignore-src --rosdistro $ROS_DISTRO -y
     ```
 
