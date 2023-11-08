@@ -107,6 +107,10 @@ def launch_setup(context, *args, **kwargs):
     geometry_mesh_tcp_rpy_1 = LaunchConfiguration('geometry_mesh_tcp_rpy_1', default=geometry_mesh_tcp_rpy)
     geometry_mesh_tcp_rpy_2 = LaunchConfiguration('geometry_mesh_tcp_rpy_2', default=geometry_mesh_tcp_rpy)
 
+    kinematics_suffix = LaunchConfiguration('kinematics_suffix', default='')
+    kinematics_suffix_1 = LaunchConfiguration('kinematics_suffix_1', default=kinematics_suffix)
+    kinematics_suffix_2 = LaunchConfiguration('kinematics_suffix_2', default=kinematics_suffix)
+
     baud_checkset = LaunchConfiguration('baud_checkset', default=True)
     baud_checkset_1 = LaunchConfiguration('baud_checkset', default=baud_checkset)
     baud_checkset_2 = LaunchConfiguration('baud_checkset', default=baud_checkset)
@@ -209,6 +213,8 @@ def launch_setup(context, *args, **kwargs):
                 'geometry_mesh_tcp_xyz_2': geometry_mesh_tcp_xyz_2,
                 'geometry_mesh_tcp_rpy_1': geometry_mesh_tcp_rpy_1,
                 'geometry_mesh_tcp_rpy_2': geometry_mesh_tcp_rpy_2,
+                'kinematics_suffix_1': kinematics_suffix_1,
+                'kinematics_suffix_2': kinematics_suffix_2,
             }
         )
     }
@@ -284,6 +290,8 @@ def launch_setup(context, *args, **kwargs):
             'geometry_mesh_tcp_xyz_2': geometry_mesh_tcp_xyz_2,
             'geometry_mesh_tcp_rpy_1': geometry_mesh_tcp_rpy_1,
             'geometry_mesh_tcp_rpy_2': geometry_mesh_tcp_rpy_2,
+            'kinematics_suffix_1': kinematics_suffix_1,
+            'kinematics_suffix_2': kinematics_suffix_2,
         }.items(),
     )
 
@@ -360,6 +368,8 @@ def launch_setup(context, *args, **kwargs):
             'geometry_mesh_tcp_xyz_2': geometry_mesh_tcp_xyz_2,
             'geometry_mesh_tcp_rpy_1': geometry_mesh_tcp_rpy_1,
             'geometry_mesh_tcp_rpy_2': geometry_mesh_tcp_rpy_2,
+            'kinematics_suffix_1': kinematics_suffix_1,
+            'kinematics_suffix_2': kinematics_suffix_2,
             'robot_ip_1': robot_ip_1,
             'robot_ip_2': robot_ip_2,
             'report_type_1': report_type_1,

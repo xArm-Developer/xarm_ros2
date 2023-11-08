@@ -39,6 +39,8 @@ def generate_launch_description():
     geometry_mesh_tcp_xyz = LaunchConfiguration('geometry_mesh_tcp_xyz', default='"0 0 0"')
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
 
+    kinematics_suffix = LaunchConfiguration('kinematics_suffix', default='')
+
     # robot moveit realmove launch
     # xarm_moveit_config/launch/_robot_moveit_realmove.launch.py
     robot_moveit_realmove_launch = IncludeLaunchDescription(
@@ -69,6 +71,7 @@ def generate_launch_description():
             'geometry_mesh_origin_rpy': geometry_mesh_origin_rpy,
             'geometry_mesh_tcp_xyz': geometry_mesh_tcp_xyz,
             'geometry_mesh_tcp_rpy': geometry_mesh_tcp_rpy,
+            'kinematics_suffix': kinematics_suffix,
         }.items(),
     )
     

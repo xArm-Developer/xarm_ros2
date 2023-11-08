@@ -104,6 +104,10 @@ def launch_setup(context, *args, **kwargs):
     geometry_mesh_tcp_rpy_1 = LaunchConfiguration('geometry_mesh_tcp_rpy_1', default=geometry_mesh_tcp_rpy)
     geometry_mesh_tcp_rpy_2 = LaunchConfiguration('geometry_mesh_tcp_rpy_2', default=geometry_mesh_tcp_rpy)
 
+    kinematics_suffix = LaunchConfiguration('kinematics_suffix', default='')
+    kinematics_suffix_1 = LaunchConfiguration('kinematics_suffix_1', default=kinematics_suffix)
+    kinematics_suffix_2 = LaunchConfiguration('kinematics_suffix_2', default=kinematics_suffix)
+
     load_controller = LaunchConfiguration('load_controller', default=False)
 
     ros_namespace = LaunchConfiguration('ros_namespace', default='').perform(context)
@@ -181,6 +185,8 @@ def launch_setup(context, *args, **kwargs):
                 'geometry_mesh_tcp_xyz_2': geometry_mesh_tcp_xyz_2,
                 'geometry_mesh_tcp_rpy_1': geometry_mesh_tcp_rpy_1,
                 'geometry_mesh_tcp_rpy_2': geometry_mesh_tcp_rpy_2,
+                'kinematics_suffix_1': kinematics_suffix_1,
+                'kinematics_suffix_2': kinematics_suffix_2,
             }
         ),
     }
