@@ -54,6 +54,8 @@ def launch_setup(context, *args, **kwargs):
     geometry_mesh_tcp_xyz = LaunchConfiguration('geometry_mesh_tcp_xyz', default='"0 0 0"')
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
 
+    kinematics_suffix = LaunchConfiguration('kinematics_suffix', default='')
+
     # ros2 control params
     # xarm_controller/launch/lib/robot_controller_lib.py
     mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_controller'), 'launch', 'lib', 'robot_controller_lib.py'))
@@ -104,6 +106,7 @@ def launch_setup(context, *args, **kwargs):
                 'geometry_mesh_origin_rpy': geometry_mesh_origin_rpy,
                 'geometry_mesh_tcp_xyz': geometry_mesh_tcp_xyz,
                 'geometry_mesh_tcp_rpy': geometry_mesh_tcp_rpy,
+                'kinematics_suffix': kinematics_suffix,
                 'robot_ip': robot_ip,
                 'report_type': report_type,
                 'baud_checkset': baud_checkset,

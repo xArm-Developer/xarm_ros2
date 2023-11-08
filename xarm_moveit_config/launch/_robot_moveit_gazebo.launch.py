@@ -42,6 +42,8 @@ def launch_setup(context, *args, **kwargs):
     geometry_mesh_tcp_xyz = LaunchConfiguration('geometry_mesh_tcp_xyz', default='"0 0 0"')
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
 
+    kinematics_suffix = LaunchConfiguration('kinematics_suffix', default='')
+
     ros2_control_plugin = 'gazebo_ros2_control/GazeboSystem'
     controllers_name = 'fake_controllers'
     moveit_controller_manager_key = 'moveit_simple_controller_manager'
@@ -82,6 +84,7 @@ def launch_setup(context, *args, **kwargs):
             'geometry_mesh_origin_rpy': geometry_mesh_origin_rpy,
             'geometry_mesh_tcp_xyz': geometry_mesh_tcp_xyz,
             'geometry_mesh_tcp_rpy': geometry_mesh_tcp_rpy,
+            'kinematics_suffix': kinematics_suffix,
             'use_sim_time': 'true'
         }.items(),
     )
@@ -105,6 +108,7 @@ def launch_setup(context, *args, **kwargs):
             'add_realsense_d435i': add_realsense_d435i,
             'add_d435i_links': add_d435i_links,
             'model1300': model1300,
+            'kinematics_suffix': kinematics_suffix,
         }.items(),
     )
 

@@ -33,6 +33,7 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 - (2023-04-20) Added the launch parameter `robot_sn`, supports loading the inertia parameters of the corresponding joint link, and automatically overrides the `model1300` parameters
 - (2023-04-20) Added launch parameters `attach_to`/`attach_xyz`/`attach_rpy` to support attaching the robot arm model to other models
 - (2023-06-07) Added support for UFACTORY850 robotic arm
+* (2023-10-12) Added the generation and use of joint kinematics parameter files
 
 
 ## 3. Preparation
@@ -549,3 +550,20 @@ __Reminder 4: The <hw_ns> described below is replaced with the actual one, the x
     - __geometry_mesh_tcp_xyz_2__
     - __geometry_mesh_tcp_rpy_1__
     - __geometry_mesh_tcp_rpy_2__
+- __kinematics_suffix__: Specify joint Kinematics parameter file suffix
+    - Generation of Kinematics parameter file: 
+      ```bash
+      cd src/xarm_ros/xarm_description/config/kinematics
+      python gen_kinematics_params.py {robot_ip} {kinematics_suffix}
+
+      # Note
+      # 1. robot_ip represents the IP of the robot arm. You need to connect to the robot arm to obtain the actual parameters.
+      # 2. kinematics_suffix represents the suffix of the generated parameter file. If successful, the configuration file will be generated in the xarm_description/config/kinematics/user directory. If kinematics_suffix is AAA, then the corresponding file name is as follows
+      #   xarm5: xarm_description/config/kinematics/user/xarm5_kinematics_AAA.yaml
+      #   xarm6: xarm_description/config/kinematics/user/xarm6_kinematics_AAA.yaml
+      #   xarm7: xarm_description/config/kinematics/user/xarm7_kinematics_AAA.yaml
+      #   lite6: xarm_description/config/kinematics/user/lite6_kinematics_AAA.yaml
+      #   uf850: xarm_description/config/kinematics/user/uf850_kinematics_AAA.yaml
+      ```
+    - Use of Kinematics parameter file: Specify this parameter when starting the launch file
+      - Note that before specifying this parameter, make sure that the corresponding configuration file exists. If it does not exist, you need to connect the robot arm through a script to generate it.
