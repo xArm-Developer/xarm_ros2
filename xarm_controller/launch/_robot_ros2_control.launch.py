@@ -53,6 +53,8 @@ def launch_setup(context, *args, **kwargs):
     geometry_mesh_tcp_xyz = LaunchConfiguration('geometry_mesh_tcp_xyz', default='"0 0 0"')
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
 
+    kinematics_suffix = LaunchConfiguration('kinematics_suffix', default='')
+
     # # robot driver launch
     # # xarm_api/launch/_robot_driver.launch.py
     # robot_driver_launch = IncludeLaunchDescription(
@@ -103,6 +105,7 @@ def launch_setup(context, *args, **kwargs):
             'geometry_mesh_origin_rpy': geometry_mesh_origin_rpy,
             'geometry_mesh_tcp_xyz': geometry_mesh_tcp_xyz,
             'geometry_mesh_tcp_rpy': geometry_mesh_tcp_rpy,
+            'kinematics_suffix': kinematics_suffix,
         }.items(),
     )
 
@@ -140,6 +143,7 @@ def launch_setup(context, *args, **kwargs):
             'geometry_mesh_origin_rpy': geometry_mesh_origin_rpy,
             'geometry_mesh_tcp_xyz': geometry_mesh_tcp_xyz,
             'geometry_mesh_tcp_rpy': geometry_mesh_tcp_rpy,
+            'kinematics_suffix': kinematics_suffix,
             'robot_ip': robot_ip,
             'report_type': report_type,
             'baud_checkset': baud_checkset,
