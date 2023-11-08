@@ -32,6 +32,7 @@
 - (2023-04-20) 新增launch启动参数`robot_sn`支持加载对应的关节连杆的惯性参数，并自动覆盖model1300参数
 - (2023-04-20) 新增launch启动参数 `attach_to`/`attach_xyz`/`attach_rpy`，支持把机械臂模型依附在其它模型之上
 - (2023-06-07) 新增对UFACTORY850机械臂的支持
+- (2023-10-12) 新增关节kinematics参数文件的生成与使用
 
 ## 3. 准备工作
 
@@ -537,3 +538,20 @@ __注意4: 以下描述的<hw_ns>用实际的替换，xarm系列默认为xarm, �
     - __geometry_mesh_tcp_xyz_2__
     - __geometry_mesh_tcp_rpy_1__
     - __geometry_mesh_tcp_rpy_2__
+- __kinematics_suffix__: 指定关节Kinematics参数文件后缀
+    - 参数文件的生成: 
+      ```bash
+      cd src/xarm_ros/xarm_description/config/kinematics
+      python gen_kinematics_params.py {robot_ip} {kinematics_suffix}
+
+      # 注意
+      # 1. robot_ip表示机械臂IP，需要连接机械臂获取实际的参数
+      # 2. kinematics_suffix表示生成的参数文件的后缀，如果成功，会在xarm_description/config/kinematics/user目录下生成配置文件, 假如 kinematics_suffix 为 AAA, 那么对应的文件名如下
+      #   xarm5: xarm_description/config/kinematics/user/xarm5_kinematics_AAA.yaml
+      #   xarm6: xarm_description/config/kinematics/user/xarm6_kinematics_AAA.yaml
+      #   xarm7: xarm_description/config/kinematics/user/xarm7_kinematics_AAA.yaml
+      #   lite6: xarm_description/config/kinematics/user/lite6_kinematics_AAA.yaml
+      #   uf850: xarm_description/config/kinematics/user/uf850_kinematics_AAA.yaml
+      ```
+    - 参数文件的使用: 在启动launch文件时指定该参数
+      - 注意指定该参数之前要保证对应的配置文件存在，如果不存在，需要先通过脚本连接机械臂生成

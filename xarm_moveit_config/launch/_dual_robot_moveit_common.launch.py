@@ -108,6 +108,10 @@ def launch_setup(context, *args, **kwargs):
     geometry_mesh_tcp_rpy_1 = LaunchConfiguration('geometry_mesh_tcp_rpy_1', default=geometry_mesh_tcp_rpy)
     geometry_mesh_tcp_rpy_2 = LaunchConfiguration('geometry_mesh_tcp_rpy_2', default=geometry_mesh_tcp_rpy)
 
+    kinematics_suffix = LaunchConfiguration('kinematics_suffix', default='')
+    kinematics_suffix_1 = LaunchConfiguration('kinematics_suffix_1', default=kinematics_suffix)
+    kinematics_suffix_2 = LaunchConfiguration('kinematics_suffix_2', default=kinematics_suffix)
+
     use_sim_time = LaunchConfiguration('use_sim_time', default=False)
 
     moveit_config_package_name = 'xarm_moveit_config'
@@ -168,6 +172,8 @@ def launch_setup(context, *args, **kwargs):
             'geometry_mesh_tcp_xyz_2': geometry_mesh_tcp_xyz_2,
             'geometry_mesh_tcp_rpy_1': geometry_mesh_tcp_rpy_1,
             'geometry_mesh_tcp_rpy_2': geometry_mesh_tcp_rpy_2,
+            'kinematics_suffix_1': kinematics_suffix_1,
+            'kinematics_suffix_2': kinematics_suffix_2,
         },
         srdf_arguments={
             'prefix_1': prefix_1,
