@@ -74,6 +74,15 @@ target_link_libraries(test_xarm_planner_api_joint
   ${ament_LIBRARIES}
 )
 
+add_executable(test_dual_xarm_planner_api_joint test/test_dual_xarm_planner_api_joint.cpp)
+ament_target_dependencies(test_dual_xarm_planner_api_joint
+  ${dependencies}
+)
+target_link_libraries(test_dual_xarm_planner_api_joint 
+  xarm_planner
+  ${ament_LIBRARIES}
+)
+
 add_executable(test_xarm_planner_api_pose test/test_xarm_planner_api_pose.cpp)
 ament_target_dependencies(test_xarm_planner_api_pose
   ${dependencies}
@@ -134,6 +143,7 @@ install(
   xarm_planner_node
   xarm_gripper_planner_node
   test_xarm_planner_api_joint
+  test_dual_xarm_planner_api_joint
   test_xarm_planner_api_pose
   test_xarm_gripper_planner_api_joint
   test_xarm_planner_client_joint
