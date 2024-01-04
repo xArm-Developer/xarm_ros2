@@ -1,0 +1,9 @@
+controller_names:
+  - xarm7_mirror_gripper_traj_controller
+
+xarm7_mirror_gripper_traj_controller:
+  action_ns: follow_joint_trajectory
+  type: FollowJointTrajectory
+  default: true
+  joints:
+    - drive_joint

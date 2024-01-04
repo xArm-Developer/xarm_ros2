@@ -36,10 +36,10 @@ int main(int argc, char** argv)
     node->get_parameter_or("prefix_2", prefix_2, std::string("R_"));
     std::string group_name_L = robot_type_1;
     std::string group_name_R = robot_type_2;
-    if (robot_type_1 != "uf850") {
+    if (robot_type_1 == "xarm" || robot_type_1 == "lite") {
         group_name_L = robot_type_1 + std::to_string(dof_1);
     }
-    if (robot_type_2 != "uf850") {
+    if (robot_type_2 == "xarm" || robot_type_2 == "lite") {
         group_name_R = robot_type_2 + std::to_string(dof_2);
     }
     group_name_L = prefix_1 + group_name_L;

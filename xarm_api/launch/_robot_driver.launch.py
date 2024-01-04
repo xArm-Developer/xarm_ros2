@@ -85,7 +85,7 @@ def launch_setup(context, *args, **kwargs):
                 'robot_ip': robot_ip,
                 'report_type': report_type,
                 'dof': dof,
-                'add_gripper': add_gripper if robot_type.perform(context) == 'xarm' else False,
+                'add_gripper': add_gripper if robot_type.perform(context) != 'lite' else False,
                 'hw_ns': '{}{}'.format(prefix.perform(context).strip('/'), hw_ns.perform(context).strip('/')),
                 'prefix': prefix.perform(context).strip('/'),
                 'baud_checkset': baud_checkset,
