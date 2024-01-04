@@ -25,9 +25,16 @@
       </xacro:unless>
     </xacro:if>
     <xacro:unless value="${dof == 5 or dof == 6}">
-      <xacro:include filename="$(find xarm_moveit_config)/srdf/_xarm7_macro.srdf.xacro" />
-      <xacro:xarm7_macro_srdf prefix="${prefix}" 
-        add_gripper="${add_gripper}" add_vacuum_gripper="${add_vacuum_gripper}" add_other_geometry="${add_other_geometry}"  />
+      <xacro:if value="${robot_type == 'xarm7_mirror'}">
+        <xacro:include filename="$(find xarm_moveit_config)/srdf/_xarm7_mirror_macro.srdf.xacro" />
+        <xacro:xarm7_mirror_macro_srdf prefix="${prefix}" 
+          add_gripper="${add_gripper}" add_vacuum_gripper="${add_vacuum_gripper}" add_other_geometry="${add_other_geometry}"  />
+      </xacro:if>
+      <xacro:unless value="${robot_type == 'xarm7_mirror'}">
+        <xacro:include filename="$(find xarm_moveit_config)/srdf/_xarm7_macro.srdf.xacro" />
+        <xacro:xarm7_macro_srdf prefix="${prefix}" 
+          add_gripper="${add_gripper}" add_vacuum_gripper="${add_vacuum_gripper}" add_other_geometry="${add_other_geometry}"  />
+      </xacro:unless>
     </xacro:unless>
   </xacro:macro>
 </robot>

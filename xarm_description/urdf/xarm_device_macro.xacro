@@ -90,10 +90,10 @@
       </xacro:unless>
     </xacro:unless>
 
-    <xacro:if value="${robot_type == 'uf850'}"> 
+    <xacro:if value="${robot_type == 'uf850' or robot_type == 'xarm7_mirror'}"> 
       <xacro:property name="robot_name" value="${robot_type}" />
     </xacro:if>
-    <xacro:unless value="${robot_type == 'uf850'}"> 
+    <xacro:unless value="${robot_type == 'uf850' or robot_type == 'xarm7_mirror'}"> 
       <xacro:property name="robot_name" value="${robot_type}${dof}" />
     </xacro:unless>
 
@@ -170,20 +170,38 @@
       </xacro:unless>
     </xacro:if>
     <xacro:unless value="${dof == 5 or dof == 6}">
-      <!-- Load XArm7 Robot Model URDF -->
-      <xacro:include filename="$(find xarm_description)/urdf/xarm7/xarm7_robot_macro.xacro" />
-      <xacro:xarm7_robot prefix="${prefix}" hw_ns="${hw_ns}" limited="${limited}" 
-        velocity_control="${velocity_control}" 
-        ros2_control_plugin="${ros2_control_plugin}"
-        add_gripper="${add_gripper}"
-        robot_ip="${robot_ip}"
-        report_type="${report_type}"
-        baud_checkset="${baud_checkset}"
-        default_gripper_baud="${default_gripper_baud}" 
-        model1300="${new_model1300}"
-        inertial_params_filename="${inertial_params_filename}"
-        kinematics_params_filename="${kinematics_params_filename}"
-        hard_interface="${hard_interface}" />
+      <xacro:if value="${robot_type == 'xarm7_mirror'}">
+        <!-- Load xArm7 Mirror Robot Model URDF -->
+        <xacro:include filename="$(find xarm_description)/urdf/xarm7_mirror/xarm7_mirror_robot_macro.xacro" />
+        <xacro:xarm7_mirror_robot prefix="${prefix}" hw_ns="${hw_ns}" limited="${limited}" 
+          velocity_control="${velocity_control}" 
+          ros2_control_plugin="${ros2_control_plugin}"
+          add_gripper="${add_gripper}"
+          robot_ip="${robot_ip}"
+          report_type="${report_type}"
+          baud_checkset="${baud_checkset}"
+          default_gripper_baud="${default_gripper_baud}" 
+          model1300="${new_model1300}"
+          inertial_params_filename="${inertial_params_filename}"
+          kinematics_params_filename="${kinematics_params_filename}"
+          hard_interface="${hard_interface}" />
+      </xacro:if>
+      <xacro:unless value="${robot_type == 'xarm7_mirror'}">
+        <!-- Load XArm7 Robot Model URDF -->
+        <xacro:include filename="$(find xarm_description)/urdf/xarm7/xarm7_robot_macro.xacro" />
+        <xacro:xarm7_robot prefix="${prefix}" hw_ns="${hw_ns}" limited="${limited}" 
+          velocity_control="${velocity_control}" 
+          ros2_control_plugin="${ros2_control_plugin}"
+          add_gripper="${add_gripper}"
+          robot_ip="${robot_ip}"
+          report_type="${report_type}"
+          baud_checkset="${baud_checkset}"
+          default_gripper_baud="${default_gripper_baud}" 
+          model1300="${new_model1300}"
+          inertial_params_filename="${inertial_params_filename}"
+          kinematics_params_filename="${kinematics_params_filename}"
+          hard_interface="${hard_interface}" />
+      </xacro:unless>
     </xacro:unless>
 
     <xacro:if value="${add_realsense_d435i}">
