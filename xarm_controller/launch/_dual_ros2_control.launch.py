@@ -122,8 +122,8 @@ def launch_setup(context, *args, **kwargs):
     mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_controller'), 'launch', 'lib', 'robot_controller_lib.py'))
     generate_dual_ros2_control_params_temp_file = getattr(mod, 'generate_dual_ros2_control_params_temp_file')
     ros2_control_params = generate_dual_ros2_control_params_temp_file(
-        os.path.join(get_package_share_directory('xarm_controller'), 'config', '{}{}_controllers.yaml'.format(robot_type_1.perform(context), '' if robot_type_1.perform(context) == 'uf850' else dof_1.perform(context))),
-        os.path.join(get_package_share_directory('xarm_controller'), 'config', '{}{}_controllers.yaml'.format(robot_type_2.perform(context), '' if robot_type_2.perform(context) == 'uf850' else dof_2.perform(context))),
+        os.path.join(get_package_share_directory('xarm_controller'), 'config', '{}{}_controllers.yaml'.format(robot_type_1.perform(context), dof_1.perform(context) if robot_type_1.perform(context) in ('xarm', 'lite') else '')),
+        os.path.join(get_package_share_directory('xarm_controller'), 'config', '{}{}_controllers.yaml'.format(robot_type_2.perform(context), dof_2.perform(context) if robot_type_2.perform(context) in ('xarm', 'lite') else '')),
         prefix_1=prefix_1.perform(context), 
         prefix_2=prefix_2.perform(context), 
         add_gripper_1=add_gripper_1.perform(context) in ('True', 'true'),

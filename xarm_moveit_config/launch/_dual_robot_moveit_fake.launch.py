@@ -251,12 +251,12 @@ def launch_setup(context, *args, **kwargs):
     )
 
     remappings = [
-        ('follow_joint_trajectory', '{}{}{}_traj_controller/follow_joint_trajectory'.format(prefix_1.perform(context), robot_type_1.perform(context), '' if robot_type_1.perform(context) == 'uf850' else dof_1.perform(context))),
-        ('follow_joint_trajectory', '{}{}{}_traj_controller/follow_joint_trajectory'.format(prefix_2.perform(context), robot_type_2.perform(context), '' if robot_type_2.perform(context) == 'uf850' else dof_2.perform(context))),            
+        ('follow_joint_trajectory', '{}{}{}_traj_controller/follow_joint_trajectory'.format(prefix_1.perform(context), robot_type_1.perform(context), dof_1.perform(context) if robot_type_1.perform(context) in ('xarm', 'lite') else '')),
+        ('follow_joint_trajectory', '{}{}{}_traj_controller/follow_joint_trajectory'.format(prefix_2.perform(context), robot_type_2.perform(context), dof_2.perform(context) if robot_type_2.perform(context) in ('xarm', 'lite') else '')),            
     ]
     controllers = [
-        '{}{}{}_traj_controller'.format(prefix_1.perform(context), robot_type_1.perform(context), '' if robot_type_1.perform(context) == 'uf850' else dof_1.perform(context)),
-        '{}{}{}_traj_controller'.format(prefix_2.perform(context), robot_type_2.perform(context), '' if robot_type_2.perform(context) == 'uf850' else dof_2.perform(context)),
+        '{}{}{}_traj_controller'.format(prefix_1.perform(context), robot_type_1.perform(context), dof_1.perform(context) if robot_type_1.perform(context) in ('xarm', 'lite') else ''),
+        '{}{}{}_traj_controller'.format(prefix_2.perform(context), robot_type_2.perform(context), dof_2.perform(context) if robot_type_2.perform(context) in ('xarm', 'lite') else ''),
     ]
     if add_gripper_1.perform(context) in ('True', 'true') and robot_type_1.perform(context) != 'lite':
         remappings.append(
