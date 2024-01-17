@@ -68,6 +68,9 @@
     <xacro:if value="${dof == 6 and robot_type == 'uf850'}">
       <xacro:property name="inertial_params_filename" value="xarm6_type12_HT_LDBR2"/>
     </xacro:if>
+    <xacro:if value="${dof == 7 and robot_type == 'xarm7_mirror'}">
+      <xacro:property name="inertial_params_filename" value="xarm7_type13_HT_BR2"/>
+    </xacro:if>
 
     <xacro:if value="${use_len}">
       <xacro:property name="robot_sn_len" value="${len(robot_sn)}" />
