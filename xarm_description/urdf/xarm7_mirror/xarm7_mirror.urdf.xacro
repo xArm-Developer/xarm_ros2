@@ -33,11 +33,11 @@
 
     <link name="${prefix}link_base">
       <inertial>
-        <origin xyz="-0.00099309 6.7535E-05 0.07479" rpy="0 0 0" />
-        <mass value="1.1441" />
+        <origin xyz="-0.00135 -1.3E-04 0.0965" rpy="0 0 0" />
+        <mass value="2.53" />
         <inertia
-          ixx="0.0030528" ixy="4.048E-06" ixz="-5.1376E-05"
-          iyy="0.0031053" iyz="2.0854E-06" izz="0.0014329" />
+          ixx="0.00639" ixy="2.2E-05" ixz="-0.000241"
+          iyy="0.006538" iyz="7.0E-06" izz="0.003129" />
       </inertial>
       <xacro:common_link_visual 
         mesh_filename="xarm7_mirror/visual/link_base"  
