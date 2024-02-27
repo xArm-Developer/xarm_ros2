@@ -10,7 +10,7 @@
   <!-- CHAINS: When a chain is specified, all the links along the chain (including endpoints) are included in the group. Additionally, all the joints that are parents to included links are also included. This means that joints along the chain and the parent joint of the base link are included in the group -->
   <!-- SUBGROUPS: Groups can also be formed by referencing to already defined group names -->
   <xacro:macro name="xarm7_macro_srdf" params="prefix='' 
-    add_gripper='false' add_vacuum_gripper='false' add_other_geometry='false' ">
+    add_gripper='false' add_vacuum_gripper='false' add_bio_gripper='false' add_other_geometry='false' ">
     <group name="${prefix}xarm7">
       <joint name="${prefix}world_joint" />
       <joint name="${prefix}joint1" />
@@ -26,11 +26,15 @@
         <joint name="${prefix}gripper_fix" />
         <joint name="${prefix}joint_tcp" />
       </xacro:if>
-      <xacro:if value="${not add_gripper and add_vacuum_gripper}">
+      <xacro:if value="${not add_gripper and add_bio_gripper}">
+        <joint name="${prefix}bio_gripper_fix" />
+        <joint name="${prefix}joint_tcp" />
+      </xacro:if>
+      <xacro:if value="${not add_gripper and not add_bio_gripper and add_vacuum_gripper}">
         <joint name="${prefix}vacuum_gripper_fix" />
         <joint name="${prefix}joint_tcp" />
       </xacro:if>
-      <xacro:if value="${not add_gripper and not add_vacuum_gripper and add_other_geometry}">
+      <xacro:if value="${not add_gripper and not add_bio_gripper and not add_vacuum_gripper and add_other_geometry}">
         <joint name="${prefix}other_geometry_fix" />
         <joint name="${prefix}joint_tcp" />
       </xacro:if>
@@ -139,8 +143,47 @@
       <disable_collisions link1="${prefix}link_eef" link2="${prefix}xarm_gripper_base_link" reason="Adjacent" />
     </xacro:if>
 
+    <!-- bio gripper -->
+    <xacro:if value="${not add_gripper and add_bio_gripper}">
+      <group name="${prefix}bio_gripper">
+        <link name="${prefix}bio_gripper_base_link" />
+        <link name="${prefix}bio_gripper_left_finger" />
+        <link name="${prefix}bio_gripper_right_finger" />
+        <link name="${prefix}link_tcp" />
+        <joint name="${prefix}left_finger_joint" />
+        <joint name="${prefix}right_finger_joint" />
+      </group>
+      <group_state name="open" group="${prefix}bio_gripper">
+        <joint name="${prefix}left_finger_joint" value="-0.04" />
+        <joint name="${prefix}right_finger_joint" value="0.04" />
+      </group_state>
+      <group_state name="close" group="${prefix}bio_gripper">
+        <joint name="${prefix}left_finger_joint" value="0" />
+        <joint name="${prefix}right_finger_joint" value="0" />
+      </group_state>
+      <!-- END EFFECTOR, Purpose, Represent information about an end effector. -->
+      <end_effector name="${prefix}bio_gripper" parent_link="${prefix}link_tcp" group="${prefix}bio_gripper" />
+      <!-- DISABLE COLLISIONS, By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
+      <disable_collisions link1="${prefix}bio_gripper_left_finger" link2="${prefix}bio_gripper_base_link" reason="Adjacent" />
+      <disable_collisions link1="${prefix}bio_gripper_right_finger" link2="${prefix}bio_gripper_base_link" reason="Adjacent" />
+      <disable_collisions link1="${prefix}bio_gripper_left_finger" link2="${prefix}bio_gripper_right_finger" reason="Never" />
+      <disable_collisions link1="${prefix}bio_gripper_left_finger" link2="${prefix}link5" reason="Never" />
+      <disable_collisions link1="${prefix}bio_gripper_left_finger" link2="${prefix}link6" reason="Never" />
+      <disable_collisions link1="${prefix}bio_gripper_left_finger" link2="${prefix}link7" reason="Never" />
+      <disable_collisions link1="${prefix}bio_gripper_right_finger" link2="${prefix}link5" reason="Never" />
+      <disable_collisions link1="${prefix}bio_gripper_right_finger" link2="${prefix}link6" reason="Never" />
+      <disable_collisions link1="${prefix}bio_gripper_right_finger" link2="${prefix}link7" reason="Never" />
+      
+      <disable_collisions link1="${prefix}link7" link2="${prefix}bio_gripper_base_link" reason="Adjacent" />
+      <disable_collisions link1="${prefix}link6" link2="${prefix}bio_gripper_base_link" reason="Never" />
+      <disable_collisions link1="${prefix}link3" link2="${prefix}bio_gripper_base_link" reason="Never" />
+
+      <disable_collisions link1="${prefix}link_eef" link2="${prefix}bio_gripper_left_finger" reason="Never" />
+      <disable_collisions link1="${prefix}link_eef" link2="${prefix}bio_gripper_left_finger" reason="Never" />
+      <disable_collisions link1="${prefix}link_eef" link2="${prefix}bio_gripper_base_link" reason="Adjacent" />
+    </xacro:if>
     <!-- vacuum gripper -->
-    <xacro:if value="${not add_gripper and add_vacuum_gripper}">
+    <xacro:if value="${not add_gripper and not add_bio_gripper and add_vacuum_gripper}">
       <!-- <group name="${prefix}vacuum_gripper">
         <joint name="${prefix}vacuum_gripper_fix" />
       </group> -->
@@ -153,7 +196,7 @@
     </xacro:if>
 
     <!-- other box -->
-    <xacro:if value="${not add_gripper and not add_vacuum_gripper and add_other_geometry}">
+    <xacro:if value="${not add_gripper and not add_bio_gripper and not add_vacuum_gripper and add_other_geometry}">
       <!-- <group name="${prefix}other_geometry">
         <joint name="${prefix}other_geometry_fix" />
       </group> -->

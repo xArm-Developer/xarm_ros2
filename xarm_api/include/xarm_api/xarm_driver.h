@@ -44,13 +44,21 @@ namespace xarm_api
         void _report_data_callback(XArmReportData *report_data_ptr);
         bool _get_wait_param(void);
 
-        void _init_gripper(void);
-        inline float _gripper_pos_convert(float pos, bool reversed = false);
-        rclcpp_action::GoalResponse _handle_gripper_action_goal(const rclcpp_action::GoalUUID & uuid, std::shared_ptr<const control_msgs::action::GripperCommand::Goal> goal);
-        rclcpp_action::CancelResponse _handle_gripper_action_cancel(const std::shared_ptr<rclcpp_action::ServerGoalHandle<control_msgs::action::GripperCommand>> goal_handle);
-        void _handle_gripper_action_accepted(const std::shared_ptr<rclcpp_action::ServerGoalHandle<control_msgs::action::GripperCommand>> goal_handle);
-        void _gripper_action_execute(const std::shared_ptr<rclcpp_action::ServerGoalHandle<control_msgs::action::GripperCommand>> goal_handle);
-        void _pub_gripper_joint_states(float pos);
+        void _init_xarm_gripper(void);
+        inline float _xarm_gripper_pos_convert(float pos, bool reversed = false);
+        rclcpp_action::GoalResponse _handle_xarm_gripper_action_goal(const rclcpp_action::GoalUUID & uuid, std::shared_ptr<const control_msgs::action::GripperCommand::Goal> goal);
+        rclcpp_action::CancelResponse _handle_xarm_gripper_action_cancel(const std::shared_ptr<rclcpp_action::ServerGoalHandle<control_msgs::action::GripperCommand>> goal_handle);
+        void _handle_xarm_gripper_action_accepted(const std::shared_ptr<rclcpp_action::ServerGoalHandle<control_msgs::action::GripperCommand>> goal_handle);
+        void _xarm_gripper_action_execute(const std::shared_ptr<rclcpp_action::ServerGoalHandle<control_msgs::action::GripperCommand>> goal_handle);
+        void _pub_xarm_gripper_joint_states(float pos);
+
+        void _init_bio_gripper(void);
+        inline float _bio_gripper_pos_convert(float pos, bool reversed = false);
+        rclcpp_action::GoalResponse _handle_bio_gripper_action_goal(const rclcpp_action::GoalUUID & uuid, std::shared_ptr<const control_msgs::action::GripperCommand::Goal> goal);
+        rclcpp_action::CancelResponse _handle_bio_gripper_action_cancel(const std::shared_ptr<rclcpp_action::ServerGoalHandle<control_msgs::action::GripperCommand>> goal_handle);
+        void _handle_bio_gripper_action_accepted(const std::shared_ptr<rclcpp_action::ServerGoalHandle<control_msgs::action::GripperCommand>> goal_handle);
+        void _bio_gripper_action_execute(const std::shared_ptr<rclcpp_action::ServerGoalHandle<control_msgs::action::GripperCommand>> goal_handle);
+        void _pub_bio_gripper_joint_states(float pos);
 
         template<typename ServiceT, typename CallbackT>
     	typename rclcpp::Service<ServiceT>::SharedPtr _create_service(const std::string & service_name, CallbackT && callback);
@@ -85,16 +93,28 @@ namespace xarm_api
 
         rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr sleep_sub_;
 
-        bool gripper_init_loop_;
-        int gripper_speed_;
-        int gripper_max_pos_;
-        int gripper_frequency_;
-        int gripper_threshold_;
-        int gripper_threshold_times_;
-        sensor_msgs::msg::JointState gripper_joint_state_msg_;
-        control_msgs::action::GripperCommand::Feedback::SharedPtr gripper_feedback_;
-        control_msgs::action::GripperCommand::Result::SharedPtr gripper_result_;
-        rclcpp_action::Server<control_msgs::action::GripperCommand>::SharedPtr gripper_action_server_;
+        bool xarm_gripper_init_loop_;
+        int xarm_gripper_speed_;
+        int xarm_gripper_max_pos_;
+        int xarm_gripper_frequency_;
+        int xarm_gripper_threshold_;
+        int xarm_gripper_threshold_times_;
+        sensor_msgs::msg::JointState xarm_gripper_joint_state_msg_;
+        control_msgs::action::GripperCommand::Feedback::SharedPtr xarm_gripper_feedback_;
+        control_msgs::action::GripperCommand::Result::SharedPtr xarm_gripper_result_;
+        rclcpp_action::Server<control_msgs::action::GripperCommand>::SharedPtr xarm_gripper_action_server_;
+
+        bool bio_gripper_init_loop_;
+        int bio_gripper_speed_;
+        int bio_gripper_max_pos_;
+        int bio_gripper_min_pos_;
+        int bio_gripper_frequency_;
+        int bio_gripper_threshold_;
+        int bio_gripper_threshold_times_;
+        sensor_msgs::msg::JointState bio_gripper_joint_state_msg_;
+        control_msgs::action::GripperCommand::Feedback::SharedPtr bio_gripper_feedback_;
+        control_msgs::action::GripperCommand::Result::SharedPtr bio_gripper_result_;
+        rclcpp_action::Server<control_msgs::action::GripperCommand>::SharedPtr bio_gripper_action_server_;
     
     private:
         bool service_debug_;

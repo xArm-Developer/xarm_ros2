@@ -32,6 +32,7 @@ def launch_setup(context, *args, **kwargs):
     velocity_control = LaunchConfiguration('velocity_control', default=False)
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
+    add_bio_gripper = LaunchConfiguration('add_bio_gripper', default=False)
     ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='uf_robot_hardware/UFRobotFakeSystemHardware')
     
     # 1: xbox360 wired
@@ -79,6 +80,7 @@ def launch_setup(context, *args, **kwargs):
             'velocity_control': velocity_control,
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
+            'add_bio_gripper': add_bio_gripper,
             'dof': dof,
             'robot_type': robot_type,
             'ros2_control_plugin': ros2_control_plugin,
@@ -122,6 +124,8 @@ def launch_setup(context, *args, **kwargs):
     controllers = ['joint_state_broadcaster', xarm_traj_controller]
     if add_gripper.perform(context) in ('True', 'true') and robot_type.perform(context) != 'lite':
         controllers.append('{}{}_gripper_traj_controller'.format(prefix.perform(context), robot_type.perform(context)))
+    elif add_bio_gripper.perform(context) in ('True', 'true') and robot_type.perform(context) != 'lite':
+        controllers.append('{}bio_gripper_traj_controller'.format(prefix.perform(context)))
 
     # rviz_config_file = PathJoinSubstitution([FindPackageShare(moveit_config_package_name), 'rviz', 'moveit.rviz'])
     rviz_config_file = PathJoinSubstitution([FindPackageShare('xarm_moveit_servo'), 'rviz', 'servo.rviz'])
@@ -156,6 +160,7 @@ def launch_setup(context, *args, **kwargs):
             'velocity_control': velocity_control,
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
+            'add_bio_gripper': add_bio_gripper,
             'dof': dof,
             'robot_type': robot_type,
             'ros2_control_plugin': ros2_control_plugin,

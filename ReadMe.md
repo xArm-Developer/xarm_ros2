@@ -33,7 +33,9 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 - (2023-04-20) Added the launch parameter `robot_sn`, supports loading the inertia parameters of the corresponding joint link, and automatically overrides the `model1300` parameters
 - (2023-04-20) Added launch parameters `attach_to`/`attach_xyz`/`attach_rpy` to support attaching the robot arm model to other models
 - (2023-06-07) Added support for UFACTORY850 robotic arm
-* (2023-10-12) Added the generation and use of joint kinematics parameter files
+- (2023-10-12) Added the generation and use of joint kinematics parameter files
+- (2024-01-17) Added support for xarm7_mirror model robotic arm
+- (2024-02-27) Added support for Bio Gripper (parameter `add_bio_gripper`, Lite6 is not supported)
 
 
 ## 3. Preparation
@@ -490,6 +492,11 @@ __Reminder 4: The <hw_ns> described below is replaced with the actual one, the x
     For dual arm launch files(with ```dual_``` prefix), it can be specified through:
     - __add_gripper_1__
     - __add_gripper_2__
+- __add_bio_gripper__, default: false. 
+    Whether to include BIO gripper in the model，it has higher priority than the argument ```add_vacuum_gripper```, ```add_gripper``` must be false in order to set vacuum gripper to be true.
+    For dual arm launch files(with ```dual_``` prefix), it can be specified through:
+    - __add_bio_gripper_1__
+    - __add_bio_gripper_2__
 - __add_vacuum_gripper__, default: false. 
     Whether to include UFACTRORY vacuum gripper in the model，```add_gripper``` must be false in order to set vacuum gripper to be true.
     For dual arm launch files(with ```dual_``` prefix), it can be specified through:

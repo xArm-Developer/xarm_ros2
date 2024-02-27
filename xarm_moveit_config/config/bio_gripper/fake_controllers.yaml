@@ -1,0 +1,10 @@
+controller_names:
+  - bio_gripper_traj_controller
+
+bio_gripper_traj_controller:
+  action_ns: follow_joint_trajectory
+  type: FollowJointTrajectory
+  default: true
+  joints:
+    # - left_finger_joint
+    - right_finger_joint

@@ -134,12 +134,21 @@ namespace uf_robot_hardware
         if (robot_type == "lite") add_gripper = false;
         node_->set_parameter(rclcpp::Parameter("add_gripper", add_gripper));
 
+        bool add_bio_gripper = true;
+        it = info_.hardware_parameters.find("add_bio_gripper");
+        if (it != info_.hardware_parameters.end()) {
+            add_bio_gripper = (it->second == "True" || it->second == "true");
+        }
+        
+        if (robot_type == "lite") add_bio_gripper = false;
+        node_->set_parameter(rclcpp::Parameter("add_bio_gripper", add_bio_gripper));
+
         it = info_.hardware_parameters.find("velocity_control");
         if (it != info_.hardware_parameters.end()) {
             velocity_control_ = (it->second == "True" || it->second == "true");
         }
-        RCLCPP_INFO(LOGGER, "[%s] dof: %d, velocity_control: %d, add_gripper: %d, baud_checkset: %d, default_gripper_baud: %d", 
-            robot_ip_.c_str(), dof, velocity_control_, add_gripper, baud_checkset, default_gripper_baud);
+        RCLCPP_INFO(LOGGER, "[%s] dof: %d, velocity_control: %d, add_gripper: %d, add_bio_gripper: %d, baud_checkset: %d, default_gripper_baud: %d", 
+            robot_ip_.c_str(), dof, velocity_control_, add_gripper, add_bio_gripper, baud_checkset, default_gripper_baud);
         
         xarm_driver_.init(node_, robot_ip_);
     }
