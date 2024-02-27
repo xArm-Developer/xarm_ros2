@@ -33,6 +33,9 @@ def launch_setup(context, *args, **kwargs):
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     add_vacuum_gripper_1 = LaunchConfiguration('add_vacuum_gripper_1', default=add_vacuum_gripper)
     add_vacuum_gripper_2 = LaunchConfiguration('add_vacuum_gripper_2', default=add_vacuum_gripper)
+    add_bio_gripper = LaunchConfiguration('add_bio_gripper', default=False)
+    add_bio_gripper_1 = LaunchConfiguration('add_bio_gripper_1', default=add_bio_gripper)
+    add_bio_gripper_2 = LaunchConfiguration('add_bio_gripper_2', default=add_bio_gripper)
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     limited = LaunchConfiguration('limited', default=True)
     effort_control = LaunchConfiguration('effort_control', default=False)
@@ -132,6 +135,8 @@ def launch_setup(context, *args, **kwargs):
             'add_gripper_2': add_gripper_2,
             'add_vacuum_gripper_1': add_vacuum_gripper_1,
             'add_vacuum_gripper_2': add_vacuum_gripper_2,
+            'add_bio_gripper_1': add_bio_gripper_1,
+            'add_bio_gripper_2': add_bio_gripper_2,
             'hw_ns': hw_ns.perform(context).strip('/'),
             'limited': limited,
             'effort_control': effort_control,
@@ -183,6 +188,8 @@ def launch_setup(context, *args, **kwargs):
             'add_gripper_2': add_gripper_2,
             'add_vacuum_gripper_1': add_vacuum_gripper_1,
             'add_vacuum_gripper_2': add_vacuum_gripper_2,
+            'add_bio_gripper_1': add_bio_gripper_1,
+            'add_bio_gripper_2': add_bio_gripper_2,
             'add_other_geometry_1': add_other_geometry_1,
             'add_other_geometry_2': add_other_geometry_2,
         },
@@ -205,8 +212,16 @@ def launch_setup(context, *args, **kwargs):
         gripper_joint_limits_yaml_1 = load_yaml(moveit_config_package_name, 'config', '{}_gripper'.format(robot_type_1.perform(context)), 'joint_limits.yaml')
         if joint_limits_yaml_1 and gripper_joint_limits_yaml_1:
             joint_limits_yaml_1['joint_limits'].update(gripper_joint_limits_yaml_1['joint_limits'])
+    elif add_bio_gripper_1.perform(context) in ('True', 'true'):
+        gripper_joint_limits_yaml_1 = load_yaml(moveit_config_package_name, 'config', 'bio_gripper', 'joint_limits.yaml')
+        if joint_limits_yaml_1 and gripper_joint_limits_yaml_1:
+            joint_limits_yaml_1['joint_limits'].update(gripper_joint_limits_yaml_1['joint_limits'])
     if add_gripper_2.perform(context) in ('True', 'true'):
         gripper_joint_limits_yaml_2 = load_yaml(moveit_config_package_name, 'config', '{}_gripper'.format(robot_type_2.perform(context)), 'joint_limits.yaml')
+        if joint_limits_yaml_2 and gripper_joint_limits_yaml_2:
+            joint_limits_yaml_2['joint_limits'].update(gripper_joint_limits_yaml_2['joint_limits'])
+    elif add_bio_gripper_2.perform(context) in ('True', 'true'):
+        gripper_joint_limits_yaml_2 = load_yaml(moveit_config_package_name, 'config', 'bio_gripper', 'joint_limits.yaml')
         if joint_limits_yaml_2 and gripper_joint_limits_yaml_2:
             joint_limits_yaml_2['joint_limits'].update(gripper_joint_limits_yaml_2['joint_limits'])
         

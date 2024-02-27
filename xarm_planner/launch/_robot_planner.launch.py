@@ -27,6 +27,7 @@ def launch_setup(context, *args, **kwargs):
     velocity_control = LaunchConfiguration('velocity_control', default=False)
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
+    add_bio_gripper = LaunchConfiguration('add_bio_gripper', default=False)
     ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='uf_robot_hardware/UFRobotFakeSystemHardware')
     node_executable = LaunchConfiguration('node_executable', default='xarm_planner_node')
     node_name = LaunchConfiguration('node_name', default=node_executable)
@@ -72,6 +73,7 @@ def launch_setup(context, *args, **kwargs):
             'velocity_control': velocity_control,
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
+            'add_bio_gripper': add_bio_gripper,
             'dof': dof,
             'robot_type': robot_type,
             'ros2_control_plugin': ros2_control_plugin,
@@ -98,6 +100,7 @@ def launch_setup(context, *args, **kwargs):
             'robot_type': robot_type,
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
+            'add_bio_gripper': add_bio_gripper,
             'add_other_geometry': add_other_geometry,
         },
         arguments={

@@ -27,6 +27,7 @@ def launch_setup(context, *args, **kwargs):
     velocity_control = LaunchConfiguration('velocity_control', default=False)
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
+    add_bio_gripper = LaunchConfiguration('add_bio_gripper', default=False)
     dof = LaunchConfiguration('dof', default=7)
     robot_type = LaunchConfiguration('robot_type', default='xarm')
     no_gui_ctrl = LaunchConfiguration('no_gui_ctrl', default=False)
@@ -78,6 +79,7 @@ def launch_setup(context, *args, **kwargs):
             'velocity_control': velocity_control,
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
+            'add_bio_gripper': add_bio_gripper,
             'dof': dof,
             'robot_type': robot_type,
             'ros2_control_plugin': ros2_control_plugin,
@@ -107,6 +109,7 @@ def launch_setup(context, *args, **kwargs):
             'robot_type': robot_type,
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
+            'add_bio_gripper': add_bio_gripper,
             'add_other_geometry': add_other_geometry,
         },
         arguments={
@@ -125,6 +128,21 @@ def launch_setup(context, *args, **kwargs):
         gripper_controllers_yaml = load_yaml(moveit_config_package_name, 'config', '{}_gripper'.format(robot_type.perform(context)), '{}.yaml'.format(controllers_name.perform(context)))
         gripper_ompl_planning_yaml = load_yaml(moveit_config_package_name, 'config', '{}_gripper'.format(robot_type.perform(context)), 'ompl_planning.yaml')
         gripper_joint_limits_yaml = load_yaml(moveit_config_package_name, 'config', '{}_gripper'.format(robot_type.perform(context)), 'joint_limits.yaml')
+
+        if gripper_controllers_yaml and 'controller_names' in gripper_controllers_yaml:
+            for name in gripper_controllers_yaml['controller_names']:
+                if name in gripper_controllers_yaml:
+                    if name not in controllers_yaml['controller_names']:
+                        controllers_yaml['controller_names'].append(name)
+                    controllers_yaml[name] = gripper_controllers_yaml[name]
+        if gripper_ompl_planning_yaml:
+            ompl_planning_yaml.update(gripper_ompl_planning_yaml)
+        if joint_limits_yaml and gripper_joint_limits_yaml:
+            joint_limits_yaml['joint_limits'].update(gripper_joint_limits_yaml['joint_limits'])
+    elif add_bio_gripper.perform(context) in ('True', 'true'):
+        gripper_controllers_yaml = load_yaml(moveit_config_package_name, 'config', 'bio_gripper', '{}.yaml'.format(controllers_name.perform(context)))
+        gripper_ompl_planning_yaml = load_yaml(moveit_config_package_name, 'config', 'bio_gripper', 'ompl_planning.yaml')
+        gripper_joint_limits_yaml = load_yaml(moveit_config_package_name, 'config', 'bio_gripper', 'joint_limits.yaml')
 
         if gripper_controllers_yaml and 'controller_names' in gripper_controllers_yaml:
             for name in gripper_controllers_yaml['controller_names']:
@@ -190,6 +208,19 @@ def launch_setup(context, *args, **kwargs):
         # },
     }
 
+    sensor_maneger_parameters = {
+        'sensors': ['ros'],
+        'octomap_resolution': 0.02,
+        'ros.sensor_plugin': 'occupancy_map_monitor/PointCloudOctomapUpdater',
+        'ros.point_cloud_topic': '/camera/depth/color/points',
+        'ros.max_range': 2.0,
+        'ros.point_subsample': 1,
+        'ros.padding_offset': 0.1,
+        'ros.padding_scale': 1.0,
+        'ros.max_update_rate': 1.0,
+        'ros.filtered_cloud_topic': 'filtered_cloud',
+    }
+
     # Start the actual move_group node/action server
     move_group_node = Node(
         package='moveit_ros_move_group',
@@ -202,6 +233,7 @@ def launch_setup(context, *args, **kwargs):
             plan_execution,
             moveit_controllers,
             planning_scene_monitor_parameters,
+            sensor_maneger_parameters,
             {'use_sim_time': use_sim_time},
         ],
     )

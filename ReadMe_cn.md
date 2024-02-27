@@ -33,6 +33,8 @@
 - (2023-04-20) 新增launch启动参数 `attach_to`/`attach_xyz`/`attach_rpy`，支持把机械臂模型依附在其它模型之上
 - (2023-06-07) 新增对UFACTORY850机械臂的支持
 - (2023-10-12) 新增关节kinematics参数文件的生成与使用
+- (2024-01-17) 新增对xarm7_mirror型号机械臂的支持
+- (2024-02-27) 新增对Bio Gripper的支持(参数`add_bio_gripper`, Lite6不支持)
 
 ## 3. 准备工作
 
@@ -478,6 +480,11 @@ __注意4: 以下描述的<hw_ns>用实际的替换，xarm系列默认为xarm, �
     对于双臂启动脚本(dual_开头的)，可以通过以下参数分别指定：  
     - __add_gripper_1__
     - __add_gripper_2__
+- __add_bio_gripper__, 默认为false。  
+    是否添加BIO机械爪bio_gripper，优先级高于参数```add_vacuum_gripper```, 设置为true的前提必须要设置参数```add_gripper```为```false```。
+    对于双臂启动脚本(dual_开头的)，可以通过以下参数分别指定：  
+    - __add_bio_gripper_1__
+    - __add_bio_gripper_2__
 - __add_vacuum_gripper__, 默认为false。  
     是否添加UF吸泵xarm_vacuum_gripper，设置为true的前提必须要设置参数```add_gripper```为```false```
     对于双臂启动脚本(dual_开头的)，可以通过以下参数分别指定：  

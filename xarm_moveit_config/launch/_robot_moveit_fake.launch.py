@@ -22,6 +22,7 @@ def launch_setup(context, *args, **kwargs):
     velocity_control = LaunchConfiguration('velocity_control', default=False)
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
+    add_bio_gripper = LaunchConfiguration('add_bio_gripper', default=False)
     dof = LaunchConfiguration('dof', default=7)
     robot_type = LaunchConfiguration('robot_type', default='xarm')
     no_gui_ctrl = LaunchConfiguration('no_gui_ctrl', default=False)
@@ -64,6 +65,7 @@ def launch_setup(context, *args, **kwargs):
             'velocity_control': velocity_control,
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
+            'add_bio_gripper': add_bio_gripper,
             'dof': dof,
             'robot_type': robot_type,
             'ros2_control_plugin': ros2_control_plugin,
@@ -100,6 +102,7 @@ def launch_setup(context, *args, **kwargs):
             'add_gripper': add_gripper,
             # 'add_gripper': add_gripper if robot_type.perform(context) == 'xarm' else 'false',
             'add_vacuum_gripper': add_vacuum_gripper,
+            'add_bio_gripper': add_bio_gripper,
             'dof': dof,
             'robot_type': robot_type,
             'no_gui_ctrl': no_gui_ctrl,
@@ -135,6 +138,11 @@ def launch_setup(context, *args, **kwargs):
             ('follow_joint_trajectory', '{}{}_gripper_traj_controller/follow_joint_trajectory'.format(prefix.perform(context), robot_type.perform(context)))
         )
         controllers.append('{}{}_gripper_traj_controller'.format(prefix.perform(context), robot_type.perform(context)))
+    elif add_bio_gripper.perform(context) in ('True', 'true') and robot_type.perform(context) != 'lite':
+        remappings.append(
+            ('follow_joint_trajectory', '{}bio_gripper_traj_controller/follow_joint_trajectory'.format(prefix.perform(context)))
+        )
+        controllers.append('{}bio_gripper_traj_controller'.format(prefix.perform(context)))
     # joint state publisher node
     joint_state_publisher_node = Node(
         package='joint_state_publisher',
@@ -157,6 +165,7 @@ def launch_setup(context, *args, **kwargs):
             'velocity_control': velocity_control,
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
+            'add_bio_gripper': add_bio_gripper,
             'dof': dof,
             'robot_type': robot_type,
             'ros2_control_plugin': ros2_control_plugin,
