@@ -8,6 +8,7 @@
     velocity_control:=false
     add_gripper:=false
     add_vacuum_gripper:=false
+    add_bio_gripper:=false
     dof:=7
     robot_type:='xarm'
     ros2_control_plugin:='uf_robot_hardware/UFRobotSystemHardware'
@@ -111,6 +112,7 @@
         velocity_control="${velocity_control}" 
         ros2_control_plugin="${ros2_control_plugin}" 
         add_gripper="${add_gripper}"
+        add_bio_gripper="${add_bio_gripper}"
         robot_ip="${robot_ip}"
         report_type="${report_type}"
         baud_checkset="${baud_checkset}"
@@ -128,6 +130,7 @@
           velocity_control="${velocity_control}" 
           ros2_control_plugin="${ros2_control_plugin}" 
           add_gripper="${add_gripper}"
+          add_bio_gripper="${add_bio_gripper}"
           robot_ip="${robot_ip}"
           report_type="${report_type}"
           baud_checkset="${baud_checkset}"
@@ -159,6 +162,7 @@
           velocity_control="${velocity_control}" 
           ros2_control_plugin="${ros2_control_plugin}" 
           add_gripper="${add_gripper}"
+          add_bio_gripper="${add_bio_gripper}"
           robot_ip="${robot_ip}"
           report_type="${report_type}"
           baud_checkset="${baud_checkset}"
@@ -177,6 +181,7 @@
           velocity_control="${velocity_control}" 
           ros2_control_plugin="${ros2_control_plugin}"
           add_gripper="${add_gripper}"
+          add_bio_gripper="${add_bio_gripper}"
           robot_ip="${robot_ip}"
           report_type="${report_type}"
           baud_checkset="${baud_checkset}"
@@ -193,6 +198,7 @@
           velocity_control="${velocity_control}" 
           ros2_control_plugin="${ros2_control_plugin}"
           add_gripper="${add_gripper}"
+          add_bio_gripper="${add_bio_gripper}"
           robot_ip="${robot_ip}"
           report_type="${report_type}"
           baud_checkset="${baud_checkset}"
@@ -236,7 +242,16 @@
       </xacro:unless>
     </xacro:if>
 
-    <xacro:if value="${not add_gripper and add_vacuum_gripper}">
+    <xacro:if value="${not add_gripper and add_bio_gripper}">
+      <xacro:unless value="${robot_type == 'lite'}">
+        <!-- Load BIO Gripper Model URDF -->
+        <xacro:include filename="$(find xarm_description)/urdf/gripper/bio_gripper_macro.xacro" />
+        <xacro:bio_gripper_macro prefix="${prefix}" attach_to="${prefix}link_eef" 
+          ros2_control_plugin="${ros2_control_plugin}" dof="${dof}" hard_interface="${hard_interface}" />
+      </xacro:unless>
+    </xacro:if>
+
+    <xacro:if value="${not add_gripper and not add_bio_gripper and add_vacuum_gripper}">
       <xacro:if value="${robot_type == 'lite'}">
         <!-- Load Lite Vacuum Gripper Model URDF -->
         <xacro:include filename="$(find xarm_description)/urdf/vacuum_gripper/lite_vacuum_gripper.urdf.xacro" />

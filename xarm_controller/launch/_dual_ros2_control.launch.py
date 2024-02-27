@@ -36,6 +36,9 @@ def launch_setup(context, *args, **kwargs):
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     add_vacuum_gripper_1 = LaunchConfiguration('add_vacuum_gripper_1', default=add_vacuum_gripper)
     add_vacuum_gripper_2 = LaunchConfiguration('add_vacuum_gripper_2', default=add_vacuum_gripper)
+    add_bio_gripper = LaunchConfiguration('add_bio_gripper', default=False)
+    add_bio_gripper_1 = LaunchConfiguration('add_bio_gripper_1', default=add_bio_gripper)
+    add_bio_gripper_2 = LaunchConfiguration('add_bio_gripper_2', default=add_bio_gripper)
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     limited = LaunchConfiguration('limited', default=False)
     effort_control = LaunchConfiguration('effort_control', default=False)
@@ -128,6 +131,8 @@ def launch_setup(context, *args, **kwargs):
         prefix_2=prefix_2.perform(context), 
         add_gripper_1=add_gripper_1.perform(context) in ('True', 'true'),
         add_gripper_2=add_gripper_2.perform(context) in ('True', 'true'),
+        add_bio_gripper_1=add_bio_gripper_1.perform(context) in ('True', 'true'),
+        add_bio_gripper_2=add_bio_gripper_2.perform(context) in ('True', 'true'),
         ros_namespace=LaunchConfiguration('ros_namespace', default='').perform(context),
         robot_type_1=robot_type_1.perform(context), 
         robot_type_2=robot_type_2.perform(context), 
@@ -152,6 +157,8 @@ def launch_setup(context, *args, **kwargs):
                 'add_gripper_2': add_gripper_2,
                 'add_vacuum_gripper_1': add_vacuum_gripper_1,
                 'add_vacuum_gripper_2': add_vacuum_gripper_2,
+                'add_bio_gripper_1': add_bio_gripper_1,
+                'add_bio_gripper_2': add_bio_gripper_2,
                 'hw_ns': hw_ns.perform(context).strip('/'),
                 'limited': limited,
                 'effort_control': effort_control,

@@ -27,6 +27,7 @@ def launch_setup(context, *args, **kwargs):
     velocity_control = LaunchConfiguration('velocity_control', default=False)
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
+    add_bio_gripper = LaunchConfiguration('add_bio_gripper', default=False)
     dof = LaunchConfiguration('dof', default=7)
     robot_type = LaunchConfiguration('robot_type', default='xarm')
     ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='gazebo_ros2_control/GazeboSystem')
@@ -65,6 +66,7 @@ def launch_setup(context, *args, **kwargs):
         os.path.join(get_package_share_directory('xarm_controller'), 'config', '{}{}_controllers.yaml'.format(robot_type.perform(context), dof.perform(context) if robot_type.perform(context) in ('xarm', 'lite') else '')),
         prefix=prefix.perform(context), 
         add_gripper=add_gripper.perform(context) in ('True', 'true'),
+        add_bio_gripper=add_bio_gripper.perform(context) in ('True', 'true'),
         ros_namespace=LaunchConfiguration('ros_namespace', default='').perform(context),
         update_rate=1000,
         robot_type=robot_type.perform(context)
@@ -83,6 +85,7 @@ def launch_setup(context, *args, **kwargs):
                 'robot_type': robot_type,
                 'add_gripper': add_gripper,
                 'add_vacuum_gripper': add_vacuum_gripper,
+                'add_bio_gripper': add_bio_gripper,
                 'hw_ns': hw_ns.perform(context).strip('/'),
                 'limited': limited,
                 'effort_control': effort_control,
@@ -161,6 +164,8 @@ def launch_setup(context, *args, **kwargs):
     ]
     if robot_type.perform(context) != 'lite' and add_gripper.perform(context) in ('True', 'true'):
         controllers.append('{}{}_gripper_traj_controller'.format(prefix.perform(context), robot_type.perform(context)))
+    elif robot_type.perform(context) != 'lite' and add_bio_gripper.perform(context) in ('True', 'true'):
+        controllers.append('{}bio_gripper_traj_controller'.format(prefix.perform(context)))
     load_controllers = []
     if load_controller.perform(context) in ('True', 'true'):
         for controller in controllers:
