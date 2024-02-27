@@ -32,6 +32,9 @@ def launch_setup(context, *args, **kwargs):
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     add_vacuum_gripper_1 = LaunchConfiguration('add_vacuum_gripper_1', default=add_vacuum_gripper)
     add_vacuum_gripper_2 = LaunchConfiguration('add_vacuum_gripper_2', default=add_vacuum_gripper)
+    add_bio_gripper = LaunchConfiguration('add_bio_gripper', default=False)
+    add_bio_gripper_1 = LaunchConfiguration('add_bio_gripper_1', default=add_bio_gripper)
+    add_bio_gripper_2 = LaunchConfiguration('add_bio_gripper_2', default=add_bio_gripper)
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     limited = LaunchConfiguration('limited', default=True)
     effort_control = LaunchConfiguration('effort_control', default=False)
@@ -131,6 +134,8 @@ def launch_setup(context, *args, **kwargs):
                 'add_gripper_2': add_gripper_2,
                 'add_vacuum_gripper_1': add_vacuum_gripper_1,
                 'add_vacuum_gripper_2': add_vacuum_gripper_2,
+                'add_bio_gripper_1': add_bio_gripper_1,
+                'add_bio_gripper_2': add_bio_gripper_2,
                 'hw_ns': hw_ns.perform(context).strip('/'),
                 'limited': limited,
                 'effort_control': effort_control,
@@ -204,6 +209,8 @@ def launch_setup(context, *args, **kwargs):
             # 'add_gripper_2': add_gripper_2 if robot_type_2.perform(context) == 'xarm' else 'false',
             'add_vacuum_gripper_1': add_vacuum_gripper_1,
             'add_vacuum_gripper_2': add_vacuum_gripper_2,
+            'add_bio_gripper_1': add_bio_gripper_1,
+            'add_bio_gripper_2': add_bio_gripper_2,
             'hw_ns': hw_ns,
             'limited': limited,
             'effort_control': effort_control,
@@ -263,11 +270,21 @@ def launch_setup(context, *args, **kwargs):
             ('follow_joint_trajectory', '{}{}_gripper_traj_controller/follow_joint_trajectory'.format(prefix_1.perform(context), robot_type_1.perform(context)))
         )
         controllers.append('{}{}_gripper_traj_controller'.format(prefix_1.perform(context), robot_type_1.perform(context)))
+    elif add_bio_gripper_1.perform(context) in ('True', 'true') and robot_type_1.perform(context) != 'lite':
+        remappings.append(
+            ('follow_joint_trajectory', '{}bio_gripper_traj_controller/follow_joint_trajectory'.format(prefix_1.perform(context)))
+        )
+        controllers.append('{}bio_gripper_traj_controller'.format(prefix_1.perform(context)))
     if add_gripper_2.perform(context) in ('True', 'true') and robot_type_2.perform(context) != 'lite':
         remappings.append(
             ('follow_joint_trajectory', '{}{}_gripper_traj_controller/follow_joint_trajectory'.format(prefix_2.perform(context), robot_type_2.perform(context)))
         )
         controllers.append('{}{}_gripper_traj_controller'.format(prefix_2.perform(context), robot_type_2.perform(context)))
+    elif add_bio_gripper_2.perform(context) in ('True', 'true') and robot_type_2.perform(context) != 'lite':
+        remappings.append(
+            ('follow_joint_trajectory', '{}bio_gripper_traj_controller/follow_joint_trajectory'.format(prefix_2.perform(context)))
+        )
+        controllers.append('{}bio_gripper_traj_controller'.format(prefix_2.perform(context)))
     # joint state publisher node
     joint_state_publisher_node = Node(
         package='joint_state_publisher',
@@ -285,17 +302,16 @@ def launch_setup(context, *args, **kwargs):
         launch_arguments={
             'prefix_1': prefix_1,
             'prefix_2': prefix_2,
-            'dof': dof,
             'dof_1': dof_1,
             'dof_2': dof_2,
             'robot_type_1': robot_type_1,
             'robot_type_2': robot_type_2,
-            'add_gripper': add_gripper,
             'add_gripper_1': add_gripper_1,
             'add_gripper_2': add_gripper_2,
-            'add_vacuum_gripper': add_vacuum_gripper,
             'add_vacuum_gripper_1': add_vacuum_gripper_1,
             'add_vacuum_gripper_2': add_vacuum_gripper_2,
+            'add_bio_gripper_1': add_bio_gripper_1,
+            'add_bio_gripper_2': add_bio_gripper_2,
             'hw_ns': hw_ns,
             'limited': limited,
             'effort_control': effort_control,

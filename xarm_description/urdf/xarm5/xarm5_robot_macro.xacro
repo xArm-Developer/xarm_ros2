@@ -6,6 +6,7 @@
     limited:=false
     velocity_control:=false
     add_gripper:=false 
+    add_bio_gripper:=false 
     ros2_control_plugin:='uf_robot_hardware/UFRobotSystemHardware'  
     robot_ip:=''
     report_type:='normal'
@@ -30,7 +31,7 @@
         <xacro:xarm5_ros2_control prefix="${prefix}"
           velocity_control="${velocity_control}"
           ros2_control_plugin="${ros2_control_plugin}"
-          hw_ns="${hw_ns}" add_gripper="${add_gripper}"
+          hw_ns="${hw_ns}" add_gripper="${add_gripper}" add_bio_gripper="${add_bio_gripper}"
           robot_ip="${robot_ip}" report_type="${report_type}"
           baud_checkset="${baud_checkset}" default_gripper_baud="${default_gripper_baud}"
           joint1_lower_limit="${-pi*0.99}" joint1_upper_limit="${pi*0.99}"
@@ -54,7 +55,7 @@
       <xacro:if value="${is_ros2}">
         <xacro:xarm5_ros2_control prefix="${prefix}" velocity_control="${velocity_control}"
           ros2_control_plugin="${ros2_control_plugin}"
-          hw_ns="${hw_ns}" add_gripper="${add_gripper}"
+          hw_ns="${hw_ns}" add_gripper="${add_gripper}" add_bio_gripper="${add_bio_gripper}"
           robot_ip="${robot_ip}" report_type="${report_type}"
           baud_checkset="${baud_checkset}" default_gripper_baud="${default_gripper_baud}" />
       </xacro:if>

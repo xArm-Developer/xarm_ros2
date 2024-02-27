@@ -1,0 +1,10 @@
+controller_names:
+  - bio_gripper
+
+bio_gripper:
+  action_ns: gripper_action
+  type: GripperCommand
+  default: true
+  joints:
+    # - left_finger_joint
+    - right_finger_joint
