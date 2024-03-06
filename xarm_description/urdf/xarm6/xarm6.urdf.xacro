@@ -192,7 +192,6 @@
     <joint name="${prefix}joint5" type="revolute">
       <parent link="${prefix}link4"/>
       <child link="${prefix}link5"/>
-      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
       <xacro:common_joint_origin joint_kinematic_params="${kinematics_params['joint5']}" />
       <axis xyz="0 0 1"/>
       <limit
