@@ -70,6 +70,36 @@ namespace uf_robot_hardware
             }
         }
 
+        // Initialize with values from URDF
+        for (auto i = 0u; i < info_.joints.size(); i++)
+        {
+            const auto & joint = info_.joints[i];
+            for (const auto & interface : joint.state_interfaces)
+            {
+                if (interface.name == hardware_interface::HW_IF_POSITION)
+                {
+                    // Check the initial_value param is used
+                    if (!interface.initial_value.empty())
+                    {
+                        position_cmds_[i] = std::stod(interface.initial_value);
+                    }
+                    else
+                    {
+                        // Initialize the value in old way with warning message
+                        auto it2 = joint.parameters.find("initial_" + interface.name);
+                        if (it2 != joint.parameters.end())
+                        {
+                            position_cmds_[i] = std::stod(it2->second);
+                            RCUTILS_LOG_WARN_NAMED(
+                            "fake_generic_system",
+                            "The usage of initial_%s has been deprecated. Please use 'initial_value' instead.",
+                            interface.name.c_str());
+                        }
+                    }
+                }
+            }
+        }
+
         RCLCPP_INFO(LOGGER, "System Sucessfully inited!");
         return CallbackReturn::SUCCESS;
     }
