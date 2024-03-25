@@ -208,18 +208,18 @@ def launch_setup(context, *args, **kwargs):
         # },
     }
 
-    sensor_maneger_parameters = {
-        'sensors': ['ros'],
-        'octomap_resolution': 0.02,
-        'ros.sensor_plugin': 'occupancy_map_monitor/PointCloudOctomapUpdater',
-        'ros.point_cloud_topic': '/camera/depth/color/points',
-        'ros.max_range': 2.0,
-        'ros.point_subsample': 1,
-        'ros.padding_offset': 0.1,
-        'ros.padding_scale': 1.0,
-        'ros.max_update_rate': 1.0,
-        'ros.filtered_cloud_topic': 'filtered_cloud',
-    }
+    # sensor_manager_parameters = {
+    #     'sensors': ['ros'],
+    #     'octomap_resolution': 0.02,
+    #     'ros.sensor_plugin': 'occupancy_map_monitor/PointCloudOctomapUpdater',
+    #     'ros.point_cloud_topic': '/camera/depth/color/points',
+    #     'ros.max_range': 2.0,
+    #     'ros.point_subsample': 1,
+    #     'ros.padding_offset': 0.1,
+    #     'ros.padding_scale': 1.0,
+    #     'ros.max_update_rate': 1.0,
+    #     'ros.filtered_cloud_topic': 'filtered_cloud',
+    # }
 
     # Start the actual move_group node/action server
     move_group_node = Node(
@@ -233,7 +233,7 @@ def launch_setup(context, *args, **kwargs):
             plan_execution,
             moveit_controllers,
             planning_scene_monitor_parameters,
-            sensor_maneger_parameters,
+            # sensor_manager_parameters,
             {'use_sim_time': use_sim_time},
         ],
     )
