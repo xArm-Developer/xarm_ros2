@@ -126,7 +126,8 @@ def launch_setup(context, *args, **kwargs):
             robot_description_parameters,
             {
                 'robot_type': robot_type,
-                'dof': dof
+                'dof': dof,
+                'prefix': prefix
             },
             xarm_planner_parameters,
         ],
@@ -135,15 +136,16 @@ def launch_setup(context, *args, **kwargs):
     nodes = [
         xarm_planner_node
     ]
-    if add_gripper.perform(context) in ('True', 'true') and use_gripper_node.perform(context) in ('True', 'true'):
+    if robot_type.perform(context) != 'lite' and add_gripper.perform(context) in ('True', 'true') and use_gripper_node.perform(context) in ('True', 'true'):
+        planning_group = 'uf850_gripper' if robot_type.perform(context) == 'uf850' else 'xarm_gripper'
         xarm_gripper_planner_node = Node(
-            name=node_name,
+            name='xarm_gripper_planner_node',
             package='xarm_planner',
             executable='xarm_gripper_planner_node',
             output='screen',
             parameters=[
                 robot_description_parameters,
-                {'PLANNING_GROUP': 'xarm_gripper'},
+                {'PLANNING_GROUP': planning_group},
             ],
         )
         nodes.append(xarm_gripper_planner_node)
