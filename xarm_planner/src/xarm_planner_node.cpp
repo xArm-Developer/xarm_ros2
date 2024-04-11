@@ -49,6 +49,11 @@ XArmPlannerRunner::XArmPlannerRunner(rclcpp::Node::SharedPtr& node)
     std::string group_name = robot_type;
     if (robot_type == "xarm" || robot_type == "lite")
         group_name = robot_type + std::to_string(dof);
+    std::string prefix;
+    node->get_parameter_or("prefix", prefix, std::string(""));
+    if (prefix != "") {
+        group_name = prefix + group_name;
+    }
 
     RCLCPP_INFO(node_->get_logger(), "namespace: %s, group_name: %s", node->get_namespace(), group_name.c_str());
 
