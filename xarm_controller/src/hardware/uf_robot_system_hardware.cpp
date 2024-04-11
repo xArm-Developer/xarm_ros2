@@ -456,7 +456,7 @@ namespace uf_robot_hardware
         if (curr_state > 2) {
             if (last_state != curr_state) {
                 last_state = curr_state;
-                RCLCPP_ERROR(LOGGER, "[%s] Robot State detected! State: %d", robot_ip_.c_str(), curr_state);
+                RCLCPP_WARN(LOGGER, "[%s] Robot State detected! State: %d", robot_ip_.c_str(), curr_state);
             }
             last_not_ready = true;
             return false;
@@ -466,7 +466,7 @@ namespace uf_robot_hardware
         if (!(velocity_control_ ? curr_mode == XARM_MODE::VELO_JOINT : curr_mode == XARM_MODE::SERVO)) {
             if (last_mode != curr_mode) {
                 last_mode = curr_mode;
-                RCLCPP_ERROR(LOGGER, "[%s] Robot Mode detected! Mode: %d", robot_ip_.c_str(), curr_mode);
+                RCLCPP_WARN(LOGGER, "[%s] Robot Mode detected! Mode: %d", robot_ip_.c_str(), curr_mode);
             }
             last_not_ready = true;
             return false;
@@ -490,8 +490,9 @@ namespace uf_robot_hardware
         bool is_not_ready = !_xarm_is_ready_write();
         bool write_succeed = write_code_ == 0;
         if (!write_succeed) {
-            int ret = xarm_driver_.arm->set_state(XARM_STATE::STOP);
-            RCLCPP_ERROR(LOGGER, "[%s] Write() failed, failed_ret=%d !, Setting Robot State to STOP... (ret: %d)", robot_ip_.c_str(), write_code_, ret);
+            // int ret = xarm_driver_.arm->set_state(XARM_STATE::STOP);
+            // RCLCPP_ERROR(LOGGER, "[%s] Write() failed, failed_ret=%d !, Setting Robot State to STOP... (ret: %d)", robot_ip_.c_str(), write_code_, ret);
+            RCLCPP_ERROR(LOGGER, "[%s] Write() failed, failed_ret=%d !", robot_ip_.c_str(), write_code_);
             if (write_code_ == SERVICE_IS_PERSISTENT_BUT_INVALID || write_code_ == SERVICE_CALL_FAILED) {
                 RCLCPP_ERROR(LOGGER, "[%s] Service is invaild, ros shutdown", robot_ip_.c_str());
                 rclcpp::shutdown();
