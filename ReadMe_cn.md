@@ -35,6 +35,7 @@
 - (2023-10-12) 新增关节kinematics参数文件的生成与使用
 - (2024-01-17) 新增对xarm7_mirror型号机械臂的支持
 - (2024-02-27) 新增对Bio Gripper的支持(参数`add_bio_gripper`, Lite6不支持)
+- (2024-04-12) 新增 __uf_ros_lib__ 封装某些功能以供调用(包括 __MoveItConfigsBuilder__)，参见[文档](./uf_ros_lib/Readme.md)
 
 ## 3. 准备工作
 

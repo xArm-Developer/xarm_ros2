@@ -36,6 +36,7 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 - (2023-10-12) Added the generation and use of joint kinematics parameter files
 - (2024-01-17) Added support for xarm7_mirror model robotic arm
 - (2024-02-27) Added support for Bio Gripper (parameter `add_bio_gripper`, Lite6 is not supported)
+- (2024-04-12) Added __uf_ros_lib__ to encapsulate certain functions for calling (including __MoveItConfigsBuilder__), see [Documentation](./uf_ros_lib/Readme.md)
 
 
 ## 3. Preparation
