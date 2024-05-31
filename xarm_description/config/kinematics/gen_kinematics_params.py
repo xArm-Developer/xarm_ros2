@@ -51,7 +51,10 @@ if __name__ == '__main__':
             joint_param['pitch'] = params[i * 6 + 4]
             joint_param['yaw'] = params[i * 6 + 5]
         with open(output_file, 'w', encoding='utf-8') as f:
-            dump(data, f, default_flow_style=False, allow_unicode=True, sort_keys=False)
+            try:
+                dump(data, f, default_flow_style=False, allow_unicode=True, sort_keys=False)
+            except:
+                dump(data, f, default_flow_style=False, allow_unicode=True)
         print('[Success] save to {}'.format(output_file))
     else:
         print('[Failed] recv_len={}, valid={}'.format(len(recv_data), 0 if len(recv_data) < 9 else recv_data[8]))
