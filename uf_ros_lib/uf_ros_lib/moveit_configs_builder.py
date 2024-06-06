@@ -154,6 +154,8 @@ from uf_ros_lib.substitutions.planning_pipelines import get_pattern_matches, Pla
 
 try:
     from moveit_configs_utils import MoveItConfigs
+    if not hasattr(MoveItConfigs, 'sensors_3d'):
+        setattr(MoveItConfigs, 'sensors_3d', {})
 except Exception as e:
     @dataclass
     class MoveItConfigs:
