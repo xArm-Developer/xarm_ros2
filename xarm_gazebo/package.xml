@@ -21,6 +21,7 @@
   <exec_depend>gazebo_plugins</exec_depend>
   <exec_depend>gazebo_ros2_control</exec_depend>
   <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>uf_ros_lib</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

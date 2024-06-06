@@ -249,7 +249,6 @@ bool JoyToServoPub::_convert_spacemouse_wireless_joy_to_cmd(const std::vector<fl
 
 void JoyToServoPub::_joy_callback(const sensor_msgs::msg::Joy::SharedPtr msg)
 {
-
     // std::string axes_str = "[ ";
     // for (int i = 0; i < msg->axes.size(); i++) { 
     //     axes_str += std::to_string(msg->axes[i]); 
