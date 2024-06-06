@@ -87,47 +87,59 @@ class PlanningPipelinesYAML(BaseYamlSubstitution):
         robot_name = '{}{}'.format(robot_type, robot_dof if robot_type == 'xarm' else '6' if robot_type == 'lite' else '')
 
         filename = pipeline + '_planning.yaml'
+        parameter_file = self.__package_path / 'config' / 'moveit_configs' / filename
+        if parameter_file.exists():
+            planning_yaml = load_yaml(parameter_file)
+            planning_yaml = planning_yaml if planning_yaml else {}
+        else:
+            planning_yaml = {}
+
         parameter_file = self.__package_path / 'config' / robot_name / filename
-        planning_yaml = load_yaml(parameter_file)
+        pipeline_planning_yaml = load_yaml(parameter_file)
+        pipeline_planning_yaml = pipeline_planning_yaml if pipeline_planning_yaml else {}
 
         if add_gripper:
             parameter_file = self.__package_path / 'config' / '{}_gripper'.format(robot_type) / filename
             if parameter_file.exists():
                 gripper_planning_yaml = load_yaml(parameter_file)
                 if gripper_planning_yaml:
-                    planning_yaml.update(gripper_planning_yaml)
+                    pipeline_planning_yaml.update(gripper_planning_yaml)
         elif add_bio_gripper:
             parameter_file = self.__package_path / 'config' / 'bio_gripper' / filename
             if parameter_file.exists():
                 gripper_planning_yaml = load_yaml(parameter_file)
                 if gripper_planning_yaml:
-                    planning_yaml.update(gripper_planning_yaml)
-        if planning_yaml and prefix:
-            for name in list(planning_yaml.keys()):
-                if pipeline == 'ompl' and name != 'planner_configs':
-                    planning_yaml['{}{}'.format(prefix, name)] = planning_yaml.pop(name)
-        if pipeline == 'ompl':
-            if os.environ.get('ROS_DISTRO', '') > 'iron':
-                planning_yaml.update({
-                    'planning_plugins': ['ompl_interface/OMPLPlanner'],
-                    'request_adapters': [
-                        'default_planning_request_adapters/ResolveConstraintFrames',
-                        'default_planning_request_adapters/ValidateWorkspaceBounds',
-                        'default_planning_request_adapters/CheckStartStateBounds',
-                        'default_planning_request_adapters/CheckStartStateCollision',
-                    ],
-                    'response_adapters': [
-                        'default_planning_response_adapters/AddTimeOptimalParameterization',
-                        'default_planning_response_adapters/ValidateSolution',
-                        'default_planning_response_adapters/DisplayMotionPath',
-                    ],
-                })
-            else:
-                planning_yaml.update({
-                    'planning_plugin': 'ompl_interface/OMPLPlanner',
-                    'request_adapters': """default_planner_request_adapters/AddTimeOptimalParameterization default_planner_request_adapters/FixWorkspaceBounds default_planner_request_adapters/FixStartStateBounds default_planner_request_adapters/FixStartStateCollision default_planner_request_adapters/FixStartStatePathConstraints""",
-                    'start_state_max_bounds_error': 0.1,
-                })
+                    pipeline_planning_yaml.update(gripper_planning_yaml)
+        if pipeline_planning_yaml and prefix:
+            for name in list(pipeline_planning_yaml.keys()):
+                if pipeline == 'ompl' and name != 'planner_configs' and name not in planning_yaml:
+                    pipeline_planning_yaml['{}{}'.format(prefix, name)] = pipeline_planning_yaml.pop(name)
+        planning_yaml.update(pipeline_planning_yaml)
+        if pipeline == 'ompl' and 'planner_configs' not in planning_yaml:
+            parameter_file = self.__package_path / 'config' / 'moveit_configs' / 'ompl_defaults.yaml'
+            planning_yaml.update(load_yaml(parameter_file))
+        # if pipeline == 'ompl':
+        #     if os.environ.get('ROS_DISTRO', '') > 'iron':
+        #         planning_yaml.update({
+        #             'planning_plugins': ['ompl_interface/OMPLPlanner'],
+        #             'request_adapters': [
+        #                 'default_planning_request_adapters/ResolveConstraintFrames',
+        #                 'default_planning_request_adapters/ValidateWorkspaceBounds',
+        #                 'default_planning_request_adapters/CheckStartStateBounds',
+        #                 'default_planning_request_adapters/CheckStartStateCollision',
+        #             ],
+        #             'response_adapters': [
+        #                 'default_planning_response_adapters/AddTimeOptimalParameterization',
+        #                 'default_planning_response_adapters/ValidateSolution',
+        #                 'default_planning_response_adapters/DisplayMotionPath',
+        #             ],
+        #         })
+        #     else:
+        #         planning_yaml.update({
+        #             'planning_plugin': 'ompl_interface/OMPLPlanner',
+        #             'request_adapters': """default_planner_request_adapters/AddTimeOptimalParameterization default_planner_request_adapters/FixWorkspaceBounds default_planner_request_adapters/FixStartStateBounds default_planner_request_adapters/FixStartStateCollision default_planner_request_adapters/FixStartStatePathConstraints""",
+        #             'start_state_max_bounds_error': 0.1,
+        #         })
 
         return yaml.dump(planning_yaml)
 
@@ -201,36 +213,44 @@ class DualPlanningPipelinesYAML(BaseYamlSubstitution):
         robot_name_1 = '{}{}'.format(robot_type_1, robot_dof_1 if robot_type_1 == 'xarm' else '6' if robot_type_1 == 'lite' else '')
         robot_name_2 = '{}{}'.format(robot_type_2, robot_dof_2 if robot_type_2 == 'xarm' else '6' if robot_type_2 == 'lite' else '')
 
-        filename = self.__pipeline + '_planning.yaml'
+        filename = pipeline + '_planning.yaml'
         file_path_1 = self.__package_path / 'config' / robot_name_1 / filename
         file_path_2 = self.__package_path / 'config' / robot_name_2 / filename
 
-        if pipeline == 'ompl':
-            if os.environ.get('ROS_DISTRO', '') > 'iron':
-                planning_yaml = {
-                    'planning_plugins': ['ompl_interface/OMPLPlanner'],
-                    'request_adapters': [
-                        'default_planning_request_adapters/ResolveConstraintFrames',
-                        'default_planning_request_adapters/ValidateWorkspaceBounds',
-                        'default_planning_request_adapters/CheckStartStateBounds',
-                        'default_planning_request_adapters/CheckStartStateCollision',
-                    ],
-                    'response_adapters': [
-                        'default_planning_response_adapters/AddTimeOptimalParameterization',
-                        'default_planning_response_adapters/ValidateSolution',
-                        'default_planning_response_adapters/DisplayMotionPath',
-                    ],
-                }
-            else:
-                planning_yaml = {
-                    'planning_plugin': 'ompl_interface/OMPLPlanner',
-                    'request_adapters': """default_planner_request_adapters/AddTimeOptimalParameterization default_planner_request_adapters/FixWorkspaceBounds default_planner_request_adapters/FixStartStateBounds default_planner_request_adapters/FixStartStateCollision default_planner_request_adapters/FixStartStatePathConstraints""",
-                    'start_state_max_bounds_error': 0.1,
-                }
+        parameter_file = self.__package_path / 'config' / 'moveit_configs' / filename
+        if parameter_file.exists():
+            planning_yaml = load_yaml(parameter_file)
+            planning_yaml = planning_yaml if planning_yaml else {}
         else:
             planning_yaml = {}
 
+        # if pipeline == 'ompl':
+        #     if os.environ.get('ROS_DISTRO', '') > 'iron':
+        #         planning_yaml = {
+        #             'planning_plugins': ['ompl_interface/OMPLPlanner'],
+        #             'request_adapters': [
+        #                 'default_planning_request_adapters/ResolveConstraintFrames',
+        #                 'default_planning_request_adapters/ValidateWorkspaceBounds',
+        #                 'default_planning_request_adapters/CheckStartStateBounds',
+        #                 'default_planning_request_adapters/CheckStartStateCollision',
+        #             ],
+        #             'response_adapters': [
+        #                 'default_planning_response_adapters/AddTimeOptimalParameterization',
+        #                 'default_planning_response_adapters/ValidateSolution',
+        #                 'default_planning_response_adapters/DisplayMotionPath',
+        #             ],
+        #         }
+        #     else:
+        #         planning_yaml = {
+        #             'planning_plugin': 'ompl_interface/OMPLPlanner',
+        #             'request_adapters': """default_planner_request_adapters/AddTimeOptimalParameterization default_planner_request_adapters/FixWorkspaceBounds default_planner_request_adapters/FixStartStateBounds default_planner_request_adapters/FixStartStateCollision default_planner_request_adapters/FixStartStatePathConstraints""",
+        #             'start_state_max_bounds_error': 0.1,
+        #         }
+        # else:
+        #     planning_yaml = {}
+
         planning_yaml_1 = load_yaml(file_path_1)
+        planning_yaml_1 = planning_yaml_1 if planning_yaml_1 else {}
         if add_gripper_1:
             parameter_file = self.__package_path / 'config' / '{}_gripper'.format(robot_type_1) / filename
             if parameter_file.exists():
@@ -245,10 +265,11 @@ class DualPlanningPipelinesYAML(BaseYamlSubstitution):
                     planning_yaml_1.update(gripper_planning_yaml)
         if planning_yaml_1 and prefix_1:
             for name in list(planning_yaml_1.keys()):
-                if pipeline == 'ompl' and name != 'planner_configs':
+                if pipeline == 'ompl' and name != 'planner_configs' and name not in planning_yaml:
                     planning_yaml_1['{}{}'.format(prefix_1, name)] = planning_yaml_1.pop(name)
         
         planning_yaml_2 = load_yaml(file_path_2)
+        planning_yaml_2 = planning_yaml_2 if planning_yaml_2 else {}
         if add_gripper_2:
             parameter_file = self.__package_path / 'config' / '{}_gripper'.format(robot_type_2) / filename
             if parameter_file.exists():
@@ -263,10 +284,13 @@ class DualPlanningPipelinesYAML(BaseYamlSubstitution):
                     planning_yaml_2.update(gripper_planning_yaml)
         if planning_yaml_2 and prefix_2:
             for name in list(planning_yaml_2.keys()):
-                if pipeline == 'ompl' and name != 'planner_configs':
+                if pipeline == 'ompl' and name != 'planner_configs' and name not in planning_yaml:
                     planning_yaml_2['{}{}'.format(prefix_2, name)] = planning_yaml_2.pop(name)
 
         planning_yaml.update(planning_yaml_1)
         planning_yaml.update(planning_yaml_2)
+        if pipeline == 'ompl' and 'planner_configs' not in planning_yaml:
+            parameter_file = self.__package_path / 'config' / 'moveit_configs' / 'ompl_defaults.yaml'
+            planning_yaml.update(load_yaml(parameter_file))
 
         return yaml.dump(planning_yaml)

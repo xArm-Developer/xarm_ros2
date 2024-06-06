@@ -7,6 +7,7 @@
 # Author: Vinman <vinman.wen@ufactory.cc> <vinman.cub@gmail.com>
 
 import os
+import yaml
 from ament_index_python import get_package_share_directory
 from launch.launch_description_sources import load_python_launch_file_as_module
 from launch import LaunchDescription
@@ -14,8 +15,9 @@ from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument, Regi
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
+from launch.conditions import IfCondition
 from launch_ros.substitutions import FindPackageShare
-from launch.event_handlers import OnProcessExit
+from launch.event_handlers import OnProcessExit, OnProcessStart
 from launch.actions import OpaqueFunction
 
     
@@ -55,66 +57,77 @@ def launch_setup(context, *args, **kwargs):
     kinematics_suffix = LaunchConfiguration('kinematics_suffix', default='')
     
     load_controller = LaunchConfiguration('load_controller', default=False)
-    
+    show_rviz = LaunchConfiguration('show_rviz', default=False)
+    no_gui_ctrl = LaunchConfiguration('no_gui_ctrl', default=False)
+
     ros_namespace = LaunchConfiguration('ros_namespace', default='').perform(context)
+    moveit_config_dump = LaunchConfiguration('moveit_config_dump', default='')
 
-    # ros2 control params
-    # xarm_controller/launch/lib/robot_controller_lib.py
-    mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_controller'), 'launch', 'lib', 'robot_controller_lib.py'))
-    generate_ros2_control_params_temp_file = getattr(mod, 'generate_ros2_control_params_temp_file')
-    ros2_control_params = generate_ros2_control_params_temp_file(
-        os.path.join(get_package_share_directory('xarm_controller'), 'config', '{}{}_controllers.yaml'.format(robot_type.perform(context), dof.perform(context) if robot_type.perform(context) in ('xarm', 'lite') else '')),
-        prefix=prefix.perform(context), 
-        add_gripper=add_gripper.perform(context) in ('True', 'true'),
-        add_bio_gripper=add_bio_gripper.perform(context) in ('True', 'true'),
-        ros_namespace=LaunchConfiguration('ros_namespace', default='').perform(context),
-        update_rate=1000,
-        robot_type=robot_type.perform(context)
-    )
-
-    # robot_description
-    # xarm_description/launch/lib/robot_description_lib.py
-    mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_description'), 'launch', 'lib', 'robot_description_lib.py'))
-    get_xacro_file_content = getattr(mod, 'get_xacro_file_content')
-    robot_description = {
-        'robot_description': get_xacro_file_content(
-            xacro_file=PathJoinSubstitution([FindPackageShare('xarm_description'), 'urdf', 'xarm_device.urdf.xacro']), 
-            arguments={
-                'prefix': prefix,
-                'dof': dof,
-                'robot_type': robot_type,
-                'add_gripper': add_gripper,
-                'add_vacuum_gripper': add_vacuum_gripper,
-                'add_bio_gripper': add_bio_gripper,
-                'hw_ns': hw_ns.perform(context).strip('/'),
-                'limited': limited,
-                'effort_control': effort_control,
-                'velocity_control': velocity_control,
-                'ros2_control_plugin': ros2_control_plugin,
-                'ros2_control_params': ros2_control_params,
-                'add_realsense_d435i': add_realsense_d435i,
-                'add_d435i_links': add_d435i_links,
-                'model1300': model1300,
-                'robot_sn': robot_sn,
-                'attach_to': attach_to,
-                'attach_xyz': attach_xyz,
-                'attach_rpy': attach_rpy,
-                'add_other_geometry': add_other_geometry,
-                'geometry_type': geometry_type,
-                'geometry_mass': geometry_mass,
-                'geometry_height': geometry_height,
-                'geometry_radius': geometry_radius,
-                'geometry_length': geometry_length,
-                'geometry_width': geometry_width,
-                'geometry_mesh_filename': geometry_mesh_filename,
-                'geometry_mesh_origin_xyz': geometry_mesh_origin_xyz,
-                'geometry_mesh_origin_rpy': geometry_mesh_origin_rpy,
-                'geometry_mesh_tcp_xyz': geometry_mesh_tcp_xyz,
-                'geometry_mesh_tcp_rpy': geometry_mesh_tcp_rpy,
-                'kinematics_suffix': kinematics_suffix,
-            }
-        ),
-    }
+    moveit_config_dump = moveit_config_dump.perform(context)
+    moveit_config_dict = yaml.load(moveit_config_dump, Loader=yaml.FullLoader) if moveit_config_dump else {}
+    moveit_config_package_name = 'xarm_moveit_config'
+    xarm_type = '{}{}'.format(robot_type.perform(context), dof.perform(context) if robot_type.perform(context) in ('xarm', 'lite') else '')
+    
+    if not moveit_config_dict:
+        # ros2 control params
+        # xarm_controller/launch/lib/robot_controller_lib.py
+        mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_controller'), 'launch', 'lib', 'robot_controller_lib.py'))
+        generate_ros2_control_params_temp_file = getattr(mod, 'generate_ros2_control_params_temp_file')
+        ros2_control_params = generate_ros2_control_params_temp_file(
+            os.path.join(get_package_share_directory('xarm_controller'), 'config', '{}_controllers.yaml'.format(xarm_type)),
+            prefix=prefix.perform(context), 
+            add_gripper=add_gripper.perform(context) in ('True', 'true'),
+            add_bio_gripper=add_bio_gripper.perform(context) in ('True', 'true'),
+            ros_namespace=ros_namespace,
+            update_rate=1000,
+            robot_type=robot_type.perform(context)
+        )
+        # robot_description
+        # xarm_description/launch/lib/robot_description_lib.py
+        mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_description'), 'launch', 'lib', 'robot_description_lib.py'))
+        get_xacro_file_content = getattr(mod, 'get_xacro_file_content')
+        robot_description = {
+            'robot_description': get_xacro_file_content(
+                xacro_file=PathJoinSubstitution([FindPackageShare('xarm_description'), 'urdf', 'xarm_device.urdf.xacro']), 
+                arguments={
+                    'prefix': prefix,
+                    'dof': dof,
+                    'robot_type': robot_type,
+                    'add_gripper': add_gripper,
+                    'add_vacuum_gripper': add_vacuum_gripper,
+                    'add_bio_gripper': add_bio_gripper,
+                    'hw_ns': hw_ns.perform(context).strip('/'),
+                    'limited': limited,
+                    'effort_control': effort_control,
+                    'velocity_control': velocity_control,
+                    'ros2_control_plugin': ros2_control_plugin,
+                    'ros2_control_params': ros2_control_params,
+                    'add_realsense_d435i': add_realsense_d435i,
+                    'add_d435i_links': add_d435i_links,
+                    'model1300': model1300,
+                    'robot_sn': robot_sn,
+                    'attach_to': attach_to,
+                    'attach_xyz': attach_xyz,
+                    'attach_rpy': attach_rpy,
+                    'add_other_geometry': add_other_geometry,
+                    'geometry_type': geometry_type,
+                    'geometry_mass': geometry_mass,
+                    'geometry_height': geometry_height,
+                    'geometry_radius': geometry_radius,
+                    'geometry_length': geometry_length,
+                    'geometry_width': geometry_width,
+                    'geometry_mesh_filename': geometry_mesh_filename,
+                    'geometry_mesh_origin_xyz': geometry_mesh_origin_xyz,
+                    'geometry_mesh_origin_rpy': geometry_mesh_origin_rpy,
+                    'geometry_mesh_tcp_xyz': geometry_mesh_tcp_xyz,
+                    'geometry_mesh_tcp_rpy': geometry_mesh_tcp_rpy,
+                    'kinematics_suffix': kinematics_suffix,
+                }
+            ),
+        }
+        moveit_config_dict = robot_description
+    else:
+        robot_description = {'robot_description': moveit_config_dict['robot_description']}
 
     # robot state publisher node
     robot_state_publisher_node = Node(
@@ -147,7 +160,7 @@ def launch_setup(context, *args, **kwargs):
         output='screen',
         arguments=[
             '-topic', 'robot_description',
-            # '-entity', '{}{}'.format(robot_type.perform(context), dof.perform(context) if robot_type.perform(context) in ('xarm', 'lite') else ''),
+            # '-entity', '{}'.format(xarm_type),
             '-entity', 'UF_ROBOT',
             '-x', '-0.2',
             '-y', '-0.54' if robot_type.perform(context) == 'uf850' else '-0.5',
@@ -157,19 +170,45 @@ def launch_setup(context, *args, **kwargs):
         parameters=[{'use_sim_time': True}],
     )
 
+    # rviz with moveit configuration
+    rviz_config_file = PathJoinSubstitution([FindPackageShare(moveit_config_package_name), 'rviz', 'planner.rviz' if no_gui_ctrl.perform(context) == 'true' else 'moveit.rviz'])
+    rviz2_node = Node(
+        package='rviz2',
+        executable='rviz2',
+        name='rviz2',
+        output='screen',
+        arguments=['-d', rviz_config_file],
+        parameters=[
+            {
+                'robot_description': moveit_config_dict.get('robot_description', ''),
+                'robot_description_semantic': moveit_config_dict.get('robot_description_semantic', ''),
+                'robot_description_kinematics': moveit_config_dict.get('robot_description_kinematics', {}),
+                'robot_description_planning': moveit_config_dict.get('robot_description_planning', {}),
+                # 'planning_pipelines': moveit_config_dict.get('planning_pipelines', {}),
+                'use_sim_time': True
+            }
+        ],
+        # condition=IfCondition(show_rviz),
+        remappings=[
+            ('/tf', 'tf'),
+            ('/tf_static', 'tf_static'),
+        ]
+    )
+
     # Load controllers
     controllers = [
         'joint_state_broadcaster',
-        '{}{}{}_traj_controller'.format(prefix.perform(context), robot_type.perform(context), dof.perform(context) if robot_type.perform(context) in ('xarm', 'lite') else ''),
+        '{}{}_traj_controller'.format(prefix.perform(context), xarm_type),
     ]
     if robot_type.perform(context) != 'lite' and add_gripper.perform(context) in ('True', 'true'):
         controllers.append('{}{}_gripper_traj_controller'.format(prefix.perform(context), robot_type.perform(context)))
     elif robot_type.perform(context) != 'lite' and add_bio_gripper.perform(context) in ('True', 'true'):
         controllers.append('{}bio_gripper_traj_controller'.format(prefix.perform(context)))
-    load_controllers = []
+    
+    controller_nodes = []
     if load_controller.perform(context) in ('True', 'true'):
         for controller in controllers:
-            load_controllers.append(Node(
+            controller_nodes.append(Node(
                 package='controller_manager',
                 executable='spawner.py',
                 output='screen',
@@ -180,23 +219,61 @@ def launch_setup(context, *args, **kwargs):
                 parameters=[{'use_sim_time': True}],
             ))
 
-    if len(load_controllers) > 0:
+    if len(controller_nodes) > 0:
         return [
+            RegisterEventHandler(
+                event_handler=OnProcessStart(
+                    target_action=robot_state_publisher_node,
+                    on_start=gazebo_launch,
+                )
+            ),
+            RegisterEventHandler(
+                event_handler=OnProcessStart(
+                    target_action=robot_state_publisher_node,
+                    on_start=gazebo_spawn_entity_node,
+                )
+            ),
+            RegisterEventHandler(
+                condition=IfCondition(show_rviz),
+                event_handler=OnProcessExit(
+                    target_action=gazebo_spawn_entity_node,
+                    on_exit=rviz2_node,
+                )
+            ),
             RegisterEventHandler(
                 event_handler=OnProcessExit(
                     target_action=gazebo_spawn_entity_node,
-                    on_exit=load_controllers,
+                    on_exit=controller_nodes,
                 )
             ),
-            gazebo_launch,
             robot_state_publisher_node,
-            gazebo_spawn_entity_node,
+            # gazebo_launch,
+            # gazebo_spawn_entity_node,
         ]
     else:
         return [
-            gazebo_launch,
+            RegisterEventHandler(
+                event_handler=OnProcessStart(
+                    target_action=robot_state_publisher_node,
+                    on_start=gazebo_launch,
+                )
+            ),
+            RegisterEventHandler(
+                event_handler=OnProcessStart(
+                    target_action=robot_state_publisher_node,
+                    on_start=gazebo_spawn_entity_node,
+                )
+            ),
+            RegisterEventHandler(
+                condition=IfCondition(show_rviz),
+                event_handler=OnProcessExit(
+                    target_action=gazebo_spawn_entity_node,
+                    on_exit=rviz2_node,
+                )
+            ),
             robot_state_publisher_node,
-            gazebo_spawn_entity_node,
+            # gazebo_launch,
+            # gazebo_spawn_entity_node,
         ]
 
 
