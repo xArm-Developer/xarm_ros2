@@ -10,13 +10,14 @@ import os
 from ament_index_python import get_package_share_directory
 from launch.launch_description_sources import load_python_launch_file_as_module
 from launch import LaunchDescription
-from launch.actions import OpaqueFunction, IncludeLaunchDescription
+from launch.actions import OpaqueFunction, IncludeLaunchDescription, RegisterEventHandler
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import ComposableNodeContainer
 from launch_ros.descriptions import ComposableNode
 from launch_ros.actions import Node
+from launch.event_handlers import OnProcessExit
 
 
 def launch_setup(context, *args, **kwargs):
@@ -121,7 +122,7 @@ def launch_setup(context, *args, **kwargs):
     xarm_traj_controller = '{}{}_traj_controller'.format(prefix.perform(context), xarm_type)
     servo_yaml['command_out_topic'] = '/{}/joint_trajectory'.format(xarm_traj_controller)
     servo_params = {"moveit_servo": servo_yaml}
-    controllers = ['joint_state_broadcaster', xarm_traj_controller]
+    controllers = ['joint_state_broadcaster']
     if add_gripper.perform(context) in ('True', 'true') and robot_type.perform(context) != 'lite':
         controllers.append('{}{}_gripper_traj_controller'.format(prefix.perform(context), robot_type.perform(context)))
     elif add_bio_gripper.perform(context) in ('True', 'true') and robot_type.perform(context) != 'lite':
@@ -181,6 +182,16 @@ def launch_setup(context, *args, **kwargs):
             'geometry_mesh_tcp_rpy': geometry_mesh_tcp_rpy,
             'kinematics_suffix': kinematics_suffix,
         }.items(),
+    )
+
+    traj_controller_node = Node(
+        package='controller_manager',
+        executable='spawner.py',
+        output='screen',
+        arguments=[
+            xarm_traj_controller,
+            '--controller-manager', '{}/controller_manager'.format(ros_namespace)
+        ],
     )
 
     # Load controllers
@@ -253,9 +264,15 @@ def launch_setup(context, *args, **kwargs):
     )
 
     return [
+        RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=traj_controller_node,
+                on_exit=container,
+            )
+        ),
         rviz_node,
         ros2_control_launch,
-        container,
+        traj_controller_node,
     ] + load_controllers
 
 
