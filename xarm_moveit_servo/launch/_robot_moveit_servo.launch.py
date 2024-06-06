@@ -186,7 +186,7 @@ def launch_setup(context, *args, **kwargs):
 
     traj_controller_node = Node(
         package='controller_manager',
-        executable='spawner.py',
+        executable='spawner',
         output='screen',
         arguments=[
             xarm_traj_controller,
