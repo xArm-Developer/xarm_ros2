@@ -29,7 +29,7 @@ def generate_launch_description():
     # robot moveit servo launch
     # xarm_moveit_servo/launch/_robot_moveit_servo.launch.py
     robot_moveit_servo_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_servo'), 'launch', '_robot_moveit_servo.launch.py'])),
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_servo'), 'launch', '_robot_moveit_servo_realmove.launch.py'])),
         launch_arguments={
             'robot_ip': robot_ip,
             'report_type': report_type,
