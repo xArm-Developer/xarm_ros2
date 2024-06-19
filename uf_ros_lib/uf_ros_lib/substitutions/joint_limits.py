@@ -64,11 +64,12 @@ class JointLimitsYAML(BaseYamlSubstitution):
         file_path = self.__file_path if self.__file_path else (self.__package_path / 'config' / robot_name / 'joint_limits.yaml')
 
         joint_limits = load_yaml(file_path)
-        if add_gripper:
+        joint_limits = joint_limits if joint_limits else {}
+        if robot_type != 'lite' and add_gripper:
             gripper_joint_limits_yaml = load_yaml(self.__package_path / 'config' / '{}_gripper'.format(robot_type) / 'joint_limits.yaml')
             if gripper_joint_limits_yaml and 'joint_limits' in gripper_joint_limits_yaml:
                 joint_limits['joint_limits'].update(gripper_joint_limits_yaml['joint_limits'])
-        elif add_bio_gripper:
+        elif robot_type != 'lite' and add_bio_gripper:
             gripper_joint_limits_yaml = load_yaml(self.__package_path / 'config' / 'bio_gripper' / 'joint_limits.yaml')
             if gripper_joint_limits_yaml and 'joint_limits' in gripper_joint_limits_yaml:
                 joint_limits['joint_limits'].update(gripper_joint_limits_yaml['joint_limits'])
@@ -151,11 +152,12 @@ class DualJointLimitsYAML(BaseYamlSubstitution):
         file_path_2 = self.__file_path if self.__file_path else (self.__package_path / 'config' / robot_name_2 / 'joint_limits.yaml')
 
         joint_limits_1 = load_yaml(file_path_1)
-        if add_gripper_1:
+        joint_limits_1 = joint_limits_1 if joint_limits_1 else {}
+        if robot_type_1 != 'lite' and add_gripper_1:
             gripper_joint_limits_yaml = load_yaml(self.__package_path / 'config' / '{}_gripper'.format(robot_type_1) / 'joint_limits.yaml')
             if gripper_joint_limits_yaml and 'joint_limits' in gripper_joint_limits_yaml:
                 joint_limits_1['joint_limits'].update(gripper_joint_limits_yaml['joint_limits'])
-        elif add_bio_gripper_1:
+        elif robot_type_1 != 'lite' and add_bio_gripper_1:
             gripper_joint_limits_yaml = load_yaml(self.__package_path / 'config' / 'bio_gripper' / 'joint_limits.yaml')
             if gripper_joint_limits_yaml and 'joint_limits' in gripper_joint_limits_yaml:
                 joint_limits_1['joint_limits'].update(gripper_joint_limits_yaml['joint_limits'])
@@ -164,11 +166,12 @@ class DualJointLimitsYAML(BaseYamlSubstitution):
                 joint_limits_1['joint_limits']['{}{}'.format(prefix_1, name)] = joint_limits_1['joint_limits'].pop(name)
         
         joint_limits_2 = load_yaml(file_path_2)
-        if add_gripper_2:
+        joint_limits_2 = joint_limits_2 if joint_limits_2 else {}
+        if robot_type_2 != 'lite' and add_gripper_2:
             gripper_joint_limits_yaml = load_yaml(self.__package_path / 'config' / '{}_gripper'.format(robot_type_2) / 'joint_limits.yaml')
             if gripper_joint_limits_yaml and 'joint_limits' in gripper_joint_limits_yaml:
                 joint_limits_2['joint_limits'].update(gripper_joint_limits_yaml['joint_limits'])
-        elif add_bio_gripper_2:
+        elif robot_type_2 != 'lite' and add_bio_gripper_2:
             gripper_joint_limits_yaml = load_yaml(self.__package_path / 'config' / 'bio_gripper' / 'joint_limits.yaml')
             if gripper_joint_limits_yaml and 'joint_limits' in gripper_joint_limits_yaml:
                 joint_limits_2['joint_limits'].update(gripper_joint_limits_yaml['joint_limits'])
