@@ -25,8 +25,9 @@ MoveItConfigsBuilder(
     context: instance of launch.launch_context.LaunchContext
     controllers_name: 'controllers' if realmove else 'fake_controllers' 
     **kwargs: 
-        robot_type='xarm'
+        robot_ip=''
         dof=7
+        robot_type='xarm'
         prefix=''
         hw_ns='xarm'
         limited=False
@@ -64,12 +65,14 @@ DualMoveItConfigsBuilder(
     context: instance of launch.launch_context.LaunchContext
     controllers_name: 'controllers' if realmove else 'fake_controllers' 
     **kwargs:
-        prefix_1='L_'
-        prefix_2='R_'
+        robot_ip_1=''
+        robot_ip_2=''
         dof_1=7
         dof_2=7
         robot_type_1='xarm'
         robot_type_2='xarm'
+        prefix_1='L_'
+        prefix_2='R_'
         hw_ns='xarm'
         limited=False
         effort_control=False
@@ -134,6 +137,7 @@ Example:
 
 import os
 import re
+import logging
 from pathlib import Path
 from dataclasses import dataclass
 from ament_index_python import get_package_share_directory
@@ -229,31 +233,29 @@ class MoveItConfigsBuilder(ParameterBuilder):
             val = get_param_str(name, default_val)
             return val[1:-1] if context is not None and isinstance(val, str) and val[0] in ['"', '\''] and val[-1] in ['"', '\''] else val
 
+        robot_ip = get_param_str('robot_ip', '')
+        report_type = get_param_str('report_type', 'normal')
+        baud_checkset = get_param_str('baud_checkset', True)
+        default_gripper_baud = get_param_str('default_gripper_baud', 2000000)
+        dof = get_param_str('dof', 7)
+        robot_type = get_param_str('robot_type', 'xarm')
         prefix = get_param_str('prefix', '')
         hw_ns = get_param_str('hw_ns', 'xarm')
         limited = get_param_str('limited', False)
         effort_control = get_param_str('effort_control', False)
         velocity_control = get_param_str('velocity_control', False)
-        ros2_control_plugin = get_param_str('ros2_control_plugin', 'uf_robot_hardware/UFRobotSystemHardware')
-        ros2_control_params = get_param_str('ros2_control_params', '')
-        mesh_suffix = get_param_str('mesh_suffix', 'stl')
-
+        model1300 = get_param_str('model1300', False)
+        robot_sn = get_param_str('robot_sn', '')
         attach_to = get_param_str('attach_to', 'world')
         attach_xyz = get_list_param_str('attach_xyz', '0 0 0')
         attach_rpy = get_list_param_str('attach_rpy', '0 0 0')
-
+        mesh_suffix = get_param_str('mesh_suffix', 'stl')
+        kinematics_suffix = get_param_str('kinematics_suffix', '')
+        ros2_control_plugin = get_param_str('ros2_control_plugin', 'uf_robot_hardware/UFRobotSystemHardware')
+        ros2_control_params = get_param_str('ros2_control_params', '')
         add_gripper = get_param_str('add_gripper', False)
         add_vacuum_gripper = get_param_str('add_vacuum_gripper', False)
         add_bio_gripper = get_param_str('add_bio_gripper', False)
-        model1300 = get_param_str('model1300', False)
-        dof = get_param_str('dof', 7)
-        robot_ip = get_param_str('robot_ip', '')
-        robot_type = get_param_str('robot_type', 'xarm')
-        robot_sn = get_param_str('robot_sn', '')
-        report_type = get_param_str('report_type', 'normal')
-        baud_checkset = get_param_str('baud_checkset', True)
-        default_gripper_baud = get_param_str('default_gripper_baud', 2000000)
-        kinematics_suffix = get_param_str('kinematics_suffix', '')
         add_realsense_d435i = get_param_str('add_realsense_d435i', False)
         add_d435i_links = get_param_str('add_d435i_links', True)
         use_gazebo_camera = get_param_str('use_gazebo_camera', False)
@@ -278,31 +280,29 @@ class MoveItConfigsBuilder(ParameterBuilder):
         self.__controllers_name = (controllers_name.perform(context) if context is not None else controllers_name) if isinstance(controllers_name, LaunchConfiguration) else controllers_name
 
         self.__urdf_xacro_args = {
+            'robot_ip': robot_ip,
+            'report_type': report_type,
+            'baud_checkset': baud_checkset,
+            'default_gripper_baud': default_gripper_baud,
+            'dof': dof,
+            'robot_type': robot_type,
             'prefix': prefix,
             'hw_ns': hw_ns,
             'limited': limited,
             'effort_control': effort_control,
             'velocity_control': velocity_control,
-            'ros2_control_plugin': ros2_control_plugin,
-            'ros2_control_params': ros2_control_params,
-            'mesh_suffix': mesh_suffix,
-
+            'model1300': model1300,
+            'robot_sn': robot_sn,
             'attach_to': attach_to,
             'attach_xyz': attach_xyz,
             'attach_rpy': attach_rpy,
-
+            'mesh_suffix': mesh_suffix,
+            'kinematics_suffix': kinematics_suffix,
+            'ros2_control_plugin': ros2_control_plugin,
+            'ros2_control_params': ros2_control_params,
             'add_gripper': add_gripper,
             'add_vacuum_gripper': add_vacuum_gripper,
             'add_bio_gripper': add_bio_gripper,
-            'model1300': model1300,
-            'dof': dof,
-            'robot_ip': robot_ip,
-            'robot_type': robot_type,
-            'robot_sn': robot_sn,
-            'report_type': report_type,
-            'baud_checkset': baud_checkset,
-            'default_gripper_baud': default_gripper_baud,
-            'kinematics_suffix': kinematics_suffix,
             'add_realsense_d435i': add_realsense_d435i,
             'add_d435i_links': add_d435i_links,
             'use_gazebo_camera': use_gazebo_camera,
@@ -456,11 +456,12 @@ class MoveItConfigsBuilder(ParameterBuilder):
             else:
                 file_path = self._package_path / file_path
                 joint_limits = load_yaml(file_path) if file_path else {}
-            if self.__add_gripper in ('True', 'true'):
+            joint_limits = joint_limits if joint_limits else {}
+            if self.__robot_type != 'lite' and self.__add_gripper in ('True', 'true'):
                 gripper_joint_limits_yaml = load_yaml(self._package_path / 'config' / '{}_gripper'.format(self.__robot_type) / 'joint_limits.yaml')
                 if gripper_joint_limits_yaml and 'joint_limits' in gripper_joint_limits_yaml:
                     joint_limits['joint_limits'].update(gripper_joint_limits_yaml['joint_limits'])
-            elif self.__add_bio_gripper in ('True', 'true'):
+            elif self.__robot_type != 'lite' and self.__add_bio_gripper in ('True', 'true'):
                 gripper_joint_limits_yaml = load_yaml(self._package_path / 'config' / 'bio_gripper' / 'joint_limits.yaml')
                 if gripper_joint_limits_yaml and 'joint_limits' in gripper_joint_limits_yaml:
                     joint_limits['joint_limits'].update(gripper_joint_limits_yaml['joint_limits'])
@@ -522,7 +523,8 @@ class MoveItConfigsBuilder(ParameterBuilder):
             if file_path is None:
                 file_path = self._package_path / 'config' / robot_name / controllers_name
                 controllers_yaml = load_yaml(file_path)
-                if self.__add_gripper in ('True', 'true'):
+                controllers_yaml = controllers_yaml if controllers_yaml else {}
+                if self.__robot_type != 'lite' and self.__add_gripper in ('True', 'true'):
                     gripper_controllers_yaml = load_yaml(self._package_path / 'config' / '{}_gripper'.format(self.__robot_type) / controllers_name)
                     if gripper_controllers_yaml and 'controller_names' in gripper_controllers_yaml:
                         for name in gripper_controllers_yaml['controller_names']:
@@ -530,7 +532,7 @@ class MoveItConfigsBuilder(ParameterBuilder):
                                 if name not in controllers_yaml['controller_names']:
                                     controllers_yaml['controller_names'].append(name)
                                 controllers_yaml[name] = gripper_controllers_yaml[name]
-                elif self.__add_bio_gripper in ('True', 'true'):
+                elif self.__robot_type != 'lite' and self.__add_bio_gripper in ('True', 'true'):
                     gripper_controllers_yaml = load_yaml(self._package_path / 'config' / 'bio_gripper' / controllers_name)
                     if gripper_controllers_yaml and 'controller_names' in gripper_controllers_yaml:
                         for name in gripper_controllers_yaml['controller_names']:
@@ -558,7 +560,8 @@ class MoveItConfigsBuilder(ParameterBuilder):
                 'trajectory_execution.allowed_execution_duration_scaling': 1.2,
                 'trajectory_execution.allowed_goal_duration_margin': 0.5,
                 'trajectory_execution.allowed_start_tolerance': 0.01,
-                'trajectory_execution.execution_duration_monitoring': False
+                'trajectory_execution.execution_duration_monitoring': False,
+                'plan_execution.record_trajectory_state_frequency': 10.0
             }
         else:
             self.__moveit_configs.trajectory_execution = {
@@ -572,7 +575,8 @@ class MoveItConfigsBuilder(ParameterBuilder):
                 'trajectory_execution.allowed_execution_duration_scaling': 1.2,
                 'trajectory_execution.allowed_goal_duration_margin': 0.5,
                 'trajectory_execution.allowed_start_tolerance': 0.01,
-                'trajectory_execution.execution_duration_monitoring': False
+                'trajectory_execution.execution_duration_monitoring': False,
+                'plan_execution.record_trajectory_state_frequency': 10.0
             }
         return self
 
@@ -660,54 +664,70 @@ class MoveItConfigsBuilder(ParameterBuilder):
                 'planning_pipelines': pipelines,
                 'default_planning_pipeline': default_planning_pipeline,
             }
+            default_config_folder = self._package_path / 'config' / 'moveit_configs'
             
             for pipeline in pipelines:
                 filename = pipeline + '_planning.yaml'
+                parameter_file = default_config_folder / filename
+                if parameter_file.exists():
+                    planning_yaml = load_yaml(parameter_file)
+                    planning_yaml = planning_yaml if planning_yaml else {}
+                else:
+                    planning_yaml = {}
+
                 parameter_file = config_folder / filename
-                
-                planning_yaml = load_yaml(parameter_file)
+                if parameter_file.exists():
+                    pipeline_planning_yaml = load_yaml(parameter_file)
+                    pipeline_planning_yaml = pipeline_planning_yaml if pipeline_planning_yaml else {}
+                else:
+                    pipeline_planning_yaml = {}
                 
                 if self.__add_gripper in ('True', 'true'):
                     parameter_file = self._package_path / 'config' / '{}_gripper'.format(self.__robot_type) / filename
                     if parameter_file.exists():
                         gripper_planning_yaml = load_yaml(parameter_file)
                         if gripper_planning_yaml:
-                            planning_yaml.update(gripper_planning_yaml)
+                            pipeline_planning_yaml.update(gripper_planning_yaml)
                 elif self.__add_bio_gripper in ('True', 'true'):
                     parameter_file = self._package_path / 'config' / 'bio_gripper' / filename
                     if parameter_file.exists():
                         gripper_planning_yaml = load_yaml(parameter_file)
                         if gripper_planning_yaml:
-                            planning_yaml.update(gripper_planning_yaml)
-                if planning_yaml and self.__prefix:
-                    for name in list(planning_yaml.keys()):
-                        if pipeline == 'ompl' and name != 'planner_configs':
-                            planning_yaml['{}{}'.format(self.__prefix, name)] = planning_yaml.pop(name)
+                            pipeline_planning_yaml.update(gripper_planning_yaml)
+                if pipeline_planning_yaml and self.__prefix:
+                    for name in list(pipeline_planning_yaml.keys()):
+                        if pipeline == 'ompl' and name != 'planner_configs' and name not in planning_yaml:
+                            pipeline_planning_yaml['{}{}'.format(self.__prefix, name)] = pipeline_planning_yaml.pop(name)
+                
+                planning_yaml.update(pipeline_planning_yaml)
+                if pipeline == 'ompl' and 'planner_configs' not in planning_yaml:
+                    parameter_file = default_config_folder / 'ompl_defaults.yaml'
+                    planning_yaml.update(load_yaml(parameter_file))
                 self.__moveit_configs.planning_pipelines[pipeline] = planning_yaml
-            # Special rule to add ompl planner_configs
-            if 'ompl' in self.__moveit_configs.planning_pipelines:
-                ompl_config = self.__moveit_configs.planning_pipelines['ompl']
-                if os.environ.get('ROS_DISTRO', '') > 'iron':
-                    ompl_config.update({
-                        'planning_plugins': ['ompl_interface/OMPLPlanner'],
-                        'request_adapters': [
-                            'default_planning_request_adapters/ResolveConstraintFrames',
-                            'default_planning_request_adapters/ValidateWorkspaceBounds',
-                            'default_planning_request_adapters/CheckStartStateBounds',
-                            'default_planning_request_adapters/CheckStartStateCollision',
-                        ],
-                        'response_adapters': [
-                            'default_planning_response_adapters/AddTimeOptimalParameterization',
-                            'default_planning_response_adapters/ValidateSolution',
-                            'default_planning_response_adapters/DisplayMotionPath',
-                        ],
-                    })
-                else:
-                    ompl_config.update({
-                        'planning_plugin': 'ompl_interface/OMPLPlanner',
-                        'request_adapters': """default_planner_request_adapters/AddTimeOptimalParameterization default_planner_request_adapters/FixWorkspaceBounds default_planner_request_adapters/FixStartStateBounds default_planner_request_adapters/FixStartStateCollision default_planner_request_adapters/FixStartStatePathConstraints""",
-                        'start_state_max_bounds_error': 0.1,
-                    })
+            # # Special rule to add ompl planner_configs
+            # if 'ompl' in self.__moveit_configs.planning_pipelines:
+            #     ompl_config = self.__moveit_configs.planning_pipelines['ompl']
+            #     if os.environ.get('ROS_DISTRO', '') > 'iron':
+            #         ompl_config.update({
+            #             'planning_plugins': ['ompl_interface/OMPLPlanner'],
+            #             'request_adapters': [
+            #                 'default_planning_request_adapters/ResolveConstraintFrames',
+            #                 'default_planning_request_adapters/ValidateWorkspaceBounds',
+            #                 'default_planning_request_adapters/CheckStartStateBounds',
+            #                 'default_planning_request_adapters/CheckStartStateCollision',
+            #             ],
+            #             'response_adapters': [
+            #                 'default_planning_response_adapters/AddTimeOptimalParameterization',
+            #                 'default_planning_response_adapters/ValidateSolution',
+            #                 'default_planning_response_adapters/DisplayMotionPath',
+            #             ],
+            #         })
+            #     else:
+            #         ompl_config.update({
+            #             'planning_plugin': 'ompl_interface/OMPLPlanner',
+            #             'request_adapters': """default_planner_request_adapters/AddTimeOptimalParameterization default_planner_request_adapters/FixWorkspaceBounds default_planner_request_adapters/FixStartStateBounds default_planner_request_adapters/FixStartStateCollision default_planner_request_adapters/FixStartStatePathConstraints""",
+            #             'start_state_max_bounds_error': 0.1,
+            #         })
         else:
             pipelines = list(set(pipelines)) if pipelines else ['ompl']
             default_planning_pipeline = default_planning_pipeline if default_planning_pipeline else 'ompl'
@@ -742,6 +762,8 @@ class MoveItConfigsBuilder(ParameterBuilder):
                 logging.warning('\x1b[33;21mcartesian_limits.yaml is deprecated, please rename to pilz_cartesian_limits.yaml\x1b[0m')
             if file_path is None:
                 file_path = self._package_path / 'config' / robot_name / 'pilz_cartesian_limits.yaml'
+                if not file_path.exists():
+                    file_path = self._package_path / 'config' / 'moveit_configs' / 'pilz_cartesian_limits.yaml'
             else:
                 file_path = self._package_path / file_path
             key = self.__robot_description + '_planning'
@@ -832,39 +854,8 @@ class DualMoveItConfigsBuilder(ParameterBuilder):
             val = get_param_str(name, default_val)
             return val[1:-1] if context is not None and isinstance(val, str) and val[0] in ['"', '\''] and val[-1] in ['"', '\''] else val
 
-        hw_ns = get_param_str('hw_ns', 'xarm')
-        limited = get_param_str('limited', False)
-        effort_control = get_param_str('effort_control', False)
-        velocity_control = get_param_str('velocity_control', False)
-        ros2_control_plugin = get_param_str('ros2_control_plugin', 'uf_robot_hardware/UFRobotSystemHardware')
-        ros2_control_params = get_param_str('ros2_control_params', '')
-        mesh_suffix = get_param_str('mesh_suffix', 'stl')
-
-        prefix_1 = get_param_str('prefix_1', 'L_')
-        prefix_2 = get_param_str('prefix_2', 'R_')
-        add_gripper = get_param_str('add_gripper', False)
-        add_gripper_1 = get_param_str('add_gripper_1', add_gripper)
-        add_gripper_2 = get_param_str('add_gripper_2', add_gripper)
-        add_vacuum_gripper = get_param_str('add_vacuum_gripper', False)
-        add_vacuum_gripper_1 = get_param_str('add_vacuum_gripper_1', add_vacuum_gripper)
-        add_vacuum_gripper_2 = get_param_str('add_vacuum_gripper_2', add_vacuum_gripper)
-        add_bio_gripper = get_param_str('add_bio_gripper', False)
-        add_bio_gripper_1 = get_param_str('add_bio_gripper_1', add_bio_gripper)
-        add_bio_gripper_2 = get_param_str('add_bio_gripper_2', add_bio_gripper)
-        model1300 = get_param_str('model1300', False)
-        model1300_1 = get_param_str('model1300_1', model1300)
-        model1300_2 = get_param_str('model1300_2', model1300)
-        dof = get_param_str('dof', 7)
-        dof_1 = get_param_str('dof_1', dof)
-        dof_2 = get_param_str('dof_2', dof)
         robot_ip_1 = get_param_str('robot_ip_1', '')
         robot_ip_2 = get_param_str('robot_ip_2', '')
-        robot_type = get_param_str('robot_type', 'xarm')
-        robot_type_1 = get_param_str('robot_type_1', robot_type)
-        robot_type_2 = get_param_str('robot_type_2', robot_type)
-        robot_sn = get_param_str('robot_sn', '')
-        robot_sn_1 = get_param_str('robot_sn_1', robot_sn)
-        robot_sn_2 = get_param_str('robot_sn_2', robot_sn)
         report_type = get_param_str('report_type', 'normal')
         report_type_1 = get_param_str('report_type_1', report_type)
         report_type_2 = get_param_str('report_type_2', report_type)
@@ -874,9 +865,39 @@ class DualMoveItConfigsBuilder(ParameterBuilder):
         default_gripper_baud = get_param_str('default_gripper_baud', 2000000)
         default_gripper_baud_1 = get_param_str('default_gripper_baud_1', default_gripper_baud)
         default_gripper_baud_2 = get_param_str('default_gripper_baud_2', default_gripper_baud)
+        dof = get_param_str('dof', 7)
+        dof_1 = get_param_str('dof_1', dof)
+        dof_2 = get_param_str('dof_2', dof)
+        robot_type = get_param_str('robot_type', 'xarm')
+        robot_type_1 = get_param_str('robot_type_1', robot_type)
+        robot_type_2 = get_param_str('robot_type_2', robot_type)
+        prefix_1 = get_param_str('prefix_1', 'L_')
+        prefix_2 = get_param_str('prefix_2', 'R_')
+        hw_ns = get_param_str('hw_ns', 'xarm')
+        limited = get_param_str('limited', False)
+        effort_control = get_param_str('effort_control', False)
+        velocity_control = get_param_str('velocity_control', False)
+        model1300 = get_param_str('model1300', False)
+        model1300_1 = get_param_str('model1300_1', model1300)
+        model1300_2 = get_param_str('model1300_2', model1300)
+        robot_sn = get_param_str('robot_sn', '')
+        robot_sn_1 = get_param_str('robot_sn_1', robot_sn)
+        robot_sn_2 = get_param_str('robot_sn_2', robot_sn)
+        mesh_suffix = get_param_str('mesh_suffix', 'stl')
         kinematics_suffix = get_param_str('kinematics_suffix', '')
         kinematics_suffix_1 = get_param_str('kinematics_suffix_1', kinematics_suffix)
         kinematics_suffix_2 = get_param_str('kinematics_suffix_2', kinematics_suffix)
+        ros2_control_plugin = get_param_str('ros2_control_plugin', 'uf_robot_hardware/UFRobotSystemHardware')
+        ros2_control_params = get_param_str('ros2_control_params', '')
+        add_gripper = get_param_str('add_gripper', False)
+        add_gripper_1 = get_param_str('add_gripper_1', add_gripper)
+        add_gripper_2 = get_param_str('add_gripper_2', add_gripper)
+        add_vacuum_gripper = get_param_str('add_vacuum_gripper', False)
+        add_vacuum_gripper_1 = get_param_str('add_vacuum_gripper_1', add_vacuum_gripper)
+        add_vacuum_gripper_2 = get_param_str('add_vacuum_gripper_2', add_vacuum_gripper)
+        add_bio_gripper = get_param_str('add_bio_gripper', False)
+        add_bio_gripper_1 = get_param_str('add_bio_gripper_1', add_bio_gripper)
+        add_bio_gripper_2 = get_param_str('add_bio_gripper_2', add_bio_gripper)
         add_realsense_d435i = get_param_str('add_realsense_d435i', False)
         add_realsense_d435i_1 = get_param_str('add_realsense_d435i_1', add_realsense_d435i)
         add_realsense_d435i_2 = get_param_str('add_realsense_d435i_2', add_realsense_d435i)
@@ -933,39 +954,39 @@ class DualMoveItConfigsBuilder(ParameterBuilder):
         self.__controllers_name = (controllers_name.perform(context) if context is not None else controllers_name) if isinstance(controllers_name, LaunchConfiguration) else controllers_name
         
         self.__urdf_xacro_args = {
-            'hw_ns': hw_ns,
-            'limited': limited,
-            'effort_control': effort_control,
-            'velocity_control': velocity_control,
-            'ros2_control_plugin': ros2_control_plugin,
-            'ros2_control_params': ros2_control_params,
-            'mesh_suffix': mesh_suffix,
-            'prefix_1': prefix_1,
-            'prefix_2': prefix_2,
-            'add_gripper_1': add_gripper_1,
-            'add_gripper_2': add_gripper_2,
-            'add_vacuum_gripper_1': add_vacuum_gripper_1,
-            'add_vacuum_gripper_2': add_vacuum_gripper_2,
-            'add_bio_gripper_1': add_bio_gripper_1,
-            'add_bio_gripper_2': add_bio_gripper_2,
-            'model1300_1': model1300_1,
-            'model1300_2': model1300_2,
-            'dof_1': dof_1,
-            'dof_2': dof_2,
             'robot_ip_1': robot_ip_1,
             'robot_ip_2': robot_ip_2,
-            'robot_type_1': robot_type_1,
-            'robot_type_2': robot_type_2,
-            'robot_sn_1': robot_sn_1,
-            'robot_sn_2': robot_sn_2,
             'report_type_1': report_type_1,
             'report_type_2': report_type_2,
             'baud_checkset_1': baud_checkset_1,
             'baud_checkset_2': baud_checkset_2,
             'default_gripper_baud_1': default_gripper_baud_1,
             'default_gripper_baud_2': default_gripper_baud_2,
+            'dof_1': dof_1,
+            'dof_2': dof_2,
+            'robot_type_1': robot_type_1,
+            'robot_type_2': robot_type_2,
+            'prefix_1': prefix_1,
+            'prefix_2': prefix_2,
+            'hw_ns': hw_ns,
+            'limited': limited,
+            'effort_control': effort_control,
+            'velocity_control': velocity_control,
+            'model1300_1': model1300_1,
+            'model1300_2': model1300_2,
+            'robot_sn_1': robot_sn_1,
+            'robot_sn_2': robot_sn_2,
+            'mesh_suffix': mesh_suffix,
             'kinematics_suffix_1': kinematics_suffix_1,
             'kinematics_suffix_2': kinematics_suffix_2,
+            'ros2_control_plugin': ros2_control_plugin,
+            'ros2_control_params': ros2_control_params,
+            'add_gripper_1': add_gripper_1,
+            'add_gripper_2': add_gripper_2,
+            'add_vacuum_gripper_1': add_vacuum_gripper_1,
+            'add_vacuum_gripper_2': add_vacuum_gripper_2,
+            'add_bio_gripper_1': add_bio_gripper_1,
+            'add_bio_gripper_2': add_bio_gripper_2,
             'add_realsense_d435i_1': add_realsense_d435i_1,
             'add_realsense_d435i_2': add_realsense_d435i_2,
             'add_d435i_links_1': add_d435i_links_1,
@@ -1110,6 +1131,8 @@ class DualMoveItConfigsBuilder(ParameterBuilder):
                 file_path_2 = self._package_path / file_path
                 kinematics_yaml_1 = load_yaml(file_path_1) if file_path_1 else {}
                 kinematics_yaml_2 = load_yaml(file_path_2) if file_path_2 else {}
+            kinematics_yaml_1 = kinematics_yaml_1 if kinematics_yaml_1 else {}
+            kinematics_yaml_2 = kinematics_yaml_2 if kinematics_yaml_2 else {}
             if kinematics_yaml_1 and self.__prefix_1:
                 for name in list(kinematics_yaml_1.keys()):
                     kinematics_yaml_1['{}{}'.format(self.__prefix_1, name)] = kinematics_yaml_1.pop(name)
@@ -1158,6 +1181,8 @@ class DualMoveItConfigsBuilder(ParameterBuilder):
                 file_path_2 = self._package_path / file_path
                 joint_limits_1 = load_yaml(file_path_1) if file_path_1 else {}
                 joint_limits_2 = load_yaml(file_path_2) if file_path_2 else {}
+            joint_limits_1 = joint_limits_1 if joint_limits_1 else {}
+            joint_limits_2 = joint_limits_2 if joint_limits_2 else {}
             if self.__add_gripper_1 in ('True', 'true'):
                 gripper_joint_limits_yaml = load_yaml(self._package_path / 'config' / '{}_gripper'.format(self.__robot_type_1) / 'joint_limits.yaml')
                 if gripper_joint_limits_yaml and 'joint_limits' in gripper_joint_limits_yaml:
@@ -1218,6 +1243,8 @@ class DualMoveItConfigsBuilder(ParameterBuilder):
                 file_path_2 = self._package_path / 'config' / robot_name_2 / 'moveit_cpp.yaml'
                 moveit_cpp = load_yaml(file_path_1)
                 moveit_cpp_2 = load_yaml(file_path_2)
+                moveit_cpp = moveit_cpp if moveit_cpp else {}
+                moveit_cpp_2 = moveit_cpp_2 if moveit_cpp_2 else {}
                 moveit_cpp.update(moveit_cpp_2)
             else:
                 file_path = self._package_path / file_path
@@ -1250,6 +1277,8 @@ class DualMoveItConfigsBuilder(ParameterBuilder):
                 file_path_2 = self._package_path / 'config' / robot_name_2 / controllers_name
                 controllers_yaml_1 = load_yaml(file_path_1)
                 controllers_yaml_2 = load_yaml(file_path_2)
+                controllers_yaml_1 = controllers_yaml_1 if controllers_yaml_1 else {}
+                controllers_yaml_2 = controllers_yaml_2 if controllers_yaml_2 else {}
                 if self.__add_gripper_1 in ('True', 'true'):
                     gripper_controllers_yaml = load_yaml(self._package_path / 'config' / '{}_gripper'.format(self.__robot_type_1) / controllers_name)
                     if gripper_controllers_yaml and 'controller_names' in gripper_controllers_yaml:
@@ -1288,6 +1317,8 @@ class DualMoveItConfigsBuilder(ParameterBuilder):
                 file_path_2 = self._package_path / file_path
                 controllers_yaml_1 = load_yaml(file_path_1) if file_path_1 else {}
                 controllers_yaml_2 = load_yaml(file_path_2) if file_path_2 else {}
+                controllers_yaml_1 = controllers_yaml_1 if controllers_yaml_1 else {}
+                controllers_yaml_2 = controllers_yaml_2 if controllers_yaml_2 else {}
 
             if controllers_yaml_1 and self.__prefix_1:
                 for i, name in enumerate(controllers_yaml_1['controller_names']):
@@ -1319,7 +1350,8 @@ class DualMoveItConfigsBuilder(ParameterBuilder):
                 'trajectory_execution.allowed_execution_duration_scaling': 1.2,
                 'trajectory_execution.allowed_goal_duration_margin': 0.5,
                 'trajectory_execution.allowed_start_tolerance': 0.01,
-                'trajectory_execution.execution_duration_monitoring': False
+                'trajectory_execution.execution_duration_monitoring': False,
+                'plan_execution.record_trajectory_state_frequency': 10.0
             }
         else:
             self.__moveit_configs.trajectory_execution = {
@@ -1337,7 +1369,8 @@ class DualMoveItConfigsBuilder(ParameterBuilder):
                 'trajectory_execution.allowed_execution_duration_scaling': 1.2,
                 'trajectory_execution.allowed_goal_duration_margin': 0.5,
                 'trajectory_execution.allowed_start_tolerance': 0.01,
-                'trajectory_execution.execution_duration_monitoring': False
+                'trajectory_execution.execution_duration_monitoring': False,
+                'plan_execution.record_trajectory_state_frequency': 10.0
             }
         return self
 
@@ -1347,8 +1380,8 @@ class DualMoveItConfigsBuilder(ParameterBuilder):
         publish_geometry_updates = True,
         publish_state_updates = True,
         publish_transforms_updates = True,
-        publish_robot_description = False,
-        publish_robot_description_semantic = False,
+        publish_robot_description = True,
+        publish_robot_description_semantic = True,
     ):
         self.__moveit_configs.planning_scene_monitor = {
             # TODO: Fix parameter namespace upstream -- see planning_scene_monitor.cpp:262
@@ -1380,9 +1413,11 @@ class DualMoveItConfigsBuilder(ParameterBuilder):
                 sensors_data = {}
                 if file_path_1.exists():
                     sensors_data_1 = load_yaml(file_path_1)
+                    sensors_data_1 = sensors_data_1 if sensors_data_1 else {}
                     sensors_data.update(sensors_data_1)
                 if file_path_2.exists():
                     sensors_data_2 = load_yaml(file_path_2)
+                    sensors_data_2 = sensors_data_2 if sensors_data_2 else {}
                     sensors_data.update(sensors_data_2)
             else:
                 file_path = self._package_path / file_path
@@ -1444,15 +1479,23 @@ class DualMoveItConfigsBuilder(ParameterBuilder):
                 'planning_pipelines': pipelines,
                 'default_planning_pipeline': default_planning_pipeline,
             }
+
+            default_config_folder = self._package_path / 'config' / 'moveit_configs'
             
             for pipeline in pipelines:
                 filename = pipeline + '_planning.yaml'
-                planning_yaml = {}
+                parameter_file = default_config_folder / filename
+                if parameter_file.exists():
+                    planning_yaml = load_yaml(parameter_file)
+                    planning_yaml = planning_yaml if planning_yaml else {}
+                else:
+                    planning_yaml = {}
                 planning_yaml_1 = {}
                 planning_yaml_2 = {}
                 if pipeline in pipelines_1:
                     parameter_file = config_folder_1 / filename
                     planning_yaml_1 = load_yaml(parameter_file)
+                    planning_yaml_1 = planning_yaml_1 if planning_yaml_1 else {}
                     if self.__add_gripper_1 in ('True', 'true'):
                         parameter_file = self._package_path / 'config' / '{}_gripper'.format(self.__robot_type_1) / filename
                         if parameter_file.exists():
@@ -1467,12 +1510,13 @@ class DualMoveItConfigsBuilder(ParameterBuilder):
                                 planning_yaml_1.update(gripper_planning_yaml)
                     if planning_yaml_1 and self.__prefix_1:
                         for name in list(planning_yaml_1.keys()):
-                            if pipeline == 'ompl' and name != 'planner_configs':
+                            if pipeline == 'ompl' and name != 'planner_configs' and name not in planning_yaml:
                                 planning_yaml_1['{}{}'.format(self.__prefix_1, name)] = planning_yaml_1.pop(name)
 
                 if pipeline in pipelines_2:
                     parameter_file = config_folder_2 / filename
                     planning_yaml_2 = load_yaml(parameter_file)
+                    planning_yaml_2 = planning_yaml_2 if planning_yaml_2 else {}
                                 
                     if self.__add_gripper_2 in ('True', 'true'):
                         parameter_file = self._package_path / 'config' / '{}_gripper'.format(self.__robot_type_2) / filename
@@ -1488,37 +1532,40 @@ class DualMoveItConfigsBuilder(ParameterBuilder):
                                 planning_yaml_2.update(gripper_planning_yaml)
                     if planning_yaml_2 and self.__prefix_2:
                         for name in list(planning_yaml_2.keys()):
-                            if pipeline == 'ompl' and name != 'planner_configs':
+                            if pipeline == 'ompl' and name != 'planner_configs' and name not in planning_yaml:
                                 planning_yaml_2['{}{}'.format(self.__prefix_2, name)] = planning_yaml_2.pop(name)
                 
                 planning_yaml.update(planning_yaml_1)
                 planning_yaml.update(planning_yaml_2)
+                if pipeline == 'ompl' and 'planner_configs' not in planning_yaml:
+                    parameter_file = default_config_folder / 'ompl_defaults.yaml'
+                    planning_yaml.update(load_yaml(parameter_file))
                 self.__moveit_configs.planning_pipelines[pipeline] = planning_yaml
             
-            # Special rule to add ompl planner_configs
-            if 'ompl' in self.__moveit_configs.planning_pipelines:
-                ompl_config = self.__moveit_configs.planning_pipelines['ompl']
-                if os.environ.get('ROS_DISTRO', '') > 'iron':
-                    ompl_config.update({
-                        'planning_plugins': ['ompl_interface/OMPLPlanner'],
-                        'request_adapters': [
-                            'default_planning_request_adapters/ResolveConstraintFrames',
-                            'default_planning_request_adapters/ValidateWorkspaceBounds',
-                            'default_planning_request_adapters/CheckStartStateBounds',
-                            'default_planning_request_adapters/CheckStartStateCollision',
-                        ],
-                        'response_adapters': [
-                            'default_planning_response_adapters/AddTimeOptimalParameterization',
-                            'default_planning_response_adapters/ValidateSolution',
-                            'default_planning_response_adapters/DisplayMotionPath',
-                        ],
-                    })
-                else:
-                    ompl_config.update({
-                        'planning_plugin': 'ompl_interface/OMPLPlanner',
-                        'request_adapters': """default_planner_request_adapters/AddTimeOptimalParameterization default_planner_request_adapters/FixWorkspaceBounds default_planner_request_adapters/FixStartStateBounds default_planner_request_adapters/FixStartStateCollision default_planner_request_adapters/FixStartStatePathConstraints""",
-                        'start_state_max_bounds_error': 0.1,
-                    })
+            # # Special rule to add ompl planner_configs
+            # if 'ompl' in self.__moveit_configs.planning_pipelines:
+            #     ompl_config = self.__moveit_configs.planning_pipelines['ompl']
+            #     if os.environ.get('ROS_DISTRO', '') > 'iron':
+            #         ompl_config.update({
+            #             'planning_plugins': ['ompl_interface/OMPLPlanner'],
+            #             'request_adapters': [
+            #                 'default_planning_request_adapters/ResolveConstraintFrames',
+            #                 'default_planning_request_adapters/ValidateWorkspaceBounds',
+            #                 'default_planning_request_adapters/CheckStartStateBounds',
+            #                 'default_planning_request_adapters/CheckStartStateCollision',
+            #             ],
+            #             'response_adapters': [
+            #                 'default_planning_response_adapters/AddTimeOptimalParameterization',
+            #                 'default_planning_response_adapters/ValidateSolution',
+            #                 'default_planning_response_adapters/DisplayMotionPath',
+            #             ],
+            #         })
+            #     else:
+            #         ompl_config.update({
+            #             'planning_plugin': 'ompl_interface/OMPLPlanner',
+            #             'request_adapters': """default_planner_request_adapters/AddTimeOptimalParameterization default_planner_request_adapters/FixWorkspaceBounds default_planner_request_adapters/FixStartStateBounds default_planner_request_adapters/FixStartStateCollision default_planner_request_adapters/FixStartStatePathConstraints""",
+            #             'start_state_max_bounds_error': 0.1,
+            #         })
         else:
             pipelines = list(set(pipelines)) if pipelines else ['ompl']
             default_planning_pipeline = default_planning_pipeline if default_planning_pipeline else 'ompl'
@@ -1560,12 +1607,15 @@ class DualMoveItConfigsBuilder(ParameterBuilder):
             if file_path is None:
                 file_path_1 = self._package_path / 'config' / robot_name_1 / 'pilz_cartesian_limits.yaml'
                 file_path_2 = self._package_path / 'config' / robot_name_2 / 'pilz_cartesian_limits.yaml'
-                pilz_cartesian_limits = {}
+                pilz_cartesian_limits = load_yaml(self._package_path / 'config' / 'moveit_configs' / 'pilz_cartesian_limits.yaml')
+                pilz_cartesian_limits = pilz_cartesian_limits if pilz_cartesian_limits else {}
                 if file_path_1.exists():
                     pilz_cartesian_limits_1 = load_yaml(file_path_1)
+                    pilz_cartesian_limits_1 = pilz_cartesian_limits_1 if pilz_cartesian_limits_1 else {}
                     pilz_cartesian_limits.update(pilz_cartesian_limits_1)
                 if file_path_2.exists():
                     pilz_cartesian_limits_2 = load_yaml(file_path_2)
+                    pilz_cartesian_limits_2 = pilz_cartesian_limits_2 if pilz_cartesian_limits_2 else {}
                     pilz_cartesian_limits.update(pilz_cartesian_limits_2)
             else:
                 file_path = self._package_path / file_path

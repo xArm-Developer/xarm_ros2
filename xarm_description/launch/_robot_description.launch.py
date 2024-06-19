@@ -8,6 +8,7 @@
 
 import os
 import sys
+import yaml
 from ament_index_python import get_package_share_directory
 from launch.launch_description_sources import load_python_launch_file_as_module
 from launch import LaunchDescription
@@ -54,49 +55,53 @@ def launch_setup(context, *args, **kwargs):
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
 
     kinematics_suffix = LaunchConfiguration('kinematics_suffix', default='')
+    robot_description = LaunchConfiguration('robot_description', default='')
 
-    # robot_description
-    # xarm_description/launch/lib/robot_description_lib.py
-    mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_description'), 'launch', 'lib', 'robot_description_lib.py'))
-    get_xacro_file_content = getattr(mod, 'get_xacro_file_content')
-    robot_description = {
-        'robot_description': get_xacro_file_content(
-            xacro_file=xacro_file, 
-            arguments={
-                'prefix': prefix,
-                'hw_ns': hw_ns.perform(context).strip('/'),
-                'limited': limited,
-                'effort_control': effort_control,
-                'velocity_control': velocity_control,
-                'add_gripper': add_gripper,
-                'add_vacuum_gripper': add_vacuum_gripper,
-                'add_bio_gripper': add_bio_gripper,
-                'dof': dof,
-                'robot_type': robot_type,
-                'ros2_control_plugin': ros2_control_plugin,
-                'add_realsense_d435i': add_realsense_d435i,
-                'add_d435i_links': add_d435i_links,
-                'model1300': model1300,
-                'robot_sn': robot_sn,
-                'attach_to': attach_to,
-                'attach_xyz': attach_xyz,
-                'attach_rpy': attach_rpy,
-                'add_other_geometry': add_other_geometry,
-                'geometry_type': geometry_type,
-                'geometry_mass': geometry_mass,
-                'geometry_height': geometry_height,
-                'geometry_radius': geometry_radius,
-                'geometry_length': geometry_length,
-                'geometry_width': geometry_width,
-                'geometry_mesh_filename': geometry_mesh_filename,
-                'geometry_mesh_origin_xyz': geometry_mesh_origin_xyz,
-                'geometry_mesh_origin_rpy': geometry_mesh_origin_rpy,
-                'geometry_mesh_tcp_xyz': geometry_mesh_tcp_xyz,
-                'geometry_mesh_tcp_rpy': geometry_mesh_tcp_rpy,
-                'kinematics_suffix': kinematics_suffix,
-            }
-        )
-    }
+    if not robot_description.perform(context):
+        # robot_description
+        # xarm_description/launch/lib/robot_description_lib.py
+        mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_description'), 'launch', 'lib', 'robot_description_lib.py'))
+        get_xacro_file_content = getattr(mod, 'get_xacro_file_content')
+        robot_description = {
+            'robot_description': get_xacro_file_content(
+                xacro_file=xacro_file, 
+                arguments={
+                    'prefix': prefix,
+                    'hw_ns': hw_ns.perform(context).strip('/'),
+                    'limited': limited,
+                    'effort_control': effort_control,
+                    'velocity_control': velocity_control,
+                    'add_gripper': add_gripper,
+                    'add_vacuum_gripper': add_vacuum_gripper,
+                    'add_bio_gripper': add_bio_gripper,
+                    'dof': dof,
+                    'robot_type': robot_type,
+                    'ros2_control_plugin': ros2_control_plugin,
+                    'add_realsense_d435i': add_realsense_d435i,
+                    'add_d435i_links': add_d435i_links,
+                    'model1300': model1300,
+                    'robot_sn': robot_sn,
+                    'attach_to': attach_to,
+                    'attach_xyz': attach_xyz,
+                    'attach_rpy': attach_rpy,
+                    'add_other_geometry': add_other_geometry,
+                    'geometry_type': geometry_type,
+                    'geometry_mass': geometry_mass,
+                    'geometry_height': geometry_height,
+                    'geometry_radius': geometry_radius,
+                    'geometry_length': geometry_length,
+                    'geometry_width': geometry_width,
+                    'geometry_mesh_filename': geometry_mesh_filename,
+                    'geometry_mesh_origin_xyz': geometry_mesh_origin_xyz,
+                    'geometry_mesh_origin_rpy': geometry_mesh_origin_rpy,
+                    'geometry_mesh_tcp_xyz': geometry_mesh_tcp_xyz,
+                    'geometry_mesh_tcp_rpy': geometry_mesh_tcp_rpy,
+                    'kinematics_suffix': kinematics_suffix,
+                }
+            )
+        }
+    else:
+        robot_description = yaml.load(robot_description.perform(context), Loader=yaml.FullLoader)
 
     # robot state publisher node
     robot_state_publisher_node = Node(
