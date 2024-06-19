@@ -186,7 +186,7 @@ def launch_setup(context, *args, **kwargs):
 
     traj_controller_node = Node(
         package='controller_manager',
-        executable='spawner.py',
+        executable='spawner',
         output='screen',
         arguments=[
             xarm_traj_controller,
@@ -199,7 +199,7 @@ def launch_setup(context, *args, **kwargs):
     for controller in controllers:
         controller_nodes.append(Node(
             package='controller_manager',
-            executable='spawner.py',
+            executable='spawner',
             output='screen',
             arguments=[
                 controller,
@@ -234,7 +234,7 @@ def launch_setup(context, *args, **kwargs):
                     servo_params,
                     robot_description_parameters,
                 ],
-                extra_arguments=[{'use_intra_process_comms': True}],
+                # extra_arguments=[{'use_intra_process_comms': True}],
             ),
             ComposableNode(
                 package='xarm_moveit_servo',
@@ -248,7 +248,7 @@ def launch_setup(context, *args, **kwargs):
                         'joystick_type': joystick_type,
                     },
                 ],
-                extra_arguments=[{'use_intra_process_comms': True}],
+                # extra_arguments=[{'use_intra_process_comms': True}],
             ),
             ComposableNode(
                 package='joy',
@@ -257,7 +257,7 @@ def launch_setup(context, *args, **kwargs):
                 parameters=[
                     # {'autorepeat_rate': 50.0},
                 ],
-                extra_arguments=[{'use_intra_process_comms': True}],
+                # extra_arguments=[{'use_intra_process_comms': True}],
             ),
         ],
         output='screen',
