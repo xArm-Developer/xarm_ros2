@@ -201,43 +201,18 @@ def launch_setup(context, *args, **kwargs):
         }.items(),
     )
 
-    remappings = [
-        ('follow_joint_trajectory', '{}{}_traj_controller/follow_joint_trajectory'.format(prefix_1.perform(context), xarm_type_1)),
-        ('follow_joint_trajectory', '{}{}_traj_controller/follow_joint_trajectory'.format(prefix_2.perform(context), xarm_type_2)),            
-    ]
     controllers = [
         '{}{}_traj_controller'.format(prefix_1.perform(context), xarm_type_1),
         '{}{}_traj_controller'.format(prefix_2.perform(context), xarm_type_2),
     ]
     if add_gripper_1.perform(context) in ('True', 'true') and robot_type_1.perform(context) != 'lite':
-        remappings.append(
-            ('follow_joint_trajectory', '{}{}_gripper_traj_controller/follow_joint_trajectory'.format(prefix_1.perform(context), robot_type_1.perform(context)))
-        )
         controllers.append('{}{}_gripper_traj_controller'.format(prefix_1.perform(context), robot_type_1.perform(context)))
     elif add_bio_gripper_1.perform(context) in ('True', 'true') and robot_type_1.perform(context) != 'lite':
-        remappings.append(
-            ('follow_joint_trajectory', '{}bio_gripper_traj_controller/follow_joint_trajectory'.format(prefix_1.perform(context)))
-        )
         controllers.append('{}bio_gripper_traj_controller'.format(prefix_1.perform(context)))
     if add_gripper_2.perform(context) in ('True', 'true') and robot_type_2.perform(context) != 'lite':
-        remappings.append(
-            ('follow_joint_trajectory', '{}{}_gripper_traj_controller/follow_joint_trajectory'.format(prefix_2.perform(context), robot_type_2.perform(context)))
-        )
         controllers.append('{}{}_gripper_traj_controller'.format(prefix_2.perform(context), robot_type_2.perform(context)))
     elif add_bio_gripper_2.perform(context) in ('True', 'true') and robot_type_2.perform(context) != 'lite':
-        remappings.append(
-            ('follow_joint_trajectory', '{}bio_gripper_traj_controller/follow_joint_trajectory'.format(prefix_2.perform(context)))
-        )
         controllers.append('{}bio_gripper_traj_controller'.format(prefix_2.perform(context)))
-    # joint state publisher node
-    joint_state_publisher_node = Node(
-        package='joint_state_publisher',
-        executable='joint_state_publisher',
-        name='joint_state_publisher',
-        output='screen',
-        parameters=[{'source_list': ['joint_states']}],
-        remappings=remappings,
-    )
 
     # ros2 control launch
     # xarm_controller/launch/_dual_ros2_control.launch.py
@@ -247,6 +222,16 @@ def launch_setup(context, *args, **kwargs):
             'robot_description': yaml.dump(moveit_config.robot_description),
             'ros2_control_params': ros2_control_params,
         }.items(),
+    )
+
+    joint_state_broadcaster = Node(
+        package='controller_manager',
+        executable='spawner',
+        output='screen',
+        arguments=[
+            'joint_state_broadcaster',
+            '--controller-manager', '{}/controller_manager'.format(ros_namespace)
+        ],
     )
 
     # Load controllers
@@ -266,7 +251,7 @@ def launch_setup(context, *args, **kwargs):
     return [
         robot_state_publisher_node,
         robot_moveit_common_launch,
-        joint_state_publisher_node,
+        joint_state_broadcaster,
         ros2_control_launch,
     ] + controller_nodes
 
