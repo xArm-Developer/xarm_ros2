@@ -136,7 +136,7 @@ def launch_setup(context, *args, **kwargs):
     xarm_traj_controller = '{}{}_traj_controller'.format(prefix.perform(context), xarm_type)
     servo_yaml['command_out_topic'] = '/{}/joint_trajectory'.format(xarm_traj_controller)
     servo_params = {"moveit_servo": servo_yaml}
-    controllers = ['joint_state_broadcaster']
+    controllers = []
     if add_gripper.perform(context) in ('True', 'true') and robot_type.perform(context) != 'lite':
         controllers.append('{}{}_gripper_traj_controller'.format(prefix.perform(context), robot_type.perform(context)))
     elif add_bio_gripper.perform(context) in ('True', 'true') and robot_type.perform(context) != 'lite':
@@ -175,6 +175,16 @@ def launch_setup(context, *args, **kwargs):
         output='screen',
         arguments=[
             xarm_traj_controller,
+            '--controller-manager', '{}/controller_manager'.format(ros_namespace)
+        ],
+    )
+
+    joint_state_broadcaster = Node(
+        package='controller_manager',
+        executable='spawner.py',
+        output='screen',
+        arguments=[
+            'joint_state_broadcaster',
             '--controller-manager', '{}/controller_manager'.format(ros_namespace)
         ],
     )
@@ -256,6 +266,7 @@ def launch_setup(context, *args, **kwargs):
             )
         ),
         rviz_node,
+        joint_state_broadcaster,
         ros2_control_launch,
         traj_controller_node,
     ] + controller_nodes

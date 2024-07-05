@@ -93,28 +93,20 @@ def launch_setup(context, *args, **kwargs):
         output='screen',
     )
 
-    remappings = [
-        ('follow_joint_trajectory', '{}{}_traj_controller/follow_joint_trajectory'.format(prefix.perform(context), xarm_type)),
-    ]
     controllers = ['{}{}_traj_controller'.format(prefix.perform(context), xarm_type)]
     if add_gripper.perform(context) in ('True', 'true') and robot_type.perform(context) != 'lite':
-        remappings.append(
-            ('follow_joint_trajectory', '{}{}_gripper_traj_controller/follow_joint_trajectory'.format(prefix.perform(context), robot_type.perform(context)))
-        )
         controllers.append('{}{}_gripper_traj_controller'.format(prefix.perform(context), robot_type.perform(context)))
     elif add_bio_gripper.perform(context) in ('True', 'true') and robot_type.perform(context) != 'lite':
-        remappings.append(
-            ('follow_joint_trajectory', '{}bio_gripper_traj_controller/follow_joint_trajectory'.format(prefix.perform(context)))
-        )
         controllers.append('{}bio_gripper_traj_controller'.format(prefix.perform(context)))
     
-    joint_state_publisher_node = Node(
-        package='joint_state_publisher',
-        executable='joint_state_publisher',
-        name='joint_state_publisher',
+    joint_state_broadcaster = Node(
+        package='controller_manager',
+        executable='spawner.py',
         output='screen',
-        parameters=[{'source_list': ['joint_states']}],
-        remappings=remappings,
+        arguments=[
+            'joint_state_broadcaster',
+            '--controller-manager', '/controller_manager'
+        ],
     )
 
     controller_nodes = []
@@ -131,7 +123,7 @@ def launch_setup(context, *args, **kwargs):
     
     return [
         robot_state_publisher,
-        joint_state_publisher_node,
+        joint_state_broadcaster,
         move_group_node,
         static_tf,
         ros2_control_node,
