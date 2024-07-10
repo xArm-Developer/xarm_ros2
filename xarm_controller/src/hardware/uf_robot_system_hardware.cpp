@@ -18,7 +18,7 @@ namespace uf_robot_hardware
 {
     static rclcpp::Logger LOGGER = rclcpp::get_logger("UFACTORY.RobotHW");
 
-    template<typename ServiceT, typename SharedRequest = typename ServiceT::Request::SharedPtr, typename SharedResponse = typename ServiceT::Response::SharedPtr>
+    template<typename ServiceT, typename SharedRequest, typename SharedResponse>
     int UFRobotSystemHardware::_call_request(std::shared_ptr<ServiceT> client, SharedRequest req, SharedResponse& res)
     {
         bool is_try_again = false;
