@@ -6,6 +6,9 @@
 
   Reference to [moveit_configs_build](https://github.com/moveit/moveit2/blob/main/moveit_configs_utils/moveit_configs_utils/moveit_configs_builder.py) from moveit.
 
+  Regarding planning pipe, only __ompl__ is loaded by default. If you need other ones (__chomp__, __pilz_industrial_motion_planner__, __stomp__), you need to install them yourself and create configuration files in the corresponding configuration folders. *For example, if xarm6 loads __pilz_industrial_motion_planner__, you need to create __pilz_industrial_motion_planner_planning.yaml__ in __xarm_moveit_config/config/xarm6__*. 
+  (__Note: the pipes listed above are not supported by all ROS versions__)
+
   - #### MoveItConfigsBuilder
     ```python
     class MoveItConfigsBuilder(
