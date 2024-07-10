@@ -4,6 +4,8 @@
 ### moveit_configs_builder
   Because our moveit package supports many different robot arms, and the configuration files used are dynamically generated based on parameters, we cannot directly use the MoveitConfigsBuilder provided by the official moveit package. Here we implement MoveitConfigsBuilder and DualMoveitConfigsBuilder similarly for our moveit package.
 
+  Reference to [moveit_configs_build](https://github.com/moveit/moveit2/blob/main/moveit_configs_utils/moveit_configs_utils/moveit_configs_builder.py) from moveit.
+
   - #### MoveItConfigsBuilder
     ```python
     class MoveItConfigsBuilder(
