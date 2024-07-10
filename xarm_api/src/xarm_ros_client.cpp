@@ -203,7 +203,7 @@ typename rclcpp::Client<ServiceT>::SharedPtr XArmROSClient::_create_client(const
     return node_->create_client<ServiceT>(hw_ns_ + "/" + service_name);
 }
 
-template<typename ServiceT, typename SharedRequest = typename ServiceT::Request::SharedPtr>
+template<typename ServiceT, typename SharedRequest>
 int XArmROSClient::_call_request(std::shared_ptr<ServiceT> client, SharedRequest req)
 {
     bool is_try_again = false;
@@ -231,7 +231,7 @@ int XArmROSClient::_call_request(std::shared_ptr<ServiceT> client, SharedRequest
     return res->ret;
 }
 
-template<typename ServiceT, typename SharedRequest = typename ServiceT::Request::SharedPtr, typename SharedResponse = typename ServiceT::Response::SharedPtr>
+template<typename ServiceT, typename SharedRequest, typename SharedResponse>
 int XArmROSClient::_call_request(std::shared_ptr<ServiceT> client, SharedRequest req, SharedResponse& res)
 {
     bool is_try_again = false;
