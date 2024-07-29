@@ -276,7 +276,7 @@ def launch_setup(context, *args, **kwargs):
 
     xyz = attach_xyz.perform(context)[1:-1].split(' ')
     rpy = attach_rpy.perform(context)[1:-1].split(' ')
-    args = xyz + rpy + ['world', '{}link_base'.format(prefix.perform(context))]
+    args = xyz + rpy + [attach_to.perform(context), '{}link_base'.format(prefix.perform(context))]
 
     # Static TF
     static_tf = Node(
