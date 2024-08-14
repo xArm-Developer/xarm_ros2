@@ -6,38 +6,36 @@
 #
 # Author: Vinman <vinman.wen@ufactory.cc> <vinman.cub@gmail.com>
 
-import os
+import yaml
 import json
-from ament_index_python import get_package_share_directory
-from launch.frontend import expose
-from launch.launch_description_sources import load_python_launch_file_as_module
 from launch import LaunchDescription
 from launch.actions import OpaqueFunction
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
-from launch_ros.substitutions import FindPackageShare
+from uf_ros_lib.moveit_configs_builder import MoveItConfigsBuilder
 
 
 def launch_setup(context, *args, **kwargs):
-    dof = LaunchConfiguration('dof')
+    dof = LaunchConfiguration('dof', default=7)
+    robot_type = LaunchConfiguration('robot_type', default='xarm')
     prefix = LaunchConfiguration('prefix', default='')
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     limited = LaunchConfiguration('limited', default=True)
     effort_control = LaunchConfiguration('effort_control', default=False)
     velocity_control = LaunchConfiguration('velocity_control', default=False)
+    model1300 = LaunchConfiguration('model1300', default=False)
+    robot_sn = LaunchConfiguration('robot_sn', default='')
+    attach_to = LaunchConfiguration('attach_to', default='world')
+    attach_xyz = LaunchConfiguration('attach_xyz', default='"0 0 0"')
+    attach_rpy = LaunchConfiguration('attach_rpy', default='"0 0 0"')
+    mesh_suffix = LaunchConfiguration('mesh_suffix', default='stl')
+    kinematics_suffix = LaunchConfiguration('kinematics_suffix', default='')
+
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     add_bio_gripper = LaunchConfiguration('add_bio_gripper', default=False)
-    ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='uf_robot_hardware/UFRobotFakeSystemHardware')
-    node_executable = LaunchConfiguration('node_executable', default='xarm_planner_node')
-    node_name = LaunchConfiguration('node_name', default=node_executable)
-    node_parameters = LaunchConfiguration('node_parameters', default={})
-    use_gripper_node = LaunchConfiguration('use_gripper_node', default=add_gripper)
-
     add_realsense_d435i = LaunchConfiguration('add_realsense_d435i', default=False)
     add_d435i_links = LaunchConfiguration('add_d435i_links', default=True)
-    model1300 = LaunchConfiguration('model1300', default=False)
-
     add_other_geometry = LaunchConfiguration('add_other_geometry', default=False)
     geometry_type = LaunchConfiguration('geometry_type', default='box')
     geometry_mass = LaunchConfiguration('geometry_mass', default=0.1)
@@ -51,67 +49,61 @@ def launch_setup(context, *args, **kwargs):
     geometry_mesh_tcp_xyz = LaunchConfiguration('geometry_mesh_tcp_xyz', default='"0 0 0"')
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
 
-    kinematics_suffix = LaunchConfiguration('kinematics_suffix', default='')
+    moveit_config_dump = LaunchConfiguration('moveit_config_dump', default='')
+    moveit_config_dump = moveit_config_dump.perform(context)
+    moveit_config_dict = yaml.load(moveit_config_dump, Loader=yaml.FullLoader) if moveit_config_dump else {}
 
-    robot_type = LaunchConfiguration('robot_type', default='xarm')
+    if not moveit_config_dict:
+        moveit_config = MoveItConfigsBuilder(
+            context=context,
+            # controllers_name=controllers_name,
+            dof=dof,
+            robot_type=robot_type,
+            prefix=prefix,
+            hw_ns=hw_ns,
+            limited=limited,
+            effort_control=effort_control,
+            velocity_control=velocity_control,
+            model1300=model1300,
+            robot_sn=robot_sn,
+            attach_to=attach_to,
+            attach_xyz=attach_xyz,
+            attach_rpy=attach_rpy,
+            mesh_suffix=mesh_suffix,
+            kinematics_suffix=kinematics_suffix,
+            # ros2_control_plugin=ros2_control_plugin,
+            # ros2_control_params=ros2_control_params,
+            add_gripper=add_gripper,
+            add_vacuum_gripper=add_vacuum_gripper,
+            add_bio_gripper=add_bio_gripper,
+            add_realsense_d435i=add_realsense_d435i,
+            add_d435i_links=add_d435i_links,
+            add_other_geometry=add_other_geometry,
+            geometry_type=geometry_type,
+            geometry_mass=geometry_mass,
+            geometry_height=geometry_height,
+            geometry_radius=geometry_radius,
+            geometry_length=geometry_length,
+            geometry_width=geometry_width,
+            geometry_mesh_filename=geometry_mesh_filename,
+            geometry_mesh_origin_xyz=geometry_mesh_origin_xyz,
+            geometry_mesh_origin_rpy=geometry_mesh_origin_rpy,
+            geometry_mesh_tcp_xyz=geometry_mesh_tcp_xyz,
+            geometry_mesh_tcp_rpy=geometry_mesh_tcp_rpy,
+        ).to_moveit_configs()
+        moveit_config_dict = moveit_config.to_dict()
+    
+    move_group_interface_params = {
+        'robot_description': moveit_config_dict['robot_description'],
+        'robot_description_semantic': moveit_config_dict['robot_description_semantic'],
+        'robot_description_kinematics': moveit_config_dict['robot_description_kinematics'],
+    }
 
-    moveit_config_package_name = 'xarm_moveit_config'
-    xarm_type = '{}{}'.format(robot_type.perform(context), dof.perform(context) if robot_type.perform(context) in ('xarm', 'lite') else '')
+    node_executable = LaunchConfiguration('node_executable', default='xarm_planner_node')
+    node_name = LaunchConfiguration('node_name', default=node_executable)
+    node_parameters = LaunchConfiguration('node_parameters', default={})
+    use_gripper_node = LaunchConfiguration('use_gripper_node', default=add_gripper)
 
-    # robot_description_parameters
-    # xarm_moveit_config/launch/lib/robot_moveit_config_lib.py
-    mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory(moveit_config_package_name), 'launch', 'lib', 'robot_moveit_config_lib.py'))
-    get_xarm_robot_description_parameters = getattr(mod, 'get_xarm_robot_description_parameters')
-    robot_description_parameters = get_xarm_robot_description_parameters(
-        xacro_urdf_file=PathJoinSubstitution([FindPackageShare('xarm_description'), 'urdf', 'xarm_device.urdf.xacro']),
-        xacro_srdf_file=PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'srdf', 'xarm.srdf.xacro']),
-        urdf_arguments={
-            'prefix': prefix,
-            'hw_ns': hw_ns.perform(context).strip('/'),
-            'limited': limited,
-            'effort_control': effort_control,
-            'velocity_control': velocity_control,
-            'add_gripper': add_gripper,
-            'add_vacuum_gripper': add_vacuum_gripper,
-            'add_bio_gripper': add_bio_gripper,
-            'dof': dof,
-            'robot_type': robot_type,
-            'ros2_control_plugin': ros2_control_plugin,
-            'add_realsense_d435i': add_realsense_d435i,
-            'add_d435i_links': add_d435i_links,
-            'model1300': model1300,
-            'add_other_geometry': add_other_geometry,
-            'geometry_type': geometry_type,
-            'geometry_mass': geometry_mass,
-            'geometry_height': geometry_height,
-            'geometry_radius': geometry_radius,
-            'geometry_length': geometry_length,
-            'geometry_width': geometry_width,
-            'geometry_mesh_filename': geometry_mesh_filename,
-            'geometry_mesh_origin_xyz': geometry_mesh_origin_xyz,
-            'geometry_mesh_origin_rpy': geometry_mesh_origin_rpy,
-            'geometry_mesh_tcp_xyz': geometry_mesh_tcp_xyz,
-            'geometry_mesh_tcp_rpy': geometry_mesh_tcp_rpy,
-            'kinematics_suffix': kinematics_suffix,
-        },
-        srdf_arguments={
-            'prefix': prefix,
-            'dof': dof,
-            'robot_type': robot_type,
-            'add_gripper': add_gripper,
-            'add_vacuum_gripper': add_vacuum_gripper,
-            'add_bio_gripper': add_bio_gripper,
-            'add_other_geometry': add_other_geometry,
-        },
-        arguments={
-            'context': context,
-            'xarm_type': xarm_type,
-        }
-    )
-    kinematics_yaml = robot_description_parameters['robot_description_kinematics']
-    joint_limits_yaml = robot_description_parameters.get('robot_description_planning', None)
-    add_prefix_to_moveit_params = getattr(mod, 'add_prefix_to_moveit_params')
-    add_prefix_to_moveit_params(kinematics_yaml=kinematics_yaml, joint_limits_yaml=joint_limits_yaml, prefix=prefix.perform(context))
     try:
         xarm_planner_parameters = json.loads(node_parameters.perform(context))
     except:
@@ -123,7 +115,7 @@ def launch_setup(context, *args, **kwargs):
         executable=node_executable,
         output='screen',
         parameters=[
-            robot_description_parameters,
+            move_group_interface_params,
             {
                 'robot_type': robot_type,
                 'dof': dof,
@@ -144,7 +136,7 @@ def launch_setup(context, *args, **kwargs):
             executable='xarm_gripper_planner_node',
             output='screen',
             parameters=[
-                robot_description_parameters,
+                move_group_interface_params,
                 {'PLANNING_GROUP': planning_group},
             ],
         )
