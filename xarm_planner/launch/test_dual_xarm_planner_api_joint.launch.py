@@ -6,16 +6,12 @@
 #
 # Author: Vinman <vinman.wen@ufactory.cc> <vinman.cub@gmail.com>
 
-import os
 import json
-from ament_index_python import get_package_share_directory
-from launch.launch_description_sources import load_python_launch_file_as_module
 from launch import LaunchDescription
 from launch.actions import OpaqueFunction
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
-from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 
@@ -33,7 +29,7 @@ def launch_setup(context, *args, **kwargs):
     node_parameters = {}
 
     # robot planner launch
-    # xarm_planner/launch/_robot_planner.launch.py
+    # xarm_planner/launch/_dual_robot_planner.launch.py
     robot_planner_node_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_planner'), 'launch', '_dual_robot_planner.launch.py'])),
         launch_arguments={

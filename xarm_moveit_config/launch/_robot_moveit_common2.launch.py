@@ -6,10 +6,7 @@
 #
 # Author: Vinman <vinman.wen@ufactory.cc> <vinman.cub@gmail.com>
 
-import os
 import yaml
-from ament_index_python import get_package_share_directory
-from launch.launch_description_sources import load_python_launch_file_as_module
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
@@ -21,7 +18,6 @@ from launch_ros.substitutions import FindPackageShare
 from launch.actions import RegisterEventHandler, EmitEvent
 from launch.event_handlers import OnProcessExit
 from launch.events import Shutdown
-from uf_ros_lib.moveit_configs_builder import MoveItConfigsBuilder
 
 
 def launch_setup(context, *args, **kwargs):
@@ -63,7 +59,7 @@ def launch_setup(context, *args, **kwargs):
                 'robot_description_semantic': moveit_config_dict['robot_description_semantic'],
                 'robot_description_kinematics': moveit_config_dict['robot_description_kinematics'],
                 'robot_description_planning': moveit_config_dict['robot_description_planning'],
-                # 'planning_pipelines': moveit_config_dict['planning_pipelines'],
+                'planning_pipelines': moveit_config_dict['planning_pipelines'],
                 'use_sim_time': use_sim_time
             }
         ],
@@ -89,7 +85,7 @@ def launch_setup(context, *args, **kwargs):
     )
 
     robot_planner_node_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_planner'), 'launch', '_robot_planner2.launch.py'])),
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_planner'), 'launch', '_robot_planner.launch.py'])),
         condition=IfCondition(no_gui_ctrl),
         launch_arguments={
             'moveit_config_dump': moveit_config_dump,

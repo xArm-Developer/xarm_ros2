@@ -268,7 +268,7 @@ def launch_setup(context, *args, **kwargs):
                 'robot_description_semantic': moveit_config_dict.get('robot_description_semantic', ''),
                 'robot_description_kinematics': moveit_config_dict.get('robot_description_kinematics', {}),
                 'robot_description_planning': moveit_config_dict.get('robot_description_planning', {}),
-                # 'planning_pipelines': moveit_config_dict.get('planning_pipelines', {}),
+                'planning_pipelines': moveit_config_dict.get('planning_pipelines', {}),
                 'use_sim_time': True
             }
         ],
