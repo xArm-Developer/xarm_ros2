@@ -26,14 +26,19 @@
     </xacro:unless>
   </xacro:macro>
   
-  <xacro:macro name="common_link_visual" params="mesh_filename add_mesh_suffix:=true material_name:='White' origin_xyz:='0 0 0' origin_rpy:='0 0 0'">
+  <xacro:macro name="common_link_visual" params="mesh_filename add_mesh_suffix:=true material_name:='White' origin_xyz:='0 0 0' origin_rpy:='0 0 0' other_mesh_suffix:=''">
     <visual>
       <geometry>
         <xacro:if value="${add_mesh_suffix}">
           <mesh filename="${mesh_path}/${mesh_filename}.${mesh_suffix}"/>
         </xacro:if>
         <xacro:unless value="${add_mesh_suffix}">
-          <mesh filename="${mesh_path}/${mesh_filename}"/>
+          <xacro:if value="${other_mesh_suffix != ''}">
+            <mesh filename="${mesh_path}/${mesh_filename}.${other_mesh_suffix}"/>
+          </xacro:if>
+          <xacro:unless value="${other_mesh_suffix != ''}">
+            <mesh filename="${mesh_path}/${mesh_filename}"/>
+          </xacro:unless>
         </xacro:unless>
       </geometry>
       <origin xyz="${origin_xyz}" rpy="${origin_rpy}"/>
@@ -41,14 +46,19 @@
     </visual>
   </xacro:macro>
   
-  <xacro:macro name="common_link_collision" params="mesh_filename add_mesh_suffix:=true origin_xyz:='0 0 0' origin_rpy:='0 0 0'">
+  <xacro:macro name="common_link_collision" params="mesh_filename add_mesh_suffix:=true origin_xyz:='0 0 0' origin_rpy:='0 0 0' other_mesh_suffix:=''">
     <collision>
       <geometry>
         <xacro:if value="${add_mesh_suffix}">
           <mesh filename="${mesh_path}/${mesh_filename}.${mesh_suffix}"/>
         </xacro:if>
         <xacro:unless value="${add_mesh_suffix}">
-          <mesh filename="${mesh_path}/${mesh_filename}"/>
+          <xacro:if value="${other_mesh_suffix != ''}">
+            <mesh filename="${mesh_path}/${mesh_filename}.${other_mesh_suffix}"/>
+          </xacro:if>
+          <xacro:unless value="${other_mesh_suffix != ''}">
+            <mesh filename="${mesh_path}/${mesh_filename}"/>
+          </xacro:unless>
         </xacro:unless>
       </geometry>
       <origin xyz="${origin_xyz}" rpy="${origin_rpy}"/>
@@ -135,10 +145,10 @@
       </xacro:unless>
       <xacro:property name="date_int" value="${int(date_str)}" />
 
-      <xacro:if value="${robot_sn[11] == 'B' or robot_sn[11] == 'L' or robot_sn[11] == 'X' or robot_sn[11] == 'D'}">
+      <xacro:if value="${robot_sn[11] == 'B' or robot_sn[11] == 'L' or robot_sn[11] == 'X' or robot_sn[11] == 'D' or robot_sn[11] == 'A'}">
         <xacro:property name="hd_type" value="${robot_sn[11]}" />
       </xacro:if>
-      <xacro:unless value="${robot_sn[11] == 'B' or robot_sn[11] == 'L' or robot_sn[11] == 'X' or robot_sn[11] == 'D'}">
+      <xacro:unless value="${robot_sn[11] == 'B' or robot_sn[11] == 'L' or robot_sn[11] == 'X' or robot_sn[11] == 'D' or robot_sn[11] == 'A'}">
         <xacro:if value="${robot_sn_len >= 16 and robot_sn[14] == '_'}">
           <xacro:property name="hd_type" value="${robot_sn[15]}" />
         </xacro:if>
@@ -176,6 +186,9 @@
           </xacro:if>
           <xacro:if value="${mass_type == 2}">
             <xacro:property name="inertial_params_filename" value="xarm5_type5_HT_LD"/>
+          </xacro:if>
+          <xacro:if value="${mass_type == 3}">
+            <xacro:property name="inertial_params_filename" value="xarm5_type5_UJ_BR_2403"/>
           </xacro:if>
           <xacro:if value="${mass_type == 11}">
             <xacro:property name="inertial_params_filename" value="xarm5_type5_HT_BR2"/>
@@ -232,6 +245,9 @@
           </xacro:if>
           <xacro:if value="${mass_type == 2}">
             <xacro:property name="inertial_params_filename" value="xarm7_type7_HT_LD"/>
+          </xacro:if>
+          <xacro:if value="${mass_type == 3}">
+            <xacro:property name="inertial_params_filename" value="xarm7_type7_UJ_BR_2403"/>
           </xacro:if>
           <xacro:if value="${mass_type == 11}">
             <xacro:property name="inertial_params_filename" value="xarm7_type7_HT_BR2"/>
