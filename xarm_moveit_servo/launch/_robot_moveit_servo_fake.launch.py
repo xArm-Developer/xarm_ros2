@@ -223,7 +223,7 @@ def launch_setup(context, *args, **kwargs):
             ),
             ComposableNode(
                 package='moveit_servo',
-                plugin='moveit_servo::ServoServer',
+                plugin='moveit_servo::ServoNode',
                 name='servo_server',
                 parameters=[
                     servo_params,
