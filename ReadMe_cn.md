@@ -36,6 +36,7 @@
 - (2024-01-17) 新增对xarm7_mirror型号机械臂的支持
 - (2024-02-27) 新增对Bio Gripper的支持(参数`add_bio_gripper`, Lite6不支持)
 - (2024-04-12) 新增 __uf_ros_lib__ 封装某些功能以供调用(包括 __MoveItConfigsBuilder__)，参见[文档](./uf_ros_lib/Readme.md)
+- (2024-10-11) 增加[mbot_demo](demo/mbot_demo/readme.md)演示如何建立xarm机械臂在底盘之上
 
 ## 3. 准备工作
 
