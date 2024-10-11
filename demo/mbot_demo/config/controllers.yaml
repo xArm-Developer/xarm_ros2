@@ -1,0 +1,22 @@
+controller_names:
+  - xarm6_traj_controller
+  # - mbot_traj_controller
+
+xarm6_traj_controller:
+  action_ns: follow_joint_trajectory
+  type: FollowJointTrajectory
+  default: true
+  joints:
+    - joint1
+    - joint2
+    - joint3
+    - joint4
+    - joint5
+    - joint6
+# mbot_traj_controller:
+#   action_ns: follow_joint_trajectory
+#   type: FollowJointTrajectory
+#   # default: true
+#   joints:
+#     - left_wheel_joint
+#     - right_wheel_joint
