@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<robot name="mbot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="mbot_transmission" params="hard_interface:='PositionJointInterface'">
+  <!-- <xacro:macro name="mbot_transmission" params="hard_interface:='VelocityJointInterface'"> -->
+    <!-- Transmission is important to link the joints and the controller -->
+    <transmission name="left_wheel_joint_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="left_wheel_joint" >
+        <hardwareInterface>hardware_interface/${hard_interface}</hardwareInterface>
+      </joint>
+      <actuator name="left_wheel_joint_motor">
+        <hardwareInterface>hardware_interface/${hard_interface}</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
+    <transmission name="right_wheel_joint_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="right_wheel_joint" >
+        <hardwareInterface>hardware_interface/${hard_interface}</hardwareInterface>
+      </joint>
+      <actuator name="right_wheel_joint_motor">
+        <hardwareInterface>hardware_interface/${hard_interface}</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+  </xacro:macro>
+</robot>

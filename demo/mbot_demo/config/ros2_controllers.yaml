@@ -1,0 +1,118 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 150  # Hz
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    xarm6_traj_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    # mbot_traj_controller:
+    #   type: joint_trajectory_controller/JointTrajectoryController
+    mbot_traj_controller:
+      type: diff_drive_controller/DiffDriveController
+
+xarm6_traj_controller:
+  ros__parameters:
+    command_interfaces:
+      - position
+      - velocity
+    state_interfaces:
+      - position
+      - velocity
+    joints:
+      - joint1
+      - joint2
+      - joint3
+      - joint4
+      - joint5
+      - joint6
+    constraints:
+      goal_time: 0.5
+      stopped_velocity_tolerance: 0.0
+      joint1: {trajectory: 1.0, goal: 0.01}
+      joint2: {trajectory: 1.0, goal: 0.01}
+      joint3: {trajectory: 1.0, goal: 0.01}
+      joint4: {trajectory: 1.0, goal: 0.01}
+      joint5: {trajectory: 1.0, goal: 0.01}
+      joint6: {trajectory: 1.0, goal: 0.01}
+    interface_name: position
+    state_publish_rate: 25.0
+    action_monitor_rate: 10.0
+
+# mbot_traj_controller:
+#   ros__parameters:
+#     command_interfaces:
+#       - position
+#       - velocity
+#     state_interfaces:
+#       - position
+#       - velocity
+#     joints:
+#       - left_wheel_joint
+#       - right_wheel_joint
+#     constraints:
+#       goal_time: 0.5
+#       stopped_velocity_tolerance: 0.0
+#       left_wheel_joint: {trajectory: 1.0, goal: 0.01}
+#       right_wheel_joint: {trajectory: 1.0, goal: 0.01}
+#     interface_name: position
+#     state_publish_rate: 25.0
+#     action_monitor_rate: 10.0
+
+mbot_traj_controller:
+  ros__parameters:
+    left_wheel_names: ["left_wheel_joint"]
+    right_wheel_names: ["right_wheel_joint"]
+    wheel_separation: 0.38
+    #wheels_per_side: 1  # actually 2, but both are controlled by 1 signal
+    wheel_radius: 0.06
+
+    wheel_separation_multiplier: 1.0
+    left_wheel_radius_multiplier: 1.0
+    right_wheel_radius_multiplier: 1.0
+
+    publish_rate: 50.0
+    odom_frame_id: odom
+    base_frame_id: base_footprint
+    pose_covariance_diagonal : [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
+    twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
+
+    open_loop: true
+    enable_odom_tf: true
+
+    cmd_vel_timeout: 0.5
+    #publish_limited_velocity: true
+    # use_stamped_vel: false
+    #velocity_rolling_window_size: 10
+
+    # Preserve turning radius when limiting speed/acceleration/jerk
+    preserve_turning_radius: true
+
+    # Publish limited velocity
+    publish_cmd: true
+
+    # Publish wheel data
+    publish_wheel_data: true
+
+    # Velocity and acceleration limits
+    # Whenever a min_* is unspecified, default to -max_*
+    linear.x.has_velocity_limits: true
+    linear.x.has_acceleration_limits: true
+    linear.x.has_jerk_limits: false
+    linear.x.max_velocity: 1.0
+    linear.x.min_velocity: -1.0
+    linear.x.max_acceleration: 1.0
+    linear.x.max_jerk: 0.0
+    linear.x.min_jerk: 0.0
+
+    angular.z.has_velocity_limits: true
+    angular.z.has_acceleration_limits: true
+    angular.z.has_jerk_limits: false
+    angular.z.max_velocity: 1.0
+    angular.z.min_velocity: -1.0
+    angular.z.max_acceleration: 1.0
+    angular.z.min_acceleration: -1.0
+    angular.z.max_jerk: 0.0
+    angular.z.min_jerk: 0.0

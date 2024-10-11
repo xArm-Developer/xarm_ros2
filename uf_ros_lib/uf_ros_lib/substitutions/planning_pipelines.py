@@ -40,12 +40,13 @@ def get_pattern_matches(folder, pattern):
 class PlanningPipelinesYAML(BaseYamlSubstitution):
     """Substitution that can access load planning_pipelines file with mappings involving any subsititutable."""
 
-    def __init__(self, pipeline, package_path=None, 
+    def __init__(self, pipeline, package_path=None, config_folder=None,
         prefix='', robot_type='xarm', robot_dof=7, 
         add_gripper=False, add_bio_gripper=False):
         super().__init__()
         self.__pipeline = pipeline
-        self.__package_path = package_path        
+        self.__package_path = package_path
+        self.__config_folder = config_folder
         self.__prefix = prefix
         self.__robot_type = robot_type
         self.__robot_dof = robot_dof
@@ -94,7 +95,10 @@ class PlanningPipelinesYAML(BaseYamlSubstitution):
         else:
             planning_yaml = {}
 
-        parameter_file = self.__package_path / 'config' / robot_name / filename
+        if self.__config_folder is None:
+            parameter_file = self.__package_path / 'config' / robot_name / filename
+        else:
+            parameter_file = self.__package_path / self.__config_folder / filename
         pipeline_planning_yaml = load_yaml(parameter_file)
         pipeline_planning_yaml = pipeline_planning_yaml if pipeline_planning_yaml else {}
 
