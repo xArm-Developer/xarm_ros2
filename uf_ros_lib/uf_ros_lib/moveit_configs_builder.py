@@ -524,25 +524,25 @@ class MoveItConfigsBuilder(ParameterBuilder):
                 file_path = self._package_path / 'config' / robot_name / controllers_name
                 controllers_yaml = load_yaml(file_path)
                 controllers_yaml = controllers_yaml if controllers_yaml else {}
-                if self.__robot_type != 'lite' and self.__add_gripper in ('True', 'true'):
-                    gripper_controllers_yaml = load_yaml(self._package_path / 'config' / '{}_gripper'.format(self.__robot_type) / controllers_name)
-                    if gripper_controllers_yaml and 'controller_names' in gripper_controllers_yaml:
-                        for name in gripper_controllers_yaml['controller_names']:
-                            if name in gripper_controllers_yaml:
-                                if name not in controllers_yaml['controller_names']:
-                                    controllers_yaml['controller_names'].append(name)
-                                controllers_yaml[name] = gripper_controllers_yaml[name]
-                elif self.__robot_type != 'lite' and self.__add_bio_gripper in ('True', 'true'):
-                    gripper_controllers_yaml = load_yaml(self._package_path / 'config' / 'bio_gripper' / controllers_name)
-                    if gripper_controllers_yaml and 'controller_names' in gripper_controllers_yaml:
-                        for name in gripper_controllers_yaml['controller_names']:
-                            if name in gripper_controllers_yaml:
-                                if name not in controllers_yaml['controller_names']:
-                                    controllers_yaml['controller_names'].append(name)
-                                controllers_yaml[name] = gripper_controllers_yaml[name]
             else:
                 file_path = self._package_path / file_path
                 controllers_yaml = load_yaml(file_path) if file_path else {}
+            if self.__robot_type != 'lite' and self.__add_gripper in ('True', 'true'):
+                gripper_controllers_yaml = load_yaml(self._package_path / 'config' / '{}_gripper'.format(self.__robot_type) / controllers_name)
+                if gripper_controllers_yaml and 'controller_names' in gripper_controllers_yaml:
+                    for name in gripper_controllers_yaml['controller_names']:
+                        if name in gripper_controllers_yaml:
+                            if name not in controllers_yaml['controller_names']:
+                                controllers_yaml['controller_names'].append(name)
+                            controllers_yaml[name] = gripper_controllers_yaml[name]
+            elif self.__robot_type != 'lite' and self.__add_bio_gripper in ('True', 'true'):
+                gripper_controllers_yaml = load_yaml(self._package_path / 'config' / 'bio_gripper' / controllers_name)
+                if gripper_controllers_yaml and 'controller_names' in gripper_controllers_yaml:
+                    for name in gripper_controllers_yaml['controller_names']:
+                        if name in gripper_controllers_yaml:
+                            if name not in controllers_yaml['controller_names']:
+                                controllers_yaml['controller_names'].append(name)
+                            controllers_yaml[name] = gripper_controllers_yaml[name]
 
             if controllers_yaml and self.__prefix:
                 for i, name in enumerate(controllers_yaml['controller_names']):
@@ -630,6 +630,7 @@ class MoveItConfigsBuilder(ParameterBuilder):
         default_planning_pipeline = None,
         pipelines = None,
         load_all = True,
+        config_folder = None
     ):
         """Load planning pipelines parameters.
 
@@ -643,7 +644,10 @@ class MoveItConfigsBuilder(ParameterBuilder):
         params = [self.__prefix, self.__robot_type, self.__robot_dof, self.__add_gripper, self.__add_bio_gripper]
         if all(isinstance(value, str) for value in params):
             robot_name = '{}{}'.format(self.__robot_type, self.__robot_dof if self.__robot_type == 'xarm' else '6' if self.__robot_type == 'lite' else '')
-            config_folder = self._package_path / 'config' / robot_name
+            if config_folder is None:
+                config_folder = self._package_path / 'config' / robot_name
+            else:
+                config_folder = self._package_path / config_folder
             if pipelines is None:
                 planning_pattern = re.compile('^(.*)_planning.yaml$')
                 pipelines = get_pattern_matches(config_folder, planning_pattern)
@@ -741,7 +745,7 @@ class MoveItConfigsBuilder(ParameterBuilder):
             }
             for pipeline in pipelines:
                 self.__moveit_configs.planning_pipelines[pipeline] = YamlParameterValue(
-                    PlanningPipelinesYAML(pipeline, package_path=self._package_path, 
+                    PlanningPipelinesYAML(pipeline, package_path=self._package_path, config_folder=config_folder,
                         prefix=self.__prefix, robot_type=self.__robot_type, robot_dof=self.__robot_dof,
                         add_gripper=self.__add_gripper, add_bio_gripper=self.__add_bio_gripper
                     ), value_type=str)
@@ -1279,39 +1283,6 @@ class DualMoveItConfigsBuilder(ParameterBuilder):
                 controllers_yaml_2 = load_yaml(file_path_2)
                 controllers_yaml_1 = controllers_yaml_1 if controllers_yaml_1 else {}
                 controllers_yaml_2 = controllers_yaml_2 if controllers_yaml_2 else {}
-                if self.__add_gripper_1 in ('True', 'true'):
-                    gripper_controllers_yaml = load_yaml(self._package_path / 'config' / '{}_gripper'.format(self.__robot_type_1) / controllers_name)
-                    if gripper_controllers_yaml and 'controller_names' in gripper_controllers_yaml:
-                        for name in gripper_controllers_yaml['controller_names']:
-                            if name in gripper_controllers_yaml:
-                                if name not in controllers_yaml_1['controller_names']:
-                                    controllers_yaml_1['controller_names'].append(name)
-                                controllers_yaml_1[name] = gripper_controllers_yaml[name]
-                elif self.__add_bio_gripper_1 in ('True', 'true'):
-                    gripper_controllers_yaml = load_yaml(self._package_path / 'config' / 'bio_gripper' / controllers_name)
-                    if gripper_controllers_yaml and 'controller_names' in gripper_controllers_yaml:
-                        for name in gripper_controllers_yaml['controller_names']:
-                            if name in gripper_controllers_yaml:
-                                if name not in controllers_yaml_1['controller_names']:
-                                    controllers_yaml_1['controller_names'].append(name)
-                                controllers_yaml_1[name] = gripper_controllers_yaml[name]
-                
-                if self.__add_gripper_2 in ('True', 'true'):
-                    gripper_controllers_yaml = load_yaml(self._package_path / 'config' / '{}_gripper'.format(self.__robot_type_2) / controllers_name)
-                    if gripper_controllers_yaml and 'controller_names' in gripper_controllers_yaml:
-                        for name in gripper_controllers_yaml['controller_names']:
-                            if name in gripper_controllers_yaml:
-                                if name not in controllers_yaml_2['controller_names']:
-                                    controllers_yaml_2['controller_names'].append(name)
-                                controllers_yaml_2[name] = gripper_controllers_yaml[name]
-                elif self.__add_bio_gripper_2 in ('True', 'true'):
-                    gripper_controllers_yaml = load_yaml(self._package_path / 'config' / 'bio_gripper' / controllers_name)
-                    if gripper_controllers_yaml and 'controller_names' in gripper_controllers_yaml:
-                        for name in gripper_controllers_yaml['controller_names']:
-                            if name in gripper_controllers_yaml:
-                                if name not in controllers_yaml_2['controller_names']:
-                                    controllers_yaml_2['controller_names'].append(name)
-                                controllers_yaml_2[name] = gripper_controllers_yaml[name]
             else:
                 file_path_1 = self._package_path / file_path
                 file_path_2 = self._package_path / file_path
@@ -1319,6 +1290,39 @@ class DualMoveItConfigsBuilder(ParameterBuilder):
                 controllers_yaml_2 = load_yaml(file_path_2) if file_path_2 else {}
                 controllers_yaml_1 = controllers_yaml_1 if controllers_yaml_1 else {}
                 controllers_yaml_2 = controllers_yaml_2 if controllers_yaml_2 else {}
+            if self.__add_gripper_1 in ('True', 'true'):
+                gripper_controllers_yaml = load_yaml(self._package_path / 'config' / '{}_gripper'.format(self.__robot_type_1) / controllers_name)
+                if gripper_controllers_yaml and 'controller_names' in gripper_controllers_yaml:
+                    for name in gripper_controllers_yaml['controller_names']:
+                        if name in gripper_controllers_yaml:
+                            if name not in controllers_yaml_1['controller_names']:
+                                controllers_yaml_1['controller_names'].append(name)
+                            controllers_yaml_1[name] = gripper_controllers_yaml[name]
+            elif self.__add_bio_gripper_1 in ('True', 'true'):
+                gripper_controllers_yaml = load_yaml(self._package_path / 'config' / 'bio_gripper' / controllers_name)
+                if gripper_controllers_yaml and 'controller_names' in gripper_controllers_yaml:
+                    for name in gripper_controllers_yaml['controller_names']:
+                        if name in gripper_controllers_yaml:
+                            if name not in controllers_yaml_1['controller_names']:
+                                controllers_yaml_1['controller_names'].append(name)
+                            controllers_yaml_1[name] = gripper_controllers_yaml[name]
+
+            if self.__add_gripper_2 in ('True', 'true'):
+                gripper_controllers_yaml = load_yaml(self._package_path / 'config' / '{}_gripper'.format(self.__robot_type_2) / controllers_name)
+                if gripper_controllers_yaml and 'controller_names' in gripper_controllers_yaml:
+                    for name in gripper_controllers_yaml['controller_names']:
+                        if name in gripper_controllers_yaml:
+                            if name not in controllers_yaml_2['controller_names']:
+                                controllers_yaml_2['controller_names'].append(name)
+                            controllers_yaml_2[name] = gripper_controllers_yaml[name]
+            elif self.__add_bio_gripper_2 in ('True', 'true'):
+                gripper_controllers_yaml = load_yaml(self._package_path / 'config' / 'bio_gripper' / controllers_name)
+                if gripper_controllers_yaml and 'controller_names' in gripper_controllers_yaml:
+                    for name in gripper_controllers_yaml['controller_names']:
+                        if name in gripper_controllers_yaml:
+                            if name not in controllers_yaml_2['controller_names']:
+                                controllers_yaml_2['controller_names'].append(name)
+                            controllers_yaml_2[name] = gripper_controllers_yaml[name]
 
             if controllers_yaml_1 and self.__prefix_1:
                 for i, name in enumerate(controllers_yaml_1['controller_names']):
@@ -1380,8 +1384,8 @@ class DualMoveItConfigsBuilder(ParameterBuilder):
         publish_geometry_updates = True,
         publish_state_updates = True,
         publish_transforms_updates = True,
-        publish_robot_description = True,
-        publish_robot_description_semantic = True,
+        publish_robot_description = False,
+        publish_robot_description_semantic = False,
     ):
         self.__moveit_configs.planning_scene_monitor = {
             # TODO: Fix parameter namespace upstream -- see planning_scene_monitor.cpp:262

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<robot name="mbot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="mbot_macro" params="ros2_control_plugin:='uf_robot_hardware/UFRobotSystemHardware'">
+
+    <xacro:include filename="$(find mbot_demo)/urdf/mbot.urdf.xacro" />
+    <xacro:mbot_urdf/>
+
+    <xacro:include filename="$(find mbot_demo)/urdf/mbot.transmission.xacro" />
+    <xacro:mbot_transmission hard_interface="VelocityJointInterface" />
+    
+    <xacro:include filename="$(find mbot_demo)/urdf/mbot.ros2_control.xacro" />
+    <xacro:if value="${ros2_control_plugin == 'uf_robot_hardware/UFRobotSystemHardware'}">
+      <!-- uf_robot_hardware/UFRobotSystemHardware only use on the real xarm robot -->
+      <xacro:mbot_ros2_control ros2_control_plugin="uf_robot_hardware/UFRobotFakeSystemHardware" />
+    </xacro:if>
+    <xacro:unless value="${ros2_control_plugin == 'uf_robot_hardware/UFRobotSystemHardware'}">
+      <xacro:mbot_ros2_control ros2_control_plugin="${ros2_control_plugin}" />
+    </xacro:unless> 
+
+    <xacro:include filename="$(find mbot_demo)/urdf/mbot.gazebo.xacro" />
+    <xacro:mbot_gazebo/>
+
+  </xacro:macro>
+
+</robot>
