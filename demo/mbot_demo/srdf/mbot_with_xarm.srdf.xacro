@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="mbot_with_xarm">
+  <!-- parameters -->
+  <xacro:arg name="prefix" default="" />
+  <xacro:arg name="dof" default="6" />
+  <xacro:arg name="robot_type" default="xarm" />
+  <xacro:arg name="add_gripper" default="false"/>
+  <xacro:arg name="add_vacuum_gripper" default="false" />
+  <xacro:arg name="add_bio_gripper" default="false" />
+  <xacro:arg name="add_other_geometry" default="false" />
+
+  <xacro:include filename="$(find xarm_moveit_config)/srdf/xarm_macro.srdf.xacro" />
+  <xacro:xarm_macro_srdf prefix="$(arg prefix)" dof="$(arg dof)" robot_type="$(arg robot_type)" 
+    add_gripper="$(arg add_gripper)" add_vacuum_gripper="$(arg add_vacuum_gripper)" add_bio_gripper="$(arg add_bio_gripper)" add_other_geometry="$(arg add_other_geometry)" />
+
+  <xacro:include filename="$(find mbot_demo)/srdf/mbot_macro.srdf.xacro" />
+  <xacro:mbot_macro_srdf prefix="$(arg prefix)" />
+
+</robot>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This does not replace URDF, and is not an extension of URDF.
+  This is a format for representing semantic information about the robot structure.
+  A URDF file must exist for this robot as well, where the joints and the links that are referenced are defined -->
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="mbot_srdf">
+  <!-- GROUPS: Representation of a set of joints and links. This can be useful for specifying DOF to plan for, defining arms, end effectors, etc -->
+  <!-- LINKS: When a link is specified, the parent joint of that link (if it exists) is automatically included -->
+  <!-- JOINTS: When a joint is specified, the child link of that joint (which will always exist) is automatically included -->
+  <!-- CHAINS: When a chain is specified, all the links along the chain (including endpoints) are included in the group. Additionally, all the joints that are parents to included links are also included. This means that joints along the chain and the parent joint of the base link are included in the group -->
+  <!-- SUBGROUPS: Groups can also be formed by referencing to already defined group names -->
+  <xacro:macro name="mbot_macro_srdf" params="prefix=''">
+    <!-- <group name="mbot">
+      <joint name="left_wheel_joint" />
+      <joint name="right_wheel_joint" />
+    </group>
+    <group_state name="home" group="mbot">
+      <joint name="left_wheel_joint" value="0" />
+      <joint name="right_wheel_joint" value="0" />
+    </group_state>
+    <group_state name="test" group="mbot">
+      <joint name="left_wheel_joint" value="1.0" />
+      <joint name="right_wheel_joint" value="1.0" />
+    </group_state> -->
+    <passive_joint name="base_footprint_joint" />
+    <passive_joint name="front_caster_joint" />
+    <passive_joint name="back_caster_joint" />
+    <disable_collisions link1="base_link" link2="base_footprint" reason="Adjacent" />
+    <disable_collisions link1="base_link" link2="left_wheel_link" reason="Adjacent" />
+    <disable_collisions link1="base_link" link2="right_wheel_link" reason="Adjacent" />
+    <disable_collisions link1="base_link" link2="front_caster_link" reason="Adjacent" />
+    <disable_collisions link1="base_link" link2="back_caster_link" reason="Adjacent" />
+    <disable_collisions link1="left_wheel_link" link2="right_wheel_link" reason="Never" />
+    <disable_collisions link1="left_wheel_link" link2="front_caster_link" reason="Never" />
+    <disable_collisions link1="left_wheel_link" link2="back_caster_link" reason="Never" />
+    <disable_collisions link1="right_wheel_link" link2="front_caster_link" reason="Never" />
+    <disable_collisions link1="right_wheel_link" link2="back_caster_link" reason="Never" />
+    <disable_collisions link1="front_caster_link" link2="back_caster_link" reason="Never" />
+    <disable_collisions link1="base_footprint" link2="left_wheel_link" reason="Adjacent" />
+    <disable_collisions link1="base_footprint" link2="right_wheel_link" reason="Adjacent" />
+    <disable_collisions link1="base_footprint" link2="front_caster_link" reason="Adjacent" />
+    <disable_collisions link1="base_footprint" link2="back_caster_link" reason="Adjacent" />
+
+    <disable_collisions link1="base_link" link2="${prefix}link_base" reason="Adjacent" />
+    <disable_collisions link1="base_footprint" link2="${prefix}link_base" reason="Never" />
+    <disable_collisions link1="left_wheel_link" link2="${prefix}link_base" reason="Never" />
+    <disable_collisions link1="right_wheel_link" link2="${prefix}link_base" reason="Never" />
+    <disable_collisions link1="front_caster_link" link2="${prefix}link_base" reason="Never" />
+    <disable_collisions link1="back_caster_link" link2="${prefix}link_base" reason="Never" />
+
+    <disable_collisions link1="base_link" link2="${prefix}link1" reason="Adjacent" />
+    <disable_collisions link1="base_footprint" link2="${prefix}link1" reason="Never" />
+    <disable_collisions link1="left_wheel_link" link2="${prefix}link1" reason="Never" />
+    <disable_collisions link1="right_wheel_link" link2="${prefix}link1" reason="Never" />
+    <disable_collisions link1="front_caster_link" link2="${prefix}link1" reason="Never" />
+    <disable_collisions link1="back_caster_link" link2="${prefix}link1" reason="Never" />
+
+    <disable_collisions link1="base_link" link2="${prefix}link2" reason="Adjacent" />
+    <disable_collisions link1="base_footprint" link2="${prefix}link2" reason="Never" />
+    <disable_collisions link1="left_wheel_link" link2="${prefix}link2" reason="Never" />
+    <disable_collisions link1="right_wheel_link" link2="${prefix}link2" reason="Never" />
+    <disable_collisions link1="front_caster_link" link2="${prefix}link2" reason="Never" />
+    <disable_collisions link1="back_caster_link" link2="${prefix}link2" reason="Never" />
+
+  </xacro:macro>
+</robot>

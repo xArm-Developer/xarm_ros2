@@ -70,12 +70,14 @@ def add_prefix_to_ros2_control_params(prefix, ros2_control_params):
             controller_manager_ros__parameters[new_name] = controller_manager_ros__parameters.pop(name)
 
 
-def generate_ros2_control_params_temp_file(ros2_control_params_path, prefix='', add_gripper=False, add_bio_gripper=False, ros_namespace='', update_rate=None, robot_type='xarm'):
+def generate_ros2_control_params_temp_file(ros2_control_params_path, prefix='', add_gripper=False, add_bio_gripper=False, ros_namespace='', update_rate=None, robot_type='xarm', use_sim_time=False):
     if ros_namespace or prefix or add_gripper or add_bio_gripper or update_rate:
         with open(ros2_control_params_path, 'r') as f:
             ros2_control_params_yaml = yaml.safe_load(f)
         if update_rate is not None:
             ros2_control_params_yaml['controller_manager']['ros__parameters']['update_rate'] = update_rate
+        if use_sim_time:
+            ros2_control_params_yaml['controller_manager']['ros__parameters']['use_sim_time'] = True
         if add_gripper:
             gripper_control_params_path = os.path.join(get_package_share_directory('xarm_controller'), 'config', '{}_gripper_controllers.yaml'.format(robot_type))
             # check file is exists or not
