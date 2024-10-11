@@ -125,7 +125,7 @@ def launch_setup(context, *args, **kwargs):
 
     joint_state_broadcaster = Node(
         package='controller_manager',
-        executable='spawner.py',
+        executable='spawner',
         output='screen',
         arguments=[
             'joint_state_broadcaster',
@@ -138,7 +138,7 @@ def launch_setup(context, *args, **kwargs):
     for controller in controllers:
         controller_nodes.append(Node(
             package='controller_manager',
-            executable='spawner.py',
+            executable='spawner',
             output='screen',
             arguments=[
                 controller,
