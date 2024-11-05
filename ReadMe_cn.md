@@ -39,7 +39,7 @@
 - (2024-02-27) 新增对Bio Gripper的支持(参数`add_bio_gripper`, Lite6不支持)
 - (2024-04-12) 新增 __uf_ros_lib__ 封装某些功能以供调用(包括 __MoveItConfigsBuilder__)，参见[文档](./uf_ros_lib/Readme.md)
 - (2024-10-11) 增加[mbot_demo](demo/mbot_demo/readme.md)演示如何建立xarm机械臂在底盘之上
-- (2024-11-05) 新增jazzy分支
+- (2024-11-05) 支持Ros Jazzy版本
   - __不再支持Classic Gazebo, 改为支持Gazebo Harmonic__
   - __原有的gazebo插件(mimic_joint_plugin和realsense_gazebo_plugin)暂不支持__
 
