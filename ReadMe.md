@@ -8,12 +8,14 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 - Ubuntu 20.04 + ROS Foxy
 - Ubuntu 20.04 + ROS Galactic
 - Ubuntu 22.04 + ROS Humble
+- Ubuntu 24.04 + ROS Jazzy
 - Ubuntu 22.04 + ROS Rolling
 
 &ensp;&ensp;&ensp;&ensp;Please switch to the corresponding code branch according to different ros2 versions (no corresponding code branch means it has not been tested in this version)
 - Foxy: [foxy](https://github.com/xArm-Developer/xarm_ros2/tree/foxy)
 - Galactic: [galactic](https://github.com/xArm-Developer/xarm_ros2/tree/galactic)
 - Humble: [humble](https://github.com/xArm-Developer/xarm_ros2/tree/humble)
+- Jazzy: [humble](https://github.com/xArm-Developer/xarm_ros2/tree/jazzy)
 - Rolling: [rolling](https://github.com/xArm-Developer/xarm_ros2/tree/rolling)
 
 ## 2. Update History    
@@ -38,6 +40,9 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 - (2024-02-27) Added support for Bio Gripper (parameter `add_bio_gripper`, Lite6 is not supported)
 - (2024-04-12) Added __uf_ros_lib__ to encapsulate certain functions for calling (including __MoveItConfigsBuilder__), see [Documentation](./uf_ros_lib/Readme.md)
 - (2024-10-11) Added [mbot_demo](demo/mbot_demo/readme.md) to demonstrate how to build a xarm robot on the chassis 
+- (2024-11-05) Added jazzy branch
+  - __Classic Gazebo is no longer supported. Gazebo Harmonic is supported instead__
+  - __The original gazebo plugins (mimic_joint_plugin and realsense_gazebo_plugin) are not supported yet__
 
 
 ## 3. Preparation
@@ -46,12 +51,11 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
   - [Foxy](https://docs.ros.org/en/ros2_documentation/foxy/Installation.html)
   - [Galactic](https://docs.ros.org/en/ros2_documentation/galactic/Installation.html)
   - [Humble](https://docs.ros.org/en/ros2_documentation/humble/Installation.html)
+  - [Jazzy](https://docs.ros.org/en/ros2_documentation/jazzy/Installation.html)
 
 - ### 3.2 Install [Moveit2](https://moveit.ros.org/install-moveit2/binary/)  
 
-- ### 3.3 Install [Gazebo](https://classic.gazebosim.org/tutorials?tut=install_ubuntu)  
-
-- ### 3.4 Install [gazebo_ros_pkgs](http://gazebosim.org/tutorials?tut=ros2_installing&cat=connect_ros)  
+- ### 3.3 Install [Gazebo](https://gazebosim.org/docs/harmonic/install_ubuntu/)  
 
 ## 4. How To Use
 
@@ -67,7 +71,7 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
     # Remember to source ros2 environment settings first
     $ cd ~/dev_ws/src
     # DO NOT omit "--recursive"，or the source code of dependent submodule will not be downloaded.
-    # Pay attention to the use of the -b parameter command branch, $ROS_DISTRO indicates the currently activated ROS version, if the ROS environment is not activated, you need to customize the specified branch (foxy/galactic/humble)
+    # Pay attention to the use of the -b parameter command branch, $ROS_DISTRO indicates the currently activated ROS version, if the ROS environment is not activated, you need to customize the specified branch (foxy/galactic/humble/jazzy)
     $ git clone https://github.com/xArm-Developer/xarm_ros2.git --recursive -b $ROS_DISTRO
     ```
 
@@ -105,6 +109,7 @@ __Reminder 1: If there are multiple people using ros2 in the current LAN, in ord
   - [Foxy](https://docs.ros.org/en/ros2_documentation/foxy/Concepts/About-Domain-ID.html)
   - [Galactic](https://docs.ros.org/en/ros2_documentation/galactic/Concepts/About-Domain-ID.html)
   - [Humble](https://docs.ros.org/en/ros2_documentation/humble/Concepts/About-Domain-ID.html)
+  - [Jazzy](https://docs.ros.org/en/ros2_documentation/jazzy/Concepts/About-Domain-ID.html)
 
 __Reminder 2： Remember to source the environment setup script before running any applications in xarm_ros2__
 

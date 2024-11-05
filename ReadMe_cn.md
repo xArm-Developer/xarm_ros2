@@ -6,12 +6,14 @@
 - Ubuntu 20.04 + ROS Foxy
 - Ubuntu 20.04 + ROS Galactic
 - Ubuntu 22.04 + ROS Humble
+- Ubuntu 24.04 + ROS Jazzy
 - Ubuntu 22.04 + ROS Rolling
 
 &ensp;&ensp;&ensp;&ensp;请根据不同ros2版本切换到对应的代码分支（没有对应的代码分支表示未在该版本测试过）
 - Foxy: [foxy](https://github.com/xArm-Developer/xarm_ros2/tree/foxy)
 - Galactic: [galactic](https://github.com/xArm-Developer/xarm_ros2/tree/galactic)
 - Humble: [humble](https://github.com/xArm-Developer/xarm_ros2/tree/humble)
+- Jazzy: [Jazzy](https://github.com/xArm-Developer/xarm_ros2/tree/jazzy)
 - Rolling: [rolling](https://github.com/xArm-Developer/xarm_ros2/tree/rolling)
 
 
@@ -37,6 +39,9 @@
 - (2024-02-27) 新增对Bio Gripper的支持(参数`add_bio_gripper`, Lite6不支持)
 - (2024-04-12) 新增 __uf_ros_lib__ 封装某些功能以供调用(包括 __MoveItConfigsBuilder__)，参见[文档](./uf_ros_lib/Readme.md)
 - (2024-10-11) 增加[mbot_demo](demo/mbot_demo/readme.md)演示如何建立xarm机械臂在底盘之上
+- (2024-11-05) 新增jazzy分支
+  - __不再支持Classic Gazebo, 改为支持Gazebo Harmonic__
+  - __原有的gazebo插件(mimic_joint_plugin和realsense_gazebo_plugin)暂不支持__
 
 ## 3. 准备工作
 
@@ -44,12 +49,11 @@
   - [Foxy](https://docs.ros.org/en/ros2_documentation/foxy/Installation.html)
   - [Galactic](https://docs.ros.org/en/ros2_documentation/galactic/Installation.html)
   - [Humble](https://docs.ros.org/en/ros2_documentation/humble/Installation.html)
+  - [Jazzy](https://docs.ros.org/en/ros2_documentation/jazzy/Installation.html)
 
 - ### 3.2 安装 [Moveit2](https://moveit.ros.org/install-moveit2/binary/)
 
-- ### 3.3 安装 [Gazebo](https://classic.gazebosim.org/tutorials?tut=install_ubuntu)  
-
-- ### 3.4 安装 [gazebo_ros_pkgs](http://gazebosim.org/tutorials?tut=ros2_installing&cat=connect_ros)  
+- ### 3.3 安装 [Gazebo](https://gazebosim.org/docs/harmonic/install_ubuntu/)  
 
 ## 4. 使用说明
 
@@ -65,7 +69,7 @@
     # 记得先source已安装的ros2环境
     $ cd ~/dev_ws/src
     # 注意需要--recursive参数，否则不会下载源码包的子模块源码
-    # 注意使用-b参数指令分支, $ROS_DISTRO表示当前激活的ROS版本，如果没有激活ROS环境，需要自定指定分支(foxy/galactic/humble)
+    # 注意使用-b参数指令分支, $ROS_DISTRO表示当前激活的ROS版本，如果没有激活ROS环境，需要自定指定分支(foxy/galactic/humble/jazzy)
     $ git clone https://github.com/xArm-Developer/xarm_ros2.git --recursive -b $ROS_DISTRO
     ```
 
@@ -102,6 +106,7 @@ __注意1： 如果当前局域网有多人使用ros2，为避免相互间发生
   - [Foxy](https://docs.ros.org/en/ros2_documentation/foxy/Concepts/About-Domain-ID.html)
   - [Galactic](https://docs.ros.org/en/ros2_documentation/galactic/Concepts/About-Domain-ID.html)
   - [Humble](https://docs.ros.org/en/ros2_documentation/humble/Concepts/About-Domain-ID.html)
+  - [Jazzy](https://docs.ros.org/en/ros2_documentation/jazzy/Concepts/About-Domain-ID.html)
 
 __注意2： 运行xarm_ros2中的程序或启动脚本之前请先source当前工作区环境__
 ```bash

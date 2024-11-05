@@ -17,9 +17,9 @@ def generate_launch_description():
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     
     # robot moveit gazebo launch
-    # xarm_moveit_config/launch/_robot_moveit_gazebo.launch.py
+    # xarm_moveit_config/launch/_robot_moveit_gz.launch.py
     robot_moveit_gazebo_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_robot_moveit_gazebo.launch.py'])),
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_moveit_config'), 'launch', '_robot_moveit_gz.launch.py'])),
         launch_arguments={
             'dof': '6',
             'robot_type': 'xarm',

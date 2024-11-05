@@ -36,9 +36,9 @@ def generate_launch_description():
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
     
     # robot gazebo launch
-    # xarm_gazebo/launch/_robot_beside_table_gazebo.launch.py
+    # xarm_gazebo/launch/_robot_beside_table_gz.launch.py
     robot_gazobo_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/_robot_beside_table_gazebo.launch.py']),
+        PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/_robot_beside_table_gz.launch.py']),
         launch_arguments={
             'prefix': prefix,
             'hw_ns': hw_ns,

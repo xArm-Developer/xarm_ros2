@@ -34,8 +34,8 @@ def launch_setup(context, *args, **kwargs):
 
     ros_namespace = LaunchConfiguration('ros_namespace', default='').perform(context)
 
-    ros2_control_plugin = 'gazebo_ros2_control/GazeboSystem'
-    controllers_name = 'fake_controllers'
+    # ros2_control_plugin = 'gazebo_ros2_control/GazeboSystem'
+    ros2_control_plugin = 'gz_ros2_control/GazeboSimSystem'
 
     ros2_control_params = generate_ros2_control_params_temp_file(
         os.path.join(get_package_share_directory('mbot_demo'), 'config', 'ros2_controllers.yaml'),
@@ -104,7 +104,8 @@ def launch_setup(context, *args, **kwargs):
     # robot gazebo launch
     # mbot_demo/launch/_robot_on_mbot_gazebo.launch.py
     robot_gazebo_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('mbot_demo'), 'launch', '_robot_on_mbot_gazebo.launch.py'])),
+        # PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('mbot_demo'), 'launch', '_robot_on_mbot_gazebo.launch.py'])),
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('mbot_demo'), 'launch', '_robot_on_mbot_gz.launch.py'])),
         launch_arguments={
             'dof': dof,
             'robot_type': robot_type,

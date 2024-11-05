@@ -20,7 +20,8 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(control_toolbox REQUIRED)
 find_package(controller_manager REQUIRED)
-find_package(gazebo_ros REQUIRED)
+find_package(gz_ros2_control REQUIRED)
+find_package(ros_gz_sim REQUIRED)
 
 # uncomment the following section in order to fill in
 # further dependencies manually.
@@ -37,34 +38,34 @@ if(BUILD_TESTING)
   ament_lint_auto_find_test_dependencies()
 endif()
 
-include_directories(
-  include
-  ${ament_INCLUDE_DIRS}
-  ${GAZEBO_INCLUDE_DIRS}
-)
+# include_directories(
+#   include
+#   ${ament_INCLUDE_DIRS}
+#   ${GAZEBO_INCLUDE_DIRS}
+# )
 
-link_directories(${GAZEBO_LIBRARY_DIRS})
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GAZEBO_CXX_FLAGS}")
+# link_directories(${GAZEBO_LIBRARY_DIRS})
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GAZEBO_CXX_FLAGS}")
 
-add_library(gazebo_mimic_joint_plugin SHARED src/mimic_joint_plugin.cpp)
-ament_target_dependencies(gazebo_mimic_joint_plugin
-  control_toolbox
-  controller_manager
-  gazebo_ros
-)
-target_link_libraries(gazebo_mimic_joint_plugin ${ament_LIBRARIES} ${GAZEBO_LIBRARIES})
+# add_library(gazebo_mimic_joint_plugin SHARED src/mimic_joint_plugin.cpp)
+# ament_target_dependencies(gazebo_mimic_joint_plugin
+#   control_toolbox
+#   controller_manager
+#   gazebo_ros
+# )
+# target_link_libraries(gazebo_mimic_joint_plugin ${ament_LIBRARIES} ${GAZEBO_LIBRARIES})
 
-install(
-  DIRECTORY include/
-  DESTINATION include
-)
+# install(
+#   DIRECTORY include/
+#   DESTINATION include
+# )
 
-install(TARGETS
-gazebo_mimic_joint_plugin
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin
-)
+# install(TARGETS
+# gazebo_mimic_joint_plugin
+#   ARCHIVE DESTINATION lib
+#   LIBRARY DESTINATION lib
+#   RUNTIME DESTINATION bin
+# )
 
 
 install(DIRECTORY

@@ -20,11 +20,11 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <depend>gazebo_ros</depend>
+  <!-- <depend>gazebo_ros</depend> -->
   <depend>rclcpp</depend>
-  <depend>sensor_msgs</depend>
-  <depend>image_transport</depend>
-  <depend>camera_info_manager</depend>
+  <!-- <depend>sensor_msgs</depend> -->
+  <!-- <depend>image_transport</depend> -->
+  <!-- <depend>camera_info_manager</depend> -->
 
   <export>
     <build_type>ament_cmake</build_type> 
