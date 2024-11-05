@@ -4,6 +4,7 @@
   - __[foxy](https://github.com/xArm-Developer/xarm_ros2/tree/foxy)__: https://github.com/xArm-Developer/xarm_ros2/tree/foxy
   - __[galactic](https://github.com/xArm-Developer/xarm_ros2/tree/galactic)__: https://github.com/xArm-Developer/xarm_ros2/tree/galactic
   - __[humble](https://github.com/xArm-Developer/xarm_ros2/tree/humble)__: https://github.com/xArm-Developer/xarm_ros2/tree/humble
+  - __[jazzy](https://github.com/xArm-Developer/xarm_ros2/tree/jazzy)__: https://github.com/xArm-Developer/xarm_ros2/tree/jazzy
   - __[rolling](https://github.com/xArm-Developer/xarm_ros2/tree/rolling)__: https://github.com/xArm-Developer/xarm_ros2/tree/rolling
 
 --------------------------------------
@@ -11,5 +12,6 @@
   - __[foxy](https://github.com/xArm-Developer/xarm_ros2/tree/foxy)__: https://github.com/xArm-Developer/xarm_ros2/tree/foxy
   - __[galactic](https://github.com/xArm-Developer/xarm_ros2/tree/galactic)__: https://github.com/xArm-Developer/xarm_ros2/tree/galactic
   - __[humble](https://github.com/xArm-Developer/xarm_ros2/tree/humble)__: https://github.com/xArm-Developer/xarm_ros2/tree/humble
+  - __[jazzy](https://github.com/xArm-Developer/xarm_ros2/tree/jazzy)__: https://github.com/xArm-Developer/xarm_ros2/tree/jazzy
   - __[rolling](https://github.com/xArm-Developer/xarm_ros2/tree/rolling)__: https://github.com/xArm-Developer/xarm_ros2/tree/rolling
 
