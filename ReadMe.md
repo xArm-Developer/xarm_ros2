@@ -8,12 +8,14 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 - Ubuntu 20.04 + ROS Foxy
 - Ubuntu 20.04 + ROS Galactic
 - Ubuntu 22.04 + ROS Humble
+- Ubuntu 24.04 + ROS Jazzy
 - Ubuntu 22.04 + ROS Rolling
 
 &ensp;&ensp;&ensp;&ensp;Please switch to the corresponding code branch according to different ros2 versions (no corresponding code branch means it has not been tested in this version)
 - Foxy: [foxy](https://github.com/xArm-Developer/xarm_ros2/tree/foxy)
 - Galactic: [galactic](https://github.com/xArm-Developer/xarm_ros2/tree/galactic)
 - Humble: [humble](https://github.com/xArm-Developer/xarm_ros2/tree/humble)
+- Jazzy: [jazzy](https://github.com/xArm-Developer/xarm_ros2/tree/jazzy)
 - Rolling: [rolling](https://github.com/xArm-Developer/xarm_ros2/tree/rolling)
 
 ## 2. Update History    
@@ -38,6 +40,7 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
 - (2024-02-27) Added support for Bio Gripper (parameter `add_bio_gripper`, Lite6 is not supported)
 - (2024-04-12) Added __uf_ros_lib__ to encapsulate certain functions for calling (including __MoveItConfigsBuilder__), see [Documentation](./uf_ros_lib/Readme.md)
 - (2024-10-11) Added [mbot_demo](demo/mbot_demo/readme.md) to demonstrate how to build a xarm robot on the chassis 
+- (2024-11-05) Support Jazzy version
 
 
 ## 3. Preparation
@@ -46,6 +49,7 @@ For simplified Chinese version: [简体中文版](./ReadMe_cn.md)
   - [Foxy](https://docs.ros.org/en/ros2_documentation/foxy/Installation.html)
   - [Galactic](https://docs.ros.org/en/ros2_documentation/galactic/Installation.html)
   - [Humble](https://docs.ros.org/en/ros2_documentation/humble/Installation.html)
+  - [Jazzy](https://docs.ros.org/en/ros2_documentation/jazzy/Installation.html)
 
 - ### 3.2 Install [Moveit2](https://moveit.ros.org/install-moveit2/binary/)  
 
@@ -105,6 +109,7 @@ __Reminder 1: If there are multiple people using ros2 in the current LAN, in ord
   - [Foxy](https://docs.ros.org/en/ros2_documentation/foxy/Concepts/About-Domain-ID.html)
   - [Galactic](https://docs.ros.org/en/ros2_documentation/galactic/Concepts/About-Domain-ID.html)
   - [Humble](https://docs.ros.org/en/ros2_documentation/humble/Concepts/About-Domain-ID.html)
+  - [Jazzy](https://docs.ros.org/en/ros2_documentation/jazzy/Concepts/About-Domain-ID.html)
 
 __Reminder 2： Remember to source the environment setup script before running any applications in xarm_ros2__
 
