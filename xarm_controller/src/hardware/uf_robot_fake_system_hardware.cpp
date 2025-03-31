@@ -112,6 +112,7 @@ namespace uf_robot_hardware
     CallbackReturn UFRobotFakeSystemHardware::on_deactivate(const rclcpp_lifecycle::State& previous_state)
     {
         RCLCPP_INFO(LOGGER, "Stopping ...please wait...");
+        node_thread_.join();
 
         RCLCPP_INFO(LOGGER, "System sucessfully deactivated!");
         return CallbackReturn::SUCCESS;
