@@ -47,6 +47,7 @@
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
+        <param name="sim_init">1.6006169319152832</param>
         <!-- <state_interface name="effort"/> -->
       </joint>
       <joint name="${prefix}joint2">
@@ -60,6 +61,7 @@
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
+        <param name="sim_init">0.6113756895065308</param>
         <!-- <state_interface name="effort"/> -->
       </joint>
       <joint name="${prefix}joint3">
@@ -73,6 +75,7 @@
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
+        <param name="sim_init">-1.262266755104065</param>
         <!-- <state_interface name="effort"/> -->
       </joint>
       <joint name="${prefix}joint4">
@@ -86,6 +89,7 @@
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
+        <param name="sim_init">-0.024150609970092773</param>
         <!-- <state_interface name="effort"/> -->
       </joint>
       <joint name="${prefix}joint5">
@@ -99,6 +103,7 @@
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
+        <param name="sim_init">-1.3364357948303223</param>
         <!-- <state_interface name="effort"/> -->
       </joint>
       <joint name="${prefix}joint6">
@@ -112,6 +117,7 @@
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
+        <param name="sim_init">1.5619778633117676</param>
         <!-- <state_interface name="effort"/> -->
       </joint>
     </ros2_control>
