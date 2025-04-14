@@ -373,6 +373,10 @@ namespace uf_robot_hardware
         int cmd_ret = 0;
         if (velocity_control_) {
             for (int i = 0; i < velocity_cmds_.size(); i++) { 
+                if (std::isnan(velocity_cmds_[i])) {
+                    RCLCPP_ERROR(LOGGER, "[%s] velocity_cmds_[%d] is NaN", robot_ip_.c_str(), i);
+                    return hardware_interface::return_type::ERROR;
+                }
                 cmds_float_[i] = (float)velocity_cmds_[i];
             }
             // RCLCPP_INFO(LOGGER, "[%s] velocity: %s", robot_ip_.c_str(), vel_str.c_str());
