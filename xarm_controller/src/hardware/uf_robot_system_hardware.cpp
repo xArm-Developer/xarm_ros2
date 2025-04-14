@@ -378,10 +378,17 @@ namespace uf_robot_hardware
             // RCLCPP_INFO(LOGGER, "[%s] velocity: %s", robot_ip_.c_str(), vel_str.c_str());
             cmd_ret = xarm_driver_.arm->vc_set_joint_velocity(cmds_float_, true, VELO_DURATION);
             if (cmd_ret != 0) {
-                RCLCPP_WARN(LOGGER, "[%s] vc_set_joint_velocity, ret=%d", robot_ip_.c_str(), cmd_ret);
+                std::stringstream vel_commands;
+                for (int i = 0; i < 7; i++) {
+                    vel_commands << cmds_float_[i] << " ";
+                }
+                RCLCPP_WARN(LOGGER, "[%s] vc_set_joint_velocity, ret=%d, commands: %s", robot_ip_.c_str(), cmd_ret, vel_commands.str().c_str());
             }
         }
         else {
+            RCLCPP_ERROR(LOGGER, "We should never be in position control mode. Something must have gone wrong");
+            return hardware_interface::return_type::ERROR;
+
             for (int i = 0; i < position_cmds_.size(); i++) { 
                 cmds_float_[i] = (float)position_cmds_[i];
             }
