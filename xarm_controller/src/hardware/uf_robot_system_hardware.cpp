@@ -373,15 +373,26 @@ namespace uf_robot_hardware
         int cmd_ret = 0;
         if (velocity_control_) {
             for (int i = 0; i < velocity_cmds_.size(); i++) { 
+                if (std::isnan(velocity_cmds_[i])) {
+                    RCLCPP_ERROR(LOGGER, "[%s] velocity_cmds_[%d] is NaN", robot_ip_.c_str(), i);
+                    return hardware_interface::return_type::ERROR;
+                }
                 cmds_float_[i] = (float)velocity_cmds_[i];
             }
             // RCLCPP_INFO(LOGGER, "[%s] velocity: %s", robot_ip_.c_str(), vel_str.c_str());
             cmd_ret = xarm_driver_.arm->vc_set_joint_velocity(cmds_float_, true, VELO_DURATION);
             if (cmd_ret != 0) {
-                RCLCPP_WARN(LOGGER, "[%s] vc_set_joint_velocity, ret=%d", robot_ip_.c_str(), cmd_ret);
+                std::stringstream vel_commands;
+                for (int i = 0; i < 7; i++) {
+                    vel_commands << cmds_float_[i] << " ";
+                }
+                RCLCPP_WARN(LOGGER, "[%s] vc_set_joint_velocity, ret=%d, commands: %s", robot_ip_.c_str(), cmd_ret, vel_commands.str().c_str());
             }
         }
         else {
+            RCLCPP_ERROR(LOGGER, "We should never be in position control mode. Something must have gone wrong");
+            return hardware_interface::return_type::ERROR;
+
             for (int i = 0; i < position_cmds_.size(); i++) { 
                 cmds_float_[i] = (float)position_cmds_[i];
             }
