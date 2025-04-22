@@ -21,8 +21,15 @@ namespace uf_robot_hardware
 
         node_ = rclcpp::Node::make_shared("uf_robot_fake_hw");
         joint_state_pub_ = node_->create_publisher<sensor_msgs::msg::JointState>("joint_states", 1000);
+        // Add a flag to indicate whether the node should shut down
+        
+        stop_spin_flag.store(false);
+        
         node_thread_ = std::thread([this]() {
-            rclcpp::spin(node_);
+            while (!stop_spin_flag.load()) {
+                rclcpp::spin_some(node_); // Use spin_some instead of spin to allow frequent checks
+                std::this_thread::sleep_for(std::chrono::milliseconds(100)); // Poll every 100ms
+            }
         });
         
         joint_state_msg_.header.frame_id = "joint-state data";
@@ -112,11 +119,20 @@ namespace uf_robot_hardware
     CallbackReturn UFRobotFakeSystemHardware::on_deactivate(const rclcpp_lifecycle::State& previous_state)
     {
         RCLCPP_INFO(LOGGER, "Stopping ...please wait...");
-        node_thread_.join();
+        // Set stop flag to true to stop the spin loop
+        stop_spin_flag.store(true);
 
-        RCLCPP_INFO(LOGGER, "System sucessfully deactivated!");
+
+        // Wait for the thread to finish
+        if (node_thread_.joinable()) {
+            node_thread_.join();
+            RCLCPP_INFO(LOGGER, "Node thread joined successfully.");
+        }
+
+        RCLCPP_INFO(LOGGER, "System successfully deactivated!");
         return CallbackReturn::SUCCESS;
     }
+
 
     hardware_interface::return_type UFRobotFakeSystemHardware::read(const rclcpp::Time & time, const rclcpp::Duration &period)
     {

@@ -50,6 +50,7 @@ namespace uf_robot_hardware
         std::vector<double> velocity_cmds_;
         std::vector<double> position_states_;
         std::vector<double> velocity_states_;
+        std::atomic<bool> stop_spin_flag;
 
         std::shared_ptr<rclcpp::Node> node_;
         std::thread node_thread_;
