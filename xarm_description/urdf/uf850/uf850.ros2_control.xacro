@@ -47,7 +47,7 @@
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
-        <param name="sim_init">1.6006169319152832</param>
+        <param name="sim_init">0.0140666039660573</param>
         <!-- <state_interface name="effort"/> -->
       </joint>
       <joint name="${prefix}joint2">
@@ -61,7 +61,7 @@
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
-        <param name="sim_init">0.6113756895065308</param>
+        <param name="sim_init">0.32001715898513794</param>
         <!-- <state_interface name="effort"/> -->
       </joint>
       <joint name="${prefix}joint3">
@@ -75,7 +75,7 @@
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
-        <param name="sim_init">-1.262266755104065</param>
+        <param name="sim_init">-0.7825928926467896</param>
         <!-- <state_interface name="effort"/> -->
       </joint>
       <joint name="${prefix}joint4">
@@ -89,7 +89,7 @@
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
-        <param name="sim_init">-0.024150609970092773</param>
+        <param name="sim_init">-0.06832542270421982</param>
         <!-- <state_interface name="effort"/> -->
       </joint>
       <joint name="${prefix}joint5">
@@ -103,7 +103,7 @@
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
-        <param name="sim_init">-1.3364357948303223</param>
+        <param name="sim_init">-1.0955243110656738</param>
         <!-- <state_interface name="effort"/> -->
       </joint>
       <joint name="${prefix}joint6">
@@ -117,7 +117,7 @@
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
-        <param name="sim_init">1.5619778633117676</param>
+        <param name="sim_init">2.342494010925293</param>
         <!-- <state_interface name="effort"/> -->
       </joint>
     </ros2_control>
