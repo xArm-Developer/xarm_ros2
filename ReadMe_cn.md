@@ -393,7 +393,7 @@ __注意4: 以下描述的<hw_ns>用实际的替换，xarm系列默认为xarm, �
         ```
 
 - ### 5.9 xarm_moveit_servo
-    此模块用于通过外部输入来控制机械臂, 基于[moveit_servo](http://moveit2_tutorials.picknik.ai/doc/realtime_servo/realtime_servo_tutorial.html)。  
+    此模块用于通过外部输入来控制机械臂, 基于[moveit_servo](https://moveit.picknik.ai/main/doc/examples/realtime_servo/realtime_servo_tutorial.html)。  
     - 通过 __XBOX360__ 手柄控制
         - 左摇杆控制TCP的X和Y
         - 右摇杆控制TCP的ROLL和PITCH
