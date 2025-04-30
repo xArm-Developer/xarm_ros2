@@ -61,8 +61,6 @@ namespace uf_robot_hardware
 
         std::string robot_ip_;
 
-        float prev_cmds_float_[7];
-		float cmds_float_[7];
         std::vector<double> position_cmds_;
         std::vector<double> velocity_cmds_;
         std::vector<double> position_states_;
@@ -73,11 +71,6 @@ namespace uf_robot_hardware
 
         long int read_cnts_;
         long int read_failed_cnts_;
-        
-		float curr_read_position_[7];
-		float curr_read_velocity_[7];
-		float curr_read_effort_[7];
-        
 
         std::shared_ptr<rclcpp::Node> node_;
         std::shared_ptr<rclcpp::Node> hw_node_;

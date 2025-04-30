@@ -175,8 +175,6 @@ namespace uf_robot_hardware
 
         read_cnts_ = 0;
         read_failed_cnts_ = 0;
-        memset(cmds_float_, 0, sizeof(cmds_float_));
-        memset(prev_cmds_float_, 0, sizeof(prev_cmds_float_));
 
         _init_ufactory_driver();
         
@@ -251,23 +249,16 @@ namespace uf_robot_hardware
 		xarm_driver_.arm->set_mode(XARM_MODE::VELO_JOINT);
 		xarm_driver_.arm->set_state(XARM_STATE::START);
 
-
+        // This section is probably not needed. When we activate the hardware, we can only get reasonable values
+        // from the robot after doing the read() function.
         for (uint i = 0; i < position_states_.size(); i++) {
-            if (std::isnan(position_states_[i])) {
-                position_states_[i] = 0;
-                position_cmds_[i] = 0;
-            } else {
-                position_cmds_[i] = position_states_[i];
-            }
+            position_cmds_[i] = position_states_[i];
         }
         for (uint i = 0; i < velocity_states_.size(); i++) {
-            if (std::isnan(velocity_states_[i])) {
-                velocity_states_[i] = 0;
-                velocity_cmds_[i] = 0;
-            } else {
-                velocity_cmds_[i] = velocity_states_[i];
-            }
+            velocity_cmds_[i] = 0.0;
         }
+
+        initialized_ = false;
         
         RCLCPP_INFO(LOGGER, "[%s] System Sucessfully started!", robot_ip_.c_str());
         return CallbackReturn::SUCCESS;
@@ -293,13 +284,17 @@ namespace uf_robot_hardware
             RCLCPP_ERROR(LOGGER, "Robot firmware version is lower than 1.8.103, please update the firmware to use new API");
             return hardware_interface::return_type::ERROR;
         }
-		read_code_ = xarm_driver_.arm->get_joint_states(curr_read_position_, curr_read_velocity_, curr_read_effort_);
+		float curr_read_position[7];
+		float curr_read_velocity[7];
+		float curr_read_effort[7];
+
+		read_code_ = xarm_driver_.arm->get_joint_states(curr_read_position, curr_read_velocity, curr_read_effort);
         read_ready_ = read_ready_ && _xarm_is_ready_read();
 
         if (read_code_ == 0 && read_ready_) {
             for (int j = 0; j < info_.joints.size(); j++) {
-                position_states_[j] = curr_read_position_[j];
-				velocity_states_[j] = curr_read_velocity_[j];
+                position_states_[j] = curr_read_position[j];
+				velocity_states_[j] = curr_read_velocity[j];
 
             }
             if (!initialized_) {
@@ -334,19 +329,20 @@ namespace uf_robot_hardware
         }
         initialized_ = true;
         
+		float cmds_float[7];
         int cmd_ret = 0;
         for (int i = 0; i < velocity_cmds_.size(); i++) { 
             if (std::isnan(velocity_cmds_[i])) {
                 RCLCPP_ERROR(LOGGER, "[%s] velocity_cmds_[%d] is NaN", robot_ip_.c_str(), i);
                 return hardware_interface::return_type::ERROR;
             }
-            cmds_float_[i] = (float)velocity_cmds_[i];
+            cmds_float[i] = (float)velocity_cmds_[i];
         }
-        cmd_ret = xarm_driver_.arm->vc_set_joint_velocity(cmds_float_, true, VELO_DURATION);
+        cmd_ret = xarm_driver_.arm->vc_set_joint_velocity(cmds_float, true, VELO_DURATION);
         if (cmd_ret != 0) {
             std::stringstream vel_commands;
             for (int i = 0; i < 7; i++) {
-                vel_commands << cmds_float_[i] << " ";
+                vel_commands << cmds_float[i] << " ";
             }
             RCLCPP_WARN(LOGGER, "[%s] vc_set_joint_velocity, ret=%d, commands: %s", robot_ip_.c_str(), cmd_ret, vel_commands.str().c_str());
         }
