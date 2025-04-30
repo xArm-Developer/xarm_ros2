@@ -71,7 +71,6 @@ namespace uf_robot_hardware
         bool velocity_control_;
         bool initialized_;
         bool read_ready_;
-        bool reload_controller_;
 
         long int read_cnts_;
         long int read_failed_cnts_;
@@ -106,8 +105,6 @@ namespace uf_robot_hardware
         bool _firmware_version_is_ge(int major, int minor, int revision);
 
         bool _need_reset(void);
-
-        void _reload_controller(void);
 
         void _init_ufactory_driver(void);
 

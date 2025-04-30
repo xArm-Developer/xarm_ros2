@@ -164,7 +164,6 @@ namespace uf_robot_hardware
         write_code_ = 0;
 
         initialized_ = false;
-        reload_controller_ = false;
 
         read_cnts_ = 0;
         read_max_time_ = 0;
@@ -324,15 +323,11 @@ namespace uf_robot_hardware
                     position_cmds_[i] = position_states_[i];
                     velocity_cmds_[i] = 0.0;
                 }
-                if (reload_controller_ && _check_cmds_is_change(curr_read_position_, prev_read_position_)) {
-                    _reload_controller();
-                }
             }
             memcpy(prev_read_position_, curr_read_position_, sizeof(float) * 7);
             prev_read_time_ = curr_read_time_;
         }
         else {
-            // initialized_ = read_ready_ && _xarm_is_ready_write();
             if (read_code_) {
                 read_failed_cnts_ += 1;
                 RCLCPP_INFO(LOGGER, "[%s] Read() returns: %d", robot_ip_.c_str(), read_code_);
@@ -352,7 +347,6 @@ namespace uf_robot_hardware
         if (_need_reset()) {
             RCLCPP_WARN_STREAM_THROTTLE(LOGGER, *get_clock(), 2000,
              "Robot arm is not in velocity control mode.");
-            if (initialized_) reload_controller_ = true;
             initialized_ = false;
             return hardware_interface::return_type::OK;
         }
@@ -379,23 +373,6 @@ namespace uf_robot_hardware
         }
 
         return hardware_interface::return_type::OK;
-    }
-
-    void UFRobotSystemHardware::_reload_controller(void) {
-        int ret = _call_request(client_list_controller_, req_list_controller_, res_list_controller_);
-        if (ret == 0 && res_list_controller_->controller.size() > 0) {
-            req_switch_controller_->activate_controllers.resize(res_list_controller_->controller.size());
-            req_switch_controller_->deactivate_controllers.resize(res_list_controller_->controller.size());
-            for (uint i = 0; i < res_list_controller_->controller.size(); i++) {
-                req_switch_controller_->activate_controllers[i] = res_list_controller_->controller[i].name;
-                req_switch_controller_->deactivate_controllers[i] = res_list_controller_->controller[i].name;
-            }
-            req_switch_controller_->strictness = controller_manager_msgs::srv::SwitchController::Request::BEST_EFFORT;
-            _call_request(client_switch_controller_, req_switch_controller_, res_switch_controller_);
-        }
-        if (ret == 0) {
-            reload_controller_ = false;
-        }
     }
 
     bool UFRobotSystemHardware::_check_cmds_is_change(float *prev, float *cur, double threshold)
