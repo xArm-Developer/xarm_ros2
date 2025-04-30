@@ -166,8 +166,6 @@ namespace uf_robot_hardware
         initialized_ = false;
 
         read_cnts_ = 0;
-        read_max_time_ = 0;
-        read_total_time_ = 0;
         read_failed_cnts_ = 0;
         memset(cmds_float_, 0, sizeof(cmds_float_));
         memset(prev_cmds_float_, 0, sizeof(prev_cmds_float_));
@@ -245,13 +243,6 @@ namespace uf_robot_hardware
 		xarm_driver_.arm->set_mode(velocity_control_ ? XARM_MODE::VELO_JOINT : XARM_MODE::SERVO);
 		xarm_driver_.arm->set_state(XARM_STATE::START);
 
-        req_list_controller_ = std::make_shared<controller_manager_msgs::srv::ListControllers::Request>();
-        res_list_controller_ = std::make_shared<controller_manager_msgs::srv::ListControllers::Response>();
-        req_switch_controller_ = std::make_shared<controller_manager_msgs::srv::SwitchController::Request>();
-        res_switch_controller_ = std::make_shared<controller_manager_msgs::srv::SwitchController::Response>();
-
-        client_list_controller_ = hw_node_->create_client<controller_manager_msgs::srv::ListControllers>("/controller_manager/list_controllers");
-        client_switch_controller_ = hw_node_->create_client<controller_manager_msgs::srv::SwitchController>("/controller_manager/switch_controller");
 
         for (uint i = 0; i < position_states_.size(); i++) {
             if (std::isnan(position_states_[i])) {
@@ -288,35 +279,20 @@ namespace uf_robot_hardware
     {
         read_cnts_ += 1;
         read_ready_ = _xarm_is_ready_read();
-        rclcpp::Time start = node_->get_clock()->now();
 
         bool use_new = _firmware_version_is_ge(1, 8, 103);
-        if (use_new)
-			read_code_ = xarm_driver_.arm->get_joint_states(curr_read_position_, curr_read_velocity_, curr_read_effort_);
-		else
-			read_code_ = xarm_driver_.arm->get_servo_angle(curr_read_position_);
-        
-        curr_read_time_ = node_->get_clock()->now();
-        read_ready_ = read_ready_ && _xarm_is_ready_read();
-        double time_sec = curr_read_time_.seconds() - start.seconds();
-        read_total_time_ += time_sec;
-        if (time_sec > read_max_time_) {
-            read_max_time_ = time_sec;
+        if (!use_new){
+            RCLCPP_ERROR(LOGGER, "Robot firmware version is lower than 1.8.103, please update the firmware to use new API");
+            return hardware_interface::return_type::ERROR;
         }
-        // if (read_cnts_ % 6000 == 0) {
-        //     RCLCPP_INFO(LOGGER, "[%s] [READ] cnt: %ld, max: %f, mean: %f, failed: %ld", robot_ip_.c_str(), read_cnts_, read_max_time_, read_total_time_ / read_cnts_, read_failed_cnts_);
-        // }
+		read_code_ = xarm_driver_.arm->get_joint_states(curr_read_position_, curr_read_velocity_, curr_read_effort_);
+        read_ready_ = read_ready_ && _xarm_is_ready_read();
+
         if (read_code_ == 0 && read_ready_) {
             for (int j = 0; j < info_.joints.size(); j++) {
                 position_states_[j] = curr_read_position_[j];
-				if (use_new) {
-					velocity_states_[j] = curr_read_velocity_[j];
-					// effort_states_[j] = curr_read_effort_[j];
-				}
-				else {
-					velocity_states_[j] = !initialized_ ? 0.0 : (curr_read_position_[j] - prev_read_position_[j]) / (curr_read_time_.seconds() - prev_read_time_.seconds());
-					// effort_states_[j] = 0.0;
-				}
+				velocity_states_[j] = curr_read_velocity_[j];
+
             }
             if (!initialized_) {
                 for (uint i = 0; i < position_states_.size(); i++) {
@@ -324,8 +300,6 @@ namespace uf_robot_hardware
                     velocity_cmds_[i] = 0.0;
                 }
             }
-            memcpy(prev_read_position_, curr_read_position_, sizeof(float) * 7);
-            prev_read_time_ = curr_read_time_;
         }
         else {
             if (read_code_) {
@@ -361,7 +335,6 @@ namespace uf_robot_hardware
                 }
                 cmds_float_[i] = (float)velocity_cmds_[i];
             }
-            // RCLCPP_INFO(LOGGER, "[%s] velocity: %s", robot_ip_.c_str(), vel_str.c_str());
             cmd_ret = xarm_driver_.arm->vc_set_joint_velocity(cmds_float_, true, VELO_DURATION);
             if (cmd_ret != 0) {
                 std::stringstream vel_commands;

@@ -74,30 +74,15 @@ namespace uf_robot_hardware
 
         long int read_cnts_;
         long int read_failed_cnts_;
-        double read_max_time_;
-        double read_total_time_;
         
-        float prev_read_position_[7];
 		float curr_read_position_[7];
 		float curr_read_velocity_[7];
 		float curr_read_effort_[7];
         
-        rclcpp::Time prev_read_time_;
-        rclcpp::Time curr_read_time_;
-        rclcpp::Time curr_write_time_;
-        rclcpp::Time prev_write_time_;
 
         std::shared_ptr<rclcpp::Node> node_;
         std::shared_ptr<rclcpp::Node> hw_node_;
         xarm_api::XArmDriver xarm_driver_;
-
-        std::shared_ptr<controller_manager_msgs::srv::ListControllers::Request> req_list_controller_;
-	    std::shared_ptr<controller_manager_msgs::srv::ListControllers::Response> res_list_controller_;
-        std::shared_ptr<controller_manager_msgs::srv::SwitchController::Request> req_switch_controller_;
-        std::shared_ptr<controller_manager_msgs::srv::SwitchController::Response> res_switch_controller_;
-
-        rclcpp::Client<controller_manager_msgs::srv::ListControllers>::SharedPtr client_list_controller_;
-        rclcpp::Client<controller_manager_msgs::srv::SwitchController>::SharedPtr client_switch_controller_;
 
         bool _check_cmds_is_change(float *prev, float *cur, double threshold = 0.0001);
         bool _xarm_is_ready_read(void);
