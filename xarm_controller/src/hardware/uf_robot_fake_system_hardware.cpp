@@ -45,6 +45,7 @@ namespace uf_robot_hardware
         for (int i = 0; i < info_.joints.size(); i++) {
             joint_state_msg_.name[i] = info_.joints[i].name;
             position_states_[i] = std::stod( info_.joints[i].parameters["sim_init"]);
+            joint_state_msg_.position[i] = position_states_[i];
         }
 
 
@@ -126,7 +127,10 @@ namespace uf_robot_hardware
     hardware_interface::return_type UFRobotFakeSystemHardware::write(const rclcpp::Time & time, const rclcpp::Duration &period)
     {
         for (int i = 0; i < position_states_.size(); i++) {
-            position_states_[i] *= velocity_cmds_[i] * period.seconds();
+            // hard code to 250Hz since I dont't see how to get the set control loop rate here. "period" is only the time the last write() took. 
+            position_states_[i] = position_states_[i] +  velocity_cmds_[i] * (1.0/250.0);
+
+            joint_state_msg_.position[i] = position_states_[i];
         }
         for (int i = 0; i < velocity_cmds_.size(); i++) { 
             velocity_states_[i] = velocity_cmds_[i];
