@@ -143,12 +143,21 @@ namespace uf_robot_hardware
         if (robot_type == "lite") add_bio_gripper = false;
         node_->set_parameter(rclcpp::Parameter("add_bio_gripper", add_bio_gripper));
 
+        bool velocity_control_set = false;
         it = info_.hardware_parameters.find("velocity_control");
         if (it != info_.hardware_parameters.end()) {
-            velocity_control_ = (it->second == "True" || it->second == "true");
+            velocity_control_set = (it->second == "True" || it->second == "true");
         }
-        RCLCPP_INFO(LOGGER, "[%s] dof: %d, velocity_control: %d, add_gripper: %d, add_bio_gripper: %d, baud_checkset: %d, default_gripper_baud: %d", 
-            robot_ip_.c_str(), dof, velocity_control_, add_gripper, add_bio_gripper, baud_checkset, default_gripper_baud);
+        else{
+            velocity_control_set = false; // parameter not set
+        }
+        if (!velocity_control_set) {
+            RCLCPP_ERROR(LOGGER, "velocity_control is not set in config file. We currently only support velocity_control mode.");
+            exit(1);
+        }
+
+        RCLCPP_INFO(LOGGER, "[%s] dof: %d, velocity_control_set: %d, add_gripper: %d, add_bio_gripper: %d, baud_checkset: %d, default_gripper_baud: %d", 
+            robot_ip_.c_str(), dof, velocity_control_set, add_gripper, add_bio_gripper, baud_checkset, default_gripper_baud);
         
         xarm_driver_.init(node_, robot_ip_);
     }
@@ -159,7 +168,6 @@ namespace uf_robot_hardware
             return CallbackReturn::ERROR;
         }
         info_ = info;
-        velocity_control_ = false;
         read_code_ = 0;
         write_code_ = 0;
 
@@ -240,7 +248,7 @@ namespace uf_robot_hardware
     CallbackReturn UFRobotSystemHardware::on_activate(const rclcpp_lifecycle::State& previous_state)
     {
         xarm_driver_.arm->motion_enable(true);
-		xarm_driver_.arm->set_mode(velocity_control_ ? XARM_MODE::VELO_JOINT : XARM_MODE::SERVO);
+		xarm_driver_.arm->set_mode(XARM_MODE::VELO_JOINT);
 		xarm_driver_.arm->set_state(XARM_STATE::START);
 
 
@@ -327,22 +335,20 @@ namespace uf_robot_hardware
         initialized_ = true;
         
         int cmd_ret = 0;
-        if (velocity_control_) {
-            for (int i = 0; i < velocity_cmds_.size(); i++) { 
-                if (std::isnan(velocity_cmds_[i])) {
-                    RCLCPP_ERROR(LOGGER, "[%s] velocity_cmds_[%d] is NaN", robot_ip_.c_str(), i);
-                    return hardware_interface::return_type::ERROR;
-                }
-                cmds_float_[i] = (float)velocity_cmds_[i];
+        for (int i = 0; i < velocity_cmds_.size(); i++) { 
+            if (std::isnan(velocity_cmds_[i])) {
+                RCLCPP_ERROR(LOGGER, "[%s] velocity_cmds_[%d] is NaN", robot_ip_.c_str(), i);
+                return hardware_interface::return_type::ERROR;
             }
-            cmd_ret = xarm_driver_.arm->vc_set_joint_velocity(cmds_float_, true, VELO_DURATION);
-            if (cmd_ret != 0) {
-                std::stringstream vel_commands;
-                for (int i = 0; i < 7; i++) {
-                    vel_commands << cmds_float_[i] << " ";
-                }
-                RCLCPP_WARN(LOGGER, "[%s] vc_set_joint_velocity, ret=%d, commands: %s", robot_ip_.c_str(), cmd_ret, vel_commands.str().c_str());
+            cmds_float_[i] = (float)velocity_cmds_[i];
+        }
+        cmd_ret = xarm_driver_.arm->vc_set_joint_velocity(cmds_float_, true, VELO_DURATION);
+        if (cmd_ret != 0) {
+            std::stringstream vel_commands;
+            for (int i = 0; i < 7; i++) {
+                vel_commands << cmds_float_[i] << " ";
             }
+            RCLCPP_WARN(LOGGER, "[%s] vc_set_joint_velocity, ret=%d, commands: %s", robot_ip_.c_str(), cmd_ret, vel_commands.str().c_str());
         }
 
         return hardware_interface::return_type::OK;
@@ -392,7 +398,7 @@ namespace uf_robot_hardware
         }
         last_state = curr_state;
 
-        if (!(velocity_control_ ? curr_mode == XARM_MODE::VELO_JOINT : curr_mode == XARM_MODE::SERVO)) {
+        if (curr_mode != XARM_MODE::VELO_JOINT) {
             if (last_mode != curr_mode) {
                 last_mode = curr_mode;
                 RCLCPP_WARN(LOGGER, "[%s] Robot Mode detected! Mode: %d", robot_ip_.c_str(), curr_mode);

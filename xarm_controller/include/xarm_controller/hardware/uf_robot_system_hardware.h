@@ -68,7 +68,6 @@ namespace uf_robot_hardware
         std::vector<double> position_states_;
         std::vector<double> velocity_states_;
 
-        bool velocity_control_;
         bool initialized_;
         bool read_ready_;
 
