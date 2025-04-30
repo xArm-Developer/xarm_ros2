@@ -358,18 +358,6 @@ namespace uf_robot_hardware
         }
         initialized_ = true;
         
-        // std::string pos_str = "[ ";
-        // std::string vel_str = "[ ";
-        // for (int i = 0; i < position_cmds_.size(); i++) { 
-        //     pos_str += std::to_string(position_cmds_[i]); 
-        //     pos_str += " ";
-        //     vel_str += std::to_string(velocity_cmds_[i]); 
-        //     vel_str += " ";
-        // }
-        // pos_str += "]";
-        // vel_str += "]";
-        // RCLCPP_INFO(LOGGER, "[%s] positon: %s, velocity: %s", robot_ip_.c_str(), pos_str.c_str(), vel_str.c_str());
-
         int cmd_ret = 0;
         if (velocity_control_) {
             for (int i = 0; i < velocity_cmds_.size(); i++) { 
@@ -387,28 +375,6 @@ namespace uf_robot_hardware
                     vel_commands << cmds_float_[i] << " ";
                 }
                 RCLCPP_WARN(LOGGER, "[%s] vc_set_joint_velocity, ret=%d, commands: %s", robot_ip_.c_str(), cmd_ret, vel_commands.str().c_str());
-            }
-        }
-        else {
-            RCLCPP_ERROR(LOGGER, "We should never be in position control mode. Something must have gone wrong");
-            return hardware_interface::return_type::ERROR;
-
-            for (int i = 0; i < position_cmds_.size(); i++) { 
-                cmds_float_[i] = (float)position_cmds_[i];
-            }
-            curr_write_time_ = node_->get_clock()->now();
-            if (curr_write_time_.seconds() - prev_write_time_.seconds() > 1 || _check_cmds_is_change(prev_cmds_float_, cmds_float_)) {
-                // RCLCPP_INFO(LOGGER, "[%s] positon: %s", robot_ip_.c_str(), pos_str.c_str());
-                cmd_ret = xarm_driver_.arm->set_servo_angle_j(cmds_float_, 0, 0, 0);
-                if (cmd_ret != 0) {
-                    RCLCPP_WARN(LOGGER, "[%s] set_servo_angle_j, ret= %d", robot_ip_.c_str(), cmd_ret);
-                }
-                if (cmd_ret == 0) {
-                    prev_write_time_ = curr_write_time_;
-                    for (int i = 0; i < 7; i++) { 
-                        prev_cmds_float_[i] = (float)cmds_float_[i];
-                    }
-                }
             }
         }
 
