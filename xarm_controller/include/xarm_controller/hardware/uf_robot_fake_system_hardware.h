@@ -46,7 +46,6 @@ namespace uf_robot_hardware
         hardware_interface::HardwareInfo info_;
     
     private:
-        std::vector<double> position_cmds_;
         std::vector<double> velocity_cmds_;
         std::vector<double> position_states_;
         std::vector<double> velocity_states_;
