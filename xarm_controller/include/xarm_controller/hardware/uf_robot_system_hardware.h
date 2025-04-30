@@ -75,7 +75,6 @@ namespace uf_robot_hardware
         std::shared_ptr<rclcpp::Node> hw_node_;
         xarm_api::XArmDriver xarm_driver_;
 
-        bool _check_cmds_is_change(float *prev, float *cur, double threshold = 0.0001);
         bool _xarm_is_ready_read(void);
         bool _xarm_is_ready_write(void);
         bool _firmware_version_is_ge(int major, int minor, int revision);

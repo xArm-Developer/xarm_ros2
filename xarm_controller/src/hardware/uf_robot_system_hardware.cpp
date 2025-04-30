@@ -302,14 +302,6 @@ namespace uf_robot_hardware
         return hardware_interface::return_type::OK;
     }
 
-    bool UFRobotSystemHardware::_check_cmds_is_change(float *prev, float *cur, double threshold)
-	{
-		for (int i = 0; i < 7; i++) {
-            if (std::abs(cur[i] - prev[i]) > threshold) return true;
-        }
-        return false;
-	}
-
     bool UFRobotSystemHardware::_xarm_is_ready_read(void)
     {
         static int last_err = xarm_driver_.curr_err;
