@@ -18,33 +18,6 @@ namespace uf_robot_hardware
 {
     static rclcpp::Logger LOGGER = rclcpp::get_logger("UFACTORY.RobotHW");
 
-    template<typename ServiceT, typename SharedRequest, typename SharedResponse>
-    int UFRobotSystemHardware::_call_request(std::shared_ptr<ServiceT> client, SharedRequest req, SharedResponse& res)
-    {
-        bool is_try_again = false;
-        int failed_cnts = 0;
-        while (!client->wait_for_service(std::chrono::seconds(1))) {
-            if (!rclcpp::ok()) {
-                RCLCPP_ERROR(LOGGER, "[%s] Interrupted while waiting for the service. Exiting.", robot_ip_.c_str());
-                exit(1);
-            }
-            if (!is_try_again) {
-                is_try_again = true;
-                RCLCPP_WARN(LOGGER, "[%s] service %s not available, waiting ...", robot_ip_.c_str(), client->get_service_name());
-            }
-            failed_cnts += 1;
-            if (failed_cnts >= 5) return WAIT_SERVICE_TIMEOUT;
-        }
-        auto result_future = client->async_send_request(req);
-        if (rclcpp::spin_until_future_complete(hw_node_, result_future, std::chrono::seconds(1)) != rclcpp::FutureReturnCode::SUCCESS)
-        {
-            // RCLCPP_ERROR(LOGGER, "[%s] Failed to call service %s", robot_ip_.c_str(), client->get_service_name());
-            return SERVICE_CALL_FAILED;
-        }
-        res = result_future.get();
-        return 0;
-    }
-
     void UFRobotSystemHardware::_init_ufactory_driver(void)
     {
         rclcpp::NodeOptions node_options;
@@ -180,24 +153,9 @@ namespace uf_robot_hardware
         
         position_states_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
         velocity_states_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
-        position_cmds_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
         velocity_cmds_.resize(info_.joints.size(), std::numeric_limits<double>::quiet_NaN());
 
         for (const hardware_interface::ComponentInfo & joint : info_.joints) {
-            bool has_pos_cmd_interface = false;
-            for (auto i = 0u; i < joint.command_interfaces.size(); ++i) {
-                if (joint.command_interfaces[i].name == hardware_interface::HW_IF_POSITION) {
-                    has_pos_cmd_interface = true;
-                    break;
-                }
-            }
-            if (!has_pos_cmd_interface) {
-                RCLCPP_ERROR(LOGGER, "[%s] Joint '%s' has %ld command interfaces found, but not found %s command interface",
-                    robot_ip_.c_str(), joint.name.c_str(), joint.command_interfaces.size(), hardware_interface::HW_IF_POSITION
-                );
-                return CallbackReturn::ERROR;
-            }
-
             bool has_pos_state_interface = false;
             for (auto i = 0u; i < joint.state_interfaces.size(); ++i) {
                 if (joint.state_interfaces[i].name == hardware_interface::HW_IF_POSITION) {
@@ -235,8 +193,6 @@ namespace uf_robot_hardware
         std::vector<hardware_interface::CommandInterface> command_interfaces;
         for (uint i = 0; i < info_.joints.size(); i++) {
             command_interfaces.emplace_back(hardware_interface::CommandInterface(
-                info_.joints[i].name, hardware_interface::HW_IF_POSITION, &position_cmds_[i]));
-            command_interfaces.emplace_back(hardware_interface::CommandInterface(
                 info_.joints[i].name, hardware_interface::HW_IF_VELOCITY, &velocity_cmds_[i]));
         }
 
@@ -251,9 +207,6 @@ namespace uf_robot_hardware
 
         // This section is probably not needed. When we activate the hardware, we can only get reasonable values
         // from the robot after doing the read() function.
-        for (uint i = 0; i < position_states_.size(); i++) {
-            position_cmds_[i] = position_states_[i];
-        }
         for (uint i = 0; i < velocity_states_.size(); i++) {
             velocity_cmds_[i] = 0.0;
         }
@@ -299,7 +252,6 @@ namespace uf_robot_hardware
             }
             if (!initialized_) {
                 for (uint i = 0; i < position_states_.size(); i++) {
-                    position_cmds_[i] = position_states_[i];
                     velocity_cmds_[i] = 0.0;
                 }
             }

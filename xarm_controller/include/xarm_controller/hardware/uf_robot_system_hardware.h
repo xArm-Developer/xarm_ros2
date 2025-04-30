@@ -61,7 +61,6 @@ namespace uf_robot_hardware
 
         std::string robot_ip_;
 
-        std::vector<double> position_cmds_;
         std::vector<double> velocity_cmds_;
         std::vector<double> position_states_;
         std::vector<double> velocity_states_;
@@ -84,10 +83,6 @@ namespace uf_robot_hardware
         bool _need_reset(void);
 
         void _init_ufactory_driver(void);
-
-        template<typename ServiceT, typename SharedRequest = typename ServiceT::Request::SharedPtr, typename SharedResponse = typename ServiceT::Response::SharedPtr>
-        int _call_request(std::shared_ptr<ServiceT> client, SharedRequest req, SharedResponse& res);
-
     };
 }
 
