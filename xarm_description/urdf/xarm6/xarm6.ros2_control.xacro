@@ -43,7 +43,7 @@
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
-        <param name="sim_init">1.6006169319152832</param>
+        <param name="sim_init">-1.6006169319152832</param>
         <!-- <state_interface name="effort"/> -->
       </joint>
       <joint name="${prefix}joint2">

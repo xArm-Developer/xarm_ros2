@@ -39,7 +39,7 @@
           joint3_lower_limit="${-pi*0.99}" joint3_upper_limit="${0.061087}"
           joint4_lower_limit="${-pi*0.99}" joint4_upper_limit="${pi*0.99}"
           joint5_lower_limit="${-2.1642}" joint5_upper_limit="${2.1642}"
-          joint6_lower_limit="${-pi*0.99}" joint6_upper_limit="${pi*0.99}"/>
+          joint6_lower_limit="${-pi*1.99}" joint6_upper_limit="${pi*1.99}"/>
       </xacro:if>
       <xacro:uf850_urdf prefix="${prefix}"
         joint1_lower_limit="${-pi*0.99}" joint1_upper_limit="${pi*0.99}"
@@ -47,7 +47,7 @@
         joint3_lower_limit="${-pi*0.99}" joint3_upper_limit="${0.061087}"
         joint4_lower_limit="${-pi*0.99}" joint4_upper_limit="${pi*0.99}"
         joint5_lower_limit="${-2.1642}" joint5_upper_limit="${2.1642}"
-        joint6_lower_limit="${-pi*0.99}" joint6_upper_limit="${pi*0.99}"
+        joint6_lower_limit="${-pi*1.99}" joint6_upper_limit="${pi*1.99}"
         model1300="${model1300}"
         inertial_params_filename="${inertial_params_filename}"
         kinematics_params_filename="${kinematics_params_filename}"/>
