@@ -171,6 +171,32 @@ namespace uf_robot_hardware
             }
         }
 
+        button_pressed_pub_ = node_->create_publisher<std_msgs::msg::Empty>(
+            "button_pressed", rclcpp::SystemDefaultsQoS());
+        button_released_pub_ = node_->create_publisher<std_msgs::msg::Empty>(
+            "button_released", rclcpp::SystemDefaultsQoS());
+
+        button_pressed_timer_ = node_->create_wall_timer(
+            std::chrono::milliseconds(100),
+            [this]() {
+                // copy the value of the atomic button_pressed_ to a local variable
+                // to avoid race conditions
+                bool current_button_pressed = button_pressed_;
+                if (current_button_pressed != button_pressed_last_) {
+                    button_pressed_last_ = current_button_pressed;
+                    if (current_button_pressed) {
+                        RCLCPP_INFO(LOGGER, "[%s] Button pressed!", robot_ip_.c_str());
+                        std_msgs::msg::Empty msg;
+                        button_pressed_pub_->publish(msg);
+                    }
+                    else{
+                        RCLCPP_INFO(LOGGER, "[%s] Button released!", robot_ip_.c_str());
+                        std_msgs::msg::Empty msg;
+                        button_released_pub_->publish(msg);
+                    }
+                }
+            });
+
         RCLCPP_INFO(LOGGER, "[%s] System Sucessfully configured!", robot_ip_.c_str());
         return CallbackReturn::SUCCESS;
     }
@@ -267,6 +293,11 @@ namespace uf_robot_hardware
 				}
             }
         }
+
+        int digitals[8];
+        int digitals2[8];
+        xarm_driver_.arm->get_cgpio_digital(digitals, digitals2);
+        button_pressed_ = digitals2[0] == 0;
 
         return hardware_interface::return_type::OK;
     }

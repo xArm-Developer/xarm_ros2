@@ -14,6 +14,7 @@
 #include <queue>
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/string.hpp>
+#include <std_msgs/msg/empty.hpp>
 #include <sensor_msgs/msg/joint_state.hpp>
 #include "rclcpp_lifecycle/node_interfaces/lifecycle_node_interface.hpp"
 // #include "rclcpp_lifecycle/state.hpp"
@@ -24,7 +25,7 @@
 #include "controller_manager_msgs/srv/list_controllers.hpp"
 #include "controller_manager_msgs/srv/switch_controller.hpp"
 #include "xarm_api/xarm_driver.h"
-
+#include "rclcpp/timer.hpp"
 
 namespace uf_robot_hardware
 {
@@ -70,6 +71,13 @@ namespace uf_robot_hardware
 
         long int read_cnts_;
         long int read_failed_cnts_;
+
+        std::atomic<bool> button_pressed_ = false;
+        bool button_pressed_last_ = false;
+        rclcpp::TimerBase::SharedPtr button_pressed_timer_;
+
+        rclcpp::Publisher<std_msgs::msg::Empty>::SharedPtr button_pressed_pub_;
+        rclcpp::Publisher<std_msgs::msg::Empty>::SharedPtr button_released_pub_;
 
         std::shared_ptr<rclcpp::Node> node_;
         std::shared_ptr<rclcpp::Node> hw_node_;
