@@ -110,7 +110,7 @@ ufactory_driver:
       vc_set_joint_velocity: true
       vc_set_cartesian_velocity: true
       get_tgpio_digital: false
-      get_cgpio_digital: false
+      get_cgpio_digital: true
       get_tgpio_analog: false
       get_cgpio_analog: false
       set_tgpio_digital: false
