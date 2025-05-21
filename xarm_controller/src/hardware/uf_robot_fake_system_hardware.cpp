@@ -20,7 +20,7 @@ namespace uf_robot_hardware
         info_ = info;
 
         node_ = rclcpp::Node::make_shared("uf_robot_fake_hw");
-        joint_state_pub_ = node_->create_publisher<sensor_msgs::msg::JointState>("joint_states", 1000);
+        joint_state_pub_ = node_->create_publisher<sensor_msgs::msg::JointState>("robot_joint_states", 1000);
         // Add a flag to indicate whether the node should shut down
         
         stop_spin_flag.store(false);
