@@ -71,6 +71,7 @@ endif()
 install(DIRECTORY
   worlds
   launch
+  config
   DESTINATION share/${PROJECT_NAME}/
 )
 

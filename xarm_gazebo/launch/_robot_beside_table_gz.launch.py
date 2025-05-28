@@ -165,6 +165,18 @@ def launch_setup(context, *args, **kwargs):
         parameters=[{'use_sim_time': True}],
     )
 
+    # bridge gz and ros topics
+    bridge_params = os.path.join(get_package_share_directory('xarm_gazebo'),'config','gz_bridge.yaml')
+    ros_gz_bridge = Node(
+        package='ros_gz_bridge',
+        executable='parameter_bridge',
+        arguments=[
+            '--ros-args',
+            '-p',
+            f'config_file:={bridge_params}'
+        ]
+    )
+
     # rviz with moveit configuration
     rviz_config_file = PathJoinSubstitution([FindPackageShare(moveit_config_package_name), 'rviz', 'planner.rviz' if no_gui_ctrl.perform(context) == 'true' else 'moveit.rviz'])
     rviz2_node = Node(
@@ -226,6 +238,12 @@ def launch_setup(context, *args, **kwargs):
                 event_handler=OnProcessStart(
                     target_action=robot_state_publisher_node,
                     on_start=gazebo_spawn_entity_node,
+                )
+            ),
+            RegisterEventHandler(
+                event_handler=OnProcessStart(
+                    target_action=robot_state_publisher_node,
+                    on_start=ros_gz_bridge,
                 )
             ),
             RegisterEventHandler(
