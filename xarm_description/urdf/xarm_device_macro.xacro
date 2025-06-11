@@ -54,11 +54,11 @@
 
     <!-- Specify Mesh file path -->
     <xacro:property name="mesh_suffix" value="${mesh_suffix}" scope="parent"/>
-    <xacro:if value="${ros2_control_plugin == 'gazebo_ros2_control/GazeboSystem' or ros2_control_plugin == 'ign_ros2_control/IgnitionSystem'}">
+    <xacro:if value="${ros2_control_plugin == 'gazebo_ros2_control/GazeboSystem' or ros2_control_plugin == 'ign_ros2_control/IgnitionSystem' or ros2_control_plugin == 'gz_ros2_control/GazeboSimSystem'}">
       <!-- gazebo use -->
       <xacro:property name="mesh_path" value="file://$(find xarm_description)/meshes" scope="parent"/>
     </xacro:if>
-    <xacro:unless value="${ros2_control_plugin == 'gazebo_ros2_control/GazeboSystem' or ros2_control_plugin == 'ign_ros2_control/IgnitionSystem'}">
+    <xacro:unless value="${ros2_control_plugin == 'gazebo_ros2_control/GazeboSystem' or ros2_control_plugin == 'ign_ros2_control/IgnitionSystem' or ros2_control_plugin == 'gz_ros2_control/GazeboSimSystem'}">
       <xacro:property name="mesh_path" value="package://xarm_description/meshes" scope="parent"/>
     </xacro:unless> 
 
@@ -66,8 +66,8 @@
     <xacro:include filename="$(find xarm_description)/urdf/common/common.link.xacro" />
     <xacro:parse_link_inertial_filename dof="${dof}" robot_type="${robot_type}" robot_sn="${robot_sn}" model1300="${model1300}" />
     <xacro:property name="inertial_params_filename" value="${scope_parent_inertial_params_filename}"/>
-    <xacro:property name="new_model1300" value="${scope_parent_model1300}"/>
-
+    <xacro:property name="model_num" value="${scope_parent_model_num}"/>
+    <!-- Print the model number for debugging -->
     <!-- add one world link if no 'attach_to' specified  -->
     <xacro:if value="${attach_to == 'world' and create_attach_link}">
       <link name="world" />
@@ -99,7 +99,7 @@
     </xacro:unless>
 
     <xacro:if value="${kinematics_suffix != ''}">
-      <xacro:property name="kinematics_params_filename" value="/shared/${robot_name}_kinematics_${kinematics_suffix}.yaml"/>
+      <xacro:property name="kinematics_params_filename" value="$(find xarm_description)/config/kinematics/user/${robot_name}_kinematics_${kinematics_suffix}.yaml"/>
     </xacro:if>
     <xacro:unless value="${kinematics_suffix != ''}">
       <xacro:property name="kinematics_params_filename" value="$(find xarm_description)/config/kinematics/default/${robot_name}_default_kinematics.yaml"/>
@@ -117,7 +117,7 @@
         report_type="${report_type}"
         baud_checkset="${baud_checkset}"
         default_gripper_baud="${default_gripper_baud}" 
-        model1300="${new_model1300}"
+        model_num="${model_num}"
         inertial_params_filename="${inertial_params_filename}"
         kinematics_params_filename="${kinematics_params_filename}"
         hard_interface="${hard_interface}" />
@@ -135,7 +135,7 @@
           report_type="${report_type}"
           baud_checkset="${baud_checkset}"
           default_gripper_baud="${default_gripper_baud}"
-          model1300="${new_model1300}"
+          model_num="${model_num}"
           inertial_params_filename="${inertial_params_filename}"
           kinematics_params_filename="${kinematics_params_filename}"
           hard_interface="${hard_interface}" />
@@ -151,6 +151,7 @@
           report_type="${report_type}"
           baud_checkset="${baud_checkset}"
           default_gripper_baud="${default_gripper_baud}"
+          model_num="${model_num}"
           inertial_params_filename="${inertial_params_filename}"
           kinematics_params_filename="${kinematics_params_filename}"
           hard_interface="${hard_interface}" />
@@ -167,7 +168,7 @@
           report_type="${report_type}"
           baud_checkset="${baud_checkset}"
           default_gripper_baud="${default_gripper_baud}"
-          model1300="${new_model1300}"
+          model_num="${model_num}"
           inertial_params_filename="${inertial_params_filename}"
           kinematics_params_filename="${kinematics_params_filename}"
           hard_interface="${hard_interface}" />
@@ -186,7 +187,7 @@
           report_type="${report_type}"
           baud_checkset="${baud_checkset}"
           default_gripper_baud="${default_gripper_baud}" 
-          model1300="${new_model1300}"
+          model_num="${model_num}"
           inertial_params_filename="${inertial_params_filename}"
           kinematics_params_filename="${kinematics_params_filename}"
           hard_interface="${hard_interface}" />
@@ -203,7 +204,7 @@
           report_type="${report_type}"
           baud_checkset="${baud_checkset}"
           default_gripper_baud="${default_gripper_baud}" 
-          model1300="${new_model1300}"
+          model_num="${model_num}"
           inertial_params_filename="${inertial_params_filename}"
           kinematics_params_filename="${kinematics_params_filename}"
           hard_interface="${hard_interface}" />
@@ -290,12 +291,15 @@
         <xacro:if value="${ros2_control_params != ''}">
           <xacro:property name="new_ros2_control_params" value="${ros2_control_params}"/>
         </xacro:if>
+        <xacro:if value="${ros2_control_plugin == 'gz_ros2_control/GazeboSimSystem'}">
+          <xacro:gz_ros2_control_plugin ros2_control_params="${new_ros2_control_params}"/>
+        </xacro:if>
         <xacro:if value="${ros2_control_plugin == 'ign_ros2_control/IgnitionSystem'}">
           <xacro:ignition_ros2_control_plugin prefix="${prefix}" ros2_control_params="${new_ros2_control_params}"/>
         </xacro:if>
-        <xacro:unless value="${ros2_control_plugin == 'ign_ros2_control/IgnitionSystem'}">
+        <xacro:if value="${ros2_control_plugin == 'gazebo_ros2_control/GazeboSystem'}">
           <xacro:gazebo_ros2_control_plugin ros2_control_params="${new_ros2_control_params}"/>
-        </xacro:unless>
+        </xacro:if>
       </xacro:if>
       <xacro:unless value="${is_ros2}">
         <xacro:gazebo_ros1_control_plugin namespace="${hw_ns}"/>

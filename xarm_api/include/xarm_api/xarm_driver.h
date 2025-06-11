@@ -26,7 +26,7 @@ namespace xarm_api
     public:
         XArmDriver() {};
         ~XArmDriver();
-        void init(rclcpp::Node::SharedPtr& node, std::string &server_ip);
+        void init(rclcpp::Node::SharedPtr& node, std::string &server_ip, bool in_ros_control = false);
 
         void pub_robot_msg(xarm_msgs::msg::RobotMsg &rm_msg);
         void pub_joint_state(sensor_msgs::msg::JointState &js_msg);
@@ -38,6 +38,8 @@ namespace xarm_api
         std::string controller_error_interpreter(int err=-1);
 
         rclcpp::Logger get_logger() { return node_->get_logger(); }
+
+        sensor_msgs::msg::JointState* get_joint_states();
 
     private:
         void _report_connect_changed_callback(bool connected, bool reported);
@@ -65,6 +67,8 @@ namespace xarm_api
 
         void _init_publisher(void);
         void _init_service(void);
+        void _init_subscription(void);
+        bool _firmware_version_is_ge(int major, int minor, int revision);
 
     public:
         XArmAPI *arm;
@@ -78,6 +82,9 @@ namespace xarm_api
         rclcpp::Node::SharedPtr hw_node_;
 
         int dof_;
+        int joint_states_rate_;
+        bool in_ros_control_;
+        int vacuum_gripper_hardware_version_;
         std::string report_type_;
         std::vector<std::string> joint_names_;
         sensor_msgs::msg::JointState joint_state_msg_;
@@ -90,8 +97,6 @@ namespace xarm_api
         rclcpp::Publisher<xarm_msgs::msg::CIOState>::SharedPtr cgpio_state_pub_;
         rclcpp::Publisher<geometry_msgs::msg::WrenchStamped>::SharedPtr ftsensor_ext_state_pub_;
         rclcpp::Publisher<geometry_msgs::msg::WrenchStamped>::SharedPtr ftsensor_raw_state_pub_;
-
-        rclcpp::Subscription<std_msgs::msg::Float32>::SharedPtr sleep_sub_;
 
         bool xarm_gripper_init_loop_;
         int xarm_gripper_speed_;
@@ -347,8 +352,12 @@ namespace xarm_api
         // MoveVelocity
         rclcpp::Service<xarm_msgs::srv::MoveVelocity>::SharedPtr service_vc_set_joint_velocity_;
         rclcpp::Service<xarm_msgs::srv::MoveVelocity>::SharedPtr service_vc_set_cartesian_velocity_;
+        rclcpp::Subscription<xarm_msgs::msg::MoveVelocity>::SharedPtr subscription_vc_set_joint_velocity_;
+        rclcpp::Subscription<xarm_msgs::msg::MoveVelocity>::SharedPtr subscription_vc_set_cartesian_velocity_;
         bool _vc_set_joint_velocity(const std::shared_ptr<xarm_msgs::srv::MoveVelocity::Request> req, std::shared_ptr<xarm_msgs::srv::MoveVelocity::Response> res);
+        void _vc_set_joint_velocity_topic_callback(const xarm_msgs::msg::MoveVelocity::SharedPtr msg);
         bool _vc_set_cartesian_velocity(const std::shared_ptr<xarm_msgs::srv::MoveVelocity::Request> req, std::shared_ptr<xarm_msgs::srv::MoveVelocity::Response> res);
+        void _vc_set_cartesian_velocity_topic_callback(const xarm_msgs::msg::MoveVelocity::SharedPtr msg);
 
         // GetDigitalIO
         rclcpp::Service<xarm_msgs::srv::GetDigitalIO>::SharedPtr service_get_tgpio_digital_;

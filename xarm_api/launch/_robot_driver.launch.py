@@ -15,7 +15,7 @@ from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 from launch import LaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.launch_description_sources import load_python_launch_file_as_module
+from uf_ros_lib.uf_robot_utils import  generate_robot_api_params
 
 
 def launch_setup(context, *args, **kwargs):
@@ -55,20 +55,22 @@ def launch_setup(context, *args, **kwargs):
     dof = LaunchConfiguration('dof', default=7)
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     add_gripper = LaunchConfiguration('add_gripper', default=False)
+    add_bio_gripper = LaunchConfiguration('add_bio_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     prefix = LaunchConfiguration('prefix', default='')
     baud_checkset = LaunchConfiguration('baud_checkset', default=True)
     default_gripper_baud = LaunchConfiguration('default_gripper_baud', default=2000000)
+    joint_states_rate = LaunchConfiguration('joint_states_rate', default=-1)
     
     show_rviz = LaunchConfiguration('show_rviz', default=False)
     robot_type = LaunchConfiguration('robot_type', default='xarm')
+    extra_robot_api_params_path = LaunchConfiguration('extra_robot_api_params_path', default='')
     
-    mod = load_python_launch_file_as_module(os.path.join(get_package_share_directory('xarm_api'), 'launch', 'lib', 'robot_api_lib.py'))
-    generate_robot_api_params = getattr(mod, 'generate_robot_api_params')
     robot_params = generate_robot_api_params(
         os.path.join(get_package_share_directory('xarm_api'), 'config', 'xarm_params.yaml'),
         os.path.join(get_package_share_directory('xarm_api'), 'config', 'xarm_user_params.yaml'),
-        LaunchConfiguration('ros_namespace', default='').perform(context), node_name='ufactory_driver'
+        LaunchConfiguration('ros_namespace', default='').perform(context), node_name='ufactory_driver',
+        extra_robot_api_params_path=extra_robot_api_params_path.perform(context)
     )
     
     # robot driver node
@@ -86,10 +88,12 @@ def launch_setup(context, *args, **kwargs):
                 'report_type': report_type,
                 'dof': dof,
                 'add_gripper': add_gripper if robot_type.perform(context) != 'lite' else False,
+                'add_bio_gripper': add_bio_gripper,
                 'hw_ns': '{}{}'.format(prefix.perform(context).strip('/'), hw_ns.perform(context).strip('/')),
                 'prefix': prefix.perform(context).strip('/'),
                 'baud_checkset': baud_checkset,
                 'default_gripper_baud': default_gripper_baud,
+                'joint_states_rate': joint_states_rate,
             },
         ]
     )

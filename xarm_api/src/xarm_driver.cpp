@@ -15,24 +15,24 @@
 #define BIND_CLS_CB_1(func) std::bind(func, this, std::placeholders::_1)
 
 
-void* cmd_heart_beat(void* args)
-{
-    xarm_api::XArmDriver *my_driver = (xarm_api::XArmDriver *) args;
-    int cmdnum;
-    int cnt = 0;
-    int max_cnt = CMD_HEARTBEAT_SEC * 2;
-    while(my_driver->arm->is_connected())
-    {
-        sleep_milliseconds(500);
-        cnt += 1;
-        if (cnt >= max_cnt) {
-            cnt = 0;
-            my_driver->arm->get_cmdnum(&cmdnum);
-        }
-    }
-    RCLCPP_ERROR(my_driver->get_logger(), "xArm Control Connection Failed! Please Shut Down (Ctrl-C) and Retry ...");
-    return (void*)0;
-}
+// void* cmd_heart_beat(void* args)
+// {
+//     xarm_api::XArmDriver *my_driver = (xarm_api::XArmDriver *) args;
+//     int cmdnum;
+//     int cnt = 0;
+//     int max_cnt = CMD_HEARTBEAT_SEC * 2;
+//     while(my_driver->arm->is_connected())
+//     {
+//         sleep_milliseconds(500);
+//         cnt += 1;
+//         if (cnt >= max_cnt) {
+//             cnt = 0;
+//             my_driver->arm->get_cmdnum(&cmdnum);
+//         }
+//     }
+//     RCLCPP_ERROR(my_driver->get_logger(), "xArm Control Connection Failed! Please Shut Down (Ctrl-C) and Retry ...");
+//     return (void*)0;
+// }
 
 namespace xarm_api
 {   
@@ -65,14 +65,17 @@ namespace xarm_api
         curr_cmdnum = report_data_ptr->cmdnum;
 
         rclcpp::Time now_ = node_->get_clock()->now();
-        joint_state_msg_.header.stamp = now_;
-        for(int i = 0; i < dof_; i++)
+        bool use_new = _firmware_version_is_ge(1, 8, 103);
+        if (!use_new)
         {
-            joint_state_msg_.position[i] = (double)report_data_ptr->angle[i];
-            joint_state_msg_.velocity[i] = (double)report_data_ptr->rt_joint_spds[i];
-            joint_state_msg_.effort[i] = (double)report_data_ptr->tau[i];
+            for(int i = 0; i < dof_; i++)
+            {
+                // joint_state_msg_.position[i] = (double)report_data_ptr->angle[i];
+                if (!in_ros_control_)
+                    joint_state_msg_.velocity[i] = (double)report_data_ptr->rt_joint_spds[i];
+                joint_state_msg_.effort[i] = (double)report_data_ptr->tau[i];
+            }
         }
-        pub_joint_state(joint_state_msg_);
 
         xarm_state_msg_.state = report_data_ptr->state;
         xarm_state_msg_.mode = report_data_ptr->mode;
@@ -137,13 +140,15 @@ namespace xarm_api
         }
     }
 
-    void XArmDriver::init(rclcpp::Node::SharedPtr& node, std::string &server_ip)
+    void XArmDriver::init(rclcpp::Node::SharedPtr& node, std::string &server_ip, bool in_ros_control)
     {
         curr_err = 0;
         curr_state = 4;
         curr_mode = 0;
         curr_cmdnum = 0;
         arm = NULL;
+        in_ros_control_ = in_ros_control;
+        vacuum_gripper_hardware_version_ = 0;
 
         node_ = node;
         std::string prefix = "";
@@ -162,6 +167,8 @@ namespace xarm_api
                 joint_names_[i] = prefix + joint_names_[i];
             }
         }
+
+        node_->get_parameter_or("joint_states_rate", joint_states_rate_, -1);
 
         RCLCPP_INFO(node_->get_logger(), "robot_ip=%s, report_type=%s, dof=%d", server_ip.c_str(), report_type_.c_str(), dof_);
 
@@ -205,8 +212,8 @@ namespace xarm_api
             RCLCPP_WARN(node_->get_logger(), "UFACTORY ErrorCode: C%d: [ %s ]", err_warn[0], controller_error_interpreter(err_warn[0]).c_str());
         }
         
-        std::thread th(cmd_heart_beat, this);
-        th.detach();
+        // std::thread th(cmd_heart_beat, this);
+        // th.detach();
         int dbg_msg[16] = {0};
         arm->core->servo_get_dbmsg(dbg_msg);
 
@@ -224,10 +231,52 @@ namespace xarm_api
             }
         }
 
+        if (!in_ros_control_)
+        {
+            std::thread([this]() {
+                float cur_pos;
+                float position[7] = {0};
+                float velocity[7] = {0};
+                float effort[7] = {0};
+                if (joint_states_rate_ < 0) {
+                    joint_states_rate_ = report_type_ == "dev" ? 100 : 5;
+                }
+                bool use_new = _firmware_version_is_ge(1, 8, 103);
+                int microseconds = 1000000 / joint_states_rate_;
+                while (arm->is_connected())
+                {
+                    if (use_new)
+                        arm->get_joint_states(position, velocity, effort);
+                    else
+                        arm->get_servo_angle(position);
+
+                    joint_state_msg_.header.stamp = node_->get_clock()->now();
+                    for(int i = 0; i < dof_; i++)
+                    {
+                        joint_state_msg_.position[i] = (double)position[i];
+                        if (use_new)
+                        {
+                            joint_state_msg_.velocity[i] = (double)velocity[i];
+                            joint_state_msg_.effort[i] = (double)effort[i];
+                        }
+                    }
+                    pub_joint_state(joint_state_msg_);
+                    std::this_thread::sleep_for(std::chrono::microseconds(microseconds));
+                }
+                RCLCPP_ERROR(node_->get_logger(), "xArm Control Connection Failed! Please Shut Down (Ctrl-C) and Retry ...");
+            }).detach();
+        }
+
         _init_service();
+        _init_subscription();
         _init_xarm_gripper();
         _init_bio_gripper();
     }
+
+    bool XArmDriver::_firmware_version_is_ge(int major, int minor, int revision)
+	{
+		return arm->version_number[0] > major || (arm->version_number[0] == major && arm->version_number[1] > minor) || (arm->version_number[0] == major && arm->version_number[1] == minor && arm->version_number[2] >= revision);
+	}
 
     void XArmDriver::_init_publisher(void)
     {
@@ -247,6 +296,11 @@ namespace xarm_api
         cgpio_state_pub_ = hw_node_->create_publisher<xarm_msgs::msg::CIOState>("xarm_cgpio_states", 10);
         ftsensor_ext_state_pub_ = hw_node_->create_publisher<geometry_msgs::msg::WrenchStamped>("uf_ftsensor_ext_states", 10);
         ftsensor_raw_state_pub_ = hw_node_->create_publisher<geometry_msgs::msg::WrenchStamped>("uf_ftsensor_raw_states", 10);
+    }
+
+    sensor_msgs::msg::JointState* XArmDriver::get_joint_states()
+    {
+        return &joint_state_msg_;
     }
 
     void XArmDriver::_init_xarm_gripper(void)

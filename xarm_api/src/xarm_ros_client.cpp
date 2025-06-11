@@ -195,6 +195,12 @@ void XArmROSClient::init(rclcpp::Node::SharedPtr& node, std::string hw_ns)
     client_load_trajectory_ = _create_client<xarm_msgs::srv::TrajCtrl>("load_trajectory");
     
     client_playback_trajectory_ = _create_client<xarm_msgs::srv::TrajPlay>("playback_trajectory");
+
+    std::thread th([this]() -> void {
+        RCLCPP_INFO(node_->get_logger(), "ＳＰＩＮ () !!!!! **************************************");
+        rclcpp::spin(node_);
+    });
+    th.detach();
 }
 
 template<typename ServiceT>
@@ -218,11 +224,12 @@ int XArmROSClient::_call_request(std::shared_ptr<ServiceT> client, SharedRequest
         }
     }
     auto result_future = client->async_send_request(req);
-    if (rclcpp::spin_until_future_complete(node_, result_future) != rclcpp::FutureReturnCode::SUCCESS)
-    {
-        RCLCPP_ERROR(node_->get_logger(), "Failed to call service %s", client->get_service_name());
-        return SERVICE_CALL_FAILED;
-    }
+    // new 20240808 comment out
+    // if (rclcpp::spin_until_future_complete(node_, result_future) != rclcpp::FutureReturnCode::SUCCESS)
+    // {
+    //     RCLCPP_ERROR(node_->get_logger(), "Failed to call service %s", client->get_service_name());
+    //     return SERVICE_CALL_FAILED;
+    // }
     auto res = result_future.get();
     if (res->message.size() != 0)
         RCLCPP_DEBUG(node_->get_logger(), "call service %s, ret=%d, message(%s)", client->get_service_name(), res->ret, res->message.c_str());
@@ -246,11 +253,12 @@ int XArmROSClient::_call_request(std::shared_ptr<ServiceT> client, SharedRequest
         }
     }
     auto result_future = client->async_send_request(req);
-    if (rclcpp::spin_until_future_complete(node_, result_future) != rclcpp::FutureReturnCode::SUCCESS)
-    {
-        RCLCPP_ERROR(node_->get_logger(), "Failed to call service %s", client->get_service_name());
-        return SERVICE_CALL_FAILED;
-    }
+    // new 20240808 comment out
+    // if (rclcpp::spin_until_future_complete(node_, result_future) != rclcpp::FutureReturnCode::SUCCESS)
+    // {
+    //     RCLCPP_ERROR(node_->get_logger(), "Failed to call service %s", client->get_service_name());
+    //     return SERVICE_CALL_FAILED;
+    // }
     res = result_future.get();
     if (res->message.size() != 0)
         RCLCPP_DEBUG(node_->get_logger(), "call service %s, ret=%d, message(%s)", client->get_service_name(), res->ret, res->message.c_str());
