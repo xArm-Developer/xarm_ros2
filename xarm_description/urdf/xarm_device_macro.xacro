@@ -99,7 +99,7 @@
     </xacro:unless>
 
     <xacro:if value="${kinematics_suffix != ''}">
-      <xacro:property name="kinematics_params_filename" value="$(find xarm_description)/config/kinematics/user/${robot_name}_kinematics_${kinematics_suffix}.yaml"/>
+      <xacro:property name="kinematics_params_filename" value="/shared/${robot_name}_kinematics_${kinematics_suffix}.yaml"/>
     </xacro:if>
     <xacro:unless value="${kinematics_suffix != ''}">
       <xacro:property name="kinematics_params_filename" value="$(find xarm_description)/config/kinematics/default/${robot_name}_default_kinematics.yaml"/>
