@@ -50,7 +50,7 @@ ufactory_driver:
       get_linear_track_sco: false
       set_mode: true
       set_state: true
-      set_collision_sensitivity: false
+      set_collision_sensitivity: true
       set_teach_sensitivity: false
       set_gripper_mode: false
       set_gripper_enable: false
@@ -97,7 +97,7 @@ ufactory_driver:
       set_tcp_offset: false
       set_world_offset: false
       set_reduced_joint_range: false
-      set_tcp_load: false
+      set_tcp_load: true
       set_position: true
       set_tool_position: false
       set_position_aa: false
@@ -110,7 +110,7 @@ ufactory_driver:
       vc_set_joint_velocity: true
       vc_set_cartesian_velocity: true
       get_tgpio_digital: false
-      get_cgpio_digital: false
+      get_cgpio_digital: true
       get_tgpio_analog: false
       get_cgpio_analog: false
       set_tgpio_digital: false
@@ -134,7 +134,7 @@ ufactory_driver:
       save_record_trajectory: false
       load_trajectory: false
       playback_trajectory: false
-      iden_tcp_load: false
+      iden_tcp_load: true
       ft_sensor_iden_load: false
       ft_sensor_cali_load: false
       config_force_control: false

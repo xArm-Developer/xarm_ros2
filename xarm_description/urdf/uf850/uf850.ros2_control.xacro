@@ -37,81 +37,63 @@
         <!-- <plugin>uf_robot_hardware/UFRobotSystemHardware</plugin> -->
       </hardware>
       <joint name="${prefix}joint1">
-        <command_interface name="position">
-          <param name="min">${joint1_lower_limit}</param>
-          <param name="max">${joint1_upper_limit}</param>
-        </command_interface>
         <command_interface name="velocity">
           <param name="min">-3.14</param>
           <param name="max">3.14</param>
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
+        <param name="sim_init">0.0140666039660573</param>
         <!-- <state_interface name="effort"/> -->
       </joint>
       <joint name="${prefix}joint2">
-        <command_interface name="position">
-          <param name="min">${joint2_lower_limit}</param>
-          <param name="max">${joint2_upper_limit}</param>
-        </command_interface>
         <command_interface name="velocity">
           <param name="min">-3.14</param>
           <param name="max">3.14</param>
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
+        <param name="sim_init">0.32001715898513794</param>
         <!-- <state_interface name="effort"/> -->
       </joint>
       <joint name="${prefix}joint3">
-        <command_interface name="position">
-          <param name="min">${joint3_lower_limit}</param>
-          <param name="max">${joint3_upper_limit}</param>
-        </command_interface>
         <command_interface name="velocity">
           <param name="min">-3.14</param>
           <param name="max">3.14</param>
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
+        <param name="sim_init">-0.7825928926467896</param>
         <!-- <state_interface name="effort"/> -->
       </joint>
       <joint name="${prefix}joint4">
-        <command_interface name="position">
-          <param name="min">${joint4_lower_limit}</param>
-          <param name="max">${joint4_upper_limit}</param>
-        </command_interface>
         <command_interface name="velocity">
           <param name="min">-3.14</param>
           <param name="max">3.14</param>
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
+        <param name="sim_init">-0.06832542270421982</param>
         <!-- <state_interface name="effort"/> -->
       </joint>
       <joint name="${prefix}joint5">
-        <command_interface name="position">
-          <param name="min">${joint5_lower_limit}</param>
-          <param name="max">${joint5_upper_limit}</param>
-        </command_interface>
         <command_interface name="velocity">
           <param name="min">-3.14</param>
           <param name="max">3.14</param>
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
+        <param name="sim_init">-1.0955243110656738</param>
         <!-- <state_interface name="effort"/> -->
       </joint>
       <joint name="${prefix}joint6">
-        <command_interface name="position">
-          <param name="min">${joint6_lower_limit}</param>
-          <param name="max">${joint6_upper_limit}</param>
-        </command_interface>
         <command_interface name="velocity">
           <param name="min">-3.14</param>
           <param name="max">3.14</param>
         </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
+        <param name="sim_init">2.342494010925293</param>
         <!-- <state_interface name="effort"/> -->
       </joint>
     </ros2_control>
