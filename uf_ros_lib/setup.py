@@ -2,10 +2,11 @@ from setuptools import setup, find_packages
 
 package_name = 'uf_ros_lib'
 
+
 setup(
     name=package_name,
     version='0.0.0',
-    packages=find_packages(),
+    packages=find_packages(exclude=['test', 'test.*']),
     data_files=[
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
@@ -17,7 +18,6 @@ setup(
     maintainer_email='vinman.cub@gmail.com',
     description='TODO: Package description',
     license='TODO: License declaration',
-    tests_require=['pytest'],
     entry_points={
         'console_scripts': [
         ],
