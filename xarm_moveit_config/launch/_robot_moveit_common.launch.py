@@ -30,7 +30,6 @@ def launch_setup(context, *args, **kwargs):
     add_bio_gripper = LaunchConfiguration('add_bio_gripper', default=False)
     dof = LaunchConfiguration('dof', default=7)
     robot_type = LaunchConfiguration('robot_type', default='xarm')
-    gripper_type = LaunchConfiguration('gripper_type')
     no_gui_ctrl = LaunchConfiguration('no_gui_ctrl', default=False)
     ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='uf_robot_hardware/UFRobotFakeSystemHardware')
     controllers_name = LaunchConfiguration('controllers_name', default='fake_controllers')
@@ -103,7 +102,6 @@ def launch_setup(context, *args, **kwargs):
             'geometry_mesh_tcp_xyz': geometry_mesh_tcp_xyz,
             'geometry_mesh_tcp_rpy': geometry_mesh_tcp_rpy,
             'kinematics_suffix': kinematics_suffix,
-            "gripper_type": gripper_type,
         },
         srdf_arguments={
             'prefix': prefix,
@@ -278,7 +276,7 @@ def launch_setup(context, *args, **kwargs):
 
     xyz = attach_xyz.perform(context)[1:-1].split(' ')
     rpy = attach_rpy.perform(context)[1:-1].split(' ')
-    args = xyz + rpy + ['world', '{}link_base'.format(prefix.perform(context))]
+    args = xyz + rpy + [attach_to.perform(context), '{}link_base'.format(prefix.perform(context))]
 
     # Static TF
     static_tf = Node(

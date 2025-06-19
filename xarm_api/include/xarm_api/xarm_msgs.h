@@ -4,6 +4,7 @@
 #include <xarm_msgs/msg/robot_msg.hpp>
 #include <xarm_msgs/msg/io_state.hpp>
 #include <xarm_msgs/msg/cio_state.hpp>
+#include <xarm_msgs/msg/move_velocity.hpp>
 
 #include <xarm_msgs/srv/bio_gripper_ctrl.hpp>
 #include <xarm_msgs/srv/bio_gripper_enable.hpp>

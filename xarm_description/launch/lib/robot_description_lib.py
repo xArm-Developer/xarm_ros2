@@ -27,30 +27,3 @@ def get_xacro_file_content(
                 ' '
             ])
     return Command(command)
-
-
-# print xacro command. Useful for debugging!
-def get_xacro_command(
-    xacro_file, 
-    arguments, context):
-    command = [
-        PathJoinSubstitution([FindExecutable(name='xacro')]).perform(context),
-        ' ',
-        xacro_file.perform(context),
-        ' '
-    ]
-    if arguments and isinstance(arguments, dict):
-        for key, val in arguments.items():
-            if type(val) is str:
-                command.extend([
-                    '{}:='.format(key),
-                    val,
-                    ' '
-                ])
-            else:
-                command.extend([
-                    '{}:='.format(key),
-                    val.perform(context),
-                    ' '
-                ])
-    return "".join(command)

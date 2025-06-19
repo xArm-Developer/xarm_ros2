@@ -57,6 +57,7 @@ class KinematicsYAML(BaseYamlSubstitution):
         file_path = self.__file_path if self.__file_path else (self.__package_path / 'config' / robot_name / 'kinematics.yaml')
 
         kinematics_yaml = load_yaml(file_path)
+        kinematics_yaml = kinematics_yaml if kinematics_yaml else {}
         if prefix:
             for name in list(kinematics_yaml.keys()):
                 kinematics_yaml['{}{}'.format(prefix, name)] = kinematics_yaml.pop(name)
@@ -122,10 +123,12 @@ class DualKinematicsYAML(BaseYamlSubstitution):
         file_path_2 = self.__file_path if self.__file_path else (self.__package_path / 'config' / robot_name_2 / 'kinematics.yaml')
 
         kinematics_yaml_1 = load_yaml(file_path_1)
+        kinematics_yaml_1 = kinematics_yaml_1 if kinematics_yaml_1 else {}
         if prefix_1:
             for name in list(kinematics_yaml_1.keys()):
                 kinematics_yaml_1['{}{}'.format(prefix_1, name)] = kinematics_yaml_1.pop(name)
         kinematics_yaml_2 = load_yaml(file_path_2)
+        kinematics_yaml_2 = kinematics_yaml_2 if kinematics_yaml_2 else {}
         if prefix_2:
             for name in list(kinematics_yaml_2.keys()):
                 kinematics_yaml_2['{}{}'.format(prefix_2, name)] = kinematics_yaml_2.pop(name)

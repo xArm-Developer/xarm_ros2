@@ -132,7 +132,8 @@ namespace uf_robot_hardware
         RCLCPP_INFO(LOGGER, "[%s] dof: %d, velocity_control_set: %d, add_gripper: %d, add_bio_gripper: %d, baud_checkset: %d, default_gripper_baud: %d", 
             robot_ip_.c_str(), dof, velocity_control_set, add_gripper, add_bio_gripper, baud_checkset, default_gripper_baud);
         
-        xarm_driver_.init(node_, robot_ip_);
+        xarm_driver_.init(node_, robot_ip_, true);
+        joint_state_msg_ = xarm_driver_.get_joint_states();
     }
 
     CallbackReturn UFRobotSystemHardware::on_init(const hardware_interface::HardwareInfo& info)
@@ -266,10 +267,15 @@ namespace uf_robot_hardware
 		float curr_read_position[7];
 		float curr_read_velocity[7];
 		float curr_read_effort[7];
-
+        rclcpp::Time start = node_->get_clock()->now();
 		read_code_ = xarm_driver_.arm->get_joint_states(curr_read_position, curr_read_velocity, curr_read_effort);
         read_ready_ = read_ready_ && _xarm_is_ready_read();
-
+        curr_read_time_ = node_->get_clock()->now();
+        double time_sec = curr_read_time_.seconds() - start.seconds();
+        read_total_time_ += time_sec;
+        if (time_sec > read_max_time_) {
+            read_max_time_ = time_sec;
+        }
         if (read_code_ == 0 && read_ready_) {
             for (int j = 0; j < info_.joints.size(); j++) {
                 position_states_[j] = curr_read_position[j];
@@ -281,6 +287,17 @@ namespace uf_robot_hardware
                     velocity_cmds_[i] = 0.0;
                 }
             }
+            // 20250318, update joint_states msg and publish
+            joint_state_msg_->header.stamp = curr_read_time_;
+            for(int i = 0; i < joint_state_msg_->position.size(); i++)
+            {
+                joint_state_msg_->position[i] = position_states_[i];
+                joint_state_msg_->velocity[i] = velocity_states_[i];
+                if (use_new)
+                    joint_state_msg_->effort[i] = (double)curr_read_effort[i];
+            }
+            xarm_driver_.pub_joint_state(*joint_state_msg_);
+
         }
         else {
             if (read_code_) {

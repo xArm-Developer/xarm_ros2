@@ -61,10 +61,13 @@ class CommonYAML(BaseYamlSubstitution):
         robot_dof = self.get_var_perform(self.__robot_dof, context)
         filename = self.get_var_perform(self.__file_name, context)
 
-        robot_name = '{}{}'.format(robot_type, robot_dof if robot_type == 'xarm' else '6' if robot_type == 'lite' else '')        
+        robot_name = '{}{}'.format(robot_type, robot_dof if robot_type == 'xarm' else '6' if robot_type == 'lite' else '')
         file_path = self.__file_path if self.__file_path else (self.__package_path / 'config' / robot_name / filename)
-        
-        return yaml.dump(load_yaml(file_path))
+        if not file_path.exists():
+            file_path = self.__package_path / 'config' / 'moveit_configs' / filename
+        common_yaml = load_yaml(file_path)
+        common_yaml = common_yaml if common_yaml else {}
+        return yaml.dump(common_yaml)
 
 
 @expose_substitution("dual-common-yaml")
@@ -115,8 +118,17 @@ class DualCommonYAML(BaseYamlSubstitution):
         file_path_1 = self.__file_path if self.__file_path else (self.__package_path / 'config' / robot_name_1 / filename)
         file_path_2 = self.__file_path if self.__file_path else (self.__package_path / 'config' / robot_name_2 / filename)
         
+        file_path = self.__package_path / 'config' / 'moveit_configs' / filename
+        if file_path.exists():
+            default_yaml = load_yaml(file_path)
+            default_yaml = default_yaml if default_yaml else {}
+        else:
+            default_yaml = {}
         yaml_1 = load_yaml(file_path_1)
         yaml_2 = load_yaml(file_path_2)
-        yaml_1.update(yaml_2)
+        yaml_1 = yaml_1 if yaml_1 else {}
+        yaml_2 = yaml_2 if yaml_2 else {}
+        default_yaml.update(yaml_1)
+        default_yaml.update(yaml_2)
 
-        return yaml.dump(yaml_1)
+        return yaml.dump(default_yaml)

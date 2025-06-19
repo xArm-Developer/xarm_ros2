@@ -12,7 +12,7 @@
   <depend>backward_ros</depend>
   <depend>xarm_description</depend>
   <depend>xarm_controller</depend>
-  <!-- <depend>xarm_gazebo</depend> -->
+  <depend>xarm_gazebo</depend>
 
   <exec_depend>rviz2</exec_depend>
   <exec_depend>xacro</exec_depend>
@@ -26,7 +26,10 @@
   <exec_depend>joint_trajectory_controller</exec_depend>
   <exec_depend>joint_state_broadcaster</exec_depend>
   <exec_depend>moveit_ros_move_group</exec_depend>
+  <exec_depend>uf_ros_lib</exec_depend>
 
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

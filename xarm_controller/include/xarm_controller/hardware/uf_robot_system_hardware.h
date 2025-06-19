@@ -60,6 +60,9 @@ namespace uf_robot_hardware
         int read_code_;
         int write_code_;
 
+        double read_max_time_;
+        double read_total_time_;
+        
         std::string robot_ip_;
 
         std::vector<double> velocity_cmds_;
@@ -79,10 +82,19 @@ namespace uf_robot_hardware
         rclcpp::Publisher<std_msgs::msg::Empty>::SharedPtr button_pressed_pub_;
         rclcpp::Publisher<std_msgs::msg::Empty>::SharedPtr button_released_pub_;
 
+		float curr_read_position_[7];
+		float curr_read_velocity_[7];
+		float curr_read_effort_[7];
+        
+        rclcpp::Time prev_read_time_;
+        rclcpp::Time curr_read_time_;
+        rclcpp::Time curr_write_time_;
+        rclcpp::Time prev_write_time_;
+
         std::shared_ptr<rclcpp::Node> node_;
         std::shared_ptr<rclcpp::Node> hw_node_;
         xarm_api::XArmDriver xarm_driver_;
-
+        sensor_msgs::msg::JointState *joint_state_msg_;
         bool _xarm_is_ready_read(void);
         bool _xarm_is_ready_write(void);
         bool _firmware_version_is_ge(int major, int minor, int revision);

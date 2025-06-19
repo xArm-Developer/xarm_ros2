@@ -70,8 +70,9 @@ class ControllersYAML(BaseYamlSubstitution):
         file_path = self.__file_path if self.__file_path else (self.__package_path / 'config' / robot_name / controllers_name)
 
         controllers_yaml = load_yaml(file_path)
+        controllers_yaml = controllers_yaml if controllers_yaml else {}
 
-        if add_gripper:
+        if robot_type != 'lite' and add_gripper:
             gripper_controllers_yaml = load_yaml(self.__package_path / 'config' / '{}_gripper'.format(robot_type) / controllers_name)
             if gripper_controllers_yaml:
                 for name in gripper_controllers_yaml['controller_names']:
@@ -79,7 +80,7 @@ class ControllersYAML(BaseYamlSubstitution):
                         if name not in controllers_yaml['controller_names']:
                             controllers_yaml['controller_names'].append(name)
                         controllers_yaml[name] = gripper_controllers_yaml[name]
-        elif add_bio_gripper:
+        elif robot_type != 'lite' and add_bio_gripper:
             gripper_controllers_yaml = load_yaml(self.__package_path / 'config' / 'bio_gripper' / controllers_name)
             if gripper_controllers_yaml:
                 for name in gripper_controllers_yaml['controller_names']:
@@ -177,8 +178,9 @@ class DualControllersYAML(BaseYamlSubstitution):
         file_path_2 = self.__file_path if self.__file_path else (self.__package_path / 'config' / robot_name_2 / controllers_name)
 
         controllers_yaml_1 = load_yaml(file_path_1)
+        controllers_yaml_1 = controllers_yaml_1 if controllers_yaml_1 else {}
 
-        if add_gripper_1:
+        if robot_type_1 != 'lite' and add_gripper_1:
             gripper_controllers_yaml = load_yaml(self.__package_path / 'config' / '{}_gripper'.format(robot_type_1) / controllers_name)
             if gripper_controllers_yaml:
                 for name in gripper_controllers_yaml['controller_names']:
@@ -186,7 +188,7 @@ class DualControllersYAML(BaseYamlSubstitution):
                         if name not in controllers_yaml_1['controller_names']:
                             controllers_yaml_1['controller_names'].append(name)
                         controllers_yaml_1[name] = gripper_controllers_yaml[name]
-        elif add_bio_gripper_1:
+        elif robot_type_1 != 'lite' and add_bio_gripper_1:
             gripper_controllers_yaml = load_yaml(self.__package_path / 'config' / 'bio_gripper' / controllers_name)
             if gripper_controllers_yaml:
                 for name in gripper_controllers_yaml['controller_names']:
@@ -204,8 +206,9 @@ class DualControllersYAML(BaseYamlSubstitution):
                     controllers_yaml_1['{}{}'.format(prefix_1, name)] = controllers_yaml_1.pop(name)
         
         controllers_yaml_2 = load_yaml(file_path_2)
+        controllers_yaml_2 = controllers_yaml_2 if controllers_yaml_2 else {}
 
-        if add_gripper_2:
+        if robot_type_2 != 'lite' and add_gripper_2:
             gripper_controllers_yaml = load_yaml(self.__package_path / 'config' / '{}_gripper'.format(robot_type_1) / controllers_name)
             if gripper_controllers_yaml:
                 for name in gripper_controllers_yaml['controller_names']:
@@ -213,7 +216,7 @@ class DualControllersYAML(BaseYamlSubstitution):
                         if name not in controllers_yaml_2['controller_names']:
                             controllers_yaml_2['controller_names'].append(name)
                         controllers_yaml_2[name] = gripper_controllers_yaml[name]
-        elif add_bio_gripper_2:
+        elif robot_type_2 != 'lite' and add_bio_gripper_2:
             gripper_controllers_yaml = load_yaml(self.__package_path / 'config' / 'bio_gripper' / controllers_name)
             if gripper_controllers_yaml:
                 for name in gripper_controllers_yaml['controller_names']:
