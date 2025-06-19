@@ -12,7 +12,7 @@
 #define SERVICE_IS_PERSISTENT_BUT_INVALID 998
 #define ROBOT_IS_DISCONNECTED -1
 #define WAIT_SERVICE_TIMEOUT 996
-#define VELO_DURATION 1
+#define VELO_DURATION 0.03
 
 namespace uf_robot_hardware
 {
