@@ -12,8 +12,9 @@
 #define SERVICE_IS_PERSISTENT_BUT_INVALID 998
 #define ROBOT_IS_DISCONNECTED -1
 #define WAIT_SERVICE_TIMEOUT 996
-#define VELO_DURATION 1
 
+#define VELO_DURATION 0.03
+#define TIMEOUT_DURATION 0.1
 namespace uf_robot_hardware
 {
     static rclcpp::Logger LOGGER = rclcpp::get_logger("UFACTORY.RobotHW");
@@ -329,6 +330,28 @@ namespace uf_robot_hardware
             return hardware_interface::return_type::OK;
         }
         initialized_ = true;
+
+        if (period.seconds() > TIMEOUT_DURATION){
+            RCLCPP_ERROR(LOGGER, "[%s] Write() period is too long: %f seconds, should be less than %f seconds." 
+                "Set velocity commands to zero, set robot state to STOP and return ERROR.", 
+                robot_ip_.c_str(), period.seconds(), TIMEOUT_DURATION);
+
+            float cmds_float[7];
+            std::fill_n(cmds_float, 7, 0.0f);
+            int cmd_ret = xarm_driver_.arm->vc_set_joint_velocity(cmds_float, true, TIMEOUT_DURATION);
+            if (cmd_ret != 0) {
+                std::stringstream vel_commands;
+                for (int i = 0; i < 7; i++) {
+                    vel_commands << cmds_float[i] << " ";
+                }
+                RCLCPP_ERROR(LOGGER, "[%s] vc_set_joint_velocity, ret=%d, commands: %s", robot_ip_.c_str(), cmd_ret, vel_commands.str().c_str());
+            }
+            cmd_ret = xarm_driver_.arm->set_state(XARM_STATE::STOP);
+            if (cmd_ret != 0) {
+                RCLCPP_ERROR(LOGGER, "[%s] set_state(STOP) failed, ret=%d", robot_ip_.c_str(), cmd_ret);
+            }
+            return hardware_interface::return_type::ERROR;
+        }
         
 		float cmds_float[7];
         int cmd_ret = 0;
