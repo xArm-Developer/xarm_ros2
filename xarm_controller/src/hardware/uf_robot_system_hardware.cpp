@@ -313,8 +313,9 @@ namespace uf_robot_hardware
 
         int digitals[8];
         int digitals2[8];
-        xarm_driver_.arm->get_cgpio_digital(digitals, digitals2);
-        button_pressed_ = digitals2[0] == 0;
+        if (xarm_driver_.arm->get_cgpio_digital(digitals, digitals2) == API_CODE::NORMAL){
+            button_pressed_ = digitals2[0] == 0;
+        }
 
         return hardware_interface::return_type::OK;
     }
