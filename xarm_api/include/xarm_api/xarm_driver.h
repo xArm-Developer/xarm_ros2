@@ -15,6 +15,7 @@
 #include <sensor_msgs/msg/joint_state.hpp>
 #include <geometry_msgs/msg/wrench_stamped.hpp>
 #include <control_msgs/action/gripper_command.hpp>
+#include <realtime_tools/realtime_publisher.hpp>
 
 #include "xarm_msgs.h"
 #include "xarm/wrapper/xarm_api.h"
@@ -93,6 +94,7 @@ namespace xarm_api
         xarm_msgs::msg::CIOState cgpio_state_msg_;
 
         rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr joint_state_pub_;
+        realtime_tools::RealtimePublisher<sensor_msgs::msg::JointState>::SharedPtr realtime_joint_state_pub_;
         rclcpp::Publisher<xarm_msgs::msg::RobotMsg>::SharedPtr robot_state_pub_;
         rclcpp::Publisher<xarm_msgs::msg::CIOState>::SharedPtr cgpio_state_pub_;
         rclcpp::Publisher<geometry_msgs::msg::WrenchStamped>::SharedPtr ftsensor_ext_state_pub_;
