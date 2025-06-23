@@ -292,6 +292,7 @@ namespace xarm_api
         xarm_state_msg_.angle.resize(dof_);
 
         joint_state_pub_ = hw_node_->create_publisher<sensor_msgs::msg::JointState>("joint_states", 10);
+        realtime_joint_state_pub_ = std::make_shared<realtime_tools::RealtimePublisher<sensor_msgs::msg::JointState>>(joint_state_pub_);
         robot_state_pub_ = hw_node_->create_publisher<xarm_msgs::msg::RobotMsg>("robot_states", 10);
         cgpio_state_pub_ = hw_node_->create_publisher<xarm_msgs::msg::CIOState>("xarm_cgpio_states", 10);
         ftsensor_ext_state_pub_ = hw_node_->create_publisher<geometry_msgs::msg::WrenchStamped>("uf_ftsensor_ext_states", 10);
@@ -737,7 +738,7 @@ namespace xarm_api
     
     void XArmDriver::pub_joint_state(sensor_msgs::msg::JointState &js_msg)
     {
-        joint_state_pub_->publish(js_msg);
+        realtime_joint_state_pub_->tryPublish(js_msg);
     }
 
     void XArmDriver::pub_cgpio_state(xarm_msgs::msg::CIOState &cio_msg)

@@ -44,6 +44,7 @@ find_package(control_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(xarm_msgs REQUIRED)
 find_package(xarm_sdk REQUIRED)
+find_package(realtime_tools REQUIRED)
 
 include_directories(
   include
@@ -51,7 +52,7 @@ include_directories(
   ${ament_INCLUDE_DIRS}
 )
 
-set(dependencies "rclcpp" "rclcpp_action" "std_msgs" "sensor_msgs" "control_msgs" "geometry_msgs" "xarm_msgs")
+set(dependencies "rclcpp" "rclcpp_action" "std_msgs" "sensor_msgs" "control_msgs" "geometry_msgs" "xarm_msgs" "realtime_tools")
 
 add_library(xarm_ros_driver SHARED
   src/xarm_driver.cpp
