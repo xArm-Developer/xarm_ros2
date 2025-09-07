@@ -27,6 +27,17 @@
           <param name="add_gripper">${add_gripper}</param>
           <param name="add_bio_gripper">${add_bio_gripper}</param>
         </xacro:if>
+
+        <xacro:if value="${ros2_control_plugin == 'robot_hw/IsaacArmSystem'}">
+          <param name="command_mode">
+            <xacro:if value="${velocity_control}">velocity</xacro:if>
+            <xacro:unless value="${velocity_control}">position</xacro:unless>
+          </param>
+          <param name="state_topic">/isaac/joint_state</param>
+          <param name="command_topic">/isaac/joint_command</param>
+          <param name="stale_ms">300</param>
+          <param name="zero_on_deactivate">true</param>
+        </xacro:if>
         <!-- fake -->
         <!-- <plugin>fake_components/GenericSystem</plugin> -->
 
@@ -37,82 +48,76 @@
         <!-- <plugin>uf_robot_hardware/UFRobotSystemHardware</plugin> -->
       </hardware>
       <joint name="${prefix}joint1">
-        <command_interface name="position">
-          <param name="min">${joint1_lower_limit}</param>
-          <param name="max">${joint1_upper_limit}</param>
-        </command_interface>
-        <command_interface name="velocity">
-          <param name="min">-3.14</param>
-          <param name="max">3.14</param>
-        </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
-        <!-- <state_interface name="effort"/> -->
+
+        <xacro:if value="${velocity_control}">
+          <command_interface name="velocity">
+            <param name="min">-3.14</param>
+            <param name="max"> 3.14</param>
+          </command_interface>
+        </xacro:if>
+        <xacro:unless value="${velocity_control}">
+          <command_interface name="position">
+            <param name="min">${joint1_lower_limit}</param>
+            <param name="max">${joint1_upper_limit}</param>
+          </command_interface>
+        </xacro:unless>
       </joint>
+
       <joint name="${prefix}joint2">
-        <command_interface name="position">
-          <param name="min">${joint2_lower_limit}</param>
-          <param name="max">${joint2_upper_limit}</param>
-        </command_interface>
-        <command_interface name="velocity">
-          <param name="min">-3.14</param>
-          <param name="max">3.14</param>
-        </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
-        <!-- <state_interface name="effort"/> -->
+        <xacro:if value="${velocity_control}">
+          <command_interface name="velocity"><param name="min">-3.14</param><param name="max">3.14</param></command_interface>
+        </xacro:if>
+        <xacro:unless value="${velocity_control}">
+          <command_interface name="position"><param name="min">${joint2_lower_limit}</param><param name="max">${joint2_upper_limit}</param></command_interface>
+        </xacro:unless>
       </joint>
+
       <joint name="${prefix}joint3">
-        <command_interface name="position">
-          <param name="min">${joint3_lower_limit}</param>
-          <param name="max">${joint3_upper_limit}</param>
-        </command_interface>
-        <command_interface name="velocity">
-          <param name="min">-3.14</param>
-          <param name="max">3.14</param>
-        </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
-        <!-- <state_interface name="effort"/> -->
+        <xacro:if value="${velocity_control}">
+          <command_interface name="velocity"><param name="min">-3.14</param><param name="max">3.14</param></command_interface>
+        </xacro:if>
+        <xacro:unless value="${velocity_control}">
+          <command_interface name="position"><param name="min">${joint3_lower_limit}</param><param name="max">${joint3_upper_limit}</param></command_interface>
+        </xacro:unless>
       </joint>
+
       <joint name="${prefix}joint4">
-        <command_interface name="position">
-          <param name="min">${joint4_lower_limit}</param>
-          <param name="max">${joint4_upper_limit}</param>
-        </command_interface>
-        <command_interface name="velocity">
-          <param name="min">-3.14</param>
-          <param name="max">3.14</param>
-        </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
-        <!-- <state_interface name="effort"/> -->
+        <xacro:if value="${velocity_control}">
+          <command_interface name="velocity"><param name="min">-3.14</param><param name="max">3.14</param></command_interface>
+        </xacro:if>
+        <xacro:unless value="${velocity_control}">
+          <command_interface name="position"><param name="min">${joint4_lower_limit}</param><param name="max">${joint4_upper_limit}</param></command_interface>
+        </xacro:unless>
       </joint>
+
       <joint name="${prefix}joint5">
-        <command_interface name="position">
-          <param name="min">${joint5_lower_limit}</param>
-          <param name="max">${joint5_upper_limit}</param>
-        </command_interface>
-        <command_interface name="velocity">
-          <param name="min">-3.14</param>
-          <param name="max">3.14</param>
-        </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
-        <!-- <state_interface name="effort"/> -->
+        <xacro:if value="${velocity_control}">
+          <command_interface name="velocity"><param name="min">-3.14</param><param name="max">3.14</param></command_interface>
+        </xacro:if>
+        <xacro:unless value="${velocity_control}">
+          <command_interface name="position"><param name="min">${joint5_lower_limit}</param><param name="max">${joint5_upper_limit}</param></command_interface>
+        </xacro:unless>
       </joint>
+
       <joint name="${prefix}joint6">
-        <command_interface name="position">
-          <param name="min">${joint6_lower_limit}</param>
-          <param name="max">${joint6_upper_limit}</param>
-        </command_interface>
-        <command_interface name="velocity">
-          <param name="min">-3.14</param>
-          <param name="max">3.14</param>
-        </command_interface>
         <state_interface name="position"/>
         <state_interface name="velocity"/>
-        <!-- <state_interface name="effort"/> -->
+        <xacro:if value="${velocity_control}">
+          <command_interface name="velocity"><param name="min">-3.14</param><param name="max">3.14</param></command_interface>
+        </xacro:if>
+        <xacro:unless value="${velocity_control}">
+          <command_interface name="position"><param name="min">${joint6_lower_limit}</param><param name="max">${joint6_upper_limit}</param></command_interface>
+        </xacro:unless>
       </joint>
     </ros2_control>
   </xacro:macro>
