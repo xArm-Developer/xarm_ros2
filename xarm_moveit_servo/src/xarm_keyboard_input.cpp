@@ -7,6 +7,7 @@
 
 #include <signal.h>
 #include <stdio.h>
+#include <thread>
 #include <unistd.h>
 #include "xarm_moveit_servo/xarm_keyboard_input.h"
 
@@ -35,16 +36,23 @@ KeyboardReader keyboard_reader_;
 
 KeyboardServoPub::KeyboardServoPub(rclcpp::Node::SharedPtr& node)
 : dof_(6), ros_queue_size_(10),
-cartesian_command_in_topic_("/servo_server/delta_twist_cmds"), 
-joint_command_in_topic_("/servo_server/delta_joint_cmds"), 
-robot_link_command_frame_("link_base"), 
-ee_frame_name_("link_eef"),
-planning_frame_("link_base"),
-joint_vel_cmd_(1.0),
-linear_pos_cmd_(0.5)
+  // make these RELATIVE so they resolve under your node's namespace (e.g., /arm1/...)
+  cartesian_command_in_topic_("cmd_ee"),
+  joint_command_in_topic_("joint_delta"),
+  // leave frames as-is; your launch/YAML can override them
+  robot_link_command_frame_("link_base"),
+  ee_frame_name_("link_eef"),
+  planning_frame_("link_base"),
+  joint_vel_cmd_(1.0),
+  linear_pos_cmd_(0.5)
 {
     node_ = node;
     // init parameter from node
+    // before reading params
+    joint_prefix_ = "arm1_";  // default; override per-namespace in launch
+
+    // after your other _declare_or_get_param(...) calls
+    _declare_or_get_param<std::string>(joint_prefix_, "joint_prefix", joint_prefix_);
     _declare_or_get_param<int>(dof_, "dof", dof_);
     _declare_or_get_param<int>(ros_queue_size_, "ros_queue_size", ros_queue_size_);
     _declare_or_get_param<std::string>(cartesian_command_in_topic_, "moveit_servo.cartesian_command_in_topic", cartesian_command_in_topic_);
@@ -54,29 +62,51 @@ linear_pos_cmd_(0.5)
     _declare_or_get_param<std::string>(planning_frame_, "moveit_servo.planning_frame", planning_frame_);
 
     if (cartesian_command_in_topic_.rfind("~/", 0) == 0) {
-        cartesian_command_in_topic_ = "/servo_server/" + cartesian_command_in_topic_.substr(2, cartesian_command_in_topic_.length());
+        cartesian_command_in_topic_ = cartesian_command_in_topic_.substr(2);
     }
     if (joint_command_in_topic_.rfind("~/", 0) == 0) {
-        joint_command_in_topic_ = "/servo_server/" + joint_command_in_topic_.substr(2, cartesian_command_in_topic_.length());
+        joint_command_in_topic_ = joint_command_in_topic_.substr(2); // <- fixed length bug
     }
 
     // Setup pub/sub
-    twist_pub_ = node_->create_publisher<geometry_msgs::msg::TwistStamped>(cartesian_command_in_topic_, ros_queue_size_);
-    joint_pub_ = node_->create_publisher<control_msgs::msg::JointJog>(joint_command_in_topic_, ros_queue_size_);
+    twist_pub_ = node_->create_publisher<geometry_msgs::msg::TwistStamped>(
+        cartesian_command_in_topic_, rclcpp::SensorDataQoS());
+    joint_pub_ = node_->create_publisher<control_msgs::msg::JointJog>(
+        joint_command_in_topic_, ros_queue_size_);
     // collision_pub_ = node_->create_publisher<moveit_msgs::msg::PlanningScene>("/planning_scene", 10);
 
     // Create a service client to start the ServoServer
-    servo_start_client_ = node_->create_client<std_srvs::srv::Trigger>("/servo_server/start_servo");
-    servo_start_client_->wait_for_service(std::chrono::seconds(1));
-    servo_start_client_->async_send_request(std::make_shared<std_srvs::srv::Trigger::Request>());
+    // --- params for service namespace + optional start ---
+    servo_srv_ns_ = "servo_node";        // becomes /<arm_ns>/servo_node/... under your namespace
+    bool try_start_service = false;
 
-    // Client for switching input types
-    switch_input_ = node_->create_client<moveit_msgs::srv::ServoCommandType>("/servo_server/switch_command_type");
-    servo_start_client_->wait_for_service(std::chrono::seconds(2));
+    _declare_or_get_param<std::string>(servo_srv_ns_, "servo_srv_ns", servo_srv_ns_);
+    _declare_or_get_param<bool>(try_start_service, "try_start_service", try_start_service);
+
+    // --- build clients against your ServoNode ---
+    switch_input_ = node_->create_client<moveit_msgs::srv::ServoCommandType>(
+        servo_srv_ns_ + std::string("/switch_command_type"));
+
+    // (optional) start service; many Servo builds don’t expose this
+    if (try_start_service) {
+    servo_start_client_ = node_->create_client<std_srvs::srv::Trigger>(
+        servo_srv_ns_ + std::string("/start_servo"));
+    if (servo_start_client_->wait_for_service(std::chrono::seconds(1))) {
+        auto req = std::make_shared<std_srvs::srv::Trigger::Request>();
+        servo_start_client_->async_send_request(req);
+    } else {
+        RCLCPP_WARN(node_->get_logger(), "Start service not available at %s",
+                    (servo_srv_ns_ + "/start_servo").c_str());
+    }
+    }
+
+    // init switching state
     command_type_ = -1;
     switch_request_ = std::make_shared<moveit_msgs::srv::ServoCommandType::Request>();
-    
-    RCLCPP_INFO(node_->get_logger(), "\n*********dof=%d, ros_queue_size=%d\n", dof_, ros_queue_size_);
+
+    RCLCPP_INFO(node_->get_logger(),
+    "Servo services under ns: %s  (switch: %s)",
+    servo_srv_ns_.c_str(), (servo_srv_ns_ + "/switch_command_type").c_str());
 }
 
 template <typename T>
@@ -114,6 +144,13 @@ void KeyboardServoPub::spin()
 void KeyboardServoPub::_switch_command_type(int command_type)
 {
     if (command_type == command_type_) return;
+
+    if (!switch_input_->wait_for_service(std::chrono::seconds(0))) {
+        RCLCPP_WARN(node_->get_logger(),
+                    "Service unavailable: %s",
+                    (servo_srv_ns_ + "/switch_command_type").c_str());
+        return;
+    }
     switch (command_type) {
         case 0:
         {
@@ -286,37 +323,37 @@ void KeyboardServoPub::keyLoop()
             break;
         case KEYCODE_1:
             RCLCPP_DEBUG(node_->get_logger(), "1");
-            joint_msg->joint_names.push_back("joint1");
+            joint_msg->joint_names.push_back(joint_prefix_ + "joint1");
             joint_msg->velocities.push_back(joint_vel_cmd_);
             publish_joint = true;
             break;
         case KEYCODE_2:
             RCLCPP_DEBUG(node_->get_logger(), "2");
-            joint_msg->joint_names.push_back("joint2");
+            joint_msg->joint_names.push_back(joint_prefix_ + "joint2");
             joint_msg->velocities.push_back(joint_vel_cmd_);
             publish_joint = true;
             break;
         case KEYCODE_3:
             RCLCPP_DEBUG(node_->get_logger(), "3");
-            joint_msg->joint_names.push_back("joint3");
+            joint_msg->joint_names.push_back(joint_prefix_ + "joint3");
             joint_msg->velocities.push_back(joint_vel_cmd_);
             publish_joint = true;
             break;
         case KEYCODE_4:
             RCLCPP_DEBUG(node_->get_logger(), "4");
-            joint_msg->joint_names.push_back("joint4");
+            joint_msg->joint_names.push_back(joint_prefix_ + "joint4");
             joint_msg->velocities.push_back(joint_vel_cmd_);
             publish_joint = true;
             break;
         case KEYCODE_5:
             RCLCPP_DEBUG(node_->get_logger(), "5");
-            joint_msg->joint_names.push_back("joint5");
+            joint_msg->joint_names.push_back(joint_prefix_ + "joint5");
             joint_msg->velocities.push_back(joint_vel_cmd_);
             publish_joint = true;
             break;
         case KEYCODE_6:
             RCLCPP_DEBUG(node_->get_logger(), "6");
-            joint_msg->joint_names.push_back("joint6");
+            joint_msg->joint_names.push_back(joint_prefix_ + "joint6");
             joint_msg->velocities.push_back(joint_vel_cmd_);
             publish_joint = true;
             break;

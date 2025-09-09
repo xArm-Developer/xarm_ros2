@@ -9,6 +9,13 @@
 #define __XARM_KEYBOARD_INPUT_H__
 
 #include <termios.h>
+
+#include <unistd.h>
+#include <cstring>
+#include <string>
+#include <memory>
+#include <stdexcept>
+
 #include <rclcpp/rclcpp.hpp>
 #include <geometry_msgs/msg/twist_stamped.hpp>
 #include <control_msgs/msg/joint_jog.hpp>
@@ -82,6 +89,10 @@ private:
     std::string ee_frame_name_;
 
     std::string planning_frame_;
+
+    std::string servo_srv_ns_;
+
+    std::string joint_prefix_;
 
     double joint_vel_cmd_;
     double linear_pos_cmd_;
