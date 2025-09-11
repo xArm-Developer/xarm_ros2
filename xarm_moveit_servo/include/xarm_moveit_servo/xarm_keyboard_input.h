@@ -69,18 +69,20 @@ private:
     template <typename T>
     void _declare_or_get_param(T& output_value, const std::string& param_name, const T default_value = T{});
     void spin();
-    void _switch_command_type(int command_type);
 
-    rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr twist_pub_;
+    rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr twist_pub_arm1_;
+    rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr twist_pub_arm2_;
     rclcpp::Publisher<control_msgs::msg::JointJog>::SharedPtr joint_pub_;
     rclcpp::Publisher<moveit_msgs::msg::PlanningScene>::SharedPtr collision_pub_;
     rclcpp::Client<std_srvs::srv::Trigger>::SharedPtr servo_start_client_;
-    rclcpp::Client<moveit_msgs::srv::ServoCommandType>::SharedPtr switch_input_;
+    rclcpp::Client<moveit_msgs::srv::ServoCommandType>::SharedPtr switch_input_arm1_;
+    rclcpp::Client<moveit_msgs::srv::ServoCommandType>::SharedPtr switch_input_arm2_;
     std::shared_ptr<moveit_msgs::srv::ServoCommandType::Request> switch_request_;
 
     int dof_;
     int ros_queue_size_;
-    int command_type_;
+    int arm1_command_type_;
+    int arm2_command_type_;
 
     std::string cartesian_command_in_topic_;
     std::string joint_command_in_topic_;
@@ -89,7 +91,10 @@ private:
     std::string ee_frame_name_;
 
     std::string planning_frame_;
-
+    std::string arm1_ns_;
+    std::string arm2_ns_;
+    std::string arm1_planning_frame_;
+    std::string arm2_planning_frame_;
     std::string servo_srv_ns_;
 
     std::string joint_prefix_;
@@ -98,6 +103,8 @@ private:
     double linear_pos_cmd_;
 
     rclcpp::Node::SharedPtr node_;
+    void _switch_command_type(int arm_idx, int command_type);
+    void publish_twist_for_arm(int arm_idx, double dx, double dy, double dz);
 };
 
 
