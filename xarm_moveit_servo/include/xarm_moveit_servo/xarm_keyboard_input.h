@@ -15,6 +15,7 @@
 #include <string>
 #include <memory>
 #include <stdexcept>
+#include <std_msgs/msg/float64.hpp>
 
 #include <rclcpp/rclcpp.hpp>
 #include <geometry_msgs/msg/twist_stamped.hpp>
@@ -74,6 +75,7 @@ private:
     rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr twist_pub_arm2_;
     rclcpp::Publisher<control_msgs::msg::JointJog>::SharedPtr joint_pub_;
     rclcpp::Publisher<moveit_msgs::msg::PlanningScene>::SharedPtr collision_pub_;
+    rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr elevator_cmd_vel_pub_;
     rclcpp::Client<std_srvs::srv::Trigger>::SharedPtr servo_start_client_;
     rclcpp::Client<moveit_msgs::srv::ServoCommandType>::SharedPtr switch_input_arm1_;
     rclcpp::Client<moveit_msgs::srv::ServoCommandType>::SharedPtr switch_input_arm2_;
@@ -86,6 +88,7 @@ private:
 
     std::string cartesian_command_in_topic_;
     std::string joint_command_in_topic_;
+    std::string elevator_cmd_vel_topic_;
 
     std::string robot_link_command_frame_;
     std::string ee_frame_name_;
@@ -101,10 +104,12 @@ private:
 
     double joint_vel_cmd_;
     double linear_pos_cmd_;
+    double elevator_vel_step_;
 
     rclcpp::Node::SharedPtr node_;
     void _switch_command_type(int arm_idx, int command_type);
     void publish_twist_for_arm(int arm_idx, double dx, double dy, double dz);
+    void publish_elevator_velocity(double vz);
 };
 
 

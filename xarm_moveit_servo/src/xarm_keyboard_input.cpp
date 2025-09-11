@@ -80,6 +80,9 @@ KeyboardServoPub::KeyboardServoPub(rclcpp::Node::SharedPtr& node)
     _declare_or_get_param<std::string>(robot_link_command_frame_, "moveit_servo.robot_link_command_frame", robot_link_command_frame_);
     _declare_or_get_param<std::string>(ee_frame_name_, "moveit_servo.ee_frame_name", ee_frame_name_);
     _declare_or_get_param<std::string>(planning_frame_, "moveit_servo.planning_frame", planning_frame_);
+    _declare_or_get_param<std::string>(elevator_cmd_vel_topic_, "elevator_cmd_vel_topic", "/elevator/cmd_vel");
+    _declare_or_get_param<double>(elevator_vel_step_, "elevator_vel_step", 0.10);
+    
 
     if (cartesian_command_in_topic_.rfind("~/", 0) == 0) {
         cartesian_command_in_topic_ = cartesian_command_in_topic_.substr(2);
@@ -95,6 +98,7 @@ KeyboardServoPub::KeyboardServoPub(rclcpp::Node::SharedPtr& node)
     twist_pub_arm2_ = node_->create_publisher<geometry_msgs::msg::TwistStamped>(arm2_twist_topic, rclcpp::SensorDataQoS());
     const auto arm1_joint_topic = "/" + arm1_ns_ + "/" + joint_command_in_topic_; // e.g. /arm1/joint_delta
     joint_pub_ = node_->create_publisher<control_msgs::msg::JointJog>(arm1_joint_topic, ros_queue_size_);
+    elevator_cmd_vel_pub_ = node_->create_publisher<std_msgs::msg::Float64>(elevator_cmd_vel_topic_, 10);
     // collision_pub_ = node_->create_publisher<moveit_msgs::msg::PlanningScene>("/planning_scene", 10);
 
     // Create a service client to start the ServoServer
@@ -211,6 +215,13 @@ void KeyboardServoPub::_switch_command_type(int arm_idx, int command_type)
   }
 }
 
+void KeyboardServoPub::publish_elevator_velocity(double vz)
+{
+  if (!elevator_cmd_vel_pub_) return;
+  std_msgs::msg::Float64 msg;
+  msg.data = vz;  // + = up, - = down (adjust if your axis is inverted)
+  elevator_cmd_vel_pub_->publish(msg);
+}
 // NEW: publish one TwistStamped for a chosen arm (translation only)
 void KeyboardServoPub::publish_twist_for_arm(int arm_idx, double dx, double dy, double dz)
 {
@@ -243,7 +254,7 @@ void KeyboardServoPub::keyLoop()
     puts("Arm1 (WASD = X/Y, Q/E = Z)");
     puts("Arm2 (IJKL = X/Y, U/O = Z)");
     puts("Joint jog: 1..6 (prefix from joint_prefix), 'R' flips direction");
-    puts("'Q' to quit.");
+    puts("Arrow Up/Down = Elevator velocity (+/-)");
 
     switch_request_ = std::make_shared<moveit_msgs::srv::ServoCommandType::Request>();
     
@@ -275,7 +286,12 @@ void KeyboardServoPub::keyLoop()
         case KEYCODE_L:  publish_twist_for_arm(2,  0.0,             -linear_pos_cmd_,  0.0); break;
         case KEYCODE_U:  publish_twist_for_arm(2,  0.0,              0.0,             +linear_pos_cmd_); break;
         case KEYCODE_O:  publish_twist_for_arm(2,  0.0,              0.0,             -linear_pos_cmd_); break;
-
+        case KEYCODE_UP:
+          publish_elevator_velocity(+elevator_vel_step_);
+          break;
+        case KEYCODE_DOWN:
+          publish_elevator_velocity(-elevator_vel_step_);
+          break;
         case KEYCODE_1:
             RCLCPP_DEBUG(node_->get_logger(), "1");
             joint_msg->joint_names.push_back(joint_prefix_ + "joint1");
