@@ -53,7 +53,7 @@ KeyboardReader keyboard_reader_;
 KeyboardServoPub::KeyboardServoPub(rclcpp::Node::SharedPtr& node)
 : dof_(6), ros_queue_size_(10),
   // make these RELATIVE so they resolve under your node's namespace (e.g., /arm1/...)
-  cartesian_command_in_topic_("cmd_ee"),
+  cartesian_command_in_topic_("cmd_ee/keyboard"),
   joint_command_in_topic_("joint_delta"),
   // leave frames as-is; your launch/YAML can override them
   robot_link_command_frame_("link_base"),
