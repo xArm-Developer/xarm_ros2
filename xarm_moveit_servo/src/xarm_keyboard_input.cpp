@@ -46,6 +46,12 @@
 #define KEYCODE_W 0x77
 #define KEYCODE_E 0x65
 #define KEYCODE_R 0x72
+#define KEYCODE_T 0x74
+#define KEYCODE_G 0x67
+#define KEYCODE_F 0x66
+#define KEYCODE_H 0x68
+#define KEYCODE_B 0x62
+#define KEYCODE_N 0x6E
 
 KeyboardReader keyboard_reader_;
 
@@ -53,7 +59,7 @@ KeyboardReader keyboard_reader_;
 KeyboardServoPub::KeyboardServoPub(rclcpp::Node::SharedPtr& node)
 : dof_(6), ros_queue_size_(10),
   // make these RELATIVE so they resolve under your node's namespace (e.g., /arm1/...)
-  cartesian_command_in_topic_("cmd_ee/keyboard"),
+  cartesian_command_in_topic_("cmd_twist/keyboard"),
   joint_command_in_topic_("joint_delta"),
   // leave frames as-is; your launch/YAML can override them
   robot_link_command_frame_("link_base"),
@@ -82,6 +88,9 @@ KeyboardServoPub::KeyboardServoPub(rclcpp::Node::SharedPtr& node)
     _declare_or_get_param<std::string>(planning_frame_, "moveit_servo.planning_frame", planning_frame_);
     _declare_or_get_param<std::string>(elevator_cmd_vel_topic_, "elevator_cmd_vel_topic", "/elevator/cmd_vel");
     _declare_or_get_param<double>(elevator_vel_step_, "elevator_vel_step", 0.10);
+    _declare_or_get_param<std::string>(drivetrain_cmd_vel_topic_, "drivetrain_cmd_vel_topic", "/drivetrain/cmd_vel");
+    _declare_or_get_param<double>(drivetrain_linear_vel_, "drivetrain_linear_vel", 0.5);
+    _declare_or_get_param<double>(drivetrain_angular_vel_, "drivetrain_angular_vel", 0.5);
     
 
     if (cartesian_command_in_topic_.rfind("~/", 0) == 0) {
@@ -99,6 +108,7 @@ KeyboardServoPub::KeyboardServoPub(rclcpp::Node::SharedPtr& node)
     const auto arm1_joint_topic = "/" + arm1_ns_ + "/" + joint_command_in_topic_; // e.g. /arm1/joint_delta
     joint_pub_ = node_->create_publisher<control_msgs::msg::JointJog>(arm1_joint_topic, ros_queue_size_);
     elevator_cmd_vel_pub_ = node_->create_publisher<std_msgs::msg::Float64>(elevator_cmd_vel_topic_, 10);
+    drivetrain_cmd_vel_pub_ = node_->create_publisher<geometry_msgs::msg::TwistStamped>(drivetrain_cmd_vel_topic_, 10);
     // collision_pub_ = node_->create_publisher<moveit_msgs::msg::PlanningScene>("/planning_scene", 10);
 
     // Create a service client to start the ServoServer
@@ -222,6 +232,21 @@ void KeyboardServoPub::publish_elevator_velocity(double vz)
   msg.data = vz;  // + = up, - = down (adjust if your axis is inverted)
   elevator_cmd_vel_pub_->publish(msg);
 }
+
+void KeyboardServoPub::publish_drivetrain_velocity(double linear_x, double linear_y, double angular_z)
+{
+  if (!drivetrain_cmd_vel_pub_) return;
+  geometry_msgs::msg::TwistStamped msg;
+  msg.header.stamp = node_->now();
+  msg.header.frame_id = "base_link";
+  msg.twist.linear.x = linear_x;
+  msg.twist.linear.y = linear_y;
+  msg.twist.linear.z = 0.0;
+  msg.twist.angular.x = 0.0;
+  msg.twist.angular.y = 0.0;
+  msg.twist.angular.z = angular_z;
+  drivetrain_cmd_vel_pub_->publish(msg);
+}
 // NEW: publish one TwistStamped for a chosen arm (translation only)
 void KeyboardServoPub::publish_twist_for_arm(int arm_idx, double dx, double dy, double dz)
 {
@@ -255,6 +280,7 @@ void KeyboardServoPub::keyLoop()
     puts("Arm2 (IJKL = X/Y, U/O = Z)");
     puts("Joint jog: 1..6 (prefix from joint_prefix), 'R' flips direction");
     puts("Arrow Up/Down = Elevator velocity (+/-)");
+    puts("Drivetrain: T/G = Forward/Back, F/H = Left/Right, B/N = Rotate Left/Right");
 
     switch_request_ = std::make_shared<moveit_msgs::srv::ServoCommandType::Request>();
     
@@ -291,6 +317,24 @@ void KeyboardServoPub::keyLoop()
           break;
         case KEYCODE_DOWN:
           publish_elevator_velocity(-elevator_vel_step_);
+          break;
+        case KEYCODE_T:
+          publish_drivetrain_velocity(+drivetrain_linear_vel_, 0.0, 0.0);
+          break;
+        case KEYCODE_G:
+          publish_drivetrain_velocity(-drivetrain_linear_vel_, 0.0, 0.0);
+          break;
+        case KEYCODE_F:
+          publish_drivetrain_velocity(0.0, +drivetrain_linear_vel_, 0.0);
+          break;
+        case KEYCODE_H:
+          publish_drivetrain_velocity(0.0, -drivetrain_linear_vel_, 0.0);
+          break;
+        case KEYCODE_B:
+          publish_drivetrain_velocity(0.0, 0.0, +drivetrain_angular_vel_);
+          break;
+        case KEYCODE_N:
+          publish_drivetrain_velocity(0.0, 0.0, -drivetrain_angular_vel_);
           break;
         case KEYCODE_1:
             RCLCPP_DEBUG(node_->get_logger(), "1");
