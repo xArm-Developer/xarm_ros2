@@ -52,6 +52,10 @@
 #define KEYCODE_H 0x68
 #define KEYCODE_B 0x62
 #define KEYCODE_N 0x6E
+#define KEYCODE_C 0x63
+#define KEYCODE_V 0x76
+#define KEYCODE_X 0x78
+#define KEYCODE_Z 0x7A
 
 KeyboardReader keyboard_reader_;
 
@@ -91,6 +95,9 @@ KeyboardServoPub::KeyboardServoPub(rclcpp::Node::SharedPtr& node)
     _declare_or_get_param<std::string>(drivetrain_cmd_vel_topic_, "drivetrain_cmd_vel_topic", "/drivetrain/cmd_vel");
     _declare_or_get_param<double>(drivetrain_linear_vel_, "drivetrain_linear_vel", 0.5);
     _declare_or_get_param<double>(drivetrain_angular_vel_, "drivetrain_angular_vel", 0.5);
+    _declare_or_get_param<std::string>(gripper_left_topic_, "gripper_left_topic", "/arm1/gripper/width_m");
+    _declare_or_get_param<std::string>(gripper_right_topic_, "gripper_right_topic", "/arm2/gripper/width_m");
+    _declare_or_get_param<double>(gripper_step_, "gripper_step", 0.005);
     
 
     if (cartesian_command_in_topic_.rfind("~/", 0) == 0) {
@@ -109,6 +116,8 @@ KeyboardServoPub::KeyboardServoPub(rclcpp::Node::SharedPtr& node)
     joint_pub_ = node_->create_publisher<control_msgs::msg::JointJog>(arm1_joint_topic, ros_queue_size_);
     elevator_cmd_vel_pub_ = node_->create_publisher<std_msgs::msg::Float64>(elevator_cmd_vel_topic_, 10);
     drivetrain_cmd_vel_pub_ = node_->create_publisher<geometry_msgs::msg::TwistStamped>(drivetrain_cmd_vel_topic_, 10);
+    gripper_left_pub_ = node_->create_publisher<std_msgs::msg::Float32>(gripper_left_topic_, 10);
+    gripper_right_pub_ = node_->create_publisher<std_msgs::msg::Float32>(gripper_right_topic_, 10);
     // collision_pub_ = node_->create_publisher<moveit_msgs::msg::PlanningScene>("/planning_scene", 10);
 
     // Create a service client to start the ServoServer
@@ -141,6 +150,10 @@ KeyboardServoPub::KeyboardServoPub(rclcpp::Node::SharedPtr& node)
     // init switching state
     arm1_command_type_ = -1;
     arm2_command_type_ = -1;
+    
+    // init gripper state
+    left_gripper_width_ = 0.00;   // Start with open gripper (30mm)
+    right_gripper_width_ = 0.00;  // Start with open gripper (30mm)
 
     RCLCPP_INFO(node_->get_logger(),
         "Twist pubs: %s, %s | Servo switch: /%s/%s/switch_command_type , /%s/%s/switch_command_type",
@@ -247,6 +260,45 @@ void KeyboardServoPub::publish_drivetrain_velocity(double linear_x, double linea
   msg.twist.angular.z = angular_z;
   drivetrain_cmd_vel_pub_->publish(msg);
 }
+
+void KeyboardServoPub::publish_gripper_width(int arm_idx, double width)
+{
+  if (arm_idx == 1) {
+    if (!gripper_left_pub_) return;
+    std_msgs::msg::Float32 msg;
+    msg.data = static_cast<float>(width);
+    gripper_left_pub_->publish(msg);
+    RCLCPP_INFO(node_->get_logger(), "Left gripper width: %.3f m", width);
+  } else {
+    if (!gripper_right_pub_) return;
+    std_msgs::msg::Float32 msg;
+    msg.data = static_cast<float>(width);
+    gripper_right_pub_->publish(msg);
+    RCLCPP_INFO(node_->get_logger(), "Right gripper width: %.3f m", width);
+  }
+}
+
+void KeyboardServoPub::close_gripper_slightly(int arm_idx)
+{
+  if (arm_idx == 1) {
+    left_gripper_width_ = std::max(0.0, left_gripper_width_ - gripper_step_);
+    publish_gripper_width(1, left_gripper_width_);
+  } else {
+    right_gripper_width_ = std::max(0.0, right_gripper_width_ - gripper_step_);
+    publish_gripper_width(2, right_gripper_width_);
+  }
+}
+
+void KeyboardServoPub::open_gripper_slightly(int arm_idx)
+{
+  if (arm_idx == 1) {
+    left_gripper_width_ = std::min(0.03, left_gripper_width_ + gripper_step_);
+    publish_gripper_width(1, left_gripper_width_);
+  } else {
+    right_gripper_width_ = std::min(0.03, right_gripper_width_ + gripper_step_);
+    publish_gripper_width(2, right_gripper_width_);
+  }
+}
 // NEW: publish one TwistStamped for a chosen arm (translation only)
 void KeyboardServoPub::publish_twist_for_arm(int arm_idx, double dx, double dy, double dz)
 {
@@ -281,6 +333,8 @@ void KeyboardServoPub::keyLoop()
     puts("Joint jog: 1..6 (prefix from joint_prefix), 'R' flips direction");
     puts("Arrow Up/Down = Elevator velocity (+/-)");
     puts("Drivetrain: T/G = Forward/Back, F/H = Left/Right, B/N = Rotate Left/Right");
+    puts("Gripper Left: C = Close slightly, V = Open slightly");
+    puts("Gripper Right: X = Close slightly, Z = Open slightly");
 
     switch_request_ = std::make_shared<moveit_msgs::srv::ServoCommandType::Request>();
     
@@ -335,6 +389,18 @@ void KeyboardServoPub::keyLoop()
           break;
         case KEYCODE_N:
           publish_drivetrain_velocity(0.0, 0.0, -drivetrain_angular_vel_);
+          break;
+        case KEYCODE_C:
+          close_gripper_slightly(1);  // Left gripper close
+          break;
+        case KEYCODE_V:
+          open_gripper_slightly(1);   // Left gripper open
+          break;
+        case KEYCODE_X:
+          close_gripper_slightly(2);  // Right gripper close
+          break;
+        case KEYCODE_Z:
+          open_gripper_slightly(2);   // Right gripper open
           break;
         case KEYCODE_1:
             RCLCPP_DEBUG(node_->get_logger(), "1");
