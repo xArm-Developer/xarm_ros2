@@ -100,51 +100,89 @@ KeyboardServoPub::KeyboardServoPub(rclcpp::Node::SharedPtr& node)
     _declare_or_get_param<double>(gripper_step_, "gripper_step", 0.005);
     
 
-    if (cartesian_command_in_topic_.rfind("~/", 0) == 0) {
-        cartesian_command_in_topic_ = cartesian_command_in_topic_.substr(2);
-    }
-    if (joint_command_in_topic_.rfind("~/", 0) == 0) {
-        joint_command_in_topic_ = joint_command_in_topic_.substr(2); // <- fixed length bug
-    }
+  // DRIVETRAIN topics & settings
+  _declare_or_get_param<std::string>(drivetrain_cmd_vel_topic_, "drivetrain_cmd_vel_topic",
+                                     "/drivetrain/cmd_vel");
+  _declare_or_get_param<double>(drivetrain_linear_vel_,  "drivetrain_linear_vel",  4.0);
+  _declare_or_get_param<double>(drivetrain_angular_vel_, "drivetrain_angular_vel", 4.0);
 
-    // Setup pub/sub
-    const auto arm1_twist_topic = "/" + arm1_ns_ + "/" + cartesian_command_in_topic_;
-    const auto arm2_twist_topic = "/" + arm2_ns_ + "/" + cartesian_command_in_topic_;
-    twist_pub_arm1_ = node_->create_publisher<geometry_msgs::msg::TwistStamped>(arm1_twist_topic, rclcpp::SensorDataQoS());
-    twist_pub_arm2_ = node_->create_publisher<geometry_msgs::msg::TwistStamped>(arm2_twist_topic, rclcpp::SensorDataQoS());
-    const auto arm1_joint_topic = "/" + arm1_ns_ + "/" + joint_command_in_topic_; // e.g. /arm1/joint_delta
-    joint_pub_ = node_->create_publisher<control_msgs::msg::JointJog>(arm1_joint_topic, ros_queue_size_);
-    elevator_cmd_vel_pub_ = node_->create_publisher<std_msgs::msg::Float64>(elevator_cmd_vel_topic_, 10);
-    drivetrain_cmd_vel_pub_ = node_->create_publisher<geometry_msgs::msg::TwistStamped>(drivetrain_cmd_vel_topic_, 10);
-    gripper_left_pub_ = node_->create_publisher<std_msgs::msg::Float32>(gripper_left_topic_, 10);
-    gripper_right_pub_ = node_->create_publisher<std_msgs::msg::Float32>(gripper_right_topic_, 10);
-    // collision_pub_ = node_->create_publisher<moveit_msgs::msg::PlanningScene>("/planning_scene", 10);
+  // NEW: streaming + watchdog params
+  _declare_or_get_param<double>(drivetrain_stream_rate_hz_, "drivetrain_stream_rate_hz", 50.0);  // 50 Hz stream
+  _declare_or_get_param<int>(drivetrain_key_hold_ms_, "drivetrain_key_hold_ms", 200);            // 200 ms pulse
 
-    // Create a service client to start the ServoServer
-    // --- params for service namespace + optional start ---
-    servo_srv_ns_ = "servo_node";        // becomes /<arm_ns>/servo_node/... under your namespace
-    bool try_start_service = false;
+  if (cartesian_command_in_topic_.rfind("~/", 0) == 0) {
+    cartesian_command_in_topic_ = cartesian_command_in_topic_.substr(2);
+  }
+  if (joint_command_in_topic_.rfind("~/", 0) == 0) {
+    joint_command_in_topic_ = joint_command_in_topic_.substr(2);
+  }
 
-    _declare_or_get_param<std::string>(servo_srv_ns_, "servo_srv_ns", servo_srv_ns_);
-    _declare_or_get_param<bool>(try_start_service, "try_start_service", try_start_service);
+  // Setup pub/sub
+  const auto arm1_twist_topic = "/" + arm1_ns_ + "/" + cartesian_command_in_topic_;
+  const auto arm2_twist_topic = "/" + arm2_ns_ + "/" + cartesian_command_in_topic_;
+  twist_pub_arm1_ = node_->create_publisher<geometry_msgs::msg::TwistStamped>(arm1_twist_topic, rclcpp::SensorDataQoS());
+  twist_pub_arm2_ = node_->create_publisher<geometry_msgs::msg::TwistStamped>(arm2_twist_topic, rclcpp::SensorDataQoS());
+  const auto arm1_joint_topic = "/" + arm1_ns_ + "/" + joint_command_in_topic_;
+  joint_pub_ = node_->create_publisher<control_msgs::msg::JointJog>(arm1_joint_topic, ros_queue_size_);
+  elevator_cmd_vel_pub_ = node_->create_publisher<std_msgs::msg::Float64>(elevator_cmd_vel_topic_, 10);
+  drivetrain_cmd_vel_pub_ = node_->create_publisher<geometry_msgs::msg::TwistStamped>(drivetrain_cmd_vel_topic_, 10);
+  gripper_left_pub_ = node_->create_publisher<std_msgs::msg::Float32>(gripper_left_topic_, 10);
+  gripper_right_pub_ = node_->create_publisher<std_msgs::msg::Float32>(gripper_right_topic_, 10);
+  
+  // Gripper delta command publishers
+  const auto arm1_gripper_delta_topic = "/" + arm1_ns_ + "/gripper/delta";
+  const auto arm1_gripper_zero_topic = "/" + arm1_ns_ + "/gripper/zero";
+  const auto arm2_gripper_delta_topic = "/" + arm2_ns_ + "/gripper/delta";
+  const auto arm2_gripper_zero_topic = "/" + arm2_ns_ + "/gripper/zero";
+  gripper_delta_pub_arm1_ = node_->create_publisher<std_msgs::msg::Int8>(arm1_gripper_delta_topic, 10);
+  gripper_zero_pub_arm1_ = node_->create_publisher<std_msgs::msg::String>(arm1_gripper_zero_topic, 10);
+  gripper_delta_pub_arm2_ = node_->create_publisher<std_msgs::msg::Int8>(arm2_gripper_delta_topic, 10);
+  gripper_zero_pub_arm2_ = node_->create_publisher<std_msgs::msg::String>(arm2_gripper_zero_topic, 10);
 
-    // --- build clients against your ServoNode ---
-    switch_input_arm1_ = node_->create_client<moveit_msgs::srv::ServoCommandType>(
-        "/" + arm1_ns_ + "/" + servo_srv_ns_ + "/switch_command_type");
-    switch_input_arm2_ = node_->create_client<moveit_msgs::srv::ServoCommandType>(
-        "/" + arm2_ns_ + "/" + servo_srv_ns_ + "/switch_command_type");
+  // ---- DRIVETRAIN STREAMING TIMER (always publishes) ----
+  last_drive_cmd_.header.frame_id = "base_link";
+  last_drive_cmd_.twist.linear.x = 0.0;
+  last_drive_cmd_.twist.linear.y = 0.0;
+  last_drive_cmd_.twist.linear.z = 0.0;
+  last_drive_cmd_.twist.angular.x = 0.0;
+  last_drive_cmd_.twist.angular.y = 0.0;
+  last_drive_cmd_.twist.angular.z = 0.0;
+  drive_cmd_expire_ = std::chrono::steady_clock::now(); // already expired => zeros
 
-    // (optional) start service; many Servo builds don’t expose this
-    if (try_start_service) {
-    servo_start_client_ = node_->create_client<std_srvs::srv::Trigger>(
-        servo_srv_ns_ + std::string("/start_servo"));
+  auto period_ms = std::chrono::milliseconds(
+      static_cast<int>(std::max(1.0, 1000.0 / std::max(1.0, drivetrain_stream_rate_hz_))));
+  drivetrain_timer_ = node_->create_wall_timer(
+      period_ms,
+      [this]() {
+        // If the last "non-zero key" command expired, force zeros
+        if (std::chrono::steady_clock::now() > drive_cmd_expire_) {
+          last_drive_cmd_.twist.linear.x = 0.0;
+          last_drive_cmd_.twist.linear.y = 0.0;
+          last_drive_cmd_.twist.angular.z = 0.0;
+        }
+        last_drive_cmd_.header.stamp = node_->now();
+        drivetrain_cmd_vel_pub_->publish(last_drive_cmd_);
+      });
+
+  // Create a service client to start the ServoServer (optional)
+  servo_srv_ns_ = "servo_node";
+  bool try_start_service = false;
+  _declare_or_get_param<std::string>(servo_srv_ns_, "servo_srv_ns", servo_srv_ns_);
+  _declare_or_get_param<bool>(try_start_service, "try_start_service", try_start_service);
+
+  switch_input_arm1_ = node_->create_client<moveit_msgs::srv::ServoCommandType>(
+      "/" + arm1_ns_ + "/" + servo_srv_ns_ + "/switch_command_type");
+  switch_input_arm2_ = node_->create_client<moveit_msgs::srv::ServoCommandType>(
+      "/" + arm2_ns_ + "/" + servo_srv_ns_ + "/switch_command_type");
+
+  if (try_start_service) {
+    servo_start_client_ = node_->create_client<std_srvs::srv::Trigger>(servo_srv_ns_ + std::string("/start_servo"));
     if (servo_start_client_->wait_for_service(std::chrono::seconds(1))) {
-        auto req = std::make_shared<std_srvs::srv::Trigger::Request>();
-        servo_start_client_->async_send_request(req);
+      auto req = std::make_shared<std_srvs::srv::Trigger::Request>();
+      servo_start_client_->async_send_request(req);
     } else {
-        RCLCPP_WARN(node_->get_logger(), "Start service not available at %s",
-                    (servo_srv_ns_ + "/start_servo").c_str());
-    }
+      RCLCPP_WARN(node_->get_logger(), "Start service not available at %s",
+                  (servo_srv_ns_ + "/start_servo").c_str());
     }
 
     // init switching state
