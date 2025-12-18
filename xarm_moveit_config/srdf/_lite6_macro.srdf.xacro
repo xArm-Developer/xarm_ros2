@@ -46,12 +46,12 @@
 
     <!-- gripper -->
     <xacro:if value="${add_gripper}">
-      <!-- <group name="${prefix}lite_gripper">
-        <joint name="${prefix}gripper_fix" />
-        <joint name="${prefix}joint_tcp" />
-      </group> -->
+      <group name="${prefix}lite_gripper">
+        <link name="${prefix}uflite_gripper_link" />
+        <link name="${prefix}link_tcp" />
+      </group>
       <!-- END EFFECTOR, Purpose, Represent information about an end effector. -->
-      <!-- <end_effector name="${prefix}lite_gripper" parent_link="${prefix}link_tcp" group="${prefix}lite_gripper" /> -->
+      <end_effector name="${prefix}lite_gripper" parent_link="${prefix}link_tcp" group="${prefix}lite_gripper" />
       <passive_joint name="${prefix}gripper_fix" />
       <!--PASSIVE JOINT, Purpose, this element is used to mark joints that are not actuated-->
       <!-- DISABLE COLLISIONS, By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
