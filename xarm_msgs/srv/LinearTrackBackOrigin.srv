@@ -1,6 +1,5 @@
-# Has been renamed, please use LinearMotorBackOrigin instead
 # This format is suitable for the following services
-#   - set_linear_motor_back_origin  # The old name is set_linear_track_back_origin, please use the new one
+#   - set_linear_track_back_origin
 
 bool wait           true
 bool auto_enable     true

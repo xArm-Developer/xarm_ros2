@@ -1,14 +1,9 @@
-# please use FtForceParams instead
 # This format is suitable for the following services
-#   - set_force_control_pid     # please use set_ft_sensor_force_parameters instead
+#   - set_force_control_pid
 
-# 6d vector, proportional gain.
 float32[] kp
-# 6d vector, integral gain.
 float32[] ki
-# 6d vector, differential gain.
 float32[] kd
-# 6d vector. for compliant axes, these values are the maximum allowed tcp speed along/about the axis. mm/s
 float32[] xe_limit
 
 ---

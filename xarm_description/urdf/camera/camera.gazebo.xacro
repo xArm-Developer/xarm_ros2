@@ -44,7 +44,7 @@
           <image>
             <width>640</width>
             <height>480</height>
-            <format>B8G8R8</format>
+            <foramt>B8G8R8</foramt>
           </image>
           <clip>
             <near>0.02</near>

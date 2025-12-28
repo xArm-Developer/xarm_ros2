@@ -29,7 +29,6 @@ def launch_setup(context, *args, **kwargs):
     show_rviz = LaunchConfiguration('show_rviz', default=True)
     use_sim_time = LaunchConfiguration('use_sim_time', default=False)
     moveit_config_dump = LaunchConfiguration('moveit_config_dump')
-    rviz_config = LaunchConfiguration('rviz_config', default='')
     
     moveit_config_dump = moveit_config_dump.perform(context)
     moveit_config_dict = yaml.load(moveit_config_dump, Loader=yaml.FullLoader)
@@ -47,10 +46,7 @@ def launch_setup(context, *args, **kwargs):
     )
 
     # rviz with moveit configuration
-    if not rviz_config.perform(context):
-        rviz_config_file = PathJoinSubstitution([FindPackageShare(moveit_config_package_name), 'rviz', 'planner.rviz' if no_gui_ctrl.perform(context) == 'true' else 'moveit.rviz'])
-    else:
-        rviz_config_file = rviz_config
+    rviz_config_file = PathJoinSubstitution([FindPackageShare(moveit_config_package_name), 'rviz', 'planner.rviz' if no_gui_ctrl.perform(context) == 'true' else 'moveit.rviz'])
     rviz2_node = Node(
         package='rviz2',
         executable='rviz2',

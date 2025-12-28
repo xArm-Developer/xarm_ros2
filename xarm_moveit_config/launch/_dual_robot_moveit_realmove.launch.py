@@ -108,7 +108,6 @@ def launch_setup(context, *args, **kwargs):
 
     no_gui_ctrl = LaunchConfiguration('no_gui_ctrl', default=False)
     ros_namespace = LaunchConfiguration('ros_namespace', default='').perform(context)
-    extra_robot_api_params_path = LaunchConfiguration('extra_robot_api_params_path', default='')
 
     ros2_control_plugin = 'uf_robot_hardware/UFRobotSystemHardware'
     controllers_name = 'controllers'
@@ -246,7 +245,6 @@ def launch_setup(context, *args, **kwargs):
         launch_arguments={
             'robot_description': yaml.dump(moveit_config.robot_description),
             'ros2_control_params': ros2_control_params,
-            'extra_robot_api_params_path': extra_robot_api_params_path,
         }.items(),
     )
 

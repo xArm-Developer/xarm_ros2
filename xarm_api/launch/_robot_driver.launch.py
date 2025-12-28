@@ -55,7 +55,6 @@ def launch_setup(context, *args, **kwargs):
     dof = LaunchConfiguration('dof', default=7)
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     add_gripper = LaunchConfiguration('add_gripper', default=False)
-    add_bio_gripper = LaunchConfiguration('add_bio_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
     prefix = LaunchConfiguration('prefix', default='')
     baud_checkset = LaunchConfiguration('baud_checkset', default=True)
@@ -64,13 +63,11 @@ def launch_setup(context, *args, **kwargs):
     
     show_rviz = LaunchConfiguration('show_rviz', default=False)
     robot_type = LaunchConfiguration('robot_type', default='xarm')
-    extra_robot_api_params_path = LaunchConfiguration('extra_robot_api_params_path', default='')
     
     robot_params = generate_robot_api_params(
         os.path.join(get_package_share_directory('xarm_api'), 'config', 'xarm_params.yaml'),
         os.path.join(get_package_share_directory('xarm_api'), 'config', 'xarm_user_params.yaml'),
-        LaunchConfiguration('ros_namespace', default='').perform(context), node_name='ufactory_driver',
-        extra_robot_api_params_path=extra_robot_api_params_path.perform(context)
+        LaunchConfiguration('ros_namespace', default='').perform(context), node_name='ufactory_driver'
     )
     
     # robot driver node
@@ -88,7 +85,6 @@ def launch_setup(context, *args, **kwargs):
                 'report_type': report_type,
                 'dof': dof,
                 'add_gripper': add_gripper if robot_type.perform(context) != 'lite' else False,
-                'add_bio_gripper': add_bio_gripper,
                 'hw_ns': '{}{}'.format(prefix.perform(context).strip('/'), hw_ns.perform(context).strip('/')),
                 'prefix': prefix.perform(context).strip('/'),
                 'baud_checkset': baud_checkset,

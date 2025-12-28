@@ -80,13 +80,13 @@ namespace uf_robot_hardware
         double read_max_time_;
         double read_total_time_;
         
-        // float prev_read_position_[7];
-		// float curr_read_position_[7];
-		// float curr_read_velocity_[7];
-		// float curr_read_effort_[7];
+        float prev_read_position_[7];
+		float curr_read_position_[7];
+		float curr_read_velocity_[7];
+		float curr_read_effort_[7];
         
-        // rclcpp::Time prev_read_time_;
-        // rclcpp::Time curr_read_time_;
+        rclcpp::Time prev_read_time_;
+        rclcpp::Time curr_read_time_;
         rclcpp::Time curr_write_time_;
         rclcpp::Time prev_write_time_;
 
@@ -109,6 +109,7 @@ namespace uf_robot_hardware
         bool _check_cmds_is_change(float *prev, float *cur, double threshold = 0.0001);
         bool _xarm_is_ready_read(void);
         bool _xarm_is_ready_write(void);
+        bool _firmware_version_is_ge(int major, int minor, int revision);
 
         bool _need_reset(void);
 

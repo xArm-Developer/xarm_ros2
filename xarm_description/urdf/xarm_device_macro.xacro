@@ -20,6 +20,7 @@
     load_gazebo_plugin:=false 
     add_realsense_d435i:=false
     add_d435i_links:=true
+    add_depthai_camera:=false
     use_gazebo_camera:=false
     add_other_geometry:=false 
     geometry_type:='box'
@@ -54,11 +55,11 @@
 
     <!-- Specify Mesh file path -->
     <xacro:property name="mesh_suffix" value="${mesh_suffix}" scope="parent"/>
-    <xacro:if value="${ros2_control_plugin == 'gazebo_ros2_control/GazeboSystem' or ros2_control_plugin == 'ign_ros2_control/IgnitionSystem' or ros2_control_plugin == 'gz_ros2_control/GazeboSimSystem'}">
+    <xacro:if value="${ros2_control_plugin == 'gazebo_ros2_control/GazeboSystem' or ros2_control_plugin == 'ign_ros2_control/IgnitionSystem'}">
       <!-- gazebo use -->
       <xacro:property name="mesh_path" value="file://$(find xarm_description)/meshes" scope="parent"/>
     </xacro:if>
-    <xacro:unless value="${ros2_control_plugin == 'gazebo_ros2_control/GazeboSystem' or ros2_control_plugin == 'ign_ros2_control/IgnitionSystem' or ros2_control_plugin == 'gz_ros2_control/GazeboSimSystem'}">
+    <xacro:unless value="${ros2_control_plugin == 'gazebo_ros2_control/GazeboSystem' or ros2_control_plugin == 'ign_ros2_control/IgnitionSystem'}">
       <xacro:property name="mesh_path" value="package://xarm_description/meshes" scope="parent"/>
     </xacro:unless> 
 
@@ -211,26 +212,32 @@
       </xacro:unless>
     </xacro:unless>
 
+
     <xacro:if value="${add_realsense_d435i}">
       <!-- (xarm) Load RealSense D435i URDF -->
       <xacro:include filename="$(find xarm_description)/urdf/camera/realsense_d435i.urdf.xacro" />
       <xacro:d435i_urdf prefix="${prefix}" add_d435i_links="${add_d435i_links}" />
       <xacro:if value="${add_d435i_links}">
         <xacro:include filename="$(find xarm_description)/urdf/camera/realsense.gazebo.xacro" />    
-        <xacro:if value="${ros2_control_plugin == 'gz_ros2_control/GazeboSimSystem'}">
-          <xacro:realsense_gz prefix="${prefix}" />
-        </xacro:if>
-        <xacro:if value="${ros2_control_plugin == 'ign_ros2_control/IgnitionSystem'}">
-          <xacro:realsense_ignition prefix="${prefix}" />
-        </xacro:if>
-        <xacro:if value="${ros2_control_plugin == 'gazebo_ros2_control/GazeboSystem'}">
-          <xacro:realsense_gazebo prefix="${prefix}" />
-        </xacro:if>
+        <xacro:realsense_gazebo prefix="${prefix}" />
       </xacro:if>
     </xacro:if>
     <xacro:unless value="${add_realsense_d435i}">
-      <link name="${prefix}link_eef"/>
+
+      <!-- Add depthai camera  -->
+      <!-- TODO: check how to start depthai camera simulation. -->
+      <!-- probably use use_gazebo_camera or add an arg to start simulation -->
+      <xacro:if value="${add_depthai_camera}">
+        <xacro:include filename="$(find abluo_description)/description/camera.urdf.xacro" />
+        <xacro:depthai_camera prefix="${prefix}"  />
+      </xacro:if>
+      <xacro:unless value="${add_depthai_camera}">
+        <link name="${prefix}link_eef"/>
+      </xacro:unless>
+      
     </xacro:unless>
+
+
     <joint name="${prefix}joint_eef" type="fixed">
       <origin xyz="0 0 0" rpy="0 0 0" />
       <parent link="${prefix}link${dof}" />
@@ -299,15 +306,12 @@
         <xacro:if value="${ros2_control_params != ''}">
           <xacro:property name="new_ros2_control_params" value="${ros2_control_params}"/>
         </xacro:if>
-        <xacro:if value="${ros2_control_plugin == 'gz_ros2_control/GazeboSimSystem'}">
-          <xacro:gz_ros2_control_plugin ros2_control_params="${new_ros2_control_params}"/>
-        </xacro:if>
         <xacro:if value="${ros2_control_plugin == 'ign_ros2_control/IgnitionSystem'}">
           <xacro:ignition_ros2_control_plugin prefix="${prefix}" ros2_control_params="${new_ros2_control_params}"/>
         </xacro:if>
-        <xacro:if value="${ros2_control_plugin == 'gazebo_ros2_control/GazeboSystem'}">
+        <xacro:unless value="${ros2_control_plugin == 'ign_ros2_control/IgnitionSystem'}">
           <xacro:gazebo_ros2_control_plugin ros2_control_params="${new_ros2_control_params}"/>
-        </xacro:if>
+        </xacro:unless>
       </xacro:if>
       <xacro:unless value="${is_ros2}">
         <xacro:gazebo_ros1_control_plugin namespace="${hw_ns}"/>

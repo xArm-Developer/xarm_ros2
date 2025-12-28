@@ -55,7 +55,7 @@ def launch_setup(context, *args, **kwargs):
     no_gui_ctrl = LaunchConfiguration('no_gui_ctrl', default=False)
     ros_namespace = LaunchConfiguration('ros_namespace', default='').perform(context)
 
-    ros2_control_plugin = 'gazebo_ros2_control/GazeboSystem'
+    ros2_control_plugin = 'ign_ros2_control/IgnitionSystem'
     controllers_name = 'fake_controllers'
 
     ros2_control_params = generate_ros2_control_params_temp_file(
@@ -126,9 +126,9 @@ def launch_setup(context, *args, **kwargs):
     )
 
     # robot gazebo launch
-    # xarm_gazebo/launch/_robot_beside_table_gazebo.launch.py
+    # xarm_gazebo/launch/_robot_beside_table_ignition.launch.py
     robot_gazebo_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_gazebo'), 'launch', '_robot_beside_table_gazebo.launch.py'])),
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('xarm_gazebo'), 'launch', '_robot_beside_table_ignition.launch.py'])),
         launch_arguments={
             'dof': dof,
             'robot_type': robot_type,

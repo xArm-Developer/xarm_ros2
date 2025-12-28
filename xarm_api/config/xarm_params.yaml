@@ -3,9 +3,6 @@
 ufactory_driver:
   ros__parameters:
     joint_names: ['joint1', 'joint2', 'joint3', 'joint4', 'joint5', 'joint6', 'joint7']
-    joint_states:
-      rate: -1
-      flags: -1
     xarm_gripper:
       joint_names: ['drive_joint', 'left_finger_joint', 'left_inner_knuckle_joint', 'right_outer_knuckle_joint', 'right_finger_joint', 'right_inner_knuckle_joint']
       speed: 2000
@@ -26,9 +23,9 @@ ufactory_driver:
       clean_bio_gripper_error: false
       start_record_trajectory: false
       stop_record_trajectory: false
-      set_ft_sensor_zero: false       # The old name is ft_sensor_set_zero, please use the new one
-      set_linear_motor_stop: false    # The old name is set_linear_track_stop, please use the new one
-      clean_linear_motor_error: false # The old name is clean_linear_track_error, please use the new one
+      ft_sensor_set_zero: false
+      set_linear_track_stop: false
+      clean_linear_track_error: false
       open_lite6_gripper: false
       close_lite6_gripper: false
       stop_lite6_gripper: false
@@ -40,24 +37,24 @@ ufactory_driver:
       get_bio_gripper_error: false
       get_reduced_mode: false
       get_report_tau_or_i: false
-      get_ft_sensor_mode: false           # The old name is ft_sensor_app_get, please use the new one
+      ft_sensor_app_get: false
       get_ft_sensor_error: false
       get_trajectory_rw_status: false
-      get_linear_motor_pos: false         # The old name is get_linear_track_pos, please use the new one
-      get_linear_motor_status: false      # The old name is get_linear_track_status, please use the new one
-      get_linear_motor_error: false       # The old name is get_linear_track_error, please use the new one
-      get_linear_motor_is_enabled: false  # The old name is get_linear_track_is_enabled, please use the new one
-      get_linear_motor_on_zero: false     # The old name is get_linear_track_on_zero, please use the new one
-      get_linear_motor_sci: false         # The old name is get_linear_track_sci, please use the new one
+      get_linear_track_pos: false
+      get_linear_track_status: false
+      get_linear_track_error: false
+      get_linear_track_is_enabled: false
+      get_linear_track_on_zero: false
+      get_linear_track_sci: false
       get_err_warn_code: false
-      get_linear_motor_sco: false         # The old name is get_linear_track_sco, please use the new one
+      get_linear_track_sco: false
       set_mode: true
       set_state: true
       set_collision_sensitivity: false
       set_teach_sensitivity: false
       set_gripper_mode: false
       set_gripper_enable: false
-      set_tgpio_modbus_timeout: false
+      set_tgpio_modbus_timeout: true
       set_bio_gripper_speed: false
       set_collision_rebound: false
       set_fence_mode: false
@@ -66,10 +63,10 @@ ufactory_driver:
       set_simulation_robot: false
       set_baud_checkset_enable: false
       set_report_tau_or_i: false
-      set_ft_sensor_enable: false     # The old name is ft_sensor_enable, please use the new one
-      set_ft_sensor_mode: false       # The old name is ft_sensor_app_set, please use the new one
-      set_linear_motor_enable: false  # The old name is set_linear_track_enable, please use the new one
-      set_linear_motor_speed: false   # The old name is set_linear_track_speed, please use the new one
+      ft_sensor_enable: false
+      ft_sensor_app_set: false
+      set_linear_track_enable: false
+      set_linear_track_speed: false
       set_cartesian_velo_continuous: false
       set_allow_approx_motion: false
       set_only_check_type: false
@@ -79,8 +76,8 @@ ufactory_driver:
       set_servo_attach: false
       set_servo_detach: false
       set_reduced_tcp_boundary: false
-      get_tgpio_modbus_baudrate: false
-      set_tgpio_modbus_baudrate: false
+      get_tgpio_modbus_baudrate: true
+      set_tgpio_modbus_baudrate: true
       get_checkset_default_baud: false
       set_checkset_default_baud: false
       get_gripper_position: false
@@ -100,7 +97,7 @@ ufactory_driver:
       set_tcp_offset: false
       set_world_offset: false
       set_reduced_joint_range: false
-      set_tcp_load: false
+      set_tcp_load: true
       set_position: true
       set_tool_position: false
       set_position_aa: false
@@ -112,16 +109,16 @@ ufactory_driver:
       move_gohome: true
       vc_set_joint_velocity: true
       vc_set_cartesian_velocity: true
-      get_tgpio_digital: false
-      get_cgpio_digital: false
-      get_tgpio_analog: false
-      get_cgpio_analog: false
-      set_tgpio_digital: false
-      set_cgpio_digital: false
-      set_tgpio_digital_with_xyz: false
-      set_cgpio_digital_with_xyz: false
-      set_cgpio_analog: false
-      set_cgpio_analog_with_xyz: false
+      get_tgpio_digital: true
+      get_cgpio_digital: true
+      get_tgpio_analog: true
+      get_cgpio_analog: true
+      set_tgpio_digital: true
+      set_cgpio_digital: true
+      set_tgpio_digital_with_xyz: true
+      set_cgpio_digital_with_xyz: true
+      set_cgpio_analog: true
+      set_cgpio_analog_with_xyz: true
       set_vacuum_gripper: false
       set_gripper_position: false
       set_bio_gripper_enable: false
@@ -133,14 +130,16 @@ ufactory_driver:
       robotiq_open: false
       robotiq_close: false
       robotiq_get_status: false
-      getset_tgpio_modbus_data: false
+      getset_tgpio_modbus_data: true
       save_record_trajectory: false
       load_trajectory: false
       playback_trajectory: false
       iden_tcp_load: false
-      iden_ft_sensor_load_offset: false   # The old name is ft_sensor_iden_load, please use the new one
-      set_ft_sensor_load_offset: false    # The old name is ft_sensor_cali_load, please use the new one
+      ft_sensor_iden_load: false
+      ft_sensor_cali_load: false
       config_force_control: false
-      set_ft_sensor_admittance_parameters: false  # The old name is set_impedance/set_impedance_mbk/set_impedance_config, please use the new one
-      set_linear_motor_back_origin: false # The old name is set_linear_track_back_origin, please use the new one
-      set_linear_motor_pos: false         # The old name is set_linear_track_pos, please use the new one
+      set_impedance: false
+      set_impedance_mbk: false
+      set_impedance_config: false
+      set_linear_track_back_origin: false
+      set_linear_track_pos: false
