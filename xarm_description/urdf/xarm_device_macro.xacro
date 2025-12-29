@@ -228,7 +228,7 @@
       <!-- TODO: check how to start depthai camera simulation. -->
       <!-- probably use use_gazebo_camera or add an arg to start simulation -->
       <xacro:if value="${add_depthai_camera}">
-        <xacro:include filename="$(find abluo_description)/description/camera.urdf.xacro" />
+        <xacro:include filename="$(find hivebotics_description)/description/camera.urdf.xacro" />
         <xacro:depthai_camera prefix="${prefix}"  />
       </xacro:if>
       <xacro:unless value="${add_depthai_camera}">

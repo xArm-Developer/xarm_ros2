@@ -560,7 +560,7 @@ namespace xarm_api
         if (add_bio_gripper) {
             bio_gripper_init_loop_ = false;
             std::thread([this]() {
-                float cur_pos;
+                int cur_pos;
                 int ret = arm->get_bio_gripper_position(&cur_pos);
                 while (ret == 0 && !bio_gripper_init_loop_)
                 {
@@ -618,7 +618,7 @@ namespace xarm_api
         RCLCPP_INFO(node_->get_logger(), "bio_gripper_action_execute, position=%f, max_effort=%f", goal->command.position, goal->command.max_effort);
         
         int ret;
-        float cur_pos = 0;
+        int cur_pos = 0;
         int err = 0;
         ret = arm->get_bio_gripper_error(&err);
         if (ret != 0 || err != 0) {
@@ -646,7 +646,7 @@ namespace xarm_api
                 RCLCPP_ERROR(node_->get_logger(), "bio goal_handle canceled exception, ex=%s", e.what()); 
             }
             ret = arm->get_bio_gripper_error(&err);
-            RCLCPP_WARN(node_->get_logger(), "set_bio_gripper_enable, ret=%d, err=%d, cur_pos=%f", ret, err, cur_pos);
+            RCLCPP_WARN(node_->get_logger(), "set_bio_gripper_enable, ret=%d, err=%d, cur_pos=%d", ret, err, cur_pos);
             return;
         }
         ret = arm->set_bio_gripper_speed(bio_gripper_speed_);
@@ -658,7 +658,7 @@ namespace xarm_api
                 RCLCPP_ERROR(node_->get_logger(), "bio goal_handle canceled exception, ex=%s", e.what()); 
             }
             ret = arm->get_bio_gripper_error(&err);
-            RCLCPP_WARN(node_->get_logger(), "set_bio_gripper_speed, ret=%d, err=%d, cur_pos=%f", ret, err, cur_pos);
+            RCLCPP_WARN(node_->get_logger(), "set_bio_gripper_speed, ret=%d, err=%d, cur_pos=%d", ret, err, cur_pos);
             return;
         }
         float last_pos = -bio_gripper_max_pos_;
@@ -673,7 +673,7 @@ namespace xarm_api
                 ret2 = arm->close_bio_gripper(true, 5, false); // set wait_motion=false
             int err;
             arm->get_bio_gripper_error(&err);
-            RCLCPP_INFO(node_->get_logger(), "set_bio_gripper_position, ret=%d, err=%d, cur_pos=%f", ret2, err, cur_pos);
+            RCLCPP_INFO(node_->get_logger(), "set_bio_gripper_position, ret=%d, err=%d, cur_pos=%d", ret2, err, cur_pos);
             is_move = false;
         }).detach();
         int cnt = 0;
@@ -718,7 +718,7 @@ namespace xarm_api
             // }
         }
         arm->get_bio_gripper_position(&cur_pos);
-        RCLCPP_INFO(node_->get_logger(), "bio move finish, cur_pos=%f", cur_pos);
+        RCLCPP_INFO(node_->get_logger(), "bio move finish, cur_pos=%d", cur_pos);
         if (rclcpp::ok() && !is_succeed) {
             bio_gripper_result_->position = _bio_gripper_pos_convert(cur_pos);
             try {
