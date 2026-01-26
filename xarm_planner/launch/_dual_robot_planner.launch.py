@@ -185,6 +185,8 @@ def launch_setup(context, *args, **kwargs):
                 'dof_2': dof_2,
                 'prefix_1': prefix_1,
                 'prefix_2': prefix_2,
+                'add_gripper_1': add_gripper_1, 
+                'add_gripper_2': add_gripper_2
             },
             xarm_planner_parameters,
         ],
