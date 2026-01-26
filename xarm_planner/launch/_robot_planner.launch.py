@@ -119,7 +119,8 @@ def launch_setup(context, *args, **kwargs):
             {
                 'robot_type': robot_type,
                 'dof': dof,
-                'prefix': prefix
+                'prefix': prefix, 
+                'add_gripper' : add_gripper
             },
             xarm_planner_parameters,
         ],
