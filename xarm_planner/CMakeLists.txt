@@ -160,4 +160,7 @@ install(DIRECTORY
   DESTINATION share/${PROJECT_NAME}/
 )
 
+ament_export_include_directories(include)
+ament_export_libraries(xarm_planner)
+
 ament_package()
