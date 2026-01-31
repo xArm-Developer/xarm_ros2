@@ -83,7 +83,7 @@ ufactory_driver:
       set_tgpio_modbus_baudrate: false
       get_checkset_default_baud: false
       set_checkset_default_baud: false
-      get_gripper_position: true
+      get_gripper_position: false
       get_position: false
       get_servo_angle: true
       get_position_aa: false
