@@ -55,8 +55,8 @@ ufactory_driver:
       set_state: true
       set_collision_sensitivity: false
       set_teach_sensitivity: false
-      set_gripper_mode: true
-      set_gripper_enable: true
+      set_gripper_mode: false
+      set_gripper_enable: false
       set_tgpio_modbus_timeout: false
       set_bio_gripper_speed: false
       set_collision_rebound: false
@@ -93,7 +93,7 @@ ufactory_driver:
       set_tcp_maxacc: false
       set_joint_jerk: false
       set_joint_maxacc: false
-      set_gripper_speed: true
+      set_gripper_speed: false
       set_reduced_max_tcp_speed: false
       set_reduced_max_joint_speed: false
       set_gravity_direction: false
@@ -123,7 +123,7 @@ ufactory_driver:
       set_cgpio_analog: false
       set_cgpio_analog_with_xyz: false
       set_vacuum_gripper: false
-      set_gripper_position: true
+      set_gripper_position: false
       set_bio_gripper_enable: false
       open_bio_gripper: false
       close_bio_gripper: false

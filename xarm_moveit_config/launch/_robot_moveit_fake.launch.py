@@ -70,8 +70,7 @@ def launch_setup(context, *args, **kwargs):
         robot_type=robot_type.perform(context)
     )
 
-    moveit_config = (
-        MoveItConfigsBuilder(
+    moveit_config = MoveItConfigsBuilder(
         context=context,
         controllers_name=controllers_name,
         dof=dof,
@@ -107,13 +106,8 @@ def launch_setup(context, *args, **kwargs):
         geometry_mesh_origin_rpy=geometry_mesh_origin_rpy,
         geometry_mesh_tcp_xyz=geometry_mesh_tcp_xyz,
         geometry_mesh_tcp_rpy=geometry_mesh_tcp_rpy,
-    )
-    .planning_scene_monitor(
-        publish_robot_description=True, publish_robot_description_semantic=True
-    )
-    .to_moveit_configs()
-    )
-    
+    ).to_moveit_configs()
+
     # robot description launch
     # xarm_description/launch/_robot_description.launch.py
     robot_description_launch = IncludeLaunchDescription(
@@ -178,25 +172,11 @@ def launch_setup(context, *args, **kwargs):
             ],
         ))
 
-    package_shared_path = get_package_share_directory("moveit_task_constructor_demo")
-    task_constructor_node = Node(
-        package="moveit_task_constructor_demo",
-        executable="pick_place_demo",
-        name="moveit_task_constructor_demo",
-        namespace=ros_namespace,
-        output="screen",
-        parameters=[
-            moveit_config.to_dict(),
-            os.path.join(package_shared_path, "config", "xarm6_config.yaml"),
-        ],
-    )
-
     return [
         robot_description_launch,
         robot_moveit_common_launch,
         joint_state_broadcaster,
         ros2_control_launch,
-        #task_constructor_node,
     ] + controller_nodes
 
 
