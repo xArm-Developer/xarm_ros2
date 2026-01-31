@@ -54,6 +54,7 @@ def launch_setup(context, *args, **kwargs):
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
 
     no_gui_ctrl = LaunchConfiguration('no_gui_ctrl', default=False)
+    add_mtc = LaunchConfiguration('add_mtc', default=False)
     ros_namespace = LaunchConfiguration('ros_namespace', default='').perform(context)
 
     ros2_control_plugin = 'uf_robot_hardware/UFRobotFakeSystemHardware'
@@ -106,7 +107,7 @@ def launch_setup(context, *args, **kwargs):
         geometry_mesh_tcp_xyz=geometry_mesh_tcp_xyz,
         geometry_mesh_tcp_rpy=geometry_mesh_tcp_rpy,
     ).to_moveit_configs()
-    
+
     # robot description launch
     # xarm_description/launch/_robot_description.launch.py
     robot_description_launch = IncludeLaunchDescription(
@@ -126,6 +127,7 @@ def launch_setup(context, *args, **kwargs):
             'attach_xyz': attach_xyz,
             'attach_rpy': attach_rpy,
             'no_gui_ctrl': no_gui_ctrl,
+            'add_mtc': add_mtc,
             'use_sim_time': 'false',
             'moveit_config_dump': yaml.dump(moveit_config.to_dict()),
         }.items(),

@@ -30,20 +30,26 @@ def launch_setup(context, *args, **kwargs):
     use_sim_time = LaunchConfiguration('use_sim_time', default=False)
     moveit_config_dump = LaunchConfiguration('moveit_config_dump')
     rviz_config = LaunchConfiguration('rviz_config', default='')
+    add_mtc = LaunchConfiguration('add_mtc', default=False)
     
     moveit_config_dump = moveit_config_dump.perform(context)
     moveit_config_dict = yaml.load(moveit_config_dump, Loader=yaml.FullLoader)
     moveit_config_package_name = 'xarm_moveit_config'
+
+    # MTC ExecuteTaskSolution capability (requires ros-${ROS_DISTRO}-moveit-task-constructor-capabilities)
+    move_group_params = [
+        moveit_config_dict,
+        {'use_sim_time': use_sim_time},
+    ]
+    if add_mtc.perform(context) in ('True', 'true'):
+        move_group_params.append({'capabilities': 'move_group/ExecuteTaskSolutionCapability'})
 
     # Start the actual move_group node/action server
     move_group_node = Node(
         package='moveit_ros_move_group',
         executable='move_group',
         output='screen',
-        parameters=[
-            moveit_config_dict,
-            {'use_sim_time': use_sim_time},
-        ],
+        parameters=move_group_params,
     )
 
     # rviz with moveit configuration

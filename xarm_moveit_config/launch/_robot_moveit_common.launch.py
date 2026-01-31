@@ -60,6 +60,7 @@ def launch_setup(context, *args, **kwargs):
     kinematics_suffix = LaunchConfiguration('kinematics_suffix', default='')
 
     use_sim_time = LaunchConfiguration('use_sim_time', default=False)
+    add_mtc = LaunchConfiguration('add_mtc', default=False)
 
     moveit_config_package_name = 'xarm_moveit_config'
     xarm_type = '{}{}'.format(robot_type.perform(context), dof.perform(context) if robot_type.perform(context) in ('xarm', 'lite') else '')
@@ -237,21 +238,26 @@ def launch_setup(context, *args, **kwargs):
     #     'ros.filtered_cloud_topic': 'filtered_cloud',
     # }
 
+    # MTC ExecuteTaskSolution capability (requires ros-${ROS_DISTRO}-moveit-task-constructor-capabilities)
+    move_group_params = [
+        robot_description_parameters,
+        ompl_planning_pipeline_config,
+        trajectory_execution,
+        plan_execution,
+        moveit_controllers,
+        planning_scene_monitor_parameters,
+        # sensor_manager_parameters,
+        {'use_sim_time': use_sim_time},
+    ]
+    if add_mtc.perform(context) in ('True', 'true'):
+        move_group_params.append({'capabilities': 'move_group/ExecuteTaskSolutionCapability'})
+
     # Start the actual move_group node/action server
     move_group_node = Node(
         package='moveit_ros_move_group',
         executable='move_group',
         output='screen',
-        parameters=[
-            robot_description_parameters,
-            ompl_planning_pipeline_config,
-            trajectory_execution,
-            plan_execution,
-            moveit_controllers,
-            planning_scene_monitor_parameters,
-            # sensor_manager_parameters,
-            {'use_sim_time': use_sim_time},
-        ],
+        parameters=move_group_params,
     )
 
     # rviz with moveit configuration
