@@ -710,7 +710,8 @@ namespace xarm_api
 
     bool XArmDriver::_set_tgpio_modbus_use_503_port(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
     {
-        res->ret = arm->set_tgpio_modbus_use_503_port(req->data);
+        // Not available in this SDK version; use_503_port is now a parameter of getset_tgpio_modbus_data
+        res->ret = -1;
         res->message = "data=" + std::to_string(req->data);
         return true;
     }
