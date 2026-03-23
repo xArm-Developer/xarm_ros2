@@ -110,7 +110,7 @@ JoyToServoPub::JoyToServoPub(const rclcpp::NodeOptions& options)
 
     // Client for switching input types
     switch_input_ = node_->create_client<moveit_msgs::srv::ServoCommandType>("/servo_server/switch_command_type");
-    servo_start_client_->wait_for_service(std::chrono::seconds(2));
+    switch_input_->wait_for_service(std::chrono::seconds(2));
     command_type_ = -1;
     switch_request_ = std::make_shared<moveit_msgs::srv::ServoCommandType::Request>();
 
@@ -404,7 +404,9 @@ void JoyToServoPub::_joy_callback(const sensor_msgs::msg::Joy::SharedPtr msg)
     }
 
     if (pub_twist) {
-        _switch_command_type(1);
+        if (command_type_ != 1) {
+            _switch_command_type(1);
+        }
         // publish the TwistStamped
         _filter_twist_msg(twist_msg, 0.2);
         // RCLCPP_INFO(this->get_logger(), "linear=[%f, %f, %f], angular=[%f, %f, %f]", 
@@ -415,7 +417,9 @@ void JoyToServoPub::_joy_callback(const sensor_msgs::msg::Joy::SharedPtr msg)
         twist_pub_->publish(std::move(twist_msg));
     }
     else {
-        _switch_command_type(0);
+        if (command_type_ != 0) {
+            _switch_command_type(0);
+        }
         // publish the JointJog
         joint_msg->header.stamp = this->now();
         joint_msg->header.frame_id = "joint";
