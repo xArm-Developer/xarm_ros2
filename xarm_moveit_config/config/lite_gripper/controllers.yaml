@@ -1,0 +1,9 @@
+controller_names:
+  - lite_gripper
+
+bio_gripper:
+  action_ns: gripper_action
+  type: GripperCommand
+  default: true
+  joints:
+    - finger_joint1

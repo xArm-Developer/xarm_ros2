@@ -1,0 +1,9 @@
+controller_names:
+  - lite_gripper_traj_controller
+
+lite_gripper_traj_controller:
+  action_ns: follow_joint_trajectory
+  type: FollowJointTrajectory
+  default: true
+  joints:
+    - finger_joint1

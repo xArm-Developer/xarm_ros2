@@ -34,6 +34,7 @@ def launch_setup(context, *args, **kwargs):
     attach_rpy = LaunchConfiguration('attach_rpy', default='"0 0 0"')
     mesh_suffix = LaunchConfiguration('mesh_suffix', default='stl')
     kinematics_suffix = LaunchConfiguration('kinematics_suffix', default='')
+    gripper_version = LaunchConfiguration('gripper_version', default='G1')
 
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_vacuum_gripper = LaunchConfiguration('add_vacuum_gripper', default=False)
@@ -88,6 +89,7 @@ def launch_setup(context, *args, **kwargs):
         kinematics_suffix=kinematics_suffix,
         ros2_control_plugin=ros2_control_plugin,
         ros2_control_params=ros2_control_params,
+        gripper_version=gripper_version,
         add_gripper=add_gripper,
         add_vacuum_gripper=add_vacuum_gripper,
         add_bio_gripper=add_bio_gripper,
@@ -132,7 +134,7 @@ def launch_setup(context, *args, **kwargs):
     )
 
     controllers = ['{}{}_traj_controller'.format(prefix.perform(context), xarm_type)]
-    if add_gripper.perform(context) in ('True', 'true') and robot_type.perform(context) != 'lite':
+    if add_gripper.perform(context) in ('True', 'true'):
         controllers.append('{}{}_gripper_traj_controller'.format(prefix.perform(context), robot_type.perform(context)))
     elif add_bio_gripper.perform(context) in ('True', 'true') and robot_type.perform(context) != 'lite':
         controllers.append('{}bio_gripper_traj_controller'.format(prefix.perform(context)))

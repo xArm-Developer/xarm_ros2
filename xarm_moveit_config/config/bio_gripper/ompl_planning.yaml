@@ -1,4 +1,4 @@
-bios_gripper:
+bio_gripper:
   default_planner_config: RRTConnect
   planner_configs:
     - SBL

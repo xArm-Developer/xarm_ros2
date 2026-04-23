@@ -44,7 +44,9 @@ def launch_setup(context, *args, **kwargs):
     geometry_mesh_tcp_xyz = LaunchConfiguration('geometry_mesh_tcp_xyz', default='"0 0 0"')
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
 
+    mesh_suffix = LaunchConfiguration('mesh_suffix', default='stl')
     kinematics_suffix = LaunchConfiguration('kinematics_suffix', default='')
+    gripper_version = LaunchConfiguration('gripper_version', default='G1')
 
     # robot description launch
     # xarm_description/launch/_robot_description.launch.py
@@ -77,7 +79,9 @@ def launch_setup(context, *args, **kwargs):
             'geometry_mesh_origin_rpy': geometry_mesh_origin_rpy,
             'geometry_mesh_tcp_xyz': geometry_mesh_tcp_xyz,
             'geometry_mesh_tcp_rpy': geometry_mesh_tcp_rpy,
+            'mesh_suffix': mesh_suffix,
             'kinematics_suffix': kinematics_suffix,
+            'gripper_version': gripper_version,
         }.items(),
     )
 
