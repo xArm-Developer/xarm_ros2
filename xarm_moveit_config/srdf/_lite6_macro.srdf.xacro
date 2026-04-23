@@ -46,18 +46,38 @@
 
     <!-- gripper -->
     <xacro:if value="${add_gripper}">
-      <!-- <group name="${prefix}lite_gripper">
-        <joint name="${prefix}gripper_fix" />
-        <joint name="${prefix}joint_tcp" />
-      </group> -->
+      <group name="${prefix}lite_gripper">
+        <link name="${prefix}uflite_gripper_link" />
+        <link name="${prefix}uflite_finger1" />
+        <link name="${prefix}uflite_finger2" />
+        <joint name="${prefix}finger_joint1" />
+      </group>
+      <group_state name="open" group="${prefix}lite_gripper">
+        <joint name="${prefix}finger_joint1" value="0.01" />
+      </group_state>
+      <group_state name="close" group="${prefix}lite_gripper">
+        <joint name="${prefix}finger_joint1" value="0" />
+      </group_state>
       <!-- END EFFECTOR, Purpose, Represent information about an end effector. -->
-      <!-- <end_effector name="${prefix}lite_gripper" parent_link="${prefix}link_tcp" group="${prefix}lite_gripper" /> -->
-      <passive_joint name="${prefix}gripper_fix" />
+      <end_effector name="${prefix}lite_gripper" parent_link="${prefix}link_tcp" group="${prefix}lite_gripper" />
+      <passive_joint name="${prefix}finger_joint2" />
       <!--PASSIVE JOINT, Purpose, this element is used to mark joints that are not actuated-->
       <!-- DISABLE COLLISIONS, By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
-      <disable_collisions link1="${prefix}link5" link2="${prefix}uflite_gripper_link" reason="Never" />
-      <disable_collisions link1="${prefix}link6" link2="${prefix}uflite_gripper_link" reason="Never" />
-      <disable_collisions link1="${prefix}link_eef" link2="${prefix}uflite_gripper_link" reason="Adjacent" />
+      <disable_collisions link1="${prefix}uflite_gripper_link" link2="${prefix}uflite_finger1" reason="Adjacent" />
+      <disable_collisions link1="${prefix}uflite_gripper_link" link2="${prefix}uflite_finger2" reason="Adjacent" />
+      <disable_collisions link1="${prefix}uflite_finger1" link2="${prefix}uflite_finger2" reason="Never" />
+      <disable_collisions link1="${prefix}uflite_gripper_link" link2="${prefix}link4" reason="Never" />
+      <disable_collisions link1="${prefix}uflite_gripper_link" link2="${prefix}link5" reason="Never" />
+      <disable_collisions link1="${prefix}uflite_gripper_link" link2="${prefix}link6" reason="Adjacent" />
+      <disable_collisions link1="${prefix}uflite_gripper_link" link2="${prefix}link_eef" reason="Adjacent" />
+      <disable_collisions link1="${prefix}uflite_finger1" link2="${prefix}link4" reason="Never" />
+      <disable_collisions link1="${prefix}uflite_finger1" link2="${prefix}link5" reason="Never" />
+      <disable_collisions link1="${prefix}uflite_finger1" link2="${prefix}link6" reason="Never" />
+      <disable_collisions link1="${prefix}uflite_finger1" link2="${prefix}link_eef" reason="Never" />
+      <disable_collisions link1="${prefix}uflite_finger2" link2="${prefix}link4" reason="Never" />
+      <disable_collisions link1="${prefix}uflite_finger2" link2="${prefix}link5" reason="Never" />
+      <disable_collisions link1="${prefix}uflite_finger2" link2="${prefix}link6" reason="Never" />
+      <disable_collisions link1="${prefix}uflite_finger2" link2="${prefix}link_eef" reason="Never" />
     </xacro:if>
 
     <!-- vacuum gripper -->

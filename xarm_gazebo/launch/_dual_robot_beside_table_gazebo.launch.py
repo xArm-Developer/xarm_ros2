@@ -45,6 +45,10 @@ def launch_setup(context, *args, **kwargs):
     effort_control = LaunchConfiguration('effort_control', default=False)
     velocity_control = LaunchConfiguration('velocity_control', default=False)
     ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='')
+
+    gripper_version = LaunchConfiguration('gripper_version', default='G1')
+    gripper_version_1 = LaunchConfiguration('gripper_version_1', default=gripper_version)
+    gripper_version_2 = LaunchConfiguration('gripper_version_2', default=gripper_version)
     
     add_realsense_d435i = LaunchConfiguration('add_realsense_d435i', default=False)
     add_realsense_d435i_1 = LaunchConfiguration('add_realsense_d435i_1', default=add_realsense_d435i)
@@ -172,6 +176,8 @@ def launch_setup(context, *args, **kwargs):
                 kinematics_suffix_2=kinematics_suffix_2,
                 ros2_control_plugin=ros2_control_plugin,
                 ros2_control_params=ros2_control_params,
+                gripper_version_1=gripper_version_1,
+                gripper_version_2=gripper_version_2,
                 add_gripper_1=add_gripper_1,
                 add_gripper_2=add_gripper_2,
                 add_vacuum_gripper_1=add_vacuum_gripper_1,
@@ -363,12 +369,12 @@ def launch_setup(context, *args, **kwargs):
         '{}{}_traj_controller'.format(prefix_2.perform(context), xarm_type_2),
     ]
     # check robot_type is not lite
-    if robot_type_1.perform(context) != 'lite' and add_gripper_1.perform(context) in ('True', 'true'):
+    if add_gripper_1.perform(context) in ('True', 'true'):
         controllers.append('{}{}_gripper_traj_controller'.format(prefix_1.perform(context), robot_type_1.perform(context)))
     elif robot_type_1.perform(context) != 'lite' and add_bio_gripper_1.perform(context) in ('True', 'true'):
         controllers.append('{}bio_gripper_traj_controller'.format(prefix_1.perform(context)))
     # check robot_type is not lite
-    if robot_type_2.perform(context) != 'lite' and add_gripper_2.perform(context) in ('True', 'true'):
+    if add_gripper_2.perform(context) in ('True', 'true'):
         controllers.append('{}{}_gripper_traj_controller'.format(prefix_2.perform(context), robot_type_2.perform(context)))
     elif robot_type_2.perform(context) != 'lite' and add_bio_gripper_2.perform(context) in ('True', 'true'):
         controllers.append('{}bio_gripper_traj_controller'.format(prefix_2.perform(context)))
