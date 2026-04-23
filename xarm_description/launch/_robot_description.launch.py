@@ -53,8 +53,10 @@ def launch_setup(context, *args, **kwargs):
     geometry_mesh_tcp_xyz = LaunchConfiguration('geometry_mesh_tcp_xyz', default='"0 0 0"')
     geometry_mesh_tcp_rpy = LaunchConfiguration('geometry_mesh_tcp_rpy', default='"0 0 0"')
 
+    mesh_suffix = LaunchConfiguration('mesh_suffix', default='stl')
     kinematics_suffix = LaunchConfiguration('kinematics_suffix', default='')
     robot_description = LaunchConfiguration('robot_description', default='')
+    gripper_version = LaunchConfiguration('gripper_version', default='G1')
 
     if not robot_description.perform(context):
         # robot_description
@@ -74,7 +76,9 @@ def launch_setup(context, *args, **kwargs):
                 attach_to=attach_to,
                 attach_xyz=attach_xyz,
                 attach_rpy=attach_rpy,
+                mesh_suffix=mesh_suffix,
                 kinematics_suffix=kinematics_suffix,
+                gripper_version=gripper_version,
                 ros2_control_plugin=ros2_control_plugin,
                 add_gripper=add_gripper,
                 add_vacuum_gripper=add_vacuum_gripper,

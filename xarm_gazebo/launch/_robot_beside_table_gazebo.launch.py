@@ -35,6 +35,8 @@ def launch_setup(context, *args, **kwargs):
     dof = LaunchConfiguration('dof', default=7)
     robot_type = LaunchConfiguration('robot_type', default='xarm')
     ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='')
+
+    gripper_version = LaunchConfiguration('gripper_version', default='G1')
     
     add_realsense_d435i = LaunchConfiguration('add_realsense_d435i', default=False)
     add_d435i_links = LaunchConfiguration('add_d435i_links', default=True)
@@ -107,6 +109,7 @@ def launch_setup(context, *args, **kwargs):
                 kinematics_suffix=kinematics_suffix,
                 ros2_control_plugin=ros2_control_plugin,
                 ros2_control_params=ros2_control_params,
+                gripper_version=gripper_version,
                 add_gripper=add_gripper,
                 add_vacuum_gripper=add_vacuum_gripper,
                 add_bio_gripper=add_bio_gripper,
@@ -309,7 +312,7 @@ def launch_setup(context, *args, **kwargs):
         'joint_state_broadcaster',
         '{}{}_traj_controller'.format(prefix.perform(context), xarm_type),
     ]
-    if robot_type.perform(context) != 'lite' and add_gripper.perform(context) in ('True', 'true'):
+    if add_gripper.perform(context) in ('True', 'true'):
         controllers.append('{}{}_gripper_traj_controller'.format(prefix.perform(context), robot_type.perform(context)))
     elif robot_type.perform(context) != 'lite' and add_bio_gripper.perform(context) in ('True', 'true'):
         controllers.append('{}bio_gripper_traj_controller'.format(prefix.perform(context)))
