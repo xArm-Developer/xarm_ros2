@@ -53,6 +53,10 @@ def launch_setup(context, *args, **kwargs):
     kinematics_suffix = LaunchConfiguration('kinematics_suffix', default='')
     kinematics_suffix_1 = LaunchConfiguration('kinematics_suffix_1', default=kinematics_suffix)
     kinematics_suffix_2 = LaunchConfiguration('kinematics_suffix_2', default=kinematics_suffix)
+
+    gripper_version = LaunchConfiguration('gripper_version', default='G1')
+    gripper_version_1 = LaunchConfiguration('gripper_version_1', default=gripper_version)
+    gripper_version_2 = LaunchConfiguration('gripper_version_2', default=gripper_version)
     
     add_gripper = LaunchConfiguration('add_gripper', default=False)
     add_gripper_1 = LaunchConfiguration('add_gripper_1', default=add_gripper)
@@ -159,6 +163,8 @@ def launch_setup(context, *args, **kwargs):
         kinematics_suffix_2=kinematics_suffix_2,
         ros2_control_plugin=ros2_control_plugin,
         ros2_control_params=ros2_control_params,
+        gripper_version_1=gripper_version_1,
+        gripper_version_2=gripper_version_2,
         add_gripper_1=add_gripper_1,
         add_gripper_2=add_gripper_2,
         add_vacuum_gripper_1=add_vacuum_gripper_1,
