@@ -20,13 +20,13 @@
     <xacro:uflite_gripper_gazebo prefix="${prefix}" />
 
     <xacro:if value="${not is_ros2}">
-      <xacro:uflite_gripper_gazebo_grasp_fix prefix="${prefix}" palm_link="${prefix}link${dof}" />
+      <xacro:uflite_gazebo_grasp_fix prefix="${prefix}" palm_link="${prefix}link${dof}" />
     </xacro:if>
 
     <!-- mimic_joint_plugin has to be installed: -->
-    <xacro:mimic_joint_plugin_gazebo name_prefix="${prefix}uflite_gripper_left_finger_joint"
-      following_joint="${prefix}finger_joint2" mimic_joint="${prefix}finger_joint1"
-      has_pid="${is_ros2}" multiplier="-1.0" max_effort="10.0" />
+    <xacro:mimic_joint_plugin_gazebo name_prefix="${prefix}finger_joint2"
+      following_joint="${prefix}finger_joint1" mimic_joint="${prefix}finger_joint2"
+      has_pid="${is_ros2}" multiplier="1.0" max_effort="10.0" />
 
   </xacro:macro>
 </robot>
