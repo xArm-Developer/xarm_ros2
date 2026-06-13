@@ -1,0 +1,15 @@
+# Goal: move to container and trigger external pump for dispensing
+string container_label     # vision label of target container
+float64 volume_ml 1.0      # volume to dispense (milliliters)
+float64 pump_rate_ml_s 0.5 # pump flow rate (ml/s) — used to compute trigger duration
+float64 hover_height_m 0.04  # height above container opening to position nozzle
+---
+# Result
+bool success
+string message
+float64 actual_volume_ml   # estimated volume dispensed
+float64 pump_duration_s    # how long pump was triggered
+---
+# Feedback
+float32 progress
+string status              # "locating_container", "approaching", "dispensing", "retracting"

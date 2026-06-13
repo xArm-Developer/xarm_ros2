@@ -1,0 +1,14 @@
+rosbridge_websocket:
+  ros__parameters:
+    topics_glob:
+      - "/joint_states"
+      - "/tf"
+      - "/tf_static"
+      - "/vision/objects"
+      - "/vision/annotated_image"
+      - "/skill_prompts"
+      - "/job_feedback"
+    services_glob:
+      - ""
+    params_glob:
+      - ""

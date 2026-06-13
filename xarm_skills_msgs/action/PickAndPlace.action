@@ -1,0 +1,14 @@
+# Goal: pick object from source location and place at destination
+string source_label        # vision label of object to pick (e.g. "vial", "apriltag_1")
+string destination_label   # vision label or named pose for placement
+float64 grasp_width_m 0.02    # gripper opening for grasp (meters)
+float64 approach_height_m 0.06 # height above object for approach/depart
+float64 place_height_m 0.01   # height above destination to release
+---
+# Result
+bool success
+string message
+---
+# Feedback
+float32 progress
+string status              # "locating_source", "approaching", "grasping", "lifting", "moving", "placing", "releasing", "departing"

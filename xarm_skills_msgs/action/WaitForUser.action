@@ -1,0 +1,13 @@
+# Goal: pause execution and surface a prompt to the operator
+string message             # message displayed to the user (e.g. "Replace the vial and press Continue")
+float64 timeout_s 0.0      # 0 = wait indefinitely; >0 = auto-resume after timeout
+---
+# Result
+bool success
+string message             # "confirmed" or "timed_out"
+bool user_confirmed        # true if user pressed confirm, false if timed out
+---
+# Feedback
+float32 progress           # 0.0 while waiting, 1.0 on confirm/timeout
+string status              # "waiting_for_user"
+float64 elapsed_s          # seconds elapsed since prompt was shown

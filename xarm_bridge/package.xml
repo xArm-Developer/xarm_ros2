@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>xarm_bridge</name>
+  <version>0.1.0</version>
+  <description>
+    FastAPI REST bridge and rosbridge launch for web control of an xArm.
+    Auto-discovers ROS 2 action types from xarm_skills_msgs and exposes
+    each as a typed REST endpoint, with SQLite-backed job persistence and
+    a telemetry-only rosbridge allowlist.
+  </description>
+  <maintainer email="Ryan-Cunningham_EZAG@users.noreply.github.com">Ryan Cunningham</maintainer>
+  <license>MIT</license>
+  <url type="repository">https://github.com/xArm-Developer/xarm_ros2</url>
+
+  <buildtool_depend>ament_python</buildtool_depend>
+
+  <depend>rclpy</depend>
+  <depend>xarm_skills_msgs</depend>
+  <depend>std_msgs</depend>
+
+  <exec_depend>rosbridge_server</exec_depend>
+  <exec_depend>python3-fastapi</exec_depend>
+  <exec_depend>python3-uvicorn</exec_depend>
+  <exec_depend>python3-pydantic</exec_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

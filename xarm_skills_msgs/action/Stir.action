@@ -1,0 +1,15 @@
+# Goal: locate target container and stir with gripper-held rod
+string target_label        # vision label or apriltag ID (e.g. "beaker", "apriltag_3")
+float64 rpm 60.0           # approximate stir speed (oscillation rate)
+float64 duration_s 10.0    # how long to stir (seconds)
+float64 depth_m 0.03       # how deep to plunge the stir rod (meters)
+float64 retract_height_m 0.08  # height above container to retract to
+---
+# Result
+bool success
+string message
+float64 actual_duration_s
+---
+# Feedback
+float32 progress           # 0.0 to 1.0
+string status              # e.g. "locating_target", "approaching", "stirring", "retracting"

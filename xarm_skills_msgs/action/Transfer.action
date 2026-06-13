@@ -1,0 +1,14 @@
+# Goal: pick container from source, move safely above bench, place at destination
+string source_label        # vision label of container to transfer
+string destination_label   # vision label or named pose for destination
+float64 grasp_width_m 0.02    # gripper opening for grasp
+float64 safe_height_m 0.12    # height above bench for safe transit
+float64 approach_height_m 0.06 # height above object for approach/depart
+---
+# Result
+bool success
+string message
+---
+# Feedback
+float32 progress
+string status              # "locating_source", "grasping", "lifting", "transiting", "placing", "releasing"

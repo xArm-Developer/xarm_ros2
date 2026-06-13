@@ -1,0 +1,16 @@
+# Goal: move gripper-held glue tip along a path of waypoints
+# Each waypoint is a geometry_msgs/Point in base_link frame
+geometry_msgs/Point[] waypoints   # ordered list of XYZ positions (base_link frame)
+float64 speed_m_s 0.01            # end-effector speed along path (m/s)
+float64 approach_height_m 0.05    # height above first waypoint for approach
+bool dispense_between true        # trigger pump GPIO between waypoints
+---
+# Result
+bool success
+string message
+int32 waypoints_completed
+---
+# Feedback
+float32 progress
+string status              # "approaching", "gluing_segment_N", "retracting"
+int32 current_waypoint

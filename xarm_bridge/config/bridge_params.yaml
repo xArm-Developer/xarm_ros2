@@ -1,0 +1,9 @@
+bridge_node:
+  ros__parameters:
+    host: "0.0.0.0"
+    port: 8000
+    db_path: "/tmp/xarm_bridge_jobs.db"
+    estop_topic: "/estop"
+    prompt_topic: "/skill_prompts"
+    prompt_confirm_topic: "/skill_prompts/confirm"
+    job_feedback_topic: "/job_feedback"
