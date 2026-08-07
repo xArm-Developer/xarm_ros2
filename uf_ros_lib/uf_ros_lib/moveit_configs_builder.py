@@ -88,6 +88,10 @@ DualMoveItConfigsBuilder(
         model1300_2=False
         robot_sn_1=''
         robot_sn_2=''
+        attach_xyz_1='0 0 0'
+        attach_rpy_1='0 0 0'
+        attach_xyz_2='0 1 0'
+        attach_rpy_2='0 0 0'
         kinematics_suffix_1=''
         kinematics_suffix_2=''
         add_realsense_d435i_1=False
@@ -889,6 +893,10 @@ class DualMoveItConfigsBuilder(ParameterBuilder):
         robot_sn = get_param_str('robot_sn', '')
         robot_sn_1 = get_param_str('robot_sn_1', robot_sn)
         robot_sn_2 = get_param_str('robot_sn_2', robot_sn)
+        attach_xyz_1 = get_list_param_str('attach_xyz_1', '0 0 0')
+        attach_rpy_1 = get_list_param_str('attach_rpy_1', '0 0 0')
+        attach_xyz_2 = get_list_param_str('attach_xyz_2', '0 1 0')
+        attach_rpy_2 = get_list_param_str('attach_rpy_2', '0 0 0')
         mesh_suffix = get_param_str('mesh_suffix', 'stl')
         kinematics_suffix = get_param_str('kinematics_suffix', '')
         kinematics_suffix_1 = get_param_str('kinematics_suffix_1', kinematics_suffix)
@@ -985,6 +993,10 @@ class DualMoveItConfigsBuilder(ParameterBuilder):
             'model1300_2': model1300_2,
             'robot_sn_1': robot_sn_1,
             'robot_sn_2': robot_sn_2,
+            'attach_xyz_1': attach_xyz_1,
+            'attach_rpy_1': attach_rpy_1,
+            'attach_xyz_2': attach_xyz_2,
+            'attach_rpy_2': attach_rpy_2,
             'mesh_suffix': mesh_suffix,
             'kinematics_suffix_1': kinematics_suffix_1,
             'kinematics_suffix_2': kinematics_suffix_2,
