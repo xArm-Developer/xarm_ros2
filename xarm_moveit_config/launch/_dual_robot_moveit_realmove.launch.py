@@ -39,6 +39,10 @@ def launch_setup(context, *args, **kwargs):
     robot_type_2 = LaunchConfiguration('robot_type_2', default=robot_type)
     prefix_1 = LaunchConfiguration('prefix_1', default='L_')
     prefix_2 = LaunchConfiguration('prefix_2', default='R_')
+    attach_xyz_1 = LaunchConfiguration('attach_xyz_1', default='"0 0 0"')
+    attach_rpy_1 = LaunchConfiguration('attach_rpy_1', default='"0 0 0"')
+    attach_xyz_2 = LaunchConfiguration('attach_xyz_2', default='"0 1 0"')
+    attach_rpy_2 = LaunchConfiguration('attach_rpy_2', default='"0 0 0"')
     hw_ns = LaunchConfiguration('hw_ns', default='xarm')
     limited = LaunchConfiguration('limited', default=True)
     effort_control = LaunchConfiguration('effort_control', default=False)
@@ -158,6 +162,10 @@ def launch_setup(context, *args, **kwargs):
         model1300_2=model1300_2,
         robot_sn_1=robot_sn_1,
         robot_sn_2=robot_sn_2,
+        attach_xyz_1=attach_xyz_1,
+        attach_rpy_1=attach_rpy_1,
+        attach_xyz_2=attach_xyz_2,
+        attach_rpy_2=attach_rpy_2,
         mesh_suffix=mesh_suffix,
         kinematics_suffix_1=kinematics_suffix_1,
         kinematics_suffix_2=kinematics_suffix_2,
@@ -221,6 +229,10 @@ def launch_setup(context, *args, **kwargs):
         launch_arguments={
             'prefix_1': prefix_1,
             'prefix_2': prefix_2,
+            'attach_xyz_1': attach_xyz_1,
+            'attach_rpy_1': attach_rpy_1,
+            'attach_xyz_2': attach_xyz_2,
+            'attach_rpy_2': attach_rpy_2,
             'no_gui_ctrl': no_gui_ctrl,
             'use_sim_time': 'false',
             'moveit_config_dump': yaml.dump(moveit_config.to_dict()),
