@@ -184,6 +184,10 @@
       - __robot_type_2__: xarm/lite/uf850/xarm7_mirror
       - prefix_1: 'L_'
       - prefix_2: 'R_'
+      - attach_xyz_1: '0 0 0'
+      - attach_rpy_1: '0 0 0'
+      - attach_xyz_2: '0 1 0'
+      - attach_rpy_2: '0 0 0'
       - hw_ns: 'xarm'
       - limited: False
       - effort_control: False
