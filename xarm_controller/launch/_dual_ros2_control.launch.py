@@ -25,6 +25,10 @@ def launch_setup(context, *args, **kwargs):
     report_type_2 = LaunchConfiguration('report_type_2', default=report_type)
     prefix_1 = LaunchConfiguration('prefix_1', default='L_')
     prefix_2 = LaunchConfiguration('prefix_2', default='R_')
+    attach_xyz_1 = LaunchConfiguration('attach_xyz_1', default='"0 0 0"')
+    attach_rpy_1 = LaunchConfiguration('attach_rpy_1', default='"0 0 0"')
+    attach_xyz_2 = LaunchConfiguration('attach_xyz_2', default='"0 1 0"')
+    attach_rpy_2 = LaunchConfiguration('attach_rpy_2', default='"0 0 0"')
     dof = LaunchConfiguration('dof', default=7)
     dof_1 = LaunchConfiguration('dof_1', default=dof)
     dof_2 = LaunchConfiguration('dof_2', default=dof)
@@ -161,6 +165,10 @@ def launch_setup(context, *args, **kwargs):
                 robot_type_2=robot_type_2,
                 prefix_1=prefix_1,
                 prefix_2=prefix_2,
+                attach_xyz_1=attach_xyz_1,
+                attach_rpy_1=attach_rpy_1,
+                attach_xyz_2=attach_xyz_2,
+                attach_rpy_2=attach_rpy_2,
                 hw_ns=hw_ns,
                 limited=limited,
                 effort_control=effort_control,
