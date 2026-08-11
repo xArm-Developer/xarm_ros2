@@ -10,8 +10,8 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>rclcpp</depend>
-  <depend>gz-sim8</depend>
-  <depend>sdformat14</depend>
+  <depend>gz_sim_vendor</depend>
+  <depend>sdformat_vendor</depend>
   <depend>xarm_description</depend>
   <depend>xarm_controller</depend>
 
