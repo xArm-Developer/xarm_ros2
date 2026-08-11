@@ -410,7 +410,7 @@ __Reminder 4: The <hw_ns> described below is replaced with the actual one, the x
         ros2 launch xarm_moveit_config uf850_moveit_gazebo.launch.py
         ```
 - ### 5.9 xarm_moveit_servo
-    This package serves as a demo for jogging xArm with devices such as joystick, through [moveit_servo](http://moveit2_tutorials.picknik.ai/doc/realtime_servo/realtime_servo_tutorial.html). 
+    This package serves as a demo for jogging xArm with devices such as joystick, through [moveit_servo](https://moveit.picknik.ai/main/doc/examples/realtime_servo/realtime_servo_tutorial.html). 
     - Controlling with __XBOX360__ joystick:
         - left stick for X and Y direction.  
         - right stick for ROLL and PITCH adjustment.  
