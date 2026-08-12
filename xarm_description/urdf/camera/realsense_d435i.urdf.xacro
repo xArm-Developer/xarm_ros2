@@ -58,7 +58,7 @@
       <joint name="${prefix}camera_color_joint" type="fixed">
         <parent link="${prefix}camera_link" />
         <child link="${prefix}camera_color_frame" />
-        <origin xyz="0 0.015 0" rpy="0 0 0" />
+        <origin xyz="0 0 0" rpy="0 0 0" />
       </joint>
 
       <joint name="${prefix}camera_color_optical_joint" type="fixed">
