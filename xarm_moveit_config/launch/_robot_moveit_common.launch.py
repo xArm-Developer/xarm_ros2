@@ -251,6 +251,7 @@ def launch_setup(context, *args, **kwargs):
             planning_scene_monitor_parameters,
             # sensor_manager_parameters,
             {'use_sim_time': use_sim_time},
+            {'publish_robot_description_semantic': True},
         ],
     )
 
