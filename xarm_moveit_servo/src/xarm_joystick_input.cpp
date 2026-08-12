@@ -15,7 +15,8 @@ enum JOYSTICK_TYPE
 {
     JOYSTICK_XBOX360_WIRED = 1,
     JOYSTICK_XBOX360_WIRELESS = 2,
-    JOYSTICK_SPACEMOUSE_WIRELESS = 3
+    JOYSTICK_SPACEMOUSE_WIRELESS = 3,
+    JOYSTICK_PS4 = 4
 };
 
 enum XBOX360_WIRED_CONTROLLER_AXIS
@@ -42,6 +43,18 @@ enum XBOX360_WIRELESS_CONTROLLER_AXIS
     XBOX360_WIRELESS_CROSS_KEY_FB = 7
 };
 
+enum PS4_CONTROLLER_AXIS
+{
+    PS4_LEFT_STICK_LR = 0,
+    PS4_LEFT_STICK_FB = 1,
+    PS4_LEFT_TRIGGER = 2,
+    PS4_RIGHT_STICK_LR = 3,
+    PS4_RIGHT_STICK_FB = 4,
+    PS4_RIGHT_TRIGGER = 5,
+    PS4_CROSS_KEY_LR = 6,
+    PS4_CROSS_KEY_FB = 7
+};
+
 enum XBOX360_CONTROLLER_BUTTON
 {
     XBOX360_BTN_A = 0,
@@ -55,6 +68,21 @@ enum XBOX360_CONTROLLER_BUTTON
     XBOX360_BTN_POWER = 8,
     XBOX360_BTN_STICK_LEFT = 9,
     XBOX360_BTN_STICK_RIGHT = 10
+};
+
+enum PS4_CONTROLLER_BUTTON
+{
+    PS4_BTN_A = 0, // Cross
+    PS4_BTN_B = 1, // Cicrle
+    PS4_BTN_Y = 2, // Triangle
+    PS4_BTN_X = 3, // Square
+    PS4_BTN_LB = 4,
+    PS4_BTN_RB = 5,
+    PS4_BTN_BACK = 8, // Share
+    PS4_BTN_START = 9, // Options
+    PS4_BTN_POWER = 10, // Home
+    PS4_BTN_STICK_LEFT = 11,
+    PS4_BTN_STICK_RIGHT = 12
 };
 
 enum SPACEMOUSE_WIRELESS_AXIS
@@ -223,6 +251,57 @@ bool JoyToServoPub::_convert_xbox360_joy_to_cmd(
     return true;
 }
 
+bool JoyToServoPub::_convert_ps4_joy_to_cmd(
+    const std::vector<float>& axes, const std::vector<int>& buttons,
+    std::unique_ptr<geometry_msgs::msg::TwistStamped>& twist,
+    std::unique_ptr<control_msgs::msg::JointJog>& joint)
+{
+    // PS4 axis
+    int left_stick_lr = PS4_LEFT_STICK_LR;
+    int left_stick_fb = PS4_LEFT_STICK_FB;
+    int right_stick_lr = PS4_RIGHT_STICK_LR;
+    int right_stick_fb = PS4_RIGHT_STICK_FB;
+    int left_trigger = PS4_LEFT_TRIGGER;
+    int right_trigger = PS4_RIGHT_TRIGGER;
+    int cross_key_lr = PS4_CROSS_KEY_LR;
+    int cross_key_fb = PS4_CROSS_KEY_FB;
+
+    if (buttons[PS4_BTN_BACK] && planning_frame_ == ee_frame_name_) {
+        planning_frame_ = robot_link_command_frame_;
+    }
+    else if (buttons[PS4_BTN_START] && planning_frame_ == robot_link_command_frame_) {
+        planning_frame_ = ee_frame_name_;
+    }
+    
+    if (buttons[PS4_BTN_A] || buttons[PS4_BTN_B] 
+        || buttons[PS4_BTN_X] || buttons[PS4_BTN_Y] 
+        || axes[cross_key_lr] || axes[cross_key_fb])
+    {
+        // Map the D_PAD to the proximal joints
+        joint->joint_names.push_back("joint1");
+        joint->velocities.push_back(axes[cross_key_lr] * 1);
+        joint->joint_names.push_back("joint2");
+        joint->velocities.push_back(axes[cross_key_fb] * 1);
+
+        // Map the diamond to the distal joints
+        joint->joint_names.push_back("joint" + std::to_string(dof_));
+        joint->velocities.push_back((buttons[PS4_BTN_B] - buttons[PS4_BTN_X]) * 1);
+        joint->joint_names.push_back("joint" + std::to_string(dof_ - 1));
+        joint->velocities.push_back((buttons[PS4_BTN_Y] - buttons[PS4_BTN_A]) * 1);
+        return false;
+    }
+
+    // The bread and butter: map buttons to twist commands
+    twist->twist.linear.x = axes[left_stick_fb];
+    twist->twist.linear.y = axes[left_stick_lr];
+    twist->twist.linear.z = -1 * (axes[left_trigger] - axes[right_trigger]);
+    twist->twist.angular.y = axes[right_stick_fb];
+    twist->twist.angular.x = axes[right_stick_lr];
+    twist->twist.angular.z = buttons[PS4_BTN_LB] - buttons[PS4_BTN_RB];
+
+    return true;
+}
+
 bool JoyToServoPub::_convert_spacemouse_wireless_joy_to_cmd(const std::vector<float>& axes, const std::vector<int>& buttons,
     std::unique_ptr<geometry_msgs::msg::TwistStamped>& twist)
 {
@@ -287,6 +366,11 @@ void JoyToServoPub::_joy_callback(const sensor_msgs::msg::Joy::SharedPtr msg)
             if (msg->axes.size() != 6 || msg->buttons.size() != 2)
                 return;
             pub_twist = _convert_spacemouse_wireless_joy_to_cmd(msg->axes, msg->buttons, twist_msg);
+            break;
+        case JOYSTICK_PS4: // PS4 controller
+            if (msg->axes.size() != 8 || msg->buttons.size() != 13)
+                return;
+            pub_twist = _convert_ps4_joy_to_cmd(msg->axes, msg->buttons, twist_msg, joint_msg);
             break;
         default:
             return;
