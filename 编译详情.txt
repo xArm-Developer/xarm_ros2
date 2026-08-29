@@ -1,0 +1,30 @@
+
+gao@gao-MS-7C88:/media/gao/2/Grasp/xarm_ws$
+命令：
+colcon build --packages-ignore realsense_gazebo_plugin xarm_gazebo  # 表示忽略realsense_gazebo_plugin和xarm_gazebo这两个包，因为暂时会有依赖报错
+输出：
+Starting >>> xarm_description
+Starting >>> xarm_msgs
+Starting >>> xarm_sdk
+Starting >>> uf_ros_lib
+Starting >>> mbot_demo
+Finished <<< xarm_sdk [0.34s]                                                                                                              
+Finished <<< xarm_description [0.36s]
+Finished <<< mbot_demo [0.37s]
+Finished <<< xarm_msgs [0.51s]                                                      
+Starting >>> xarm_api
+Finished <<< xarm_api [0.12s]                                                      
+Starting >>> xarm_controller
+Starting >>> d435i_xarm_setup
+Finished <<< d435i_xarm_setup [0.09s]                                                                                          
+Finished <<< xarm_controller [0.11s]
+Finished <<< uf_ros_lib [0.86s]           
+Starting >>> xarm_moveit_config
+Finished <<< xarm_moveit_config [0.60s]                 
+Starting >>> xarm_moveit_servo
+Starting >>> xarm_planner
+Finished <<< xarm_moveit_servo [11.8s]                                                                     
+Finished <<< xarm_planner [19.6s]                         
+
+Summary: 11 packages finished [21.4s]
+

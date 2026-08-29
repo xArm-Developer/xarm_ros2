@@ -25,6 +25,10 @@ find_package(ament_cmake REQUIRED)
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 find_package(moveit REQUIRED)
+# 【修改 4】新增 moveit_core 依赖：xarm_planner.cpp 中笛卡尔路径限速用到的
+# RobotTrajectory / TOTG / robotStateToRobotStateMsg 均来自该包，
+# 官方原版没有这一行，不要删除。
+find_package(moveit_core REQUIRED)
 find_package(moveit_ros_planning_interface REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
@@ -44,6 +48,7 @@ add_library(xarm_planner SHARED
 )
 ament_target_dependencies(xarm_planner 
   moveit_ros_planning_interface
+  moveit_core  # 【修改 4】新增，笛卡尔路径限速所需，不要删除
   ${dependencies}
 )
 

@@ -5,6 +5,14 @@
  * Author: Vinman <vinman.cub@gmail.com>
  ============================================================================*/
 
+/*
+ * 本头文件相对官方原版的修改：
+ *   新增两个成员 display_planned_path_pub_ / display_planned_path_pub2_，
+ *   用于向 RViz 重新发布限速后的笛卡尔轨迹（详见 xarm_planner.cpp
+ *   文件头部的“修改说明”，修改 3）。
+ *   其余接口签名与官方完全一致，不影响已有调用方。
+ */
+
 #ifndef __XARM_PLANNER_H__
 #define __XARM_PLANNER_H__
 
@@ -45,6 +53,12 @@ namespace xarm_planner
 
         rclcpp::Node::SharedPtr node_;
         std::shared_ptr<moveit::planning_interface::MoveGroupInterface> move_group_;
+        // 【修改 3】RViz 轨迹显示发布器（官方原版没有这两个成员）
+        // 笛卡尔轨迹时间参数化完成后，把带时序的轨迹重新发布给 RViz，
+        // 解决笛卡尔轨迹在 RViz 中一闪而过的问题。两个话题分别对应
+        // RViz 中 MotionPlanning 和 Trajectory 两个显示组件（见 xarm_planner.cpp init()）。
+        rclcpp::Publisher<moveit_msgs::msg::DisplayTrajectory>::SharedPtr display_planned_path_pub_;
+        rclcpp::Publisher<moveit_msgs::msg::DisplayTrajectory>::SharedPtr display_planned_path_pub2_;
         moveit::planning_interface::MoveGroupInterface::Plan xarm_plan_;
         moveit_msgs::msg::RobotTrajectory trajectory_;
         bool is_trajectory_;
