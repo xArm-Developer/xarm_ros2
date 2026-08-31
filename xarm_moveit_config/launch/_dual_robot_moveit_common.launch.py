@@ -22,6 +22,10 @@ from launch.events import Shutdown
 def launch_setup(context, *args, **kwargs):
     prefix_1 = LaunchConfiguration('prefix_1', default='L_')
     prefix_2 = LaunchConfiguration('prefix_2', default='R_')
+    attach_xyz_1 = LaunchConfiguration('attach_xyz_1', default='"0 0 0"')
+    attach_rpy_1 = LaunchConfiguration('attach_rpy_1', default='"0 0 0"')
+    attach_xyz_2 = LaunchConfiguration('attach_xyz_2', default='"0 1 0"')
+    attach_rpy_2 = LaunchConfiguration('attach_rpy_2', default='"0 0 0"')
     dof = LaunchConfiguration('dof', default=7)
     dof_1 = LaunchConfiguration('dof_1', default=dof)
     dof_2 = LaunchConfiguration('dof_2', default=dof)
@@ -130,6 +134,10 @@ def launch_setup(context, *args, **kwargs):
         urdf_arguments={
             'prefix_1': prefix_1,
             'prefix_2': prefix_2,
+            'attach_xyz_1': attach_xyz_1,
+            'attach_rpy_1': attach_rpy_1,
+            'attach_xyz_2': attach_xyz_2,
+            'attach_rpy_2': attach_rpy_2,
             'dof_1': dof_1,
             'dof_2': dof_2,
             'robot_type_1': robot_type_1,
@@ -413,6 +421,10 @@ def launch_setup(context, *args, **kwargs):
     
     link_base_1 = '{}link_base'.format(prefix_1.perform(context))
     link_base_2 = '{}link_base'.format(prefix_2.perform(context))
+    xyz_1 = attach_xyz_1.perform(context).strip('"\'').split()
+    rpy_1 = attach_rpy_1.perform(context).strip('"\'').split()
+    xyz_2 = attach_xyz_2.perform(context).strip('"\'').split()
+    rpy_2 = attach_rpy_2.perform(context).strip('"\'').split()
 
     # Static TF
     static_tf_1 = Node(
@@ -420,7 +432,7 @@ def launch_setup(context, *args, **kwargs):
         executable='static_transform_publisher',
         name='{}static_transform_publisher'.format(prefix_1.perform(context)),
         output='screen',
-        arguments=['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', 'world', link_base_1],
+        arguments=xyz_1 + rpy_1 + ['world', link_base_1],
         parameters=[{'use_sim_time': use_sim_time}],
     )
     static_tf_2 = Node(
@@ -428,7 +440,7 @@ def launch_setup(context, *args, **kwargs):
         executable='static_transform_publisher',
         name='{}static_transform_publisher'.format(prefix_2.perform(context)),
         output='screen',
-        arguments=['0.0', '1.0', '0.0', '0.0', '0.0', '0.0', 'world', link_base_2],
+        arguments=xyz_2 + rpy_2 + ['world', link_base_2],
         parameters=[{'use_sim_time': use_sim_time}],
     )
 
