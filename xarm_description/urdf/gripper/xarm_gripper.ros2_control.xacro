@@ -17,6 +17,41 @@
         <state_interface name="velocity"/>
         <!-- <state_interface name="effort"/> -->
       </joint>
+
+      <!-- The five follower joints of the gripper's four-bar linkage carry
+           URDF <mimic> tags. Enforcing those is left to the physics engine,
+           and gz's default engine, DART, has no mimic constraint support
+           (gazebosim/gz-physics#432, still open):
+
+             [Err] Attempting to create a mimic constraint for joint
+             [left_finger_joint] but the chosen physics engine does not
+             support mimic constraints, so no constraint will be created.
+
+           The fingers then come adrift from the gripper body. The Gazebo
+           Classic mimic_joint_plugin this used to rely on is not available
+           for gz either (see issue #111).
+
+           Declaring the followers here instead makes ros2_control own the
+           coupling, a layer above the physics engine: mimic="true"
+           populates HardwareInfo::mimic_joints, and gz_ros2_control drives
+           each follower from drive_joint every update. mock_components does
+           the same, so fake hardware stays consistent.
+
+           Mimic joints deliberately take no command interface; they are
+           driven by that loop, not claimed by a controller. Real hardware is
+           unaffected, since this whole block is only emitted when the plugin
+           is not uf_robot_hardware/UFRobotSystemHardware. -->
+      <xacro:macro name="gripper_mimic_joint" params="name">
+        <joint name="${name}" mimic="true">
+          <state_interface name="position"/>
+          <state_interface name="velocity"/>
+        </joint>
+      </xacro:macro>
+      <xacro:gripper_mimic_joint name="${prefix}left_finger_joint"/>
+      <xacro:gripper_mimic_joint name="${prefix}left_inner_knuckle_joint"/>
+      <xacro:gripper_mimic_joint name="${prefix}right_outer_knuckle_joint"/>
+      <xacro:gripper_mimic_joint name="${prefix}right_finger_joint"/>
+      <xacro:gripper_mimic_joint name="${prefix}right_inner_knuckle_joint"/>
     </ros2_control>
   </xacro:macro>
 </robot>
