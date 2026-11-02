@@ -186,6 +186,12 @@
         <state_interface name="servo">
           <param name="initial_value">0.0</param>
         </state_interface>
+        <!-- Optional. 1.0 while the arm's controller error code is non-zero, 0.0 while it
+             is clear, NaN while the driver is not connected. Meant for the
+             safety_controller's trip_interfaces (<prefix>tcp/fault). -->
+        <state_interface name="fault">
+          <param name="initial_value">0.0</param>
+        </state_interface>
       </gpio>
 
       <!-- Runtime force control. enable toggles the onboard force loop, coord picks

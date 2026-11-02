@@ -34,6 +34,7 @@ namespace uf_robot_hardware
     // back, only what it was last told.
     static const char *TCP_SPEED_IF_NAME = "speed";
     static const char *TCP_SERVO_IF_NAME = "servo";
+    static const char *TCP_FAULT_IF_NAME = "fault";
     static const char *FT_IF_NAMES[6] = {
         "force.x", "force.y", "force.z", "torque.x", "torque.y", "torque.z"
     };
@@ -414,6 +415,8 @@ namespace uf_robot_hardware
         tcp_speed_cmd_ = 0.0;
         servo_cmd_ = std::numeric_limits<double>::quiet_NaN();
         servo_state_ = cartesian_servo_mode_ ? 1.0 : 0.0;
+        // NaN until the first read() has said otherwise: no answer is not "no fault".
+        fault_state_ = std::numeric_limits<double>::quiet_NaN();
         ft_states_.resize(6, 0.0);
         ft_cmds_.resize(FT_CMD_COUNT, std::numeric_limits<double>::quiet_NaN());
         ft_cfg_states_.resize(FT_CFG_COUNT, 0.0);
@@ -520,6 +523,11 @@ namespace uf_robot_hardware
             if (iface.name == TCP_SERVO_IF_NAME) {
                 state_interfaces.emplace_back(hardware_interface::StateInterface(
                     info_.gpios[0].name, iface.name, &servo_state_));
+                continue;
+            }
+            if (iface.name == TCP_FAULT_IF_NAME) {
+                state_interfaces.emplace_back(hardware_interface::StateInterface(
+                    info_.gpios[0].name, iface.name, &fault_state_));
                 continue;
             }
             int idx = _index_of(TCP_IF_NAMES, iface.name);
@@ -1152,6 +1160,14 @@ namespace uf_robot_hardware
     {
         read_cnts_ += 1;
         read_ready_ = _xarm_is_ready_read();
+        // Updated here, ahead of everything that can skip the joint copy below, so a
+        // faulted arm (read_ready_ false) still reads 1.0 and never a stale 0.0. The
+        // error code is the same one _xarm_is_ready_read() acts on. curr_err starts at 0
+        // and only the report socket changes it, so a driver that is not connected
+        // cannot vouch for 0: report NaN, which safety_controller treats as no answer.
+        fault_state_ = !xarm_driver_.is_connected()
+            ? std::numeric_limits<double>::quiet_NaN()
+            : (xarm_driver_.curr_err != 0 ? 1.0 : 0.0);
         rclcpp::Time start = node_->get_clock()->now();
 
         read_code_ = xarm_driver_.update_joint_states(initialized_);

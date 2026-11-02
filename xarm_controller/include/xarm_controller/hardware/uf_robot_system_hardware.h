@@ -89,6 +89,9 @@ namespace uf_robot_hardware
         // The state is the mode the arm reports.
         double servo_cmd_;
         double servo_state_;
+        // 1 while the controller error code is non-zero, 0 while it is clear, NaN while the
+        // driver is not connected. Optional `fault` state interface on the tcp gpio.
+        double fault_state_;
 
         // End-effector force/torque, N and Nm, ordered fx fy fz tx ty tz
         std::vector<double> ft_states_;

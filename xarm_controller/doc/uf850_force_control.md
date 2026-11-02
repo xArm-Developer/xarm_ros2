@@ -12,10 +12,17 @@ be used here — Cartesian pose commanding replaces it.
 | component | interfaces | units | direction |
 |---|---|---|---|
 | `tcp` (gpio) | `x y z roll pitch yaw` | m, rad | command + state |
+| `tcp` (gpio) | `servo`, `fault` | 0/1 | state |
 | `ft` (gpio) | `enable`, `coord`, `c_axis_0..5`, `f_ref_0..5` | — , N/Nm | command |
 | `ft` (gpio) | `enable`, `mode`, `error`, `force_x/y/z` | — , N | state |
 | `ft_sensor` (sensor) | `force.x .. torque.z` | N, Nm | state |
 | joints | `position`, `velocity` | rad, rad/s | state only |
+
+`tcp/fault` is 1.0 while the arm's controller error code is non-zero, 0.0 while it is
+clear, and NaN while the driver is not connected. It is updated on every `read()`, also
+while the arm is not ready, and is optional: a URDF that does not declare it works as
+before. List `<prefix>tcp/fault` in the safety_controller's `trip_interfaces` to lock the
+base on an arm fault.
 
 Driven by four controllers (all spawned by the launch file):
 
