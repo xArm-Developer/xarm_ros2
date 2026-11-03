@@ -363,6 +363,10 @@ namespace xarm_api
         rclcpp::Service<xarm_msgs::srv::GetDigitalIO>::SharedPtr service_get_tgpio_digital_;
         rclcpp::Service<xarm_msgs::srv::GetDigitalIO>::SharedPtr service_get_cgpio_digital_;
         bool _get_tgpio_digital(const std::shared_ptr<xarm_msgs::srv::GetDigitalIO::Request> req, std::shared_ptr<xarm_msgs::srv::GetDigitalIO::Response> res);
+        // Tool GPIO output levels (TO0/TO1), as latched by the tool board.
+        // get_tgpio_digital only reports the input pins (TI0/TI1).
+        rclcpp::Service<xarm_msgs::srv::GetDigitalIO>::SharedPtr service_get_tgpio_output_digital_;
+        bool _get_tgpio_output_digital(const std::shared_ptr<xarm_msgs::srv::GetDigitalIO::Request> req, std::shared_ptr<xarm_msgs::srv::GetDigitalIO::Response> res);
         bool _get_cgpio_digital(const std::shared_ptr<xarm_msgs::srv::GetDigitalIO::Request> req, std::shared_ptr<xarm_msgs::srv::GetDigitalIO::Response> res);
 
         // GetAnalogIO

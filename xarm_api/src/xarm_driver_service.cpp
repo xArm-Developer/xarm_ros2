@@ -180,6 +180,7 @@ namespace xarm_api
         
         // GetDigitalIO
         service_get_tgpio_digital_ = _create_service<xarm_msgs::srv::GetDigitalIO>("get_tgpio_digital", &XArmDriver::_get_tgpio_digital);
+        service_get_tgpio_output_digital_ = _create_service<xarm_msgs::srv::GetDigitalIO>("get_tgpio_output_digital", &XArmDriver::_get_tgpio_output_digital);
         service_get_cgpio_digital_ = _create_service<xarm_msgs::srv::GetDigitalIO>("get_cgpio_digital", &XArmDriver::_get_cgpio_digital);
         
         // GetAnalogIO
@@ -1076,6 +1077,27 @@ namespace xarm_api
         res->ret = arm->get_tgpio_digital((int*)&res->digitals[0], (int*)&res->digitals[1]);
         res->message = "digitals=[ " + std::to_string(res->digitals[0]) + ", " + std::to_string(res->digitals[1]) + " ]";
         return true;  
+    }
+
+    bool XArmDriver::_get_tgpio_output_digital(const std::shared_ptr<xarm_msgs::srv::GetDigitalIO::Request> req, std::shared_ptr<xarm_msgs::srv::GetDigitalIO::Response> res)
+    {
+        // Reads the tool board DIGITAL_OUT register (0x0A15): bit 0 = TO0, bit 1 = TO1.
+        // Unlike get_tgpio_digital (inputs TI0/TI1), this reports the driven output level,
+        // so it can confirm that a set_tgpio_digital write actually took effect.
+        // O(1): one Modbus register read.
+        (void)req;
+        res->digitals.assign(2, 0);
+        int raw = 0;
+        res->ret = arm->is_connected()
+            ? arm->core->tgpio_addr_r16(SERVO3_RG::DIGITAL_OUT, &raw)
+            : API_CODE::NOT_CONNECTED;
+        if (res->ret == 0) {
+            res->digitals[0] = static_cast<int16_t>(raw & 0x0001);
+            res->digitals[1] = static_cast<int16_t>((raw >> 1) & 0x0001);
+        }
+        res->message = "digitals=[ " + std::to_string(res->digitals[0]) + ", " + std::to_string(res->digitals[1])
+            + " ], raw=" + std::to_string(raw);
+        return true;
     }
 
     bool XArmDriver::_get_cgpio_digital(const std::shared_ptr<xarm_msgs::srv::GetDigitalIO::Request> req, std::shared_ptr<xarm_msgs::srv::GetDigitalIO::Response> res)
