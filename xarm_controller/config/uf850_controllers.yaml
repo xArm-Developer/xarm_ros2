@@ -2,13 +2,112 @@ controller_manager:
   ros__parameters:
     update_rate: 150  # Hz
 
+    # This controller is publishes states only. 
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
 
-    uf850_traj_controller:
-      type: joint_trajectory_controller/JointTrajectoryController
+    force_torque_sensor_broadcaster:
+      type: force_torque_sensor_broadcaster/ForceTorqueSensorBroadcaster
 
-uf850_traj_controller:
+    # These four are robotic arm controllers. You can add other controllers here.
+    joint_trajectory_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+ 
+    joint_trajectory_admittance_controller:
+      type: joint_trajectory_admittance_controller/JointTrajectoryAdmittanceController
+
+    joint_velocity_controller:
+      type: joint_velocity_controller/JointVelocityController
+
+    velocity_force_controller:
+      type: velocity_force_controller/VelocityForceController
+
+    # This is a mobile base AMR controller.
+    platform_joint_velocity_controller: 
+      type: velocity_controllers/JointGroupVelocityController
+
+force_torque_sensor_broadcaster:
+  ros__parameters:
+    # The hardware interface name.
+    # If you share a ros2_control.yaml across hardware and simulation, the simulation <site> name should be set to the hardware's hardware interface name.
+    sensor_name: force_torque_sensor
+    state_interface_names:
+      - force.x
+      - force.y
+      - force.z
+      - torque.x
+      - torque.y
+      - torque.z
+    # The frame the sensor is published in.
+    # If you share a ros2_control.yaml across hardware and simulation, frame_id should reference the link in your URDF corresponding to the hardware's pose, and your site and URDF link should be identical.
+    # To verify simulation and hardware frames are identical, `ros2 run tf2_ros tf2_echo site_name hardware_frame` should return all 0s.
+    frame_id: link_ft_base
+
+velocity_force_controller:
+  ros__parameters:
+    # Joint group to control.
+    planning_group_name: manipulator
+    # The tip link of the kinematic chain, i.e. the frame that will be controlled.
+    ee_frame: link6
+    # The frame where the force / torque sensor reading is given.
+    # (Needs to exist in the kinematic chain).
+    sensor_frame: link_ft_tip
+    # The force/torque ros2_control hardware interface name.
+    ft_sensor_name: force_torque_sensor
+    # An optional deadband to apply to the force/torque signal. Set to 0.0 to disable.
+    ft_force_deadband: 2.0
+    ft_torque_deadband: 1.0
+    # Maximum joint-space velocities.
+    max_joint_velocity:
+      - 10.0
+      - 10.0
+      - 10.0
+      - 10.0
+      - 10.0
+      - 10.0
+    # Maximum joint-space accelerations.
+    max_joint_acceleration:
+      - 5.0
+      - 5.0
+      - 5.0
+      - 5.0
+      - 5.0
+      - 5.0
+    # Maximum Cartesian-space velocities.
+    max_cartesian_velocity:
+      - 1.25
+      - 1.25
+      - 1.25
+      - 1.0
+      - 1.0
+      - 1.0
+    # Maximum Cartesian-space accelerations.
+    max_cartesian_acceleration:
+      - 2.0
+      - 2.0
+      - 2.0
+      - 4.0
+      - 4.0
+      - 4.0
+    # Additional optional parameters for reference (set to defaults):
+    # Cutoff frequency ratio for the FTS filter. Valid values range from 0 to 1, where 1 is the sampling frequency.
+    ft_cutoff_frequency_ratio: 1.0
+    # Rate in Hz at which the controller will publish the state.
+    state_publish_rate: 10
+    # Damping coefficient for the Jacobian damped least-squares inverse.
+    jacobian_damping: 0.002
+    # Timeout in seconds after which the controller will stop motion if no new commands are received.
+    command_timeout: 0.2
+    # Padding (in radians) to add to joint position limits as a safety margin.
+    joint_limit_position_tolerance: 0.02
+    # Joints that the controller will command. If not specified, if takes the same value as `joints`.
+    # This can be useful to implement layered control, where some joints may be controlled by a different controller
+    # downstream.
+    # command_joints: []
+    # The type of command interface to use. Supported values are "position" and "velocity".
+    command_interfaces: ["position"] 
+
+joint_trajectory_controller:
   ros__parameters:
     command_interfaces:
       - position
@@ -35,4 +134,55 @@ uf850_traj_controller:
     interface_name: position
     state_publish_rate: 25.0
     action_monitor_rate: 10.0
-    open_loop_control: true
+
+joint_trajectory_admittance_controller:
+  ros__parameters:
+    joints:
+      - joint1
+      - joint2
+      - joint3
+      - joint4
+      - joint5
+      - joint6
+    base_frame: link_base
+    sensor_frame: link_ft_tip
+    ee_frame: link_eef
+    ft_sensor_name: force_torque_sensor
+    # Acceleration to use for immediate stops (e.g. when cancelling a running trajectory).
+    stop_accelerations: [0.523, 0.523, 0.523, 0.523, 0.523, 0.523]
+ 
+joint_velocity_controller:
+  ros__parameters:
+    # Joint group to control.
+    planning_group_name: manipulator
+    # Maximum joint-space velocities.
+    max_joint_velocity:
+      - 1.0
+      - 1.0
+      - 1.0
+      - 1.0
+      - 1.0
+      - 1.0
+    # Maximum joint-space accelerations.
+    max_joint_acceleration:
+      - 2.0
+      - 2.0
+      - 2.0
+      - 2.0
+      - 2.0
+      - 2.0
+    command_interfaces: ["position"]
+    # Padding (in radians) to add to joint position limits as a safety margin.
+    joint_limit_position_tolerance: 0.02
+    # Timeout in seconds after which the controller will stop motion if no new commands are received.
+    command_timeout: 0.2
+    # Rate in Hz at which the controller will publish the state.
+    state_publish_rate: 20
+
+platform_joint_velocity_controller:
+  ros__parameters:
+    joints:
+      - joint_wheel_front_right
+      - joint_wheel_front_left
+      - joint_wheel_back_right
+      - joint_wheel_back_left

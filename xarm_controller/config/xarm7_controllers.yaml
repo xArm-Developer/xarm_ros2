@@ -5,14 +5,79 @@ controller_manager:
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
 
-    xarm7_traj_controller:
+    joint_trajectory_controller:
       type: joint_trajectory_controller/JointTrajectoryController
+    
+    servo_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+    
+    streaming_controller:
+      type: position_controllers/JointGroupPositionController
 
-xarm7_traj_controller:
+streaming_controller:
+  ros__parameters:
+    joints:
+      - joint1
+      - joint2
+      - joint3
+      - joint4
+      - joint5
+      - joint6
+      - joint7
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+
+servo_controller:
+  ros__parameters:
+    joints:
+      - joint1
+      - joint2
+      - joint3
+      - joint4
+      - joint5
+      - joint6
+      - joint7
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    command_joints:
+      - joint1
+      - joint2
+      - joint3
+      - joint4
+      - joint5
+      - joint6
+      - joint7
+    state_publish_rate: 100.0
+    action_monitor_rate: 20.0
+    allow_partial_joints_goal: false
+    constraints:
+      stopped_velocity_tolerance: 0.0
+      goal_time: 0.0
+      joint1:
+        goal: 0.05
+      joint2:
+        goal: 0.05
+      joint3:
+        goal: 0.05
+      joint4:
+        goal: 0.05
+      joint5:
+        goal: 0.05
+      joint6:
+        goal: 0.05
+      joint7:
+        goal: 0.05
+
+joint_trajectory_controller:
   ros__parameters:
     command_interfaces:
       - position
-      - velocity
+      # - velocity
     state_interfaces:
       - position
       - velocity
@@ -36,4 +101,12 @@ xarm7_traj_controller:
     interface_name: position
     state_publish_rate: 25.0
     action_monitor_rate: 10.0
-    open_loop_control: true
+    
+    gains: 
+      joint1: { p: 100.0 , i : 0.0, d : 0.0, i_clamp: 0.0, normalise_error : False, angle_wraparound: False, ff_velocity_scale: 0.0}
+      joint2: { p: 200.0 , i : 0.0, d : 0.0, i_clamp: 0.0, normalise_error : False, angle_wraparound: False, ff_velocity_scale: 0.0}
+      joint3: { p: 100.0 , i : 0.0, d : 0.0, i_clamp: 0.0, normalise_error : False, angle_wraparound: False, ff_velocity_scale: 0.0}
+      joint4: { p: 200.0 , i : 0.0, d : 0.0, i_clamp: 0.0, normalise_error : False, angle_wraparound: False, ff_velocity_scale: 0.0}
+      joint5: { p: 100.0 , i : 0.0, d : 0.0, i_clamp: 0.0, normalise_error : False, angle_wraparound: False, ff_velocity_scale: 0.0}
+      joint6: { p: 100.0 , i : 0.0, d : 0.0, i_clamp: 0.0, normalise_error : False, angle_wraparound: False, ff_velocity_scale: 0.0}
+      joint7: { p: 50.0 , i : 0.0, d : 0.0, i_clamp: 0.0, normalise_error : False, angle_wraparound: False, ff_velocity_scale: 0.0}

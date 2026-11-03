@@ -54,16 +54,12 @@ namespace xarm_api
         service_clean_bio_gripper_error_ = _create_service<xarm_msgs::srv::Call>("clean_bio_gripper_error", &XArmDriver::_clean_bio_gripper_error);
         service_start_record_trajectory_ = _create_service<xarm_msgs::srv::Call>("start_record_trajectory", &XArmDriver::_start_record_trajectory);
         service_stop_record_trajectory_ = _create_service<xarm_msgs::srv::Call>("stop_record_trajectory", &XArmDriver::_stop_record_trajectory);
-        service_set_ft_sensor_zero_ = _create_service<xarm_msgs::srv::Call>("set_ft_sensor_zero", &XArmDriver::_set_ft_sensor_zero);
-        service_set_linear_motor_stop_ = _create_service<xarm_msgs::srv::Call>("set_linear_motor_stop", &XArmDriver::_set_linear_motor_stop);
-        service_clean_linear_motor_error_ = _create_service<xarm_msgs::srv::Call>("clean_linear_motor_error", &XArmDriver::_clean_linear_motor_error);
+        service_ft_sensor_set_zero_ = _create_service<xarm_msgs::srv::Call>("ft_sensor_set_zero", &XArmDriver::_ft_sensor_set_zero);
+        service_set_linear_track_stop_ = _create_service<xarm_msgs::srv::Call>("set_linear_track_stop", &XArmDriver::_set_linear_track_stop);
+        service_clean_linear_track_error_ = _create_service<xarm_msgs::srv::Call>("clean_linear_track_error", &XArmDriver::_clean_linear_track_error);
         service_open_lite6_gripper_ = _create_service<xarm_msgs::srv::Call>("open_lite6_gripper", &XArmDriver::_open_lite6_gripper);
         service_close_lite6_gripper_ = _create_service<xarm_msgs::srv::Call>("close_lite6_gripper", &XArmDriver::_close_lite6_gripper);
         service_stop_lite6_gripper_ = _create_service<xarm_msgs::srv::Call>("stop_lite6_gripper", &XArmDriver::_stop_lite6_gripper);
-        // OLD SERVICE
-        service_ft_sensor_set_zero_ = _create_service<xarm_msgs::srv::Call>("ft_sensor_set_zero", &XArmDriver::_set_ft_sensor_zero);
-        service_set_linear_track_stop_ = _create_service<xarm_msgs::srv::Call>("set_linear_track_stop", &XArmDriver::_set_linear_motor_stop);
-        service_clean_linear_track_error_ = _create_service<xarm_msgs::srv::Call>("clean_linear_track_error", &XArmDriver::_clean_linear_motor_error);
 
         // GetInt16
         service_get_state_ = _create_service<xarm_msgs::srv::GetInt16>("get_state", &XArmDriver::_get_state);
@@ -74,29 +70,19 @@ namespace xarm_api
         service_get_bio_gripper_error_ = _create_service<xarm_msgs::srv::GetInt16>("get_bio_gripper_error", &XArmDriver::_get_bio_gripper_error);
         service_get_reduced_mode_ = _create_service<xarm_msgs::srv::GetInt16>("get_reduced_mode", &XArmDriver::_get_reduced_mode);
         service_get_report_tau_or_i_ = _create_service<xarm_msgs::srv::GetInt16>("get_report_tau_or_i", &XArmDriver::_get_report_tau_or_i);
-        service_get_ft_sensor_mode_ = _create_service<xarm_msgs::srv::GetInt16>("get_ft_sensor_mode", &XArmDriver::_get_ft_sensor_mode);
+        service_ft_sensor_app_get_ = _create_service<xarm_msgs::srv::GetInt16>("ft_sensor_app_get", &XArmDriver::_ft_sensor_app_get);
         service_get_ft_sensor_error_ = _create_service<xarm_msgs::srv::GetInt16>("get_ft_sensor_error", &XArmDriver::_get_ft_sensor_error);
         service_get_trajectory_rw_status_ = _create_service<xarm_msgs::srv::GetInt16>("get_trajectory_rw_status", &XArmDriver::_get_trajectory_rw_status);
-        service_get_linear_motor_pos_ = _create_service<xarm_msgs::srv::GetInt16>("get_linear_motor_pos", &XArmDriver::_get_linear_motor_pos);
-        service_get_linear_motor_status_ = _create_service<xarm_msgs::srv::GetInt16>("get_linear_motor_status", &XArmDriver::_get_linear_motor_status);
-        service_get_linear_motor_error_ = _create_service<xarm_msgs::srv::GetInt16>("get_linear_motor_error", &XArmDriver::_get_linear_motor_error);
-        service_get_linear_motor_is_enabled_ = _create_service<xarm_msgs::srv::GetInt16>("get_linear_motor_is_enabled", &XArmDriver::_get_linear_motor_is_enabled);
-        service_get_linear_motor_on_zero_ = _create_service<xarm_msgs::srv::GetInt16>("get_linear_motor_on_zero", &XArmDriver::_get_linear_motor_on_zero);
-        service_get_linear_motor_sci_ = _create_service<xarm_msgs::srv::GetInt16>("get_linear_motor_sci", &XArmDriver::_get_linear_motor_sci);
-        // OLD SERVICE
-        service_ft_sensor_app_get_ = _create_service<xarm_msgs::srv::GetInt16>("ft_sensor_app_get", &XArmDriver::_get_ft_sensor_mode);
-        service_get_linear_track_pos_ = _create_service<xarm_msgs::srv::GetInt16>("get_linear_track_pos", &XArmDriver::_get_linear_motor_pos);
-        service_get_linear_track_status_ = _create_service<xarm_msgs::srv::GetInt16>("get_linear_track_status", &XArmDriver::_get_linear_motor_status);
-        service_get_linear_track_error_ = _create_service<xarm_msgs::srv::GetInt16>("get_linear_track_error", &XArmDriver::_get_linear_motor_error);
-        service_get_linear_track_is_enabled_ = _create_service<xarm_msgs::srv::GetInt16>("get_linear_track_is_enabled", &XArmDriver::_get_linear_motor_is_enabled);
-        service_get_linear_track_on_zero_ = _create_service<xarm_msgs::srv::GetInt16>("get_linear_track_on_zero", &XArmDriver::_get_linear_motor_on_zero);
-        service_get_linear_track_sci_ = _create_service<xarm_msgs::srv::GetInt16>("get_linear_track_sci", &XArmDriver::_get_linear_motor_sci);
+        service_get_linear_track_pos_ = _create_service<xarm_msgs::srv::GetInt16>("get_linear_track_pos", &XArmDriver::_get_linear_track_pos);
+        service_get_linear_track_status_ = _create_service<xarm_msgs::srv::GetInt16>("get_linear_track_status", &XArmDriver::_get_linear_track_status);
+        service_get_linear_track_error_ = _create_service<xarm_msgs::srv::GetInt16>("get_linear_track_error", &XArmDriver::_get_linear_track_error);
+        service_get_linear_track_is_enabled_ = _create_service<xarm_msgs::srv::GetInt16>("get_linear_track_is_enabled", &XArmDriver::_get_linear_track_is_enabled);
+        service_get_linear_track_on_zero_ = _create_service<xarm_msgs::srv::GetInt16>("get_linear_track_on_zero", &XArmDriver::_get_linear_track_on_zero);
+        service_get_linear_track_sci_ = _create_service<xarm_msgs::srv::GetInt16>("get_linear_track_sci", &XArmDriver::_get_linear_track_sci);
 
         // GetInt16List
         service_get_err_warn_code_ = _create_service<xarm_msgs::srv::GetInt16List>("get_err_warn_code", &XArmDriver::_get_err_warn_code);
-        service_get_linear_motor_sco_ = _create_service<xarm_msgs::srv::GetInt16List>("get_linear_motor_sco", &XArmDriver::_get_linear_motor_sco);
-        // OLD SERVICE
-        service_get_linear_track_sco_ = _create_service<xarm_msgs::srv::GetInt16List>("get_linear_track_sco", &XArmDriver::_get_linear_motor_sco);
+        service_get_linear_track_sco_ = _create_service<xarm_msgs::srv::GetInt16List>("get_linear_track_sco", &XArmDriver::_get_linear_track_sco);
 
         // SetInt16
         service_set_mode_ = _create_service<xarm_msgs::srv::SetInt16>("set_mode", &XArmDriver::_set_mode);
@@ -113,21 +99,15 @@ namespace xarm_api
         service_set_simulation_robot_ = _create_service<xarm_msgs::srv::SetInt16>("set_simulation_robot", &XArmDriver::_set_simulation_robot);
         service_set_baud_checkset_enable_ = _create_service<xarm_msgs::srv::SetInt16>("set_baud_checkset_enable", &XArmDriver::_set_baud_checkset_enable);
         service_set_report_tau_or_i_ = _create_service<xarm_msgs::srv::SetInt16>("set_report_tau_or_i", &XArmDriver::_set_report_tau_or_i);
-        service_set_ft_sensor_enable_ = _create_service<xarm_msgs::srv::SetInt16>("set_ft_sensor_enable", &XArmDriver::_set_ft_sensor_enable);
-        service_set_ft_sensor_mode_ = _create_service<xarm_msgs::srv::SetInt16>("set_ft_sensor_mode", &XArmDriver::_set_ft_sensor_mode);
-        service_set_linear_motor_enable_ = _create_service<xarm_msgs::srv::SetInt16>("set_linear_motor_enable", &XArmDriver::_set_linear_motor_enable);
-        service_set_linear_motor_speed_ = _create_service<xarm_msgs::srv::SetInt16>("set_linear_motor_speed", &XArmDriver::_set_linear_motor_speed);
+        service_ft_sensor_enable_ = _create_service<xarm_msgs::srv::SetInt16>("ft_sensor_enable", &XArmDriver::_ft_sensor_enable);
+        service_ft_sensor_app_set_ = _create_service<xarm_msgs::srv::SetInt16>("ft_sensor_app_set", &XArmDriver::_ft_sensor_app_set);
+        service_set_linear_track_enable_ = _create_service<xarm_msgs::srv::SetInt16>("set_linear_track_enable", &XArmDriver::_set_linear_track_enable);
+        service_set_linear_track_speed_ = _create_service<xarm_msgs::srv::SetInt16>("set_linear_track_speed", &XArmDriver::_set_linear_track_speed);
         service_set_cartesian_velo_continuous_ = _create_service<xarm_msgs::srv::SetInt16>("set_cartesian_velo_continuous", &XArmDriver::_set_cartesian_velo_continuous);
         service_set_allow_approx_motion_ = _create_service<xarm_msgs::srv::SetInt16>("set_allow_approx_motion", &XArmDriver::_set_allow_approx_motion);
         service_set_only_check_type_ = _create_service<xarm_msgs::srv::SetInt16>("set_only_check_type", &XArmDriver::_set_only_check_type);
         service_config_tgpio_reset_when_stop_ = _create_service<xarm_msgs::srv::SetInt16>("config_tgpio_reset_when_stop", &XArmDriver::_config_tgpio_reset_when_stop);
         service_config_cgpio_reset_when_stop_ = _create_service<xarm_msgs::srv::SetInt16>("config_cgpio_reset_when_stop", &XArmDriver::_config_cgpio_reset_when_stop);
-        service_set_rs485_use_503_port_ = _create_service<xarm_msgs::srv::SetInt16>("set_rs485_use_503_port", &XArmDriver::_set_rs485_use_503_port);
-        // OLD SERVICE
-        service_ft_sensor_enable_ = _create_service<xarm_msgs::srv::SetInt16>("ft_sensor_enable", &XArmDriver::_set_ft_sensor_enable);
-        service_ft_sensor_app_set_ = _create_service<xarm_msgs::srv::SetInt16>("ft_sensor_app_set", &XArmDriver::_set_ft_sensor_mode);
-        service_set_linear_track_enable_ = _create_service<xarm_msgs::srv::SetInt16>("set_linear_track_enable", &XArmDriver::_set_linear_motor_enable);
-        service_set_linear_track_speed_ = _create_service<xarm_msgs::srv::SetInt16>("set_linear_track_speed", &XArmDriver::_set_linear_motor_speed);
 
         // SetInt16ById
         service_motion_enable_= _create_service<xarm_msgs::srv::SetInt16ById>("motion_enable", &XArmDriver::_motion_enable);
@@ -136,7 +116,6 @@ namespace xarm_api
         
         // SetInt16List        
         service_set_reduced_tcp_boundary_ = _create_service<xarm_msgs::srv::SetInt16List>("set_reduced_tcp_boundary", &XArmDriver::_set_reduced_tcp_boundary);
-        service_set_external_device_monitor_params_ = _create_service<xarm_msgs::srv::SetInt16List>("set_external_device_monitor_params", &XArmDriver::_set_external_device_monitor_params);
 
         // GetInt32
         service_get_tgpio_modbus_baudrate_ = _create_service<xarm_msgs::srv::GetInt32>("get_tgpio_modbus_baudrate", &XArmDriver::_get_tgpio_modbus_baudrate);
@@ -259,42 +238,26 @@ namespace xarm_api
 
         // IdenLoad
         service_iden_tcp_load_ = _create_service<xarm_msgs::srv::IdenLoad>("iden_tcp_load", &XArmDriver::_iden_tcp_load);
-        service_iden_ft_sensor_load_offset_ = _create_service<xarm_msgs::srv::IdenLoad>("iden_ft_sensor_load_offset", &XArmDriver::_iden_ft_sensor_load_offset);
-        // OLD SERVICE
-        service_ft_sensor_iden_load_ = _create_service<xarm_msgs::srv::IdenLoad>("ft_sensor_iden_load", &XArmDriver::_iden_ft_sensor_load_offset);
+        service_ft_sensor_iden_load_ = _create_service<xarm_msgs::srv::IdenLoad>("ft_sensor_iden_load", &XArmDriver::_ft_sensor_iden_load);
 
         // FtCaliLoad
-        service_set_ft_sensor_load_offset_ = _create_service<xarm_msgs::srv::FtCaliLoad>("set_ft_sensor_load_offset", &XArmDriver::_set_ft_sensor_load_offset);
-        // OLD SERVICE
-        service_ft_sensor_cali_load_ = _create_service<xarm_msgs::srv::FtCaliLoad>("ft_sensor_cali_load", &XArmDriver::_set_ft_sensor_load_offset);
+        service_ft_sensor_cali_load_ = _create_service<xarm_msgs::srv::FtCaliLoad>("ft_sensor_cali_load", &XArmDriver::_ft_sensor_cali_load);
     
-        // FtForceParams
-        service_set_ft_force_ = _create_service<xarm_msgs::srv::FtForceParams>("set_ft_sensor_force_parameters", &XArmDriver::_set_ft_sensor_force_parameters);
         // FtForceConfig
-        // OLD SERVICE
         service_config_force_control_ = _create_service<xarm_msgs::srv::FtForceConfig>("config_force_control", &XArmDriver::_config_force_control);
+    
         // FtForcePid
-        // OLD SERVICE
         service_set_force_control_pid_ = _create_service<xarm_msgs::srv::FtForcePid>("set_force_control_pid", &XArmDriver::_set_force_control_pid);
-
-        // FtAdmittanceParams
-        service_set_ft_admittance_ = _create_service<xarm_msgs::srv::FtAdmittanceParams>("set_ft_sensor_admittance_parameters", &XArmDriver::_set_ft_sensor_admittance_parameters);
+    
         // FtImpedance
-        // OLD SERVICE
-        service_set_admittance_ = _create_service<xarm_msgs::srv::FtImpedance>("set_impedance", &XArmDriver::_set_admittance);
-        service_set_admittance_mbk_ = _create_service<xarm_msgs::srv::FtImpedance>("set_impedance_mbk", &XArmDriver::_set_admittance_mbk);
-        service_set_admittance_config_ = _create_service<xarm_msgs::srv::FtImpedance>("set_impedance_config", &XArmDriver::_set_admittance_config);
-        
-        // LinearMotorBackOrigin
-        service_set_linear_motor_back_origin_ = _create_service<xarm_msgs::srv::LinearMotorBackOrigin>("set_linear_motor_back_origin", &XArmDriver::_set_linear_motor_back_origin);
+        service_set_impedance_ = _create_service<xarm_msgs::srv::FtImpedance>("set_impedance", &XArmDriver::_set_impedance);
+        service_set_impedance_mbk_ = _create_service<xarm_msgs::srv::FtImpedance>("set_impedance_mbk", &XArmDriver::_set_impedance_mbk);
+        service_set_impedance_config_ = _create_service<xarm_msgs::srv::FtImpedance>("set_impedance_config", &XArmDriver::_set_impedance_config);
+    
         // LinearTrackBackOrigin
-        // OLD SERVICE
         service_set_linear_track_back_origin_ = _create_service<xarm_msgs::srv::LinearTrackBackOrigin>("set_linear_track_back_origin", &XArmDriver::_set_linear_track_back_origin);
     
-        //  LinearMotorSetPos
-        service_set_linear_motor_pos_ = _create_service<xarm_msgs::srv::LinearMotorSetPos>("set_linear_motor_pos", &XArmDriver::_set_linear_motor_pos);
         // LinearTrackSetPos
-        // OLD SERVICE
         service_set_linear_track_pos_ = _create_service<xarm_msgs::srv::LinearTrackSetPos>("set_linear_track_pos", &XArmDriver::_set_linear_track_pos);
     }
 
@@ -363,21 +326,21 @@ namespace xarm_api
         return true;
     }
 
-    bool XArmDriver::_set_ft_sensor_zero(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res)
+    bool XArmDriver::_ft_sensor_set_zero(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res)
     {
-        res->ret = arm->set_ft_sensor_zero();
+        res->ret = arm->ft_sensor_set_zero();
         return true;
     }
 
-    bool XArmDriver::_set_linear_motor_stop(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res)
+    bool XArmDriver::_set_linear_track_stop(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res)
     {
-        res->ret = arm->set_linear_motor_stop();
+        res->ret = arm->set_linear_track_stop();
         return true;
     }
 
-    bool XArmDriver::_clean_linear_motor_error(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res)
+    bool XArmDriver::_clean_linear_track_error(const std::shared_ptr<xarm_msgs::srv::Call::Request> req, std::shared_ptr<xarm_msgs::srv::Call::Response> res)
     {
-        res->ret = arm->clean_linear_motor_error();
+        res->ret = arm->clean_linear_track_error();
         return true;
     }
 
@@ -415,8 +378,9 @@ namespace xarm_api
 
     bool XArmDriver::_get_vacuum_gripper(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res)
     {
-        res->ret = arm->get_vacuum_gripper((int *)&res->data, vacuum_gripper_hardware_version_ != 0 ? vacuum_gripper_hardware_version_ : 1);
-        res->message = "hardware_version=" + std::to_string(vacuum_gripper_hardware_version_) + ", data=" + std::to_string(res->data);
+        // TODO: If vacuum is used here please, uncomment this and resolve later. 
+        // res->ret = arm->get_vacuum_gripper((int *)&res->data, vacuum_gripper_hardware_version_ != 0 ? vacuum_gripper_hardware_version_ : 1);
+        // res->message = "hardware_version=" + std::to_string(vacuum_gripper_hardware_version_) + ", data=" + std::to_string(res->data);
         return true;
     }
 
@@ -455,9 +419,9 @@ namespace xarm_api
         return true;
     }
 
-    bool XArmDriver::_get_ft_sensor_mode(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res)
+    bool XArmDriver::_ft_sensor_app_get(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res)
     {
-        res->ret = arm->get_ft_sensor_mode((int *)&res->data);
+        res->ret = arm->ft_sensor_app_get((int *)&res->data);
         res->message = "data=" + std::to_string(res->data);
         return true;
     }
@@ -476,44 +440,44 @@ namespace xarm_api
         return true;
     }
 
-    bool XArmDriver::_get_linear_motor_pos(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res)
+    bool XArmDriver::_get_linear_track_pos(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res)
     {
-        res->ret = arm->get_linear_motor_pos((int *)&res->data);
+        res->ret = arm->get_linear_track_pos((int *)&res->data);
         res->message = "data=" + std::to_string(res->data);
         return true;
     }
 
-    bool XArmDriver::_get_linear_motor_status(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res)
+    bool XArmDriver::_get_linear_track_status(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res)
     {
-        res->ret = arm->get_linear_motor_status((int *)&res->data);
+        res->ret = arm->get_linear_track_status((int *)&res->data);
         res->message = "data=" + std::to_string(res->data);
         return true;
     }
 
-    bool XArmDriver::_get_linear_motor_error(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res)
+    bool XArmDriver::_get_linear_track_error(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res)
     {
-        res->ret = arm->get_linear_motor_error((int *)&res->data);
+        res->ret = arm->get_linear_track_error((int *)&res->data);
         res->message = "data=" + std::to_string(res->data);
         return true;
     }
 
-    bool XArmDriver::_get_linear_motor_is_enabled(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res)
+    bool XArmDriver::_get_linear_track_is_enabled(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res)
     {
-        res->ret = arm->get_linear_motor_is_enabled((int *)&res->data);
+        res->ret = arm->get_linear_track_is_enabled((int *)&res->data);
         res->message = "data=" + std::to_string(res->data);
         return true;
     }
 
-    bool XArmDriver::_get_linear_motor_on_zero(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res)
+    bool XArmDriver::_get_linear_track_on_zero(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res)
     {
-        res->ret = arm->get_linear_motor_on_zero((int *)&res->data);
+        res->ret = arm->get_linear_track_on_zero((int *)&res->data);
         res->message = "data=" + std::to_string(res->data);
         return true;
     }
 
-    bool XArmDriver::_get_linear_motor_sci(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res)
+    bool XArmDriver::_get_linear_track_sci(const std::shared_ptr<xarm_msgs::srv::GetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16::Response> res)
     {
-        res->ret = arm->get_linear_motor_sci((int *)&res->data);
+        res->ret = arm->get_linear_track_sci((int *)&res->data);
         res->message = "data=" + std::to_string(res->data);
         return true;
     }
@@ -529,10 +493,10 @@ namespace xarm_api
         return true;
     }
 
-    bool XArmDriver::_get_linear_motor_sco(const std::shared_ptr<xarm_msgs::srv::GetInt16List::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16List::Response> res)
+    bool XArmDriver::_get_linear_track_sco(const std::shared_ptr<xarm_msgs::srv::GetInt16List::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt16List::Response> res)
     {
         int sco[2];
-        res->ret = arm->get_linear_motor_sco(sco);
+        res->ret = arm->get_linear_track_sco(sco);
         res->datas.resize(2);
         res->datas[0] = sco[0];
         res->datas[1]= sco[1];
@@ -646,30 +610,30 @@ namespace xarm_api
         return true; 
     }
 
-    bool XArmDriver::_set_ft_sensor_enable(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
+    bool XArmDriver::_ft_sensor_enable(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
     {
-        res->ret = arm->set_ft_sensor_enable(req->data);
+        res->ret = arm->ft_sensor_enable(req->data);
         res->message = "data=" + std::to_string(req->data);
         return true; 
     }
 
-    bool XArmDriver::_set_ft_sensor_mode(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
+    bool XArmDriver::_ft_sensor_app_set(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
     {
-        res->ret = arm->set_ft_sensor_mode(req->data);
+        res->ret = arm->ft_sensor_app_set(req->data);
         res->message = "data=" + std::to_string(req->data);
         return true; 
     }
 
-    bool XArmDriver::_set_linear_motor_enable(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
+    bool XArmDriver::_set_linear_track_enable(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
     {
-        res->ret = arm->set_linear_motor_enable(req->data);
+        res->ret = arm->set_linear_track_enable(req->data);
         res->message = "data=" + std::to_string(req->data);
         return true; 
     }
 
-    bool XArmDriver::_set_linear_motor_speed(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
+    bool XArmDriver::_set_linear_track_speed(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
     {
-        res->ret = arm->set_linear_motor_speed(req->data);
+        res->ret = arm->set_linear_track_speed(req->data);
         res->message = "data=" + std::to_string(req->data);
         return true; 
     }
@@ -705,13 +669,6 @@ namespace xarm_api
     bool XArmDriver::_config_cgpio_reset_when_stop(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
     {
         res->ret = arm->config_cgpio_reset_when_stop(req->data);
-        res->message = "data=" + std::to_string(req->data);
-        return true;
-    }
-
-    bool XArmDriver::_set_rs485_use_503_port(const std::shared_ptr<xarm_msgs::srv::SetInt16::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16::Response> res)
-    {
-        res->ret = arm->set_rs485_use_503_port(req->data);
         res->message = "data=" + std::to_string(req->data);
         return true;
     }
@@ -761,19 +718,6 @@ namespace xarm_api
         }
         res->message = "datas=[ " + tmp + " ]";
         return true; 
-    }
-
-    bool XArmDriver::_set_external_device_monitor_params(const std::shared_ptr<xarm_msgs::srv::SetInt16List::Request> req, std::shared_ptr<xarm_msgs::srv::SetInt16List::Response> res)
-    {
-        if (req->datas.size() < 2) {
-            res->ret = PARAM_ERROR;
-            return true;
-        }
-        int dev_type = req->datas[0];
-        int frequency = req->datas[1];
-        res->ret = arm->set_external_device_monitor_params(dev_type, frequency);
-        res->message = "datas=[ " + std::to_string(dev_type) + ", " + std::to_string(frequency) + " ]";
-        return true;
     }
 
     bool XArmDriver::_get_tgpio_modbus_baudrate(const std::shared_ptr<xarm_msgs::srv::GetInt32::Request> req, std::shared_ptr<xarm_msgs::srv::GetInt32::Response> res)
@@ -1207,12 +1151,13 @@ namespace xarm_api
 
     bool XArmDriver::_set_vacuum_gripper(const std::shared_ptr<xarm_msgs::srv::VacuumGripperCtrl::Request> req, std::shared_ptr<xarm_msgs::srv::VacuumGripperCtrl::Response> res)
     {
-        if (req->hardware_version == 1 || req->hardware_version == 2) {
-            vacuum_gripper_hardware_version_ = req->hardware_version;
-        }
-        int hardware_version = req->hardware_version == 1 || req->hardware_version == 2 ? req->hardware_version : 1;
-        res->ret = arm->set_vacuum_gripper(req->on, req->wait, req->timeout, req->delay_sec, req->sync, hardware_version);
-        res->message = "hardware_version=" + std::to_string(vacuum_gripper_hardware_version_);
+        // TODO: If vacumm is used please uncomment this na dfix the version mismatch in vacuum hardware. 
+        // if (req->hardware_version == 1 || req->hardware_version == 2) {
+        //     vacuum_gripper_hardware_version_ = req->hardware_version;
+        // }
+        // int hardware_version = req->hardware_version == 1 || req->hardware_version == 2 ? req->hardware_version : 1;
+        // res->ret = arm->set_vacuum_gripper(req->on, req->wait, req->timeout, req->delay_sec, req->sync, hardware_version);
+        // res->message = "hardware_version=" + std::to_string(vacuum_gripper_hardware_version_);
         return true;
     }
 
@@ -1342,10 +1287,10 @@ namespace xarm_api
         return true; 
     }
 
-    bool XArmDriver::_iden_ft_sensor_load_offset(const std::shared_ptr<xarm_msgs::srv::IdenLoad::Request> req, std::shared_ptr<xarm_msgs::srv::IdenLoad::Response> res)
+    bool XArmDriver::_ft_sensor_iden_load(const std::shared_ptr<xarm_msgs::srv::IdenLoad::Request> req, std::shared_ptr<xarm_msgs::srv::IdenLoad::Response> res)
     {
         res->datas.resize(10);
-        res->ret = arm->iden_ft_sensor_load_offset(&res->datas[0]);
+        res->ret = arm->ft_sensor_iden_load(&res->datas[0]);
         std::string tmp = "";
         for (int i = 0; i < res->datas.size(); i++) {
             tmp += (i == 0 ? "" : ", ") + std::to_string(res->datas[i]);
@@ -1354,14 +1299,14 @@ namespace xarm_api
         return true; 
     }
 
-    bool XArmDriver::_set_ft_sensor_load_offset(const std::shared_ptr<xarm_msgs::srv::FtCaliLoad::Request> req, std::shared_ptr<xarm_msgs::srv::FtCaliLoad::Response> res)
+    bool XArmDriver::_ft_sensor_cali_load(const std::shared_ptr<xarm_msgs::srv::FtCaliLoad::Request> req, std::shared_ptr<xarm_msgs::srv::FtCaliLoad::Response> res)
     {
         if (req->datas.size() < 10) {
             res->ret = PARAM_ERROR;
             return true;
         }
 
-        res->ret = arm->set_ft_sensor_load_offset(&req->datas[0], req->association_setting_tcp_load, req->m, req->x, req->y, req->z);
+        res->ret = arm->ft_sensor_cali_load(&req->datas[0], req->association_setting_tcp_load, req->m, req->x, req->y, req->z);
         return true; 
     }
 
@@ -1375,7 +1320,7 @@ namespace xarm_api
         for (int i = 0; i < 6; i++) {
             axis[i] = req->c_axis[i];
         }
-        res->ret = arm->set_ft_sensor_force_parameters(req->coord, axis, &req->ref[0], &req->limits[0]);
+        res->ret = arm->config_force_control(req->coord, axis, &req->ref[0], &req->limits[0]);
         return true;
     }
     
@@ -1385,52 +1330,11 @@ namespace xarm_api
             res->ret = PARAM_ERROR;
             return true;
         }
-        res->ret = arm->set_ft_sensor_force_parameters(&req->kp[0], &req->ki[0], &req->kd[0], &req->xe_limit[0]);
+        res->ret = arm->set_force_control_pid(&req->kp[0], &req->ki[0], &req->kd[0], &req->xe_limit[0]);
         return true;
     }
 
-    bool XArmDriver::_set_ft_sensor_force_parameters(const std::shared_ptr<xarm_msgs::srv::FtForceParams::Request> req, std::shared_ptr<xarm_msgs::srv::FtForceParams::Response> res)
-    {
-        res->ret = PARAM_ERROR;
-        if (req->c_axis.size() >= 6 && req->ref.size() >= 6 && req->limits.size() >= 6) {
-            int axis[6] = { 0 };
-            for (int i = 0; i < 6; i++) {
-                axis[i] = req->c_axis[i];
-            }
-            res->ret = arm->set_ft_sensor_force_parameters(req->coord, axis, &req->ref[0], &req->limits[0]);
-        }
-        if (req->kp.size() >= 6 && req->ki.size() >= 6 && req->kd.size() >= 6 && req->xe_limit.size() >= 6) {
-            res->ret = arm->set_ft_sensor_force_parameters(&req->kp[0], &req->ki[0], &req->kd[0], &req->xe_limit[0]);
-        }
-        return true;
-    }
-
-    bool XArmDriver::_set_ft_sensor_admittance_parameters(const std::shared_ptr<xarm_msgs::srv::FtAdmittanceParams::Request> req, std::shared_ptr<xarm_msgs::srv::FtAdmittanceParams::Response> res)
-    {
-        if (req->c_axis.size() >= 6 && req->m.size() >= 6 && req->k.size() >= 6 && req->b.size() >= 6) {
-            int axis[6] = { 0 };
-            for (int i = 0; i < 6; i++) {
-                axis[i] = req->c_axis[i];
-            }
-            res->ret = arm->set_ft_sensor_admittance_parameters(req->coord, axis, &req->m[0], &req->k[0], &req->b[0]);
-        }
-        else if (req->c_axis.size() >= 6) {
-            int axis[6] = { 0 };
-            for (int i = 0; i < 6; i++) {
-                axis[i] = req->c_axis[i];
-            }
-            res->ret = arm->set_ft_sensor_admittance_parameters(req->coord, axis);
-        }
-        else if (req->m.size() >= 6 && req->k.size() >= 6 && req->b.size() >= 6) {
-            res->ret = arm->set_ft_sensor_admittance_parameters(&req->m[0], &req->k[0], &req->b[0]);
-        }
-        else {
-            res->ret = PARAM_ERROR;
-        }
-        return true;
-    }
-
-    bool XArmDriver::_set_admittance(const std::shared_ptr<xarm_msgs::srv::FtImpedance::Request> req, std::shared_ptr<xarm_msgs::srv::FtImpedance::Response> res)
+    bool XArmDriver::_set_impedance(const std::shared_ptr<xarm_msgs::srv::FtImpedance::Request> req, std::shared_ptr<xarm_msgs::srv::FtImpedance::Response> res)
     {
         if (req->c_axis.size() < 6 || req->m.size() < 6 || req->k.size() < 6 || req->b.size() < 6) {
             res->ret = PARAM_ERROR;
@@ -1440,21 +1344,21 @@ namespace xarm_api
         for (int i = 0; i < 6; i++) {
             axis[i] = req->c_axis[i];
         }
-        res->ret = arm->set_ft_sensor_admittance_parameters(req->coord, axis, &req->m[0], &req->k[0], &req->b[0]);
+        res->ret = arm->set_impedance(req->coord, axis, &req->m[0], &req->k[0], &req->b[0]);
         return true;
     }
 
-    bool XArmDriver::_set_admittance_mbk(const std::shared_ptr<xarm_msgs::srv::FtImpedance::Request> req, std::shared_ptr<xarm_msgs::srv::FtImpedance::Response> res)
+    bool XArmDriver::_set_impedance_mbk(const std::shared_ptr<xarm_msgs::srv::FtImpedance::Request> req, std::shared_ptr<xarm_msgs::srv::FtImpedance::Response> res)
     {
         if (req->m.size() < 6 || req->k.size() < 6 || req->b.size() < 6) {
             res->ret = PARAM_ERROR;
             return true;
         }
-        res->ret = arm->set_ft_sensor_admittance_parameters(&req->m[0], &req->k[0], &req->b[0]);
+        res->ret = arm->set_impedance_mbk(&req->m[0], &req->k[0], &req->b[0]);
         return true;
     }
 
-    bool XArmDriver::_set_admittance_config(const std::shared_ptr<xarm_msgs::srv::FtImpedance::Request> req, std::shared_ptr<xarm_msgs::srv::FtImpedance::Response> res)
+    bool XArmDriver::_set_impedance_config(const std::shared_ptr<xarm_msgs::srv::FtImpedance::Request> req, std::shared_ptr<xarm_msgs::srv::FtImpedance::Response> res)
     {
         if (req->c_axis.size() < 6) {
             res->ret = PARAM_ERROR;
@@ -1464,29 +1368,19 @@ namespace xarm_api
         for (int i = 0; i < 6; i++) {
             axis[i] = req->c_axis[i];
         }
-        res->ret = arm->set_ft_sensor_admittance_parameters(req->coord, axis);
+        res->ret = arm->set_impedance_config(req->coord, axis);
         return true;
     }
 
     bool XArmDriver::_set_linear_track_back_origin(const std::shared_ptr<xarm_msgs::srv::LinearTrackBackOrigin::Request> req, std::shared_ptr<xarm_msgs::srv::LinearTrackBackOrigin::Response> res)
     {
-        res->ret = arm->set_linear_motor_back_origin(req->wait, req->auto_enable);
-        return true; 
-    }
-    bool XArmDriver::_set_linear_motor_back_origin(const std::shared_ptr<xarm_msgs::srv::LinearMotorBackOrigin::Request> req, std::shared_ptr<xarm_msgs::srv::LinearMotorBackOrigin::Response> res)
-    {
-        res->ret = arm->set_linear_motor_back_origin(req->wait, req->auto_enable);
+        res->ret = arm->set_linear_track_back_origin(req->wait, req->auto_enable);
         return true; 
     }
 
     bool XArmDriver::_set_linear_track_pos(const std::shared_ptr<xarm_msgs::srv::LinearTrackSetPos::Request> req, std::shared_ptr<xarm_msgs::srv::LinearTrackSetPos::Response> res)
     {
-        res->ret = arm->set_linear_motor_pos(req->pos, req->speed, req->wait, req->timeout, req->auto_enable);
-        return true; 
-    }
-    bool XArmDriver::_set_linear_motor_pos(const std::shared_ptr<xarm_msgs::srv::LinearMotorSetPos::Request> req, std::shared_ptr<xarm_msgs::srv::LinearMotorSetPos::Response> res)
-    {
-        res->ret = arm->set_linear_motor_pos(req->pos, req->speed, req->wait, req->timeout, req->auto_enable);
+        res->ret = arm->set_linear_track_pos(req->pos, req->speed, req->wait, req->timeout, req->auto_enable);
         return true; 
     }
 }

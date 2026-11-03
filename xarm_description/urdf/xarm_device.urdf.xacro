@@ -22,6 +22,7 @@
   <xacro:arg name="add_realsense_d435i" default="false"/>
   <xacro:arg name="add_d435i_links" default="true"/>
   <xacro:arg name="use_gazebo_camera" default="false"/>
+  <xacro:arg name="add_depthai_camera" default="false"/>
 
   <xacro:arg name="add_other_geometry" default="false"/>
   <xacro:arg name="geometry_type" default="box"/>
@@ -56,6 +57,7 @@
     load_gazebo_plugin="true" ros2_control_params="$(arg ros2_control_params)"
     add_realsense_d435i="$(arg add_realsense_d435i)" 
     add_d435i_links="$(arg add_d435i_links)" 
+    add_depthai_camera="$(arg add_depthai_camera)"
     add_other_geometry="$(arg add_other_geometry)" 
     geometry_type="$(arg geometry_type)" geometry_mass="$(arg geometry_mass)"
     geometry_height="$(arg geometry_height)" geometry_radius="$(arg geometry_radius)"

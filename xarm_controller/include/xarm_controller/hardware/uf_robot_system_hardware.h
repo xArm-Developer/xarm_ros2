@@ -10,6 +10,7 @@
 #define __UF_ROBOT_SYSTEM_HARDWARE_INTERFACE_H__
 
 #include <vector>
+#include <string>
 #include <thread>
 #include <queue>
 #include <rclcpp/rclcpp.hpp>
@@ -74,19 +75,22 @@ namespace uf_robot_hardware
         bool initialized_;
         bool read_ready_;
         bool reactivate_controller_later_;
+        std::vector<std::string> controllers_to_reactivate_;
+        rclcpp::Time last_motion_suppress_time_;
+        bool last_motion_suppress_valid_;
 
         long int read_cnts_;
         long int read_failed_cnts_;
         double read_max_time_;
         double read_total_time_;
         
-        // float prev_read_position_[7];
-		// float curr_read_position_[7];
-		// float curr_read_velocity_[7];
-		// float curr_read_effort_[7];
+        float prev_read_position_[7];
+		float curr_read_position_[7];
+		float curr_read_velocity_[7];
+		float curr_read_effort_[7];
         
-        // rclcpp::Time prev_read_time_;
-        // rclcpp::Time curr_read_time_;
+        rclcpp::Time prev_read_time_;
+        rclcpp::Time curr_read_time_;
         rclcpp::Time curr_write_time_;
         rclcpp::Time prev_write_time_;
 
@@ -109,9 +113,14 @@ namespace uf_robot_hardware
         bool _check_cmds_is_change(float *prev, float *cur, double threshold = 0.0001);
         bool _xarm_is_ready_read(void);
         bool _xarm_is_ready_write(void);
+        bool _firmware_version_is_ge(int major, int minor, int revision);
 
         bool _need_reset(void);
 
+        void _hold_current_pose(void);
+        bool _is_safe_to_reactivate(const std::string& controller_name) const;
+        bool _is_motion_controller(const std::string& controller_name) const;
+        bool _commands_are_finite(void) const;
         void _deactivate_controller(void);
         void _activate_controller(void);
 

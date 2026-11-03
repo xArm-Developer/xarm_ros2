@@ -34,7 +34,7 @@ __Here, mbot is used instead of chassis.__
 - *config/joint_limits.yaml*
 - *config/kinematics.yaml*
 - *config/ompl_planning.yaml*
-- __Note__
+- __注__
   - __You can copy the corresponding xarm configuration from xarm_moveit_config/config and then add the mbot configuration__
   - __The demo does not add any mbot configuration.__
 

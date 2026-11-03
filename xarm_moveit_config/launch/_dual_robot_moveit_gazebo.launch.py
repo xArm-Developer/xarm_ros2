@@ -98,10 +98,7 @@ def launch_setup(context, *args, **kwargs):
     no_gui_ctrl = LaunchConfiguration('no_gui_ctrl', default=False)
     ros_namespace = LaunchConfiguration('ros_namespace', default='').perform(context)
 
-    gz_type = LaunchConfiguration('gz_type', default='gazebo').perform(context)
-    gz_type = 'ignition' if gz_type == 'ign' else gz_type
-
-    ros2_control_plugin = 'gz_ros2_control/GazeboSimSystem' if gz_type == 'gz' else 'ign_ros2_control/IgnitionSystem' if gz_type == 'ignition' else 'gazebo_ros2_control/GazeboSystem'
+    ros2_control_plugin = 'gazebo_ros2_control/GazeboSystem'
     controllers_name = 'fake_controllers'
 
     ros2_control_params = generate_dual_ros2_control_params_temp_file(
@@ -209,7 +206,6 @@ def launch_setup(context, *args, **kwargs):
             'load_controller': 'true',
             'show_rviz': 'true',
             'no_gui_ctrl': no_gui_ctrl,
-            'gz_type': gz_type,
         }.items(),
     )
 

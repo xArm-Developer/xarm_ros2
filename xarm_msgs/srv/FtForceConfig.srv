@@ -1,14 +1,9 @@
-# please use FtForceParams instead
 # This format is suitable for the following services
-#   - config_force_control  # please use set_ft_sensor_force_parameters instead
+#   - config_force_control
 
-# task frame (0: base frame. 1: tool frame)
 int16 coord
-# a 6d vector of 0s and 1s. 1 means that robot will be compliant in the corresponding axis of the task frame.
 int16[] c_axis
-# 6d vector, the forces/torques the robot will apply to its environment. The robot adjusts its position along/about compliant axis in order to achieve the specified force/torque.
 float32[] ref
-# 6d vector, for compliant axes, these values are the maximum allowed tcp speed along/about the axis.
 float32[] limits
 
 ---

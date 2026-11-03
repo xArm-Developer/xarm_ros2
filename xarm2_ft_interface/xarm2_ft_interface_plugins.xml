@@ -1,0 +1,11 @@
+<library path="xarm2_ft_hardware">
+  <class name="xarm2_ft_interface/WrenchTopicSensorHardware"
+         type="xarm2_ft_interface::WrenchTopicSensorHardware"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      A ros2_control SensorInterface that subscribes to a geometry_msgs/WrenchStamped
+      topic and exposes force/torque values as hardware state interfaces.
+      Unified interface for both simulation (Ignition bridge) and real hardware (xArm FT sensor).
+    </description>
+  </class>
+</library>

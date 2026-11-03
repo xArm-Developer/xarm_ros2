@@ -12,10 +12,10 @@
 #   - set_simulation_robot
 #   - set_baud_checkset_enable
 #   - set_report_tau_or_i
-#   - set_ft_sensor_enable      # The old name is ft_sensor_enable, please use the new one
-#   - set_ft_sensor_mode        # The old name is ft_sensor_app_set, please use the new one
-#   - set_linear_motor_enable   # The old name is set_linear_track_enable, please use the new one
-#   - set_linear_motor_speed    # The old name is set_linear_track_speed, please use the new one
+#   - ft_sensor_enable
+#   - ft_sensor_app_set
+#   - set_linear_track_enable
+#   - set_linear_track_speed
 #   - set_cartesian_velo_continuous
 #   - set_allow_approx_motion
 #   - set_only_check_type

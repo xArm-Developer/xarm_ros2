@@ -46,12 +46,8 @@
 #include <xarm_msgs/srv/ft_cali_load.hpp>
 #include <xarm_msgs/srv/ft_force_config.hpp>
 #include <xarm_msgs/srv/ft_force_pid.hpp>
-#include <xarm_msgs/srv/ft_force_params.hpp>
 #include <xarm_msgs/srv/ft_impedance.hpp>
-#include <xarm_msgs/srv/ft_admittance_params.hpp>
 #include <xarm_msgs/srv/linear_track_back_origin.hpp>
-#include <xarm_msgs/srv/linear_motor_back_origin.hpp>
 #include <xarm_msgs/srv/linear_track_set_pos.hpp>
-#include <xarm_msgs/srv/linear_motor_set_pos.hpp>
 
 #endif // __XARM_MSGS_H

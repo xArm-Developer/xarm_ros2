@@ -65,7 +65,7 @@ def merge_dict(dict1, dict2):
 
 
 def load_abspath_yaml(path):
-    if path and os.path.exists(path):
+    if os.path.exists(path):
         try:
             with open(path, 'r') as file:
                 return yaml.safe_load(file)
@@ -74,36 +74,28 @@ def load_abspath_yaml(path):
     return {}
 
 
-def generate_robot_api_params(default_robot_api_params_path, user_robot_api_params_path=None, ros_namespace='', node_name='ufactory_driver', extra_robot_api_params_path=None):
-    if not user_robot_api_params_path or not os.path.exists(user_robot_api_params_path):
-        user_robot_api_params_path = None
-    if not extra_robot_api_params_path or not os.path.exists(extra_robot_api_params_path):
-        extra_robot_api_params_path = None
-    if ros_namespace or (user_robot_api_params_path is not None and user_robot_api_params_path != default_robot_api_params_path) or (extra_robot_api_params_path is not None and extra_robot_api_params_path != default_robot_api_params_path):
-        ronbot_api_params_yaml = load_abspath_yaml(default_robot_api_params_path)
-        user_params_yaml = load_abspath_yaml(user_robot_api_params_path)
-        extra_params_yaml = load_abspath_yaml(extra_robot_api_params_path)
+def generate_robot_api_params(robot_default_params_path, robot_user_params_path=None, ros_namespace='', node_name='ufactory_driver'):
+    if not os.path.exists(robot_user_params_path):
+        robot_user_params_path = None
+    if ros_namespace or (robot_user_params_path is not None and robot_default_params_path != robot_user_params_path):
+        ros2_control_params_yaml = load_abspath_yaml(robot_default_params_path)
+        ros2_control_user_params_yaml = load_abspath_yaml(robot_user_params_path)
         # change xarm_driver to ufactory_driver
-        if 'xarm_driver' in ronbot_api_params_yaml and node_name not in ronbot_api_params_yaml:
-            ronbot_api_params_yaml[node_name] = ronbot_api_params_yaml.pop('xarm_driver')
-        if 'xarm_driver' in user_params_yaml and node_name not in user_params_yaml:
-            user_params_yaml[node_name] = user_params_yaml.pop('xarm_driver')
-        if 'xarm_driver' in extra_params_yaml and node_name not in extra_params_yaml:
-            extra_params_yaml[node_name] = extra_params_yaml.pop('xarm_driver')
-        if user_params_yaml:
-            merge_dict(ronbot_api_params_yaml, user_params_yaml)
-        if extra_params_yaml:
-            merge_dict(ronbot_api_params_yaml, extra_params_yaml)
+        if 'xarm_driver' in ros2_control_params_yaml and node_name not in ros2_control_params_yaml:
+            ros2_control_params_yaml[node_name] = ros2_control_params_yaml.pop('xarm_driver')
+        if 'xarm_driver' in ros2_control_user_params_yaml and node_name not in ros2_control_user_params_yaml:
+            ros2_control_user_params_yaml[node_name] = ros2_control_user_params_yaml.pop('xarm_driver')
+        merge_dict(ros2_control_params_yaml, ros2_control_user_params_yaml)
         if ros_namespace:
-            robot_params_yaml = {
-                ros_namespace: ronbot_api_params_yaml
+            xarm_params_yaml = {
+                ros_namespace: ros2_control_params_yaml
             }
         else:
-            robot_params_yaml = ronbot_api_params_yaml
+            xarm_params_yaml = ros2_control_params_yaml
         with NamedTemporaryFile(mode='w', prefix='launch_params_', delete=False) as h:
-            yaml.dump(robot_params_yaml, h, default_flow_style=False)
+            yaml.dump(xarm_params_yaml, h, default_flow_style=False)
             return h.name
-    return default_robot_api_params_path
+    return robot_default_params_path
 
 
 def load_yaml(package_name, *file_path):

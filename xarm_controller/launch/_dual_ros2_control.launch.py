@@ -123,7 +123,6 @@ def launch_setup(context, *args, **kwargs):
 
     robot_description = LaunchConfiguration('robot_description', default='')
     ros2_control_params = LaunchConfiguration('ros2_control_params', default='')
-    extra_robot_api_params_path = LaunchConfiguration('extra_robot_api_params_path', default='')
 
     if not ros2_control_params.perform(context):
         # ros2 control params
@@ -215,8 +214,7 @@ def launch_setup(context, *args, **kwargs):
     robot_params = generate_robot_api_params(
         os.path.join(get_package_share_directory('xarm_api'), 'config', 'xarm_params.yaml'),
         os.path.join(get_package_share_directory('xarm_api'), 'config', 'xarm_user_params.yaml'),
-        LaunchConfiguration('ros_namespace', default='').perform(context), node_name='ufactory_driver',
-        extra_robot_api_params_path=extra_robot_api_params_path.perform(context)
+        LaunchConfiguration('ros_namespace', default='').perform(context), node_name='ufactory_driver'
     )
 
     # ros2 control node

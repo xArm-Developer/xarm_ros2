@@ -44,7 +44,7 @@ def launch_setup(context, *args, **kwargs):
     limited = LaunchConfiguration('limited', default=False)
     effort_control = LaunchConfiguration('effort_control', default=False)
     velocity_control = LaunchConfiguration('velocity_control', default=False)
-    ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='')
+    ros2_control_plugin = LaunchConfiguration('ros2_control_plugin', default='gazebo_ros2_control/GazeboSystem')
     
     add_realsense_d435i = LaunchConfiguration('add_realsense_d435i', default=False)
     add_realsense_d435i_1 = LaunchConfiguration('add_realsense_d435i_1', default=add_realsense_d435i)
@@ -120,11 +120,6 @@ def launch_setup(context, *args, **kwargs):
 
     ros_namespace = LaunchConfiguration('ros_namespace', default='').perform(context)
     moveit_config_dump = LaunchConfiguration('moveit_config_dump', default='')
-
-    gz_type = LaunchConfiguration('gz_type', default='gazebo').perform(context)
-    gz_type = 'ignition' if gz_type == 'ign' else gz_type
-    if ros2_control_plugin.perform(context) == '':
-        ros2_control_plugin = 'gz_ros2_control/GazeboSimSystem' if gz_type == 'gz' else 'ign_ros2_control/IgnitionSystem' if gz_type == 'ignition' else 'gazebo_ros2_control/GazeboSystem'
 
     moveit_config_dump = moveit_config_dump.perform(context)
     moveit_config_dict = yaml.load(moveit_config_dump, Loader=yaml.FullLoader) if moveit_config_dump else {}
@@ -224,112 +219,34 @@ def launch_setup(context, *args, **kwargs):
         ]
     )
 
-    if gz_type == 'gz':
-        gazebo_world = PathJoinSubstitution([FindPackageShare('xarm_gazebo'), 'worlds', 'table_gz.world'])
-        # ros_gz_sim/launch/gz_sim.launch.py
-        gazebo_launch = IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('ros_gz_sim'), 'launch', 'gz_sim.launch.py'])),
-            launch_arguments={
-                'gz_args': ' -r -v 3 {}'.format(gazebo_world.perform(context)),
-            }.items(),
-        )
-        # gazebo spawn entity node
-        gazebo_spawn_entity_node = Node(
-            package="ros_gz_sim",
-            executable="create",
-            output='screen',
-            arguments=[
-                '-topic', 'robot_description',
-                '-name', 'DUAL_UF_ROBOT',
-                '-x', '0.5',
-                '-y', '-0.54' if robot_type.perform(context) == 'uf850' else '-0.5',
-                '-z', '1.021',
-                '-Y', '1.571',
-            ],
-            parameters=[{'use_sim_time': True}],
-        )
-        # Gz - ROS Bridge
-        gz_bridge = Node(
-            package='ros_gz_bridge',
-            executable='parameter_bridge',
-            arguments=[
-                # Clock (IGN -> ROS2)
-                '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
-                # Joint states (IGN -> ROS2)
-                # '/world/empty/model/DUAL_UF_ROBOT/joint_state@sensor_msgs/msg/JointState[gz.msgs.Model',
-            ],
-            remappings=[
-                # ('/world/empty/model/DUAL_UF_ROBOT/joint_state', 'joint_states'),
-            ],
-            output='screen'
-        )
-    elif gz_type == 'ignition':
-        gazebo_world = PathJoinSubstitution([FindPackageShare('xarm_gazebo'), 'worlds', 'table_gz.world'])
-        # ros_ign_gazebo/launch/ign_gazebo.launch.py
-        gazebo_launch = IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('ros_ign_gazebo'), 'launch', 'ign_gazebo.launch.py'])),
-            launch_arguments={
-                'ign_args': ' -r -v 3 {}'.format(gazebo_world.perform(context)),
-            }.items(),
-        )
-        # gazebo spawn entity node
-        gazebo_spawn_entity_node = Node(
-            package="ros_ign_gazebo",
-            executable="create",
-            output='screen',
-            arguments=[
-                '-topic', 'robot_description',
-                # '-name', '{}'.format(xarm_type),
-                '-name', 'DUAL_UF_ROBOT',
-                '-x', '0.5',
-                '-y', '-0.54' if robot_type.perform(context) == 'uf850' else '-0.5',
-                '-z', '1.021',
-                '-Y', '1.571',
-                # '-allow_renaming', 'true'
-            ],
-            parameters=[{'use_sim_time': True}],
-        )
-        # IGN - ROS Bridge
-        gz_bridge = Node(
-            package='ros_ign_bridge',
-            executable='parameter_bridge',
-            arguments=[
-                # Clock (IGN -> ROS2)
-                '/clock@rosgraph_msgs/msg/Clock[ignition.msgs.Clock',
-                # # Joint states (IGN -> ROS2)
-                # '/xarm/joint_states@sensor_msgs/msg/JointState[ignition.msgs.Model',
-            ],
-            # remappings=[
-            #     ('/xarm/joint_states', 'joint_states'),
-            # ],
-            output='screen'
-        )
-    else:
-        gazebo_world = PathJoinSubstitution([FindPackageShare('xarm_gazebo'), 'worlds', 'table.world'])
-        # gazebo_ros/launch/gazebo.launch.py
-        gazebo_launch = IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('gazebo_ros'), 'launch', 'gazebo.launch.py'])),
-            launch_arguments={
-                'world': gazebo_world,
-                'server_required': 'true',
-                'gui_required': 'true',
-            }.items(),
-        )
-        # gazebo spawn entity node
-        gazebo_spawn_entity_node = Node(
-            package="gazebo_ros",
-            executable="spawn_entity.py",
-            output='screen',
-            arguments=[
-                '-topic', 'robot_description',
-                '-entity', 'DUAL_UF_ROBOT',
-                '-x', '0.5',
-                '-y', '-0.54' if robot_type.perform(context) == 'uf850' else '-0.5',
-                '-z', '1.021',
-                '-Y', '1.571',
-            ],
-            parameters=[{'use_sim_time': True}],
-        )
+    # gazebo launch
+    # gazebo_ros/launch/gazebo.launch.py
+    xarm_gazebo_world = PathJoinSubstitution([FindPackageShare('xarm_gazebo'), 'worlds', 'table.world'])
+    gazebo_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(PathJoinSubstitution([FindPackageShare('gazebo_ros'), 'launch', 'gazebo.launch.py'])),
+        launch_arguments={
+            'world': xarm_gazebo_world,
+            'server_required': 'true',
+            'gui_required': 'true',
+            # 'pause': 'true'
+        }.items(),
+    )
+
+    # gazebo spawn entity node
+    gazebo_spawn_entity_node = Node(
+        package="gazebo_ros",
+        executable="spawn_entity.py",
+        output='screen',
+        arguments=[
+            '-topic', 'robot_description',
+            '-entity', 'DUAL_UF_ROBOT',
+            '-x', '0.5',
+            '-y', '-0.54' if robot_type.perform(context) == 'uf850' else '-0.5',
+            '-z', '1.021',
+            '-Y', '1.571',
+        ],
+        parameters=[{'use_sim_time': True}],
+    )
 
     # rviz with moveit configuration
     rviz_config_file = PathJoinSubstitution([FindPackageShare(moveit_config_package_name), 'rviz', 'dual_planner.rviz' if no_gui_ctrl.perform(context) == 'true' else 'dual_moveit.rviz'])
@@ -387,46 +304,62 @@ def launch_setup(context, *args, **kwargs):
                 parameters=[{'use_sim_time': True}],
             ))
     
-    nodes = [
-        RegisterEventHandler(
-            event_handler=OnProcessStart(
-                target_action=robot_state_publisher_node,
-                on_start=gazebo_launch,
-            )
-        ),
-        RegisterEventHandler(
-            event_handler=OnProcessStart(
-                target_action=robot_state_publisher_node,
-                on_start=gazebo_spawn_entity_node,
-            )
-        ),
-        RegisterEventHandler(
-            condition=IfCondition(show_rviz),
-            event_handler=OnProcessExit(
-                target_action=gazebo_spawn_entity_node,
-                on_exit=rviz2_node,
-            )
-        ),
-        robot_state_publisher_node
-    ]
-
-    if gz_type == 'gz' or gz_type == 'ignition':
-        nodes.append(RegisterEventHandler(
-            event_handler=OnProcessStart(
-                target_action=robot_state_publisher_node,
-                on_start=gz_bridge,
-            )
-        ))
-
     if len(controller_nodes) > 0:
-        nodes.append(RegisterEventHandler(
-            event_handler=OnProcessExit(
-                target_action=gazebo_spawn_entity_node,
-                on_exit=controller_nodes,
-            )
-        ))
-
-    return nodes
+        return [
+            RegisterEventHandler(
+                event_handler=OnProcessStart(
+                    target_action=robot_state_publisher_node,
+                    on_start=gazebo_launch,
+                )
+            ),
+            RegisterEventHandler(
+                event_handler=OnProcessStart(
+                    target_action=robot_state_publisher_node,
+                    on_start=gazebo_spawn_entity_node,
+                )
+            ),
+            RegisterEventHandler(
+                condition=IfCondition(show_rviz),
+                event_handler=OnProcessExit(
+                    target_action=gazebo_spawn_entity_node,
+                    on_exit=rviz2_node,
+                )
+            ),
+            RegisterEventHandler(
+                event_handler=OnProcessExit(
+                    target_action=gazebo_spawn_entity_node,
+                    on_exit=controller_nodes,
+                )
+            ),
+            robot_state_publisher_node,
+            # gazebo_launch,
+            # gazebo_spawn_entity_node,
+        ]
+    else:
+        return [
+            RegisterEventHandler(
+                event_handler=OnProcessStart(
+                    target_action=robot_state_publisher_node,
+                    on_start=gazebo_launch,
+                )
+            ),
+            RegisterEventHandler(
+                event_handler=OnProcessStart(
+                    target_action=robot_state_publisher_node,
+                    on_start=gazebo_spawn_entity_node,
+                )
+            ),
+            RegisterEventHandler(
+                condition=IfCondition(show_rviz),
+                event_handler=OnProcessExit(
+                    target_action=gazebo_spawn_entity_node,
+                    on_exit=rviz2_node,
+                )
+            ),
+            robot_state_publisher_node,
+            # gazebo_launch,
+            # gazebo_spawn_entity_node,
+        ]
 
 
 def generate_launch_description():
