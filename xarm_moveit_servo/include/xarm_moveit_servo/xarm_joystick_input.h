@@ -30,6 +30,10 @@ private:
         const std::vector<float>& axes, const std::vector<int>& buttons,
         std::unique_ptr<geometry_msgs::msg::TwistStamped>& twist,
         std::unique_ptr<control_msgs::msg::JointJog>& joint);
+    bool _convert_ps4_joy_to_cmd(
+        const std::vector<float>& axes, const std::vector<int>& buttons,
+        std::unique_ptr<geometry_msgs::msg::TwistStamped>& twist,
+        std::unique_ptr<control_msgs::msg::JointJog>& joint);
     bool _convert_spacemouse_wireless_joy_to_cmd(const std::vector<float>& axes, const std::vector<int>& buttons,
         std::unique_ptr<geometry_msgs::msg::TwistStamped>& twist);
 

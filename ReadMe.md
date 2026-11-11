@@ -440,6 +440,33 @@ __Reminder 4: The <hw_ns> described below is replaced with the actual one, the x
         ros2 launch xarm_moveit_servo uf850_moveit_servo_realmove.launch.py robot_ip:=192.168.1.181 joystick_type:=1
         ```
 
+    - Controlling with __PS4__ joystick:
+        - left stick for X and Y direction.  
+        - right stick for ROLL and PITCH adjustment.  
+        - left and right trigger (LT/RT) for Z direction.  
+        - left and right bumper (LB/RB) for YAW adjustment.  
+        - D-PAD for controlling joint1 and joint2.  
+        - buttons SQUARE and CIRCLE for controlling last joint.  
+        - buttons TRIANGLE and CROSS for controlling second last joint.  
+
+        ```bash
+        cd ~/dev_ws/
+        # For controlling simulated xArm:
+        ros2 launch xarm_moveit_servo xarm_moveit_servo_fake.launch.py joystick_type:=4
+        # Or controlling simulated Lite6:
+        ros2 launch xarm_moveit_servo lite6_moveit_servo_fake.launch.py joystick_type:=4
+        # Or controlling simulated UFACTORY850:
+        ros2 launch xarm_moveit_servo uf850_moveit_servo_fake.launch.py joystick_type:=4
+
+
+        # For controlling real xArm: (use xArm 5 as example)
+        ros2 launch xarm_moveit_servo xarm_moveit_servo_realmove.launch.py robot_ip:=192.168.1.123 dof:=5 joystick_type:=4
+        # Or controlling real Lite6:
+        ros2 launch xarm_moveit_servo lite6_moveit_servo_realmove.launch.py robot_ip:=192.168.1.123 joystick_type:=4
+        # Or controlling real UFACTORY850:
+        ros2 launch xarm_moveit_servo uf850_moveit_servo_realmove.launch.py robot_ip:=192.168.1.181 joystick_type:=4
+        ```
+
     - Controlling with __3Dconnexion SpaceMouse Wireless__:
         - 6 DOFs of the mouse are mapped for controlling X/Y/Z/ROLL/PITCH/YAW  
         - Left button clicked for just X/Y/Z adjustment  
